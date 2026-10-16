@@ -19,7 +19,8 @@ type Store struct {
 	pool *pgxpool.Pool
 }
 
-// DealRules bepaalt wanneer een product als "deal" op de site komt.
+// DealRules bepaalt wanneer een product als "deal" op de site komt: als de prijs die wij
+// zien minstens MinEUR of MinPercent onder de eerder door ons waargenomen prijs zakt.
 type DealRules struct {
 	MinEUR     float64
 	MinPercent float64
@@ -138,6 +139,13 @@ type UpsertResult struct {
 
 // UpsertProduct slaat een product op, houdt de prijshistorie bij en bepaalt of het een deal is.
 // fromProductPage geeft aan of de data van de productpagina komt (dan wordt last_crawled_at gezet).
+//
+// Een deal ontstaat alleen uit onze eigen prijswaarnemingen, niet uit de "van"-prijs van de shop:
+//   - De eerste waarneming van een product is de nulmeting en nooit een deal.
+//   - Referentie = de hoogste prijs die wij sinds de laatste nulmeting zagen (max. 30 dagen terug).
+//     Zakt de prijs minstens MinEUR of MinPercent onder die referentie, dan wordt het een deal.
+//   - Tijdens een deal blijft de referentie vast; zakt de prijs verder, dan groeit de korting.
+//   - Stijgt de prijs weer, dan is de deal voorbij en geldt de nieuwe prijs als nulmeting.
 func (s *Store) UpsertProduct(ctx context.Context, shopID int, p parse.Product, category string, fromProductPage bool, rules DealRules) (UpsertResult, error) {
 	var res UpsertResult
 	if p.Price <= 0 || p.ExternalID == "" {
@@ -153,14 +161,17 @@ func (s *Store) UpsertProduct(ctx context.Context, shopID int, p parse.Product, 
 		id               int64
 		prevPrice        float64
 		prevOld          *float64
+		prevRef          *float64
 		prevDeal         bool
+		baselineSince    *time.Time
 		prevCategory     string
 		prevShopCategory *string
 	)
 	err = tx.QueryRow(ctx, `
-		SELECT id, price::float8, old_price::float8, is_deal, category_slug, shop_category
+		SELECT id, price::float8, old_price::float8, reference_price::float8, is_deal, baseline_since,
+			category_slug, shop_category
 		FROM products WHERE shop_id=$1 AND external_id=$2 FOR UPDATE`, shopID, p.ExternalID).
-		Scan(&id, &prevPrice, &prevOld, &prevDeal, &prevCategory, &prevShopCategory)
+		Scan(&id, &prevPrice, &prevOld, &prevRef, &prevDeal, &baselineSince, &prevCategory, &prevShopCategory)
 	switch {
 	case errors.Is(err, pgx.ErrNoRows):
 		res.IsNew = true
@@ -178,21 +189,31 @@ func (s *Store) UpsertProduct(ctx context.Context, shopID int, p parse.Product, 
 		oldPrice = *prevOld
 	}
 
-	// Hoogste prijs die in de afgelopen 30 dagen gold (op basis van onze eigen historie).
-	histMax := 0.0
-	if !res.IsNew {
+	// resetBaseline: de prijs is na een deal weer gestegen; oudere historie telt niet meer mee.
+	var reference float64
+	resetBaseline := false
+	switch {
+	case res.IsNew:
+		// Eerste waarneming: dit is de nulmeting.
+	case prevDeal && p.Price > prevPrice+0.005:
+		resetBaseline = true
+	case prevDeal && prevRef != nil:
+		reference = *prevRef
+	default:
+		// Hoogste prijs sinds de nulmeting die in de afgelopen 30 dagen gold (eigen historie).
 		if err := tx.QueryRow(ctx, `
 			SELECT COALESCE(MAX(price), 0)::float8 FROM (
-				SELECT price FROM price_history WHERE product_id=$1 AND observed_at >= now() - interval '30 days'
+				SELECT price FROM price_history WHERE product_id=$1
+					AND observed_at >= GREATEST(now() - interval '30 days', COALESCE($2, '-infinity'::timestamptz))
 				UNION ALL
-				(SELECT price FROM price_history WHERE product_id=$1 AND observed_at < now() - interval '30 days'
+				(SELECT price FROM price_history WHERE product_id=$1
+					AND observed_at < now() - interval '30 days' AND observed_at >= COALESCE($2, '-infinity'::timestamptz)
 				 ORDER BY observed_at DESC LIMIT 1)
-			) t`, id).Scan(&histMax); err != nil {
+			) t`, id, baselineSince).Scan(&reference); err != nil {
 			return res, err
 		}
 	}
 
-	reference := math.Max(oldPrice, histMax)
 	var discount, percent float64
 	if reference > p.Price {
 		discount = round2(reference - p.Price)
@@ -236,11 +257,12 @@ func (s *Store) UpsertProduct(ctx context.Context, shopID int, p parse.Product, 
 				price = $9, old_price = $10, reference_price = $11, discount_amount = $12, discount_percent = $13,
 				is_deal = $14, in_stock = COALESCE($15, in_stock),
 				deal_since = CASE WHEN NOT $14 THEN NULL WHEN is_deal THEN deal_since ELSE now() END,
+				baseline_since = CASE WHEN $17 THEN now() ELSE baseline_since END,
 				last_seen_at = now(), updated_at = now(),
 				last_crawled_at = CASE WHEN $16 THEN now() ELSE last_crawled_at END
 			WHERE id = $1`,
 			id, p.URL, p.SKU, p.Name, p.Brand, p.ImageURL, category, shopCategory,
-			p.Price, oldArg, refArg, discount, percent, res.IsDeal, p.InStock, fromProductPage)
+			p.Price, oldArg, refArg, discount, percent, res.IsDeal, p.InStock, fromProductPage, resetBaseline)
 	}
 	if err != nil {
 		return res, err

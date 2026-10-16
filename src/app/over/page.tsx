@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 const FAQ = [
   {
     q: "Wanneer staat een product op Modelbouwkortingen.nl?",
-    a: "Alleen als het minstens €5 óf 5% goedkoper is dan de normale prijs. Als normale prijs gebruiken we de 'van'-prijs die de webshop zelf toont, of de hoogste prijs die wij de afgelopen 30 dagen bij die webshop gezien hebben.",
+    a: "Wij houden de prijzen zelf bij. Een product verschijnt pas als de prijs minstens €5 óf 5% zakt ten opzichte van de prijs die wij eerder bij die webshop zagen (de hoogste van de afgelopen 30 dagen). Een 'van'-prijs die de webshop zelf toont tellen we niet mee. Het product blijft staan tot de prijs weer stijgt.",
   },
   {
     q: "Hoe vaak worden de prijzen bijgewerkt?",

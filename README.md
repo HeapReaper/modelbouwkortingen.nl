@@ -70,8 +70,11 @@ Elke ronde:
 3. **Productpagina's** (max. `CRAWLER_MAX_PRODUCT_PAGES` per ronde): eerst bestaande deals, dan nieuwe, dan de langst niet bezochte.
 4. Deals die 4 dagen niet meer gezien zijn worden uitgezet.
 
-**Wanneer is iets een deal?** Referentieprijs = de "van"-prijs van de shop, óf de hoogste prijs die wij
-de afgelopen 30 dagen zagen (`price_history`). Korting ≥ €5 of ≥ 5% → deal. Tweedehands/occasions worden
+**Wanneer is iets een deal?** Alleen op basis van onze eigen prijswaarnemingen (`price_history`); de
+"van"-prijs van de shop telt niet mee. De eerste waarneming is de nulmeting. Zakt de prijs ≥ €5 of ≥ 5%
+onder de hoogste prijs die wij sinds de nulmeting zagen (max. 30 dagen terug) → deal. Tijdens de deal blijft
+die referentieprijs vast; zakt de prijs verder, dan groeit de korting. Stijgt de prijs weer, dan is de deal
+voorbij en geldt de nieuwe prijs als nulmeting (`baseline_since`). Tweedehands/occasions worden
 overgeslagen (hun "van"-prijs is de nieuwprijs), net als kortingen boven 90% (vrijwel altijd parse-fouten).
 
 **Netjes crawlen:**

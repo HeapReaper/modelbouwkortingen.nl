@@ -324,12 +324,8 @@ func (r *Runner) save(ctx context.Context, sr *shopRun, p parse.Product, fromPro
 	r.stats.UpdateShop(sr.shop.Slug(), func(s *stats.ShopStats) { s.ProductsSeen++ })
 
 	if r.store == nil {
-		isDeal := p.OldPrice > p.Price && (p.OldPrice-p.Price >= r.cfg.MinDiscountEUR || (p.OldPrice-p.Price)/p.OldPrice*100 >= r.cfg.MinDiscountPercent)
-		if isDeal {
-			sr.deals.Add(1)
-			r.stats.UpdateShop(sr.shop.Slug(), func(s *stats.ShopStats) { s.DealsFound++ })
-		}
-		sr.log.Info("product", "deal", isDeal, "prijs", p.Price, "van", p.OldPrice, "categorie", category, "naam", p.Name)
+		// Zonder database is er geen prijshistorie, dus ook geen deals; alleen loggen.
+		sr.log.Info("product", "prijs", p.Price, "van", p.OldPrice, "categorie", category, "naam", p.Name)
 		return
 	}
 	res, err := r.store.UpsertProduct(ctx, sr.shopID, p, category, fromProductPage,

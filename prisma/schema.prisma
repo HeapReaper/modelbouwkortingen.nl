@@ -50,14 +50,17 @@ model Product {
   price           Decimal        @db.Decimal(10, 2)
   /// "Van"-prijs zoals de webshop die toont (doorgestreept), of NULL.
   oldPrice        Decimal?       @map("old_price") @db.Decimal(10, 2)
-  /// Referentieprijs waartegen de korting berekend wordt: old_price, of de hoogste
-  /// prijs die we in de afgelopen 30 dagen zelf gezien hebben.
+  /// Referentieprijs waartegen de korting berekend wordt: de hoogste prijs die we zelf
+  /// sinds baseline_since (max. 30 dagen terug) zagen; blijft vast zolang de deal loopt.
   referencePrice  Decimal?       @map("reference_price") @db.Decimal(10, 2)
   discountAmount  Decimal        @default(0) @map("discount_amount") @db.Decimal(10, 2)
   discountPercent Decimal        @default(0) @map("discount_percent") @db.Decimal(5, 2)
   isDeal          Boolean        @default(false) @map("is_deal")
   inStock         Boolean?       @map("in_stock")
   dealSince       DateTime?      @map("deal_since") @db.Timestamptz
+  /// Nulmeting: prijshistorie van vóór dit moment telt niet mee voor de referentieprijs
+  /// (gezet wanneer de prijs na een deal weer stijgt). NULL = alle historie.
+  baselineSince   DateTime?      @map("baseline_since") @db.Timestamptz
   firstSeenAt     DateTime       @default(now()) @map("first_seen_at") @db.Timestamptz
   lastSeenAt      DateTime       @default(now()) @map("last_seen_at") @db.Timestamptz
   lastCrawledAt   DateTime?      @map("last_crawled_at") @db.Timestamptz

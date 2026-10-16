@@ -58,7 +58,7 @@ export function DealCard({
         </h3>
         <PriceBlock
           price={deal.price}
-          referencePrice={deal.referencePrice ?? deal.oldPrice}
+          referencePrice={deal.referencePrice}
           discountAmount={deal.discountAmount}
           className="mt-auto"
         />

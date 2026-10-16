@@ -59,8 +59,7 @@ async function ProductDetail({
   const deal = await getDeal(Number((await params).id));
   if (!deal) notFound();
   const category = getCategory(deal.categorySlug);
-  const reference = deal.referencePrice ?? deal.oldPrice;
-  const fromShop = deal.oldPrice !== null && reference === deal.oldPrice;
+  const reference = deal.referencePrice;
 
   return (
     <div className="flex flex-col gap-14 pb-4">
@@ -130,9 +129,9 @@ async function ProductDetail({
               {reference && reference > deal.price ? (
                 <p className="mt-3 flex items-start gap-2 text-sm text-muted-foreground">
                   <Info className="mt-0.5 size-4 shrink-0" />
-                  {fromShop
-                    ? `De doorgestreepte prijs is de "van"-prijs die ${deal.shopName} zelf vermeldt.`
-                    : "De doorgestreepte prijs is de hoogste prijs die wij de afgelopen 30 dagen bij deze webshop zagen."}
+                  De doorgestreepte prijs is de prijs die wij bij deze webshop
+                  zagen vóór de prijsdaling (de hoogste van de afgelopen 30
+                  dagen).
                 </p>
               ) : null}
             </div>
