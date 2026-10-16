@@ -10,7 +10,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-gray-800 text-white text-center p-4">
+    <footer className="border-t border-orange-500 dark:text-white text-black text-center p-4">
       &copy; {year ?? ""} Alle rechten voorbehouden.
     </footer>
   );
