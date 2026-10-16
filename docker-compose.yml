@@ -1,0 +1,52 @@
+# Volledige stack: Postgres + website + crawler.
+#   cp .env.example .env   (en vul de wachtwoorden in)
+#   docker compose up -d --build
+# Gebruik je al een eigen Postgres? Zet dan DATABASE_URL in .env en laat de db-service weg.
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: modelbouwkortingen
+      POSTGRES_USER: modelbouwkortingen
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?zet POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U modelbouwkortingen"]
+      interval: 5s
+      retries: 20
+
+  crawler:
+    build: ./crawler
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://modelbouwkortingen:${POSTGRES_PASSWORD}@db:5432/modelbouwkortingen?sslmode=disable}
+      CRAWLER_STATS_TOKEN: ${CRAWLER_STATS_TOKEN:-}
+      CRAWLER_INTERVAL: ${CRAWLER_INTERVAL:-6h}
+      CRAWLER_WORKERS_PER_SHOP: ${CRAWLER_WORKERS_PER_SHOP:-4}
+      CRAWLER_MAX_PRODUCT_PAGES: ${CRAWLER_MAX_PRODUCT_PAGES:-4000}
+    # Stats-poort alleen intern; de website leest hem via http://crawler:8080/stats
+
+  web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://modelbouwkortingen:${POSTGRES_PASSWORD}@db:5432/modelbouwkortingen?sslmode=disable}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://modelbouwkortingen.nl}
+      ADMIN_USER: ${ADMIN_USER:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      STATS_TOKEN: ${STATS_TOKEN:-}
+      CRAWLER_STATS_URL: http://crawler:8080/stats
+      CRAWLER_STATS_TOKEN: ${CRAWLER_STATS_TOKEN:-}
+
+volumes:
+  pgdata:

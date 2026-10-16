@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Compacte productie-build voor Docker (zie Dockerfile).
+  output: "standalone",
   cacheComponents: true,
   partialPrefetching: true,
   reactCompiler: true,

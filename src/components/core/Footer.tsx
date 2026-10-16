@@ -1,17 +1,84 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { CurrentYear } from "@/components/core/CurrentYear";
+import { Logo } from "@/components/core/Logo";
+import { CATEGORIES } from "@/lib/categories";
+import { SHOPS } from "@/lib/shops";
 
 export default function Footer() {
-  const [year, setYear] = useState<number>();
-
-  useEffect(() => {
-    setYear(new Date().getFullYear());
-  });
-
   return (
-    <footer className="border-t border-gray-500">
-      <p className="w-full text-center p-4 ">Copyright (c) {year} . All Rights Reserved.</p>
+    <footer className="mt-16 border-t bg-card">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-col gap-3">
+          <Logo />
+          <p className="text-muted-foreground">
+            Wij speuren dagelijks de grote RC-webshops af en tonen alleen
+            producten die écht afgeprijsd zijn: minstens €5 of 5% goedkoper.
+          </p>
+        </div>
+        <FooterList
+          title="Categorieën"
+          links={CATEGORIES.slice(0, 7).map((c) => ({
+            href: `/categorie/${c.slug}`,
+            label: c.name,
+          }))}
+        />
+        <FooterList
+          title="Webshops"
+          links={[
+            ...SHOPS.map((s) => ({
+              href: `/webshops/${s.slug}`,
+              label: s.name,
+            })),
+            { href: "/webshops", label: "Alle webshops" },
+          ]}
+        />
+        <FooterList
+          title="Modelbouwkortingen"
+          links={[
+            { href: "/aanbiedingen", label: "Alle aanbiedingen" },
+            { href: "/over", label: "Hoe werkt het?" },
+            { href: "/over#webshops", label: "Voor webshops" },
+            { href: "/contact", label: "Contact" },
+          ]}
+        />
+      </div>
+      <div className="border-t">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:justify-between">
+          <p>
+            © <CurrentYear /> Modelbouwkortingen.nl — Alle rechten voorbehouden.
+          </p>
+          <p>
+            Prijzen en voorraad kunnen afwijken. De prijs in de webshop is
+            altijd leidend.
+          </p>
+        </div>
+      </div>
     </footer>
+  );
+}
+
+function FooterList({
+  title,
+  links,
+}: {
+  title: string;
+  links: { href: string; label: string }[];
+}) {
+  return (
+    <div>
+      <h2 className="mb-3 text-base font-bold">{title}</h2>
+      <ul className="flex flex-col gap-2">
+        {links.map((l) => (
+          <li key={l.href}>
+            <Link
+              href={l.href}
+              className="text-muted-foreground hover:text-foreground hover:underline"
+            >
+              {l.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

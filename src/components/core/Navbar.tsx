@@ -1,8 +1,12 @@
 "use client";
 
-import Image from "next/image";
+import { Search } from "lucide-react";
 import Link from "next/link";
-import type * as React from "react";
+import { Logo } from "@/components/core/Logo";
+import { MobileNav } from "@/components/core/MobileNav";
+import { SearchForm } from "@/components/core/SearchForm";
+import { ThemeToggle } from "@/components/core/ThemeToggle";
+import { buttonVariants } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,65 +16,133 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { CATEGORIES } from "@/lib/categories";
+import { SHOPS, shopInitials } from "@/lib/shops";
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   return (
-    <nav className="flex w-full items-center justify-between">
-      <Link href="/" className="flex items-center gap-3">
-        <Image src="/logo.png" alt="Modelbouwkortingen.nl logo" width={40} height={40} priority />
-
-        <span className="text-lg font-bold tracking-tight">Modelbouwkortingen.nl</span>
+    <div className="mx-auto flex w-full max-w-7xl items-center gap-2 px-3 py-3 sm:px-4 lg:gap-6">
+      <Link
+        href="/"
+        className="shrink-0"
+        aria-label="Modelbouwkortingen.nl home"
+      >
+        <Logo />
       </Link>
 
-      <NavigationMenu>
+      <NavigationMenu className="hidden lg:flex">
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink
-              className={navigationMenuTriggerStyle()}
-              render={<Link href="/">Home</Link>}
+              className={cn(navigationMenuTriggerStyle(), "text-base")}
+              render={<Link href="/aanbiedingen">Aanbiedingen</Link>}
             />
           </NavigationMenuItem>
-
           <NavigationMenuItem>
-            <NavigationMenuTrigger>Webshops</NavigationMenuTrigger>
+            <NavigationMenuTrigger className="text-base">
+              Categorieën
+            </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="w-96">
-                <ListItem href="/webshops/toprc" title="TopRC"></ListItem>
-                <ListItem href="/webshops/toemen" title="Toemen"></ListItem>
-                <ListItem href="/webshops/wetronics" title="Wetronics"></ListItem>
+              <ul className="grid w-[36rem] grid-cols-2 gap-1 p-2">
+                {CATEGORIES.map((c) => (
+                  <li key={c.slug}>
+                    <NavigationMenuLink
+                      render={
+                        <Link
+                          href={`/categorie/${c.slug}`}
+                          className="flex items-start gap-3"
+                        >
+                          <c.icon className="mt-0.5 size-5 text-primary" />
+                          <span className="flex flex-col gap-0.5">
+                            <span className="font-semibold">{c.name}</span>
+                            <span className="line-clamp-1 text-muted-foreground">
+                              {c.description}
+                            </span>
+                          </span>
+                        </Link>
+                      }
+                    />
+                  </li>
+                ))}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className="text-base">
+              Webshops
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="flex w-96 flex-col gap-1 p-2">
+                {SHOPS.map((s) => (
+                  <li key={s.slug}>
+                    <NavigationMenuLink
+                      render={
+                        <Link
+                          href={`/webshops/${s.slug}`}
+                          className="flex items-start gap-3"
+                        >
+                          <span
+                            className={cn(
+                              "flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-black",
+                              s.color,
+                            )}
+                          >
+                            {shopInitials(s.name)}
+                          </span>
+                          <span className="flex flex-col gap-0.5">
+                            <span className="font-semibold">{s.name}</span>
+                            <span className="line-clamp-2 text-muted-foreground">
+                              {s.description}
+                            </span>
+                          </span>
+                        </Link>
+                      }
+                    />
+                  </li>
+                ))}
+                <li>
+                  <NavigationMenuLink
+                    render={
+                      <Link
+                        href="/webshops"
+                        className="font-semibold text-primary"
+                      >
+                        Alle webshops bekijken →
+                      </Link>
+                    }
+                  />
+                </li>
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink
-              className={navigationMenuTriggerStyle()}
+              className={cn(navigationMenuTriggerStyle(), "text-base")}
               render={<Link href="/contact">Contact</Link>}
             />
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-    </nav>
-  );
-}
 
-function ListItem({
-  title,
-  children,
-  href,
-  ...props
-}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
-  return (
-    <li {...props}>
-      <NavigationMenuLink
-        render={
-          <Link href={href}>
-            <div className="flex flex-col gap-1 text-sm">
-              <div className="leading-none font-medium">{title}</div>
-              <div className="line-clamp-2 text-muted-foreground">{children}</div>
-            </div>
-          </Link>
-        }
-      />
-    </li>
+      <div className="ml-auto hidden w-full max-w-sm md:block">
+        <SearchForm />
+      </div>
+
+      <div className="ml-auto flex shrink-0 items-center md:ml-0">
+        <Link
+          href="/zoeken"
+          aria-label="Zoeken"
+          className={cn(
+            buttonVariants({ variant: "ghost", size: "icon-lg" }),
+            "md:hidden",
+          )}
+        >
+          <Search className="size-5" />
+        </Link>
+        <ThemeToggle />
+        <MobileNav />
+      </div>
+    </div>
   );
 }

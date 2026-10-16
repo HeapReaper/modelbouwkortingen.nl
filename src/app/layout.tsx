@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Archivo, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import Footer from "@/components/core/Footer";
@@ -16,9 +16,35 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const archivo = Archivo({
+  variable: "--font-archivo",
+  subsets: ["latin"],
+  weight: ["700", "800", "900"],
+});
+
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://modelbouwkortingen.nl";
+
 export const metadata: Metadata = {
-  title: "Modelbouwkortingen.nl",
-  description: "Vind RC-producten met korting bij jouw favoriete webshop!",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Modelbouwkortingen.nl — De beste RC-aanbiedingen op één plek",
+    template: "%s | Modelbouwkortingen.nl",
+  },
+  description:
+    "Vind RC-auto's, vliegtuigen, helicopters, drones en onderdelen met korting bij TopRC, Toemen, Wetronic en meer. Dagelijks bijgewerkt.",
+  openGraph: {
+    type: "website",
+    locale: "nl_NL",
+    siteName: "Modelbouwkortingen.nl",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fbfaf7" },
+    { media: "(prefers-color-scheme: dark)", color: "#14161f" },
+  ],
 };
 
 export default function RootLayout({
@@ -30,20 +56,35 @@ export default function RootLayout({
     <html
       lang="nl"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} h-full antialiased`}
     >
-      <body className="min-h-screen bg-background text-foreground flex flex-col">
+      <body className="flex min-h-screen flex-col bg-background text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <header className="flex justify-center items-center gap-6 p-4">
+          <a
+            href="#inhoud"
+            className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+          >
+            Naar de inhoud
+          </a>
+          <div className="bg-primary text-primary-foreground">
+            <p className="mx-auto max-w-7xl px-4 py-1.5 text-center text-sm font-semibold">
+              Alleen échte kortingen: minimaal{" "}
+              <span className="text-deal">€5 of 5%</span> goedkoper — dagelijks
+              bijgewerkt
+            </p>
+          </div>
+          <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
             <Navbar />
           </header>
 
-          <main className="flex-1">{children}</main>
+          <main id="inhoud" className="flex-1">
+            {children}
+          </main>
 
           <Footer />
         </ThemeProvider>
