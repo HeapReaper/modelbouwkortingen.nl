@@ -19,7 +19,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json prisma.config.ts ./
 COPY prisma ./prisma
-CMD ["npx", "prisma", "migrate", "deploy"]
+COPY scripts/migrate.sh ./scripts/migrate.sh
+CMD ["sh", "scripts/migrate.sh"]
 
 FROM node:22-alpine AS runner
 WORKDIR /app
