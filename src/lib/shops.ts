@@ -1,11 +1,18 @@
+import type { StaticImageData } from "next/image";
+import toemenLogo from "@/assets/shops/toemen.png";
+import toprcLogo from "@/assets/shops/toprc.svg";
+import wetronicLogo from "@/assets/shops/wetronic.png";
+
 export type ShopInfo = {
   slug: string;
   name: string;
   url: string;
   domain: string;
   description: string;
-  /** Kleur voor het logo-blokje van de shop (achtergrond + tekst). */
-  color: string;
+  /** Logo zoals de webshop het zelf op zijn site gebruikt. */
+  logo: StaticImageData;
+  /** Achtergrond waarop het logo goed leesbaar is (TopRC en Wetronic zijn licht). */
+  logoBg: string;
 };
 
 // Houd de slugs gelijk met crawler/internal/shops/*.go.
@@ -17,7 +24,8 @@ export const SHOPS: ShopInfo[] = [
     domain: "toprc.nl",
     description:
       "Grote RC-specialist met auto's, helicopters, vliegtuigen, boten en onderdelen.",
-    color: "bg-sky-600 text-white",
+    logo: toprcLogo,
+    logoBg: "bg-[#00607b]",
   },
   {
     slug: "toemen",
@@ -26,7 +34,8 @@ export const SHOPS: ShopInfo[] = [
     domain: "toemen.nl",
     description:
       "Modelsportwinkel in Oisterwijk met een enorm assortiment RC, occasions en onderdelen.",
-    color: "bg-emerald-600 text-white",
+    logo: toemenLogo,
+    logoBg: "bg-white ring-1 ring-border",
   },
   {
     slug: "wetronic",
@@ -35,7 +44,8 @@ export const SHOPS: ShopInfo[] = [
     domain: "wetronic.nl",
     description:
       "Modelbouwspecialist met veel vliegtuigen, zenders, elektronica en onderdelen.",
-    color: "bg-violet-600 text-white",
+    logo: wetronicLogo,
+    logoBg: "bg-[#0b1530]",
   },
 ];
 
@@ -43,13 +53,4 @@ const bySlug = new Map(SHOPS.map((s) => [s.slug, s]));
 
 export function getShop(slug: string | null | undefined): ShopInfo | undefined {
   return slug ? bySlug.get(slug) : undefined;
-}
-
-export function shopInitials(name: string) {
-  return name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
 }

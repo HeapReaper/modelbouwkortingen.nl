@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { PageHeader } from "@/components/core/PageHeader";
+import { ShopLogo } from "@/components/core/ShopLogo";
 import { DealGridSkeleton } from "@/components/deals/DealGrid";
 import { DealsBrowser } from "@/components/deals/DealsBrowser";
 import { buttonVariants } from "@/components/ui/button";
-import { getShop, SHOPS, shopInitials } from "@/lib/shops";
+import { getShop, SHOPS } from "@/lib/shops";
 import { cn } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -36,16 +37,7 @@ export default async function ShopPage({
     <>
       <PageHeader
         title={`${shop.name} aanbiedingen`}
-        icon={
-          <span
-            className={cn(
-              "flex size-11 items-center justify-center rounded-xl text-lg font-black",
-              shop.color,
-            )}
-          >
-            {shopInitials(shop.name)}
-          </span>
-        }
+        icon={<ShopLogo shop={shop} className="h-11 w-32 rounded-xl" />}
         description={shop.description}
         crumbs={[
           { href: "/webshops", label: "Webshops" },

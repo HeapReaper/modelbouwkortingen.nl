@@ -1,4 +1,5 @@
-import { getShop, shopInitials } from "@/lib/shops";
+import { ShopLogo } from "@/components/core/ShopLogo";
+import { getShop } from "@/lib/shops";
 import { cn } from "@/lib/utils";
 
 export function ShopBadge({
@@ -18,15 +19,11 @@ export function ShopBadge({
         className,
       )}
     >
-      <span
-        className={cn(
-          "flex size-5 items-center justify-center rounded text-[0.6rem] font-black",
-          shop?.color ?? "bg-muted text-foreground",
-        )}
-        aria-hidden="true"
-      >
-        {shopInitials(name)}
-      </span>
+      {shop ? (
+        <span aria-hidden="true">
+          <ShopLogo shop={shop} className="h-5 w-14 rounded px-1 py-0.5" />
+        </span>
+      ) : null}
       {name}
     </span>
   );

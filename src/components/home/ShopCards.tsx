@@ -1,10 +1,10 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { ShopLogo } from "@/components/core/ShopLogo";
 import { getSiteStats } from "@/lib/deals";
 import { formatNumber } from "@/lib/format";
-import { SHOPS, shopInitials } from "@/lib/shops";
-import { cn } from "@/lib/utils";
+import { SHOPS } from "@/lib/shops";
 
 export function ShopCards({
   title = "Webshops die wij in de gaten houden",
@@ -24,14 +24,7 @@ export function ShopCards({
               className="group flex h-full flex-col gap-4 rounded-2xl border bg-card p-5 transition hover:border-primary hover:shadow-md"
             >
               <div className="flex items-center gap-3">
-                <span
-                  className={cn(
-                    "flex size-12 items-center justify-center rounded-xl text-lg font-black",
-                    s.color,
-                  )}
-                >
-                  {shopInitials(s.name)}
-                </span>
+                <ShopLogo shop={s} className="h-12 w-32 rounded-xl" />
                 <div>
                   <p className="text-lg font-bold">{s.name}</p>
                   <p className="text-sm text-muted-foreground">{s.domain}</p>

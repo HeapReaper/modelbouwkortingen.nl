@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Logo } from "@/components/core/Logo";
 import { MobileNav } from "@/components/core/MobileNav";
 import { SearchForm } from "@/components/core/SearchForm";
+import { ShopLogo } from "@/components/core/ShopLogo";
 import { ThemeToggle } from "@/components/core/ThemeToggle";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -17,7 +18,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { CATEGORIES } from "@/lib/categories";
-import { SHOPS, shopInitials } from "@/lib/shops";
+import { SHOPS } from "@/lib/shops";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
@@ -82,14 +83,7 @@ export default function Navbar() {
                           href={`/webshops/${s.slug}`}
                           className="flex items-start gap-3"
                         >
-                          <span
-                            className={cn(
-                              "flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-black",
-                              s.color,
-                            )}
-                          >
-                            {shopInitials(s.name)}
-                          </span>
+                          <ShopLogo shop={s} className="h-9 w-24" />
                           <span className="flex flex-col gap-0.5">
                             <span className="font-semibold">{s.name}</span>
                             <span className="line-clamp-2 text-muted-foreground">
