@@ -84,15 +84,9 @@ export function Navbar() {
 
               <NavigationMenuContent>
                 <ul className="w-96">
-                  <ListItem href="/docs" title="Introduction">
-                    Re-usable components built with Tailwind CSS.
-                  </ListItem>
-                  <ListItem href="/docs/installation" title="Installation">
-                    How to install dependencies and structure your app.
-                  </ListItem>
-                  <ListItem href="/docs/primitives/typography" title="Typography">
-                    Styles for headings, paragraphs, lists...etc
-                  </ListItem>
+                  <ListItem href="/webshops/toemen" title="Toemen"></ListItem>
+                  <ListItem href="/webshops/toprc" title="TopRC"></ListItem>
+                  <ListItem href="/webshops/wetronics" title="Wetronics"></ListItem>
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
