@@ -5,6 +5,6 @@ node_modules
 .env.*
 !.env.example
 crawler/*
-!crawler/migrations
 my-app
 *.log
+src/generated

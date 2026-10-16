@@ -56,10 +56,6 @@ func main() {
 			os.Exit(1)
 		}
 		defer st.Close()
-		if err := st.Migrate(ctx); err != nil {
-			log.Error("migraties", "err", err)
-			os.Exit(1)
-		}
 		log.Info("database klaar")
 	} else {
 		log.Warn("dry-run: er wordt niets naar de database geschreven")

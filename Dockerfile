@@ -13,6 +13,14 @@ COPY . .
 # Bij het bouwen is geen database nodig: alle data wordt per request opgehaald.
 RUN npm run build
 
+# Prisma-migraties (draait als eenmalige `migrate` service in docker-compose).
+FROM node:22-alpine AS migrate
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json prisma.config.ts ./
+COPY prisma ./prisma
+CMD ["npx", "prisma", "migrate", "deploy"]
+
 FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
@@ -24,9 +32,6 @@ RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001 -G nodejs
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-# Migraties + script, zodat `docker compose run web node scripts/migrate.mjs` werkt.
-COPY --from=builder --chown=nextjs:nodejs /app/crawler/migrations ./crawler/migrations
-COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.mjs ./scripts/migrate.mjs
 
 USER nextjs
 EXPOSE 3000

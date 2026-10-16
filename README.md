@@ -5,8 +5,8 @@ Is een product **minstens €5 of 5%** afgeprijsd, dan komt het op de website (N
 
 ```
 ├── src/              Next.js website (App Router, Cache Components, shadcn base-nova)
-├── crawler/          Go crawler (multi-threaded) + SQL-migraties
-├── scripts/          migrate.mjs (past crawler/migrations toe)
+├── crawler/          Go crawler (multi-threaded)
+├── prisma/           schema.prisma + migraties (Prisma Migrate)
 ├── Dockerfile        website-image
 ├── crawler/Dockerfile crawler-image
 └── docker-compose.yml  Postgres + website + crawler
@@ -17,7 +17,7 @@ Is een product **minstens €5 of 5%** afgeprijsd, dan komt het op de website (N
 ```bash
 cp .env.example .env          # vul DATABASE_URL en ADMIN_PASSWORD in
 npm install
-npm run db:migrate            # tabellen aanmaken (de crawler doet dit ook zelf)
+npm run db:migrate            # Prisma-migraties toepassen (prisma migrate deploy)
 npm run dev                   # http://localhost:3000
 
 cd crawler
@@ -28,7 +28,10 @@ go run ./cmd/crawler -once -dry-run -max-listings 3          # zonder database, 
 
 Zonder `DATABASE_URL` draait de website in **demo-modus** met voorbeelddata.
 
-Alles in Docker: `docker compose up -d --build` (zie `docker-compose.yml`).
+Alles in Docker / Coolify: `docker-compose.yml` is geschikt voor de Docker Compose build pack van Coolify.
+Coolify genereert de database-credentials en het crawler-token zelf (`SERVICE_*` variabelen) en
+koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coolify alleen nog
+`ADMIN_PASSWORD` (en optioneel `STATS_TOKEN`) in.
 
 ## Website
 

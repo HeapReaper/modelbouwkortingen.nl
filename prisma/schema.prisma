@@ -1,0 +1,121 @@
+// Modelbouwkortingen.nl database schema.
+// Gedeeld door de Go crawler (schrijft) en de Next.js website (leest + contactformulier).
+// Migraties: `npx prisma migrate dev` (lokaal) / `npx prisma migrate deploy` (productie).
+
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["postgresqlExtensions", "partialIndexes"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [pg_trgm]
+}
+
+model Shop {
+  id          Int        @id @default(autoincrement())
+  slug        String     @unique
+  name        String
+  baseUrl     String     @map("base_url")
+  description String     @default("")
+  enabled     Boolean    @default(true)
+  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  products    Product[]
+  crawlRuns   CrawlRun[]
+
+  @@map("shops")
+}
+
+model Category {
+  slug      String    @id
+  name      String
+  sortOrder Int       @default(0) @map("sort_order")
+  products  Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id              BigInt         @id @default(autoincrement())
+  shopId          Int            @map("shop_id")
+  externalId      String         @map("external_id")
+  url             String
+  sku             String?
+  name            String
+  brand           String?
+  imageUrl        String?        @map("image_url")
+  categorySlug    String         @default("overig") @map("category_slug")
+  shopCategory    String?        @map("shop_category")
+  price           Decimal        @db.Decimal(10, 2)
+  /// "Van"-prijs zoals de webshop die toont (doorgestreept), of NULL.
+  oldPrice        Decimal?       @map("old_price") @db.Decimal(10, 2)
+  /// Referentieprijs waartegen de korting berekend wordt: old_price, of de hoogste
+  /// prijs die we in de afgelopen 30 dagen zelf gezien hebben.
+  referencePrice  Decimal?       @map("reference_price") @db.Decimal(10, 2)
+  discountAmount  Decimal        @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  discountPercent Decimal        @default(0) @map("discount_percent") @db.Decimal(5, 2)
+  isDeal          Boolean        @default(false) @map("is_deal")
+  inStock         Boolean?       @map("in_stock")
+  dealSince       DateTime?      @map("deal_since") @db.Timestamptz
+  firstSeenAt     DateTime       @default(now()) @map("first_seen_at") @db.Timestamptz
+  lastSeenAt      DateTime       @default(now()) @map("last_seen_at") @db.Timestamptz
+  lastCrawledAt   DateTime?      @map("last_crawled_at") @db.Timestamptz
+  updatedAt       DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+  shop            Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  category        Category       @relation(fields: [categorySlug], references: [slug])
+  priceHistory    PriceHistory[]
+
+  @@unique([shopId, externalId])
+  @@index([isDeal, discountPercent(sort: Desc)], map: "products_deals_idx", where: raw("is_deal"))
+  @@index([dealSince(sort: Desc)], map: "products_deal_since_idx", where: raw("is_deal"))
+  @@index([shopId, isDeal], map: "products_shop_idx")
+  @@index([categorySlug, isDeal], map: "products_category_idx")
+  @@index([shopId, lastCrawledAt], map: "products_crawled_idx")
+  @@index([name(ops: raw("gin_trgm_ops"))], map: "products_name_trgm_idx", type: Gin)
+  @@index([brand(ops: raw("gin_trgm_ops"))], map: "products_brand_trgm_idx", type: Gin)
+  @@map("products")
+}
+
+model PriceHistory {
+  id         BigInt   @id @default(autoincrement())
+  productId  BigInt   @map("product_id")
+  price      Decimal  @db.Decimal(10, 2)
+  oldPrice   Decimal? @map("old_price") @db.Decimal(10, 2)
+  observedAt DateTime @default(now()) @map("observed_at") @db.Timestamptz
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, observedAt(sort: Desc)], map: "price_history_product_idx")
+  @@map("price_history")
+}
+
+model CrawlRun {
+  id           BigInt    @id @default(autoincrement())
+  shopId       Int       @map("shop_id")
+  startedAt    DateTime  @default(now()) @map("started_at") @db.Timestamptz
+  finishedAt   DateTime? @map("finished_at") @db.Timestamptz
+  /// running | ok | failed | aborted
+  status       String    @default("running")
+  pagesFetched Int       @default(0) @map("pages_fetched")
+  productsSeen Int       @default(0) @map("products_seen")
+  dealsFound   Int       @default(0) @map("deals_found")
+  errors       Int       @default(0)
+  rateLimited  Int       @default(0) @map("rate_limited")
+  message      String?
+  shop         Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@index([shopId, startedAt(sort: Desc)], map: "crawl_runs_shop_idx")
+  @@map("crawl_runs")
+}
+
+model ContactMessage {
+  id        BigInt   @id @default(autoincrement())
+  name      String
+  email     String
+  subject   String
+  message   String
+  handled   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("contact_messages")
+}

@@ -22,7 +22,7 @@ export type Category = {
   icon: LucideIcon;
 };
 
-// Houd deze lijst gelijk met de `categories` tabel in crawler/migrations/001_init.sql.
+// Houd deze lijst gelijk met de `categories` tabel in prisma/migrations/20261016000000_init/migration.sql.
 export const CATEGORIES: Category[] = [
   {
     slug: "rc-autos",

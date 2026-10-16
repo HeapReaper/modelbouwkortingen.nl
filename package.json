@@ -4,15 +4,19 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write",
-    "db:migrate": "node scripts/migrate.mjs",
-    "typecheck": "next typegen && tsc --noEmit"
+    "db:migrate": "prisma migrate deploy",
+    "typecheck": "prisma generate && next typegen && tsc --noEmit",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:generate": "prisma generate"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
     "@shadcn/react": "^0.3.1",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",
@@ -42,6 +46,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "dotenv": "^18.0.8",
+    "prisma": "^7.10.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

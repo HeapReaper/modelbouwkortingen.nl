@@ -1,52 +1,97 @@
-# Volledige stack: Postgres + website + crawler.
-#   cp .env.example .env   (en vul de wachtwoorden in)
-#   docker compose up -d --build
-# Gebruik je al een eigen Postgres? Zet dan DATABASE_URL in .env en laat de db-service weg.
+# Volledige stack: Postgres + migraties + website + crawler.
+#
+# Coolify (Docker Compose build pack):
+#   - SERVICE_USER_POSTGRES / SERVICE_PASSWORD_POSTGRES / SERVICE_PASSWORD_64_CRAWLERSTATS
+#     worden automatisch door Coolify gegenereerd.
+#   - SERVICE_FQDN_WEB_3000 koppelt een domein aan de web-service (poort 3000);
+#     stel het domein in bij de web-service in Coolify.
+#   - Overige variabelen (ADMIN_PASSWORD, STATS_TOKEN, ...) verschijnen in de Coolify UI.
+#
+# Lokaal: zet SERVICE_USER_POSTGRES, SERVICE_PASSWORD_POSTGRES en
+# SERVICE_PASSWORD_64_CRAWLERSTATS in .env en draai `docker compose up -d --build`.
+# De website is dan bereikbaar via de container op poort 3000 (voeg eventueel
+# een `ports:` override toe in docker-compose.override.yml).
 services:
   db:
     image: postgres:17-alpine
     restart: unless-stopped
     environment:
       POSTGRES_DB: modelbouwkortingen
-      POSTGRES_USER: modelbouwkortingen
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?zet POSTGRES_PASSWORD in .env}
+      POSTGRES_USER: ${SERVICE_USER_POSTGRES}
+      POSTGRES_PASSWORD: ${SERVICE_PASSWORD_POSTGRES}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U modelbouwkortingen"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
+      timeout: 5s
       retries: 20
 
-  crawler:
-    build: ./crawler
-    restart: unless-stopped
+  # Past de Prisma-migraties toe en stopt daarna; crawler en web wachten hierop.
+  migrate:
+    build:
+      context: .
+      target: migrate
+    restart: "no"
+    # Eenmalige container: niet meenemen in de Coolify health status.
+    exclude_from_hc: true
     depends_on:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgres://modelbouwkortingen:${POSTGRES_PASSWORD}@db:5432/modelbouwkortingen?sslmode=disable}
-      CRAWLER_STATS_TOKEN: ${CRAWLER_STATS_TOKEN:-}
+      DATABASE_URL: postgres://${SERVICE_USER_POSTGRES}:${SERVICE_PASSWORD_POSTGRES}@db:5432/modelbouwkortingen?sslmode=disable
+
+  crawler:
+    build:
+      context: ./crawler
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    # Stats-poort alleen intern; de website leest hem via http://crawler:8080/stats
+    expose:
+      - "8080"
+    environment:
+      DATABASE_URL: postgres://${SERVICE_USER_POSTGRES}:${SERVICE_PASSWORD_POSTGRES}@db:5432/modelbouwkortingen?sslmode=disable
+      CRAWLER_STATS_TOKEN: ${SERVICE_PASSWORD_64_CRAWLERSTATS}
       CRAWLER_INTERVAL: ${CRAWLER_INTERVAL:-6h}
       CRAWLER_WORKERS_PER_SHOP: ${CRAWLER_WORKERS_PER_SHOP:-4}
+      CRAWLER_HOST_DELAY: ${CRAWLER_HOST_DELAY:-500ms}
       CRAWLER_MAX_PRODUCT_PAGES: ${CRAWLER_MAX_PRODUCT_PAGES:-4000}
-    # Stats-poort alleen intern; de website leest hem via http://crawler:8080/stats
+      MIN_DISCOUNT_EUR: ${MIN_DISCOUNT_EUR:-5}
+      MIN_DISCOUNT_PERCENT: ${MIN_DISCOUNT_PERCENT:-5}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   web:
-    build: .
+    build:
+      context: .
+      target: runner
     restart: unless-stopped
     depends_on:
-      db:
-        condition: service_healthy
-    ports:
-      - "${WEB_PORT:-3000}:3000"
+      migrate:
+        condition: service_completed_successfully
+    # Geen `ports:` — Coolify's proxy (Traefik/Caddy) routeert via SERVICE_FQDN_WEB_3000.
+    expose:
+      - "3000"
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgres://modelbouwkortingen:${POSTGRES_PASSWORD}@db:5432/modelbouwkortingen?sslmode=disable}
-      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://modelbouwkortingen.nl}
-      ADMIN_USER: ${ADMIN_USER:-admin}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
-      STATS_TOKEN: ${STATS_TOKEN:-}
-      CRAWLER_STATS_URL: http://crawler:8080/stats
-      CRAWLER_STATS_TOKEN: ${CRAWLER_STATS_TOKEN:-}
+      - SERVICE_FQDN_WEB_3000
+      - DATABASE_URL=postgres://${SERVICE_USER_POSTGRES}:${SERVICE_PASSWORD_POSTGRES}@db:5432/modelbouwkortingen?sslmode=disable
+      - NEXT_PUBLIC_SITE_URL=${SERVICE_URL_WEB:-https://modelbouwkortingen.nl}
+      - ADMIN_USER=${ADMIN_USER:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+      - STATS_TOKEN=${STATS_TOKEN:-}
+      - CRAWLER_STATS_URL=http://crawler:8080/stats
+      - CRAWLER_STATS_TOKEN=${SERVICE_PASSWORD_64_CRAWLERSTATS}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
 
 volumes:
   pgdata:

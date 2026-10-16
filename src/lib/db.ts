@@ -6,19 +6,30 @@ import { Pool, types } from "pg";
 types.setTypeParser(1700, (v) => Number.parseFloat(v));
 types.setTypeParser(20, (v) => Number.parseInt(v, 10));
 
-const globalForDb = globalThis as unknown as { pgPool?: Pool };
+const globalForDb = globalThis as unknown as {
+  pgPool?: Pool;
+  pgPoolUrl?: string;
+};
 
 export function isDbConfigured() {
   return Boolean(process.env.DATABASE_URL);
 }
 
 export function getPool(): Pool {
-  if (!process.env.DATABASE_URL) {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
     throw new Error("DATABASE_URL is niet ingesteld");
   }
+  // `next dev` herlaadt .env.local zonder de module-globals te resetten: bouw de
+  // pool opnieuw op als de URL veranderd is, anders blijft de oude URL in gebruik.
+  if (globalForDb.pgPool && globalForDb.pgPoolUrl !== url) {
+    globalForDb.pgPool.end().catch(() => {});
+    globalForDb.pgPool = undefined;
+  }
   if (!globalForDb.pgPool) {
+    globalForDb.pgPoolUrl = url;
     globalForDb.pgPool = new Pool({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: url,
       max: Number(process.env.DATABASE_POOL_SIZE ?? 10),
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 5_000,
