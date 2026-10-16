@@ -1,9 +1,8 @@
 "use client";
 
-import { CircleAlertIcon, CircleCheckIcon, CircleDashedIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import type * as React from "react";
-
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -14,72 +13,43 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
-  },
-  {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
-    description: "For sighted users to preview content available behind a link.",
-  },
-  {
-    title: "Progress",
-    href: "/docs/primitives/progress",
-    description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-  },
-  {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
-];
-
 export default function Navbar() {
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuLink
-            className={navigationMenuTriggerStyle()}
-            render={<Link href="/">Home</Link>}
-          />
-        </NavigationMenuItem>
+    <nav className="flex w-full items-center justify-between">
+      <Link href="/" className="flex items-center gap-3">
+        <Image src="/logo.png" alt="Modelbouwkortingen.nl logo" width={40} height={40} priority />
 
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Webshops</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="w-96">
-              <ListItem href="/webshops/toprc" title="TopRC"></ListItem>
-              <ListItem href="/webshops/toemen" title="Toemen"></ListItem>
-              <ListItem href="/webshops/wetronics" title="Wetronics"></ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuLink
-            className={navigationMenuTriggerStyle()}
-            render={<Link href="/contact">Contact</Link>}
-          />
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+        <span className="text-lg font-bold tracking-tight">Modelbouwkortingen.nl</span>
+      </Link>
+
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              className={navigationMenuTriggerStyle()}
+              render={<Link href="/">Home</Link>}
+            />
+          </NavigationMenuItem>
+
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Webshops</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="w-96">
+                <ListItem href="/webshops/toprc" title="TopRC"></ListItem>
+                <ListItem href="/webshops/toemen" title="Toemen"></ListItem>
+                <ListItem href="/webshops/wetronics" title="Wetronics"></ListItem>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              className={navigationMenuTriggerStyle()}
+              render={<Link href="/contact">Contact</Link>}
+            />
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+    </nav>
   );
 }
 
