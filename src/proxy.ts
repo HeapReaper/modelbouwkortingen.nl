@@ -53,9 +53,11 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  const url = request.nextUrl.clone();
-  url.pathname = `/${DEFAULT_LOCALE}${pathname === "/" ? "" : pathname}`;
-  const res = NextResponse.rewrite(url);
+  // Op basis van request.url, niet request.nextUrl: die heeft in productie "localhost" als origin,
+  // waardoor Next de rewrite als externe proxy behandelt (HTTP-verzoek naar zichzelf, dat via de
+  // /nl-redirect hierboven in een lus belandt).
+  const target = `/${DEFAULT_LOCALE}${pathname === "/" ? "" : pathname}${request.nextUrl.search}`;
+  const res = NextResponse.rewrite(new URL(target, request.url));
   res.headers.set("Vary", "Accept-Language, Cookie");
   return res;
 }
