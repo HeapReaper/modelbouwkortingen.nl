@@ -39,3 +39,16 @@ export function isAuthorized(
     safeEqual(decoded.slice(i + 1), password)
   );
 }
+
+/**
+ * Voor de planner-routes (/api/nieuwsbrief/verzenden e.d.): "Bearer <NEWSLETTER_CRON_TOKEN>"
+ * (de planner in instrumentation.ts of een externe cron), of de admin-login.
+ */
+export function isCronAuthorized(authorization: string | null) {
+  const cronToken = process.env.NEWSLETTER_CRON_TOKEN;
+  const viaCron =
+    Boolean(cronToken) &&
+    authorization?.startsWith("Bearer ") === true &&
+    safeEqual(authorization.slice(7), cronToken ?? "");
+  return viaCron || isAuthorized(authorization);
+}

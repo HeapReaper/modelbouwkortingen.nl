@@ -6,7 +6,12 @@ import { DEFAULT_LOCALE, hasLocale, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { t } from "@/i18n/translate";
 import { isDbConfigured } from "@/lib/db";
-import { subscribeWebhook, unsubscribeWebhook } from "@/lib/discord";
+import {
+  saveWebhookPreferences,
+  subscribeWebhook,
+  unsubscribeWebhook,
+} from "@/lib/discord";
+import { parsePreferences } from "@/lib/preferences";
 
 // Eenvoudige rate limit per IP (in-memory, per serverproces).
 const recent = new Map<string, number[]>();
@@ -65,4 +70,21 @@ export async function unsubscribeDiscord(
     return { ok: false, message: d.unsubscribeInvalid };
   }
   return { ok: true, message: d.unsubscribeOk };
+}
+
+export async function saveDiscordPreferences(
+  _prev: NewsletterState,
+  formData: FormData,
+): Promise<NewsletterState> {
+  const p = getDictionary(formLang(formData)).preferences;
+  const token = String(formData.get("token") ?? "");
+  const prefs = parsePreferences(formData);
+  if (
+    !token ||
+    !isDbConfigured() ||
+    !(await saveWebhookPreferences(token, prefs))
+  ) {
+    return { ok: false, message: p.invalid };
+  }
+  return { ok: true, message: p.saved };
 }

@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { getI18n } from "@/i18n/server";
 import { t } from "@/i18n/translate";
 import type { CompareGroup } from "@/lib/compare";
-import { productLink } from "@/lib/shops";
+import { outLink, shippingCost } from "@/lib/shops";
 import { cn } from "@/lib/utils";
 
 /** Eén product met al zijn aanbieders, goedkoopste eerst. */
@@ -14,7 +14,7 @@ export async function CompareCard({ group }: { group: CompareGroup }) {
   const { dict, href, fmt } = await getI18n();
   const c = dict.comparePage;
   const [cheapest] = group.offers;
-  const best = productLink(cheapest);
+  const best = outLink(cheapest);
   const n = group.offers.length;
 
   return (
@@ -66,8 +66,9 @@ export async function CompareCard({ group }: { group: CompareGroup }) {
 
         <ol className="divide-y rounded-xl border">
           {group.offers.map((o, i) => {
-            const link = productLink(o);
+            const link = outLink(o);
             const diff = o.price - cheapest.price;
+            const shipping = shippingCost(o.shopSlug, o.price);
             return (
               <li
                 key={o.id}
@@ -103,6 +104,11 @@ export async function CompareCard({ group }: { group: CompareGroup }) {
                     </span>
                   )}
                   <span className="text-lg font-bold">{fmt.euro(o.price)}</span>
+                  {shipping ? (
+                    <span className="text-xs text-muted-foreground">
+                      {t(c.plusShipping, { cost: fmt.euro(shipping) })}
+                    </span>
+                  ) : null}
                 </span>
                 <span className="flex items-center gap-1">
                   <Link

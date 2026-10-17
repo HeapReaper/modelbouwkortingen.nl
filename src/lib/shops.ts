@@ -32,6 +32,14 @@ export type ShopInfo = {
    * eventueel alleen voor producten in de genoemde categorieën.
    */
   affiliate?: { params: Record<string, string>; categories?: string[] };
+  /** Land van de webshop (ISO 3166-1 alpha-2); leeg als dat niet eenduidig is. */
+  country?: string;
+  /**
+   * Verzendkosten van een gewoon pakket naar Nederland, en vanaf welk orderbedrag verzending
+   * gratis is. Alleen invullen als het op de site van de webshop zelf staat; zonder dit veld
+   * tonen we geen verzendkosten of totaalprijs.
+   */
+  shipping?: { cost: number; freeFrom?: number };
 };
 
 // Houd de slugs gelijk met crawler/internal/shops/*.go.
@@ -43,6 +51,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "toprc.nl",
     logo: toprcLogo,
     logoBg: "bg-[#00607b]",
+    country: "NL",
   },
   {
     slug: "toemen",
@@ -51,6 +60,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "toemen.nl",
     logo: toemenLogo,
     logoBg: "bg-white ring-1 ring-border",
+    country: "NL",
   },
   {
     slug: "wetronic",
@@ -59,6 +69,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "wetronic.nl",
     logo: wetronicLogo,
     logoBg: "bg-[#0b1530]",
+    country: "NL",
   },
   {
     slug: "minizshop",
@@ -67,6 +78,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "mini-zshop.nl",
     logo: minizshopLogo,
     logoBg: "bg-[#800f0b]",
+    country: "NL",
   },
   {
     slug: "berlinski",
@@ -75,6 +87,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "modellbau-berlinski.de",
     logo: berlinskiLogo,
     logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
   },
   {
     slug: "hoellein",
@@ -83,6 +96,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "hoelleinshop.com",
     logo: hoelleinLogo,
     logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
   },
   {
     slug: "mgmodellbau",
@@ -91,6 +105,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "mg-modellbau.de",
     logo: mgmodellbauLogo,
     logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
   },
   {
     slug: "hacker",
@@ -99,6 +114,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "hacker-motor-shop.com",
     logo: hackerLogo,
     logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
   },
   {
     slug: "rcmotorsports",
@@ -107,6 +123,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "rcmotorsports.nl",
     logo: rcmotorsportsLogo,
     logoBg: "bg-[#191919]",
+    country: "NL",
   },
   {
     slug: "droneshop",
@@ -115,6 +132,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "droneshop.nl",
     logo: droneshopLogo,
     logoBg: "bg-white ring-1 ring-border",
+    country: "NL",
   },
   {
     slug: "tamico",
@@ -123,6 +141,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "tamico.de",
     logo: tamicoLogo,
     logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
   },
   {
     slug: "chinahobbyline",
@@ -140,6 +159,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "hepf.com",
     logo: hepfLogo,
     logoBg: "bg-white ring-1 ring-border",
+    country: "AT",
   },
   {
     slug: "bliek",
@@ -148,6 +168,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "bliekmodelbouw.nl",
     logo: bliekLogo,
     logoBg: "bg-white ring-1 ring-border",
+    country: "NL",
   },
   {
     slug: "aerobertics",
@@ -156,6 +177,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "aerobertics.be",
     logo: aeroberticsLogo,
     logoBg: "bg-white ring-1 ring-border",
+    country: "BE",
   },
   {
     slug: "heligear",
@@ -164,6 +186,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "heligear.nl",
     logo: heligearLogo,
     logoBg: "bg-[#1e1e1e]",
+    country: "NL",
   },
   {
     slug: "area51",
@@ -172,6 +195,7 @@ export const SHOPS: ShopInfo[] = [
     domain: "area51-rc.es",
     logo: area51Logo,
     logoBg: "bg-[#212121]",
+    country: "ES",
   },
 ];
 
@@ -179,6 +203,44 @@ const bySlug = new Map(SHOPS.map((s) => [s.slug, s]));
 
 export function getShop(slug: string | null | undefined): ShopInfo | undefined {
   return slug ? bySlug.get(slug) : undefined;
+}
+
+/** Shops uit dit land tellen als "binnenland": geen douane, meestal snelle levering. */
+export const HOME_COUNTRIES = ["NL", "BE"];
+
+/** Verzendkosten naar Nederland voor dit bedrag, of null als we ze niet kennen. */
+export function shippingCost(slug: string, price: number): number | null {
+  const shipping = getShop(slug)?.shipping;
+  if (!shipping) return null;
+  return shipping.freeFrom !== undefined && price >= shipping.freeFrom
+    ? 0
+    : shipping.cost;
+}
+
+/** Waar een klik naar de webshop vandaan komt (voor de statistieken in /admin). */
+export const CLICK_SOURCES = [
+  "site",
+  "mail",
+  "discord",
+  "alarm",
+  "feed",
+] as const;
+export type ClickSource = (typeof CLICK_SOURCES)[number];
+
+/**
+ * Link naar de webshop via /api/uit/[id], dat de klik telt en doorstuurt naar productLink().
+ * `origin` is nodig buiten de site (mail, Discord, feed), waar een relatieve link niet werkt.
+ */
+export function outLink(
+  deal: { id: number; url: string; shopSlug: string; categorySlug: string },
+  source: ClickSource = "site",
+  origin = "",
+): { href: string; rel: string } {
+  const query = source === "site" ? "" : `?bron=${source}`;
+  return {
+    href: `${origin}/api/uit/${deal.id}${query}`,
+    rel: productLink(deal).rel,
+  };
 }
 
 /**

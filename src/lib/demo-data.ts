@@ -266,7 +266,7 @@ export function demoDeals(): Deal[] {
   if (cache) return cache.map((d) => ({ ...d }));
   const now = Date.now();
   cache = RAW.map(
-    ([name, brand, shopSlug, categorySlug, price, oldPrice], i) => {
+    ([name, brand, shopSlug, categorySlug, price, oldPrice], i): Deal => {
       const discountAmount = Math.round((oldPrice - price) * 100) / 100;
       const shop = getShop(shopSlug);
       return {
@@ -286,6 +286,10 @@ export function demoDeals(): Deal[] {
         shopCategory: null,
         shopSlug,
         shopName: shop?.name ?? shopSlug,
+        sku: null,
+        isDeal: true,
+        firstSeenAt: new Date(now - 90 * 86_400_000).toISOString(),
+        lowest: i % 5 === 0 ? "ever" : i % 5 === 2 ? "30d" : null,
       };
     },
   );

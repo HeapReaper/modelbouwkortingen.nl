@@ -7,7 +7,7 @@ import Navbar from "@/components/core/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { I18nProvider } from "@/i18n/client";
 import { LOCALES, OG_LOCALES } from "@/i18n/config";
-import { alternates } from "@/i18n/metadata";
+import { alternates, feedLink } from "@/i18n/metadata";
 import { getI18n } from "@/i18n/server";
 
 const geistSans = Geist({
@@ -42,7 +42,10 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | Modelbouwkortingen.nl",
     },
     description: dict.meta.description,
-    alternates: alternates(lang, "/"),
+    alternates: {
+      ...alternates(lang, "/"),
+      types: feedLink(lang, dict.feed.title),
+    },
     openGraph: {
       type: "website",
       locale: OG_LOCALES[lang],

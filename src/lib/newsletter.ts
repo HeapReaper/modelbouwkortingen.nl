@@ -4,9 +4,10 @@ import { randomBytes } from "node:crypto";
 import { Prisma } from "@/generated/prisma/client";
 import { DEFAULT_LOCALE, hasLocale, type Locale } from "@/i18n/config";
 import { getPrisma } from "@/lib/db";
-import { getDealsSince } from "@/lib/deals";
+import { getDealsSince, pickDigest } from "@/lib/deals";
 import { isMailConfigured, sendMail } from "@/lib/mail";
 import { confirmationMail, digestMail } from "@/lib/newsletter-mail";
+import type { DealPreferences } from "@/lib/preferences";
 
 const TIME_ZONE = "Europe/Amsterdam";
 const DIGEST_SIZE = 12;
@@ -72,6 +73,38 @@ export async function unsubscribe(token: string): Promise<boolean> {
   const { count } = await getPrisma().newsletterSubscriber.updateMany({
     where: { token },
     data: { unsubscribedAt: new Date() },
+  });
+  return count > 0;
+}
+
+/** Voorkeuren van een abonnee, of null bij een onbekende of afgemelde link. */
+export async function getPreferences(
+  token: string,
+): Promise<DealPreferences | null> {
+  const sub = await getPrisma().newsletterSubscriber.findUnique({
+    where: { token },
+    select: {
+      categories: true,
+      shops: true,
+      minDiscount: true,
+      unsubscribedAt: true,
+    },
+  });
+  if (!sub || sub.unsubscribedAt) return null;
+  return {
+    categories: sub.categories,
+    shops: sub.shops,
+    minDiscount: sub.minDiscount,
+  };
+}
+
+export async function savePreferences(
+  token: string,
+  prefs: DealPreferences,
+): Promise<boolean> {
+  const { count } = await getPrisma().newsletterSubscriber.updateMany({
+    where: { token, unsubscribedAt: null },
+    data: prefs,
   });
   return count > 0;
 }
@@ -149,7 +182,9 @@ export async function sendDailyDigest(
     previous && previous.startedAt > new Date(Date.now() - 7 * 24 * 60 * 60_000)
       ? previous.startedAt
       : dayAgo;
-  const deals = await getDealsSince(since, DIGEST_SIZE);
+  // Alle kandidaten; per abonnee filteren we op voorkeuren en kiezen we er DIGEST_SIZE.
+  const candidates = await getDealsSince(since);
+  const deals = pickDigest(candidates, undefined, DIGEST_SIZE);
   if (deals.length === 0) {
     await finish({ status: "skipped", message: "geen nieuwe deals" });
     return { status: "skipped", reason: "geen nieuwe deals" };
@@ -162,7 +197,15 @@ export async function sendDailyDigest(
   for (;;) {
     const batch = await prisma.newsletterSubscriber.findMany({
       where: { confirmedAt: { not: null }, unsubscribedAt: null },
-      select: { id: true, email: true, token: true, locale: true },
+      select: {
+        id: true,
+        email: true,
+        token: true,
+        locale: true,
+        categories: true,
+        shops: true,
+        minDiscount: true,
+      },
       orderBy: { id: "asc" },
       take: 200,
       ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
@@ -170,9 +213,12 @@ export async function sendDailyDigest(
     if (batch.length === 0) break;
     const sent: bigint[] = [];
     for (const s of batch) {
+      const own = pickDigest(candidates, s, DIGEST_SIZE);
+      // Niets nieuws binnen de voorkeuren: dan ook geen mail.
+      if (own.length === 0) continue;
       try {
         const lang = hasLocale(s.locale) ? s.locale : DEFAULT_LOCALE;
-        await sendMail(digestMail(s.email, s.token, deals, lang));
+        await sendMail(digestMail(s.email, s.token, own, lang));
         sent.push(s.id);
       } catch (err) {
         errors++;

@@ -28,6 +28,9 @@ export const de: Dictionary = {
     themeDark: "Dunkel",
     themeSystem: "System",
     language: "Sprache wählen",
+    watchlist: "Merkliste",
+    brands: "Marken",
+    allBrands: "Alle Marken ansehen →",
   },
   search: {
     placeholder: "Angebot suchen…",
@@ -55,6 +58,9 @@ export const de: Dictionary = {
     rights: "Alle Rechte vorbehalten.",
     disclaimer:
       "Preise und Verfügbarkeit können abweichen. Es gilt immer der Preis im Shop.",
+    brands: "Marken",
+    watchlist: "Merkliste",
+    rss: "RSS-Feed",
   },
   breadcrumb: { label: "Brotkrümelnavigation", home: "Start" },
   categories: {
@@ -173,6 +179,9 @@ export const de: Dictionary = {
     pagination: "Seitennavigation",
     previous: "Zurück",
     next: "Weiter",
+    noLongerDeal: "Derzeit kein Angebot",
+    lowestEver: "Niedrigster Preis überhaupt",
+    lowest30: "Niedrigster Preis seit 30 Tagen",
   },
   filters: {
     category: "Kategorie",
@@ -304,7 +313,8 @@ export const de: Dictionary = {
     toShop: "Zum Shop",
     history: "Preisverlauf",
     disclaimer:
-      "Wir ordnen Produkte über die Artikelnummer zu; prüfe im Shop, ob es genau dasselbe Produkt ist. Versandkosten sind nicht enthalten.",
+      "Wir ordnen Produkte über die Artikelnummer zu; prüfe im Shop, ob es genau dasselbe Produkt ist. Versandkosten stehen dabei, wenn wir sie kennen.",
+    plusShipping: "+ {cost} Versand",
   },
   notFound: {
     title: "Hoppla! Diese Seite gibt es nicht.",
@@ -333,6 +343,18 @@ export const de: Dictionary = {
     related: "Mehr {category} im Angebot",
     relatedFallback: "Angebote",
     chartPrice: "Preis",
+    noDeal: "Derzeit kein Angebot: Das ist der normale Preis.",
+    claimHigher:
+      "{shop} wirbt mit {shopPercent}% Rabatt (statt {old}), laut unserem eigenen Preisverlauf sind es aber {ourPercent}%.",
+    claimMatches:
+      "{shop} wirbt selbst mit {shopPercent}% Rabatt; das passt zu dem, was wir gesehen haben.",
+    shopCountry: "Shop aus {country}",
+    shipping: "Versand in die Niederlande: {cost} (gesamt {total})",
+    shippingFree: "Kostenloser Versand in die Niederlande",
+    alternatives: "Auch erhältlich bei",
+    alternativesText:
+      "Dieselbe Artikelnummer ({sku}) bei anderen Shops, günstigste zuerst. Prüfe kurz, ob es genau dasselbe Produkt ist.",
+    thisOffer: "Dieses Angebot",
   },
   about: {
     title: "Wie funktioniert es?",
@@ -482,6 +504,9 @@ export const de: Dictionary = {
     unsubscribeOk:
       "Du bist abgemeldet und bekommst keine Angebots-E-Mails mehr.",
     unsubscribeInvalid: "Dieser Abmeldelink ist unbekannt.",
+    preferencesHint:
+      "Nur Angebote aus bestimmten Kategorien oder Shops? Lege deine {link} fest.",
+    preferencesLink: "Einstellungen",
   },
   discord: {
     metaTitle: "Angebote in deinem Discord",
@@ -554,7 +579,7 @@ export const de: Dictionary = {
     embedHistory: "Preisverlauf",
     welcomeTitle: "Mit Modelbouwkortingen.nl verbunden",
     welcomeText:
-      "Ab jetzt erscheint hier jedes neue RC-Angebot, sobald wir es entdecken.\n\nKeine Benachrichtigungen mehr? [Abmelden]({url}) oder lösche den Webhook in Discord.",
+      "Ab jetzt erscheint hier jedes neue RC-Angebot, sobald wir es entdecken.\n\nNur bestimmte Kategorien oder Shops? [Einstellungen festlegen]({prefs}).\n\nKeine Benachrichtigungen mehr? [Abmelden]({url}) oder lösche den Webhook in Discord.",
   },
   mail: {
     confirmSubject: "Bestätige deine Anmeldung für die täglichen RC-Angebote",
@@ -580,5 +605,130 @@ export const de: Dictionary = {
     digestFooter:
       "Du erhältst diese E-Mail, weil du dich für die täglichen Angebote von {site} angemeldet hast. Preise und Verfügbarkeit können sich inzwischen geändert haben; es gilt der Preis im Shop. Einige Links sind Affiliate-Links.",
     unsubscribe: "Abmelden",
+    preferences: "Einstellungen ändern",
+    alertConfirmSubject: "Bestätige deinen Preisalarm für {name}",
+    alertConfirmPreheader:
+      "Wir schreiben dir, sobald es {target} oder weniger kostet.",
+    alertConfirmHeading: "Bestätige deinen Preisalarm",
+    alertConfirmText:
+      "Du möchtest eine E-Mail, sobald {name} bei {shop} {target} oder weniger kostet (jetzt {price}). Bestätige deinen Alarm, dann behalten wir den Preis für dich im Blick.",
+    alertConfirmButton: "Preisalarm bestätigen",
+    alertConfirmFooter:
+      "Du hast diesen Alarm nicht angefordert? Dann kannst du diese E-Mail ignorieren: Ohne Bestätigung senden wir dir nichts.",
+    alertCancel: "Alarm stornieren",
+    alertSubject: "Preisalarm: {name} jetzt {price}",
+    alertHeading: "Dein Wunschpreis ist erreicht!",
+    alertText:
+      "{name} kostet jetzt {price} bei {shop}. Dein Wunschpreis war {target}.",
+    alertCta: "Bei {shop} ansehen",
+    alertHistory: "Preisverlauf ansehen",
+    alertFooter:
+      "Dies war ein einmaliger Preisalarm von {site}; zu diesem Produkt erhältst du keine E-Mails mehr. Preise und Verfügbarkeit können sich inzwischen geändert haben; es gilt der Preis im Shop. Einige Links sind Affiliate-Links.",
+  },
+  priceAlert: {
+    title: "Preisalarm",
+    text: "Jetzt {price}. Wähle deinen Wunschpreis, dann schreiben wir dir einmal, sobald er erreicht ist.",
+    targetLabel: "Wunschpreis (€)",
+    emailLabel: "E-Mail-Adresse",
+    submit: "Alarm setzen",
+    submitting: "Wird gesetzt…",
+    privacy:
+      "Du bekommst zuerst eine Bestätigungs-E-Mail. Wir nutzen deine Adresse nur für diesen Alarm.",
+    created:
+      "Schau in dein Postfach und bestätige deinen Preisalarm. Danach behalten wir den Preis für dich im Blick.",
+    invalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
+    invalidPrice: "Bitte gib einen gültigen Wunschpreis ein.",
+    targetTooHigh: "Wähle einen Wunschpreis unter dem aktuellen Preis.",
+    notFound: "Dieses Produkt gibt es nicht (mehr).",
+    tooMany:
+      "Du hast schon viele aktive Preisalarme. Warte, bis einer auslöst, oder storniere einen.",
+    rateLimited:
+      "Du hast schon einige Alarme gesetzt. Bitte versuche es später erneut.",
+    failed: "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
+    unavailable: "Preisalarme sind gerade nicht verfügbar.",
+    confirmTitle: "Preisalarm bestätigen",
+    confirmDescription:
+      "Noch ein Klick, und wir behalten den Preis für dich im Blick.",
+    confirmCrumb: "Preisalarm bestätigen",
+    confirmMissing:
+      "Dieser Link ist unvollständig. Öffne den Link aus der Bestätigungs-E-Mail erneut.",
+    confirmButton: "Ja, behaltet den Preis für mich im Blick",
+    confirmPending: "Wird bestätigt…",
+    confirmOk:
+      "Dein Preisalarm ist aktiv. Wir schreiben dir, sobald dein Wunschpreis erreicht ist.",
+    confirmInvalid:
+      "Dieser Link funktioniert nicht (mehr). Vielleicht hat der Alarm schon ausgelöst oder wurde storniert.",
+    cancelTitle: "Preisalarm stornieren",
+    cancelDescription:
+      "Nach dem Stornieren erhältst du zu diesem Produkt keine E-Mails mehr.",
+    cancelCrumb: "Preisalarm stornieren",
+    cancelMissing:
+      "Dieser Link ist unvollständig. Nutze den Link aus der Bestätigungs-E-Mail.",
+    cancelButton: "Alarm stornieren",
+    cancelPending: "Wird storniert…",
+    cancelOk: "Dein Preisalarm wurde storniert.",
+    cancelInvalid:
+      "Dieser Link ist unbekannt oder der Alarm wurde bereits storniert.",
+  },
+  preferences: {
+    crumb: "Einstellungen",
+    mailTitle: "Einstellungen für die Angebots-E-Mail",
+    mailDescription:
+      "Wähle, welche Angebote du in der täglichen E-Mail sehen willst. Gibt es an einem Tag keine passenden neuen Angebote, senden wir nichts.",
+    discordTitle: "Einstellungen für Discord",
+    discordDescription:
+      "Wähle, welche Angebote in deinem Discord-Kanal erscheinen.",
+    webhook: "Webhook: {name}",
+    categories: "Kategorien",
+    categoriesHint:
+      "Hake an, was du sehen willst. Nichts oder alles angehakt = alle Kategorien, auch neue.",
+    shops: "Shops",
+    shopsHint:
+      "Nichts oder alles angehakt = alle Shops. Lieber kurze Lieferzeiten in die Niederlande? Dann wähle nur Shops aus {countries}.",
+    minDiscount: "Mindestrabatt",
+    save: "Einstellungen speichern",
+    saving: "Wird gespeichert…",
+    saved:
+      "Gespeichert! Deine neuen Einstellungen gelten ab dem nächsten Angebot.",
+    invalid:
+      "Dieser Link ist unbekannt oder du hast dich abgemeldet. Nutze den Link aus deiner letzten E-Mail oder Discord-Nachricht.",
+  },
+  watchlist: {
+    title: "Merkliste",
+    description:
+      "Produkte, die du mit dem Herz gespeichert hast. Die Liste liegt nur in diesem Browser; du brauchst kein Konto.",
+    empty:
+      "Deine Merkliste ist noch leer. Tippe bei einem Produkt auf das Herz, um es hier zu speichern.",
+    hint: "Die Preise sind aktuell. Möchtest du eine E-Mail, wenn ein Preis sinkt? Setze einen Preisalarm auf der Produktseite.",
+    save: "Merken",
+    saved: "Gemerkt",
+    addLabel: "{name} auf deine Merkliste setzen",
+    removeLabel: "{name} von deiner Merkliste entfernen",
+  },
+  brandPage: {
+    notFound: "Marke nicht gefunden",
+    metaTitle: "{name} Angebote",
+    metaDescription:
+      "{count} Produkte von {name} mit mindestens 5 € oder 5 % Rabatt bei niederländischen und europäischen RC-Shops.",
+    title: "{name} im Angebot",
+    description:
+      "Alle Produkte von {name}, die jetzt mindestens 5 € oder 5 % günstiger sind, bei allen Shops, die wir verfolgen.",
+    compare: "Alle Preise von {name} vergleichen →",
+  },
+  brandsPage: {
+    title: "Marken",
+    metaDescription:
+      "RC-Marken mit Rabatt, von Traxxas und Arrma bis Spektrum und CNHL.",
+    description:
+      "Alle Marken, die gerade im Angebot sind. Wähle eine Marke, um alle ihre Angebote zu sehen.",
+    popular: "Beliebte Marken",
+    all: "Alle Marken von A bis Z",
+  },
+  feed: {
+    title: "Neue RC-Angebote",
+    titleFiltered: "{subject} im Angebot",
+    description: "Die neuesten RC-Produkte mit mindestens 5 € oder 5 % Rabatt.",
+    item: "{price} bei {shop} (statt {was}, -{percent}%)",
+    toShop: "Bei {shop} ansehen",
   },
 };

@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { PageHeader } from "@/components/core/PageHeader";
 import { DealGridSkeleton } from "@/components/deals/DealGrid";
 import { DealsBrowser } from "@/components/deals/DealsBrowser";
-import { alternates } from "@/i18n/metadata";
+import { alternates, feedLink } from "@/i18n/metadata";
 import { getI18n } from "@/i18n/server";
 import { t } from "@/i18n/translate";
 import { CATEGORIES, getCategory } from "@/lib/categories";
@@ -28,7 +28,12 @@ export async function generateMetadata({
       name,
       description: description.toLowerCase(),
     }),
-    alternates: alternates(lang, `/categorie/${slug}`),
+    alternates: {
+      ...alternates(lang, `/categorie/${slug}`),
+      types: feedLink(lang, t(dict.feed.titleFiltered, { subject: name }), {
+        categorie: slug,
+      }),
+    },
   };
 }
 

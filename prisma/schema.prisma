@@ -14,15 +14,16 @@ datasource db {
 }
 
 model Shop {
-  id          Int        @id @default(autoincrement())
-  slug        String     @unique
+  id          Int             @id @default(autoincrement())
+  slug        String          @unique
   name        String
-  baseUrl     String     @map("base_url")
-  description String     @default("")
-  enabled     Boolean    @default(true)
-  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  baseUrl     String          @map("base_url")
+  description String          @default("")
+  enabled     Boolean         @default(true)
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz
   products    Product[]
   crawlRuns   CrawlRun[]
+  clicks      OutboundClick[]
 
   @@map("shops")
 }
@@ -37,37 +38,43 @@ model Category {
 }
 
 model Product {
-  id              BigInt         @id @default(autoincrement())
-  shopId          Int            @map("shop_id")
-  externalId      String         @map("external_id")
+  id              BigInt          @id @default(autoincrement())
+  shopId          Int             @map("shop_id")
+  externalId      String          @map("external_id")
   url             String
   sku             String?
+  /// Artikelnummer in hoofdletters zonder spaties/streepjes (zie normalizeSku() in src/lib/compare.ts),
+  /// NULL als het te kort is of geen cijfer bevat. Door Postgres berekend (GENERATED ALWAYS ... STORED,
+  /// zie migratie 20261018000000_features): nooit zelf schrijven.
+  skuNorm         String?         @map("sku_norm")
   name            String
   brand           String?
-  imageUrl        String?        @map("image_url")
-  categorySlug    String         @default("overig") @map("category_slug")
-  shopCategory    String?        @map("shop_category")
-  price           Decimal        @db.Decimal(10, 2)
+  imageUrl        String?         @map("image_url")
+  categorySlug    String          @default("overig") @map("category_slug")
+  shopCategory    String?         @map("shop_category")
+  price           Decimal         @db.Decimal(10, 2)
   /// "Van"-prijs zoals de webshop die toont (doorgestreept), of NULL.
-  oldPrice        Decimal?       @map("old_price") @db.Decimal(10, 2)
+  oldPrice        Decimal?        @map("old_price") @db.Decimal(10, 2)
   /// Referentieprijs waartegen de korting berekend wordt: de hoogste prijs die we zelf
   /// sinds baseline_since (max. 30 dagen terug) zagen; blijft vast zolang de deal loopt.
-  referencePrice  Decimal?       @map("reference_price") @db.Decimal(10, 2)
-  discountAmount  Decimal        @default(0) @map("discount_amount") @db.Decimal(10, 2)
-  discountPercent Decimal        @default(0) @map("discount_percent") @db.Decimal(5, 2)
-  isDeal          Boolean        @default(false) @map("is_deal")
-  inStock         Boolean?       @map("in_stock")
-  dealSince       DateTime?      @map("deal_since") @db.Timestamptz
+  referencePrice  Decimal?        @map("reference_price") @db.Decimal(10, 2)
+  discountAmount  Decimal         @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  discountPercent Decimal         @default(0) @map("discount_percent") @db.Decimal(5, 2)
+  isDeal          Boolean         @default(false) @map("is_deal")
+  inStock         Boolean?        @map("in_stock")
+  dealSince       DateTime?       @map("deal_since") @db.Timestamptz
   /// Nulmeting: prijshistorie van vóór dit moment telt niet mee voor de referentieprijs
   /// (gezet wanneer de prijs na een deal weer stijgt). NULL = alle historie.
-  baselineSince   DateTime?      @map("baseline_since") @db.Timestamptz
-  firstSeenAt     DateTime       @default(now()) @map("first_seen_at") @db.Timestamptz
-  lastSeenAt      DateTime       @default(now()) @map("last_seen_at") @db.Timestamptz
-  lastCrawledAt   DateTime?      @map("last_crawled_at") @db.Timestamptz
-  updatedAt       DateTime       @default(now()) @map("updated_at") @db.Timestamptz
-  shop            Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  category        Category       @relation(fields: [categorySlug], references: [slug])
+  baselineSince   DateTime?       @map("baseline_since") @db.Timestamptz
+  firstSeenAt     DateTime        @default(now()) @map("first_seen_at") @db.Timestamptz
+  lastSeenAt      DateTime        @default(now()) @map("last_seen_at") @db.Timestamptz
+  lastCrawledAt   DateTime?       @map("last_crawled_at") @db.Timestamptz
+  updatedAt       DateTime        @default(now()) @map("updated_at") @db.Timestamptz
+  shop            Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  category        Category        @relation(fields: [categorySlug], references: [slug])
   priceHistory    PriceHistory[]
+  priceAlerts     PriceAlert[]
+  clicks          OutboundClick[]
 
   @@unique([shopId, externalId])
   @@index([isDeal, discountPercent(sort: Desc)], map: "products_deals_idx", where: raw("is_deal"))
@@ -79,6 +86,9 @@ model Product {
   @@index([brand(ops: raw("gin_trgm_ops"))], map: "products_brand_trgm_idx", type: Gin)
   /// Voor de prijsvergelijker: zoeken op (een deel van) het artikelnummer.
   @@index([sku(ops: raw("gin_trgm_ops"))], map: "products_sku_trgm_idx", type: Gin)
+  /// "Ook verkrijgbaar bij": hetzelfde artikelnummer bij andere webshops.
+  @@index([skuNorm], map: "products_sku_norm_idx")
+  @@index([brand], map: "products_brand_idx")
   @@map("products")
 }
 
@@ -95,19 +105,20 @@ model PriceHistory {
 }
 
 model CrawlRun {
-  id           BigInt    @id @default(autoincrement())
-  shopId       Int       @map("shop_id")
-  startedAt    DateTime  @default(now()) @map("started_at") @db.Timestamptz
-  finishedAt   DateTime? @map("finished_at") @db.Timestamptz
+  id           BigInt      @id @default(autoincrement())
+  shopId       Int         @map("shop_id")
+  startedAt    DateTime    @default(now()) @map("started_at") @db.Timestamptz
+  finishedAt   DateTime?   @map("finished_at") @db.Timestamptz
   /// running | ok | failed | aborted
-  status       String    @default("running")
-  pagesFetched Int       @default(0) @map("pages_fetched")
-  productsSeen Int       @default(0) @map("products_seen")
-  dealsFound   Int       @default(0) @map("deals_found")
-  errors       Int       @default(0)
-  rateLimited  Int       @default(0) @map("rate_limited")
+  status       String      @default("running")
+  pagesFetched Int         @default(0) @map("pages_fetched")
+  productsSeen Int         @default(0) @map("products_seen")
+  dealsFound   Int         @default(0) @map("deals_found")
+  errors       Int         @default(0)
+  rateLimited  Int         @default(0) @map("rate_limited")
   message      String?
-  shop         Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shop         Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  alert        CrawlAlert?
 
   @@index([shopId, startedAt(sort: Desc)], map: "crawl_runs_shop_idx")
   @@map("crawl_runs")
@@ -139,6 +150,11 @@ model NewsletterSubscriber {
   lastSentAt         DateTime? @map("last_sent_at") @db.Timestamptz
   /// Taal van de site bij het aanmelden (nl, en, de); de mails gaan in deze taal.
   locale             String    @default("nl")
+  /// Voorkeuren: alleen deals uit deze categorieën / webshops (leeg = alles) en met minstens
+  /// zoveel procent korting.
+  categories         String[]  @default([])
+  shops              String[]  @default([])
+  minDiscount        Int       @default(0) @map("min_discount")
   createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([confirmedAt, unsubscribedAt], map: "newsletter_subscribers_active_idx")
@@ -181,8 +197,73 @@ model DiscordSubscriber {
   disabledReason  String?   @map("disabled_reason")
   /// Taal van de site bij het koppelen (nl, en, de); de berichten gaan in deze taal.
   locale          String    @default("nl")
+  /// Voorkeuren: alleen deals uit deze categorieën / webshops (leeg = alles) en met minstens
+  /// zoveel procent korting.
+  categories      String[]  @default([])
+  shops           String[]  @default([])
+  minDiscount     Int       @default(0) @map("min_discount")
   createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([disabledAt], map: "discord_subscribers_active_idx")
   @@map("discord_subscribers")
+}
+
+/// Prijsalarm: een mail zodra de prijs van een product op of onder de doelprijs komt (double opt-in).
+model PriceAlert {
+  id             BigInt    @id @default(autoincrement())
+  productId      BigInt    @map("product_id")
+  /// Altijd in kleine letters opgeslagen.
+  email          String
+  targetPrice    Decimal   @map("target_price") @db.Decimal(10, 2)
+  /// Geheim token voor de bevestigings- en afmeldlink.
+  token          String    @unique
+  locale         String    @default("nl")
+  /// NULL = nog niet bevestigd; zolang sturen we geen alarm.
+  confirmedAt    DateTime? @map("confirmed_at") @db.Timestamptz
+  /// Gezet zodra het alarm verstuurd is: één mail per alarm.
+  triggeredAt    DateTime? @map("triggered_at") @db.Timestamptz
+  /// Prijs op het moment van het alarm.
+  triggeredPrice Decimal?  @map("triggered_price") @db.Decimal(10, 2)
+  cancelledAt    DateTime? @map("cancelled_at") @db.Timestamptz
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  product        Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId], map: "price_alerts_product_idx")
+  @@index([email], map: "price_alerts_email_idx")
+  @@index([confirmedAt], map: "price_alerts_active_idx", where: raw("triggered_at IS NULL AND cancelled_at IS NULL"))
+  @@map("price_alerts")
+}
+
+/// Eén klik op "naar de webshop" (via /api/uit/[id]).
+model OutboundClick {
+  id        BigInt   @id @default(autoincrement())
+  productId BigInt?  @map("product_id")
+  shopId    Int      @map("shop_id")
+  /// Waar de klik vandaan kwam: site | mail | discord | alarm | feed.
+  source    String   @default("site")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt], map: "outbound_clicks_created_idx")
+  @@index([shopId, createdAt], map: "outbound_clicks_shop_idx")
+  @@index([productId, createdAt], map: "outbound_clicks_product_idx")
+  @@map("outbound_clicks")
+}
+
+/// Waarschuwing dat een crawl-ronde opvallend weinig producten zag (parser kapot?).
+/// De primary key op run_id zorgt dat elke ronde hooguit één melding krijgt.
+model CrawlAlert {
+  runId      BigInt    @id @map("run_id")
+  shopId     Int       @map("shop_id")
+  /// Producten in deze ronde en het mediaan van de vorige geslaagde rondes.
+  seen       Int
+  baseline   Int
+  /// Gezet zodra de melding naar ALERT_DISCORD_WEBHOOK is gestuurd.
+  notifiedAt DateTime? @map("notified_at") @db.Timestamptz
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  run        CrawlRun  @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt(sort: Desc)], map: "crawl_alerts_created_idx")
+  @@map("crawl_alerts")
 }

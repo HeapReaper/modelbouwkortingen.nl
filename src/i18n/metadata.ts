@@ -16,3 +16,20 @@ export function alternates(lang: Locale, path: string): Metadata["alternates"] {
     },
   };
 }
+
+/** RSS-feed (src/app/feed.xml) voor <link rel="alternate" type="application/rss+xml">. */
+export function feedLink(
+  lang: Locale,
+  title: string,
+  params: Record<string, string> = {},
+): NonNullable<Metadata["alternates"]>["types"] {
+  const query = new URLSearchParams({
+    ...params,
+    ...(lang === DEFAULT_LOCALE ? {} : { lang }),
+  }).toString();
+  return {
+    "application/rss+xml": [
+      { url: `/feed.xml${query ? `?${query}` : ""}`, title },
+    ],
+  };
+}

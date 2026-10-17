@@ -6,6 +6,11 @@ import { CATEGORIES } from "@/lib/categories";
 import { cached, getPrisma, isDbConfigured, num } from "@/lib/db";
 import { demoDeals, demoHistory } from "@/lib/demo-data";
 import { type DealFilters, PAGE_SIZE, type SortKey } from "@/lib/filters";
+import {
+  type DealPreferences,
+  matchesPreferences,
+  NO_PREFERENCES,
+} from "@/lib/preferences";
 import { SHOPS } from "@/lib/shops";
 
 export type { DealFilters, SortKey };
@@ -27,11 +32,28 @@ export type Deal = {
   shopCategory: string | null;
   shopSlug: string;
   shopName: string;
+  sku: string | null;
+  /** false = het product is (nu) geen deal meer, bv. op de volglijst of bij een prijsalarm. */
+  isDeal: boolean;
+  firstSeenAt: string;
+  /**
+   * "ever" = laagste prijs die we ooit zagen (en we volgen het product al lang genoeg),
+   * "30d" = laagste prijs van de afgelopen 30 dagen. Zie withPriceInsights().
+   */
+  lowest: "ever" | "30d" | null;
 };
+
+/** Pas na zoveel dagen volgen zegt "laagste prijs" iets. */
+const LOWEST_30D_MIN_DAYS = 30;
+const LOWEST_EVER_MIN_DAYS = 60;
+const DAY_MS = 24 * 60 * 60_000;
 
 const DEAL_SELECT = {
   id: true,
   name: true,
+  sku: true,
+  isDeal: true,
+  firstSeenAt: true,
   brand: true,
   imageUrl: true,
   url: true,
@@ -67,7 +89,55 @@ function toDeal(r: Row): Deal {
     shopCategory: r.shopCategory,
     shopSlug: r.shop.slug,
     shopName: r.shop.name,
+    sku: r.sku,
+    isDeal: r.isDeal,
+    firstSeenAt: r.firstSeenAt.toISOString(),
+    lowest: null,
   };
+}
+
+/**
+ * Vult `lowest` in: is de huidige prijs de laagste die we zagen? Twee groupBy's over
+ * price_history voor alle getoonde producten tegelijk (index op product_id).
+ */
+async function withPriceInsights(deals: Deal[]): Promise<Deal[]> {
+  if (deals.length === 0 || !isDbConfigured()) return deals;
+  const now = Date.now();
+  const tracked = (d: Deal, days: number) =>
+    now - new Date(d.firstSeenAt).getTime() >= days * DAY_MS;
+  const candidates = deals.filter((d) => tracked(d, LOWEST_30D_MIN_DAYS));
+  if (candidates.length === 0) return deals;
+  const ids = candidates.map((d) => BigInt(d.id));
+  const prisma = getPrisma();
+  const [ever, month] = await Promise.all([
+    prisma.priceHistory.groupBy({
+      by: ["productId"],
+      where: { productId: { in: ids } },
+      _min: { price: true },
+    }),
+    prisma.priceHistory.groupBy({
+      by: ["productId"],
+      where: {
+        productId: { in: ids },
+        observedAt: { gte: new Date(now - 30 * DAY_MS) },
+      },
+      _min: { price: true },
+    }),
+  ]);
+  const minOf = (rows: typeof ever) =>
+    new Map(rows.map((r) => [num(r.productId), num(r._min.price)]));
+  const minEver = minOf(ever);
+  const min30 = minOf(month);
+  // Halve centen marge tegen afrondingsverschillen tussen Decimal en number.
+  const atMost = (price: number, min: number | null | undefined) =>
+    min !== null && min !== undefined && price <= min + 0.005;
+  return deals.map((d) => {
+    if (!tracked(d, LOWEST_30D_MIN_DAYS)) return d;
+    if (tracked(d, LOWEST_EVER_MIN_DAYS) && atMost(d.price, minEver.get(d.id)))
+      return { ...d, lowest: "ever" };
+    if (atMost(d.price, min30.get(d.id))) return { ...d, lowest: "30d" };
+    return d;
+  });
 }
 
 const ORDER_BY: Record<SortKey, Prisma.ProductOrderByWithRelationInput[]> = {
@@ -99,14 +169,16 @@ const NOT_OUT_OF_STOCK = {
 
 export async function getDeals(
   filters: DealFilters,
+  pageSize = PAGE_SIZE,
 ): Promise<{ deals: Deal[]; total: number }> {
   await connection();
   const page = filters.page ?? 1;
-  if (!isDbConfigured()) return filterDemo(filters);
+  if (!isDbConfigured()) return filterDemo(filters, pageSize);
 
   const and: Prisma.ProductWhereInput[] = [ACTIVE_DEAL];
   if (filters.category) and.push({ categorySlug: filters.category });
   if (filters.shop) and.push({ shop: { slug: filters.shop } });
+  if (filters.brands) and.push({ brand: { in: filters.brands } });
   if (filters.minDiscount)
     and.push({ discountPercent: { gte: filters.minDiscount } });
   if (filters.minPrice) and.push({ price: { gte: filters.minPrice } });
@@ -125,12 +197,12 @@ export async function getDeals(
       select: DEAL_SELECT,
       where,
       orderBy: ORDER_BY[filters.sort ?? "korting"],
-      take: PAGE_SIZE,
-      skip: (page - 1) * PAGE_SIZE,
+      take: pageSize,
+      skip: (page - 1) * pageSize,
     }),
     prisma.product.count({ where }),
   ]);
-  return { deals: rows.map(toDeal), total };
+  return { deals: await withPriceInsights(rows.map(toDeal)), total };
 }
 
 export function searchTerms(q?: string) {
@@ -168,11 +240,13 @@ export async function getTopDeals(limit = 12): Promise<Deal[]> {
         }),
       ),
     );
-    return perShop
-      .flat()
-      .map(toDeal)
-      .sort((a, b) => b.discountPercent - a.discountPercent)
-      .slice(0, limit);
+    return withPriceInsights(
+      perShop
+        .flat()
+        .map(toDeal)
+        .sort((a, b) => b.discountPercent - a.discountPercent)
+        .slice(0, limit),
+    );
   });
 }
 
@@ -184,6 +258,7 @@ export async function getDealsAfter(
   cursorAt: Date,
   cursorId: bigint,
   limit: number,
+  prefs: DealPreferences = NO_PREFERENCES,
 ): Promise<Deal[]> {
   if (!isDbConfigured()) return [];
   const rows = await getPrisma().product.findMany({
@@ -194,6 +269,15 @@ export async function getDealsAfter(
         { dealSince: { gt: cursorAt } },
         { dealSince: cursorAt, id: { gt: cursorId } },
       ],
+      ...(prefs.categories.length > 0
+        ? { categorySlug: { in: prefs.categories } }
+        : {}),
+      ...(prefs.shops.length > 0
+        ? { shop: { enabled: true, slug: { in: prefs.shops } } }
+        : {}),
+      ...(prefs.minDiscount > 0
+        ? { discountPercent: { gte: prefs.minDiscount } }
+        : {}),
     },
     orderBy: [{ dealSince: "asc" }, { id: "asc" }],
     take: limit,
@@ -202,14 +286,10 @@ export async function getDealsAfter(
 }
 
 /**
- * Deals die sinds `since` zijn ontstaan en nog lopen, hoogste korting eerst, met maximaal
- * `perShop` per webshop (voor de dagelijkse kortingsmail).
+ * Deals die sinds `since` zijn ontstaan en nog lopen, hoogste korting eerst (voor de dagelijkse
+ * kortingsmail; per abonnee gefilterd en ingekort met pickDigest()).
  */
-export async function getDealsSince(
-  since: Date,
-  limit = 12,
-  perShop = 3,
-): Promise<Deal[]> {
+export async function getDealsSince(since: Date, limit = 500): Promise<Deal[]> {
   if (!isDbConfigured())
     return filterDemo({ sort: "korting" }).deals.slice(0, limit);
   const rows = await getPrisma().product.findMany({
@@ -221,11 +301,25 @@ export async function getDealsSince(
       dealSince: { gte: since },
     },
     orderBy: [{ discountPercent: "desc" }, { discountAmount: "desc" }],
-    take: limit * 10,
+    take: limit,
   });
+  return rows.map(toDeal);
+}
+
+/**
+ * De eerste `limit` deals (al gesorteerd) die bij de voorkeuren passen, met maximaal `perShop`
+ * per webshop zodat één shop de mail niet domineert.
+ */
+export function pickDigest(
+  deals: Deal[],
+  prefs: DealPreferences = NO_PREFERENCES,
+  limit = 12,
+  perShop = 3,
+): Deal[] {
   const counts = new Map<string, number>();
   const out: Deal[] = [];
-  for (const deal of rows.map(toDeal)) {
+  for (const deal of deals) {
+    if (!matchesPreferences(deal, prefs)) continue;
     const n = counts.get(deal.shopSlug) ?? 0;
     if (n >= perShop) continue;
     counts.set(deal.shopSlug, n + 1);
@@ -249,7 +343,7 @@ export async function getNewestDeals(limit = 12): Promise<Deal[]> {
       ],
       take: limit,
     });
-    return rows.map(toDeal);
+    return withPriceInsights(rows.map(toDeal));
   });
 }
 
@@ -261,7 +355,64 @@ export async function getDeal(id: number): Promise<Deal | null> {
     select: DEAL_SELECT,
     where: { id: BigInt(id) },
   });
-  return row ? toDeal(row) : null;
+  if (!row) return null;
+  const [deal] = await withPriceInsights([toDeal(row)]);
+  return deal;
+}
+
+/** Producten (deal of niet) in de opgegeven volgorde, voor de volglijst. */
+export async function getDealsByIds(ids: number[]): Promise<Deal[]> {
+  await connection();
+  const valid = [
+    ...new Set(ids.filter((id) => Number.isSafeInteger(id) && id > 0)),
+  ].slice(0, 100);
+  if (valid.length === 0) return [];
+  if (!isDbConfigured())
+    return valid.flatMap((id) => demoDeals().find((d) => d.id === id) ?? []);
+  const rows = await getPrisma().product.findMany({
+    select: DEAL_SELECT,
+    where: { id: { in: valid.map(BigInt) }, shop: { enabled: true } },
+  });
+  const byId = new Map(rows.map((r) => [num(r.id), toDeal(r)]));
+  return withPriceInsights(valid.flatMap((id) => byId.get(id) ?? []));
+}
+
+/** Producten die we zo lang niet meer zagen, zijn waarschijnlijk uit het assortiment. */
+const ALTERNATIVE_MAX_AGE_MS = 14 * DAY_MS;
+
+/**
+ * Hetzelfde product bij andere webshops (zelfde genormaliseerde SKU, zie normalizeSku() en de
+ * kolom sku_norm), goedkoopste eerst. Eén aanbod per shop.
+ */
+export async function getAlternatives(deal: Deal, limit = 10): Promise<Deal[]> {
+  await connection();
+  if (!isDbConfigured() || !deal.sku) return [];
+  const prisma = getPrisma();
+  const self = await prisma.product.findUnique({
+    select: { skuNorm: true },
+    where: { id: BigInt(deal.id) },
+  });
+  if (!self?.skuNorm) return [];
+  const rows = await prisma.product.findMany({
+    select: DEAL_SELECT,
+    where: {
+      skuNorm: self.skuNorm,
+      id: { not: BigInt(deal.id) },
+      shop: { enabled: true, slug: { not: deal.shopSlug } },
+      lastSeenAt: { gte: new Date(Date.now() - ALTERNATIVE_MAX_AGE_MS) },
+    },
+    orderBy: { price: "asc" },
+    take: 50,
+  });
+  const seen = new Set<string>();
+  const out: Deal[] = [];
+  for (const row of rows) {
+    if (seen.has(row.shop.slug)) continue;
+    seen.add(row.shop.slug);
+    out.push(toDeal(row));
+    if (out.length === limit) break;
+  }
+  return out;
 }
 
 export type PricePoint = {
@@ -284,6 +435,66 @@ export async function getPriceHistory(id: number): Promise<PricePoint[]> {
     price: num(r.price),
     oldPrice: num(r.oldPrice),
   }));
+}
+
+/* ---------- merken ---------- */
+
+export type Brand = {
+  slug: string;
+  name: string;
+  /** Alle schrijfwijzen die de webshops gebruiken ("ARRMA", "Arrma"). */
+  variants: string[];
+  deals: number;
+};
+
+/** "Team Corally" → "team-corally". */
+export function brandSlug(name: string): string {
+  return name
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Merken met lopende deals, meeste deals eerst. */
+export async function getBrands(): Promise<Brand[]> {
+  await connection();
+  const counts = new Map<string, number>();
+  if (!isDbConfigured()) {
+    for (const d of demoDeals())
+      if (d.brand) counts.set(d.brand, (counts.get(d.brand) ?? 0) + 1);
+  } else {
+    const rows = await cached("brands", 5 * 60_000, () =>
+      getPrisma().product.groupBy({
+        by: ["brand"],
+        where: { ...ACTIVE_DEAL, brand: { not: null } },
+        _count: true,
+      }),
+    );
+    for (const r of rows) if (r.brand) counts.set(r.brand, r._count);
+  }
+  const brands = new Map<string, Brand>();
+  for (const [name, n] of counts) {
+    const slug = brandSlug(name);
+    if (!slug) continue;
+    const brand = brands.get(slug);
+    if (!brand) {
+      brands.set(slug, { slug, name, variants: [name], deals: n });
+      continue;
+    }
+    brand.variants.push(name);
+    brand.deals += n;
+    // De schrijfwijze met de meeste deals is de naam (meestal "Arrma", niet "ARRMA").
+    if (n > (counts.get(brand.name) ?? 0)) brand.name = name;
+  }
+  return [...brands.values()].sort(
+    (a, b) => b.deals - a.deals || a.name.localeCompare(b.name),
+  );
+}
+
+export async function getBrand(slug: string): Promise<Brand | null> {
+  return (await getBrands()).find((b) => b.slug === slug) ?? null;
 }
 
 export async function getRelatedDeals(deal: Deal, limit = 8): Promise<Deal[]> {
@@ -352,13 +563,14 @@ export async function getSiteStats(): Promise<SiteStats> {
 
 /* ---------- demo-modus (geen DATABASE_URL) ---------- */
 
-function filterDemo(f: DealFilters) {
+function filterDemo(f: DealFilters, pageSize = PAGE_SIZE) {
   let list = demoDeals();
   const terms = searchTerms(f.q);
   list = list.filter(
     (d) =>
       (!f.category || d.categorySlug === f.category) &&
       (!f.shop || d.shopSlug === f.shop) &&
+      (!f.brands || (d.brand !== null && f.brands.includes(d.brand))) &&
       (!f.minDiscount || d.discountPercent >= f.minDiscount) &&
       (!f.minPrice || d.price >= f.minPrice) &&
       (!f.maxPrice || d.price <= f.maxPrice) &&
@@ -377,7 +589,7 @@ function filterDemo(f: DealFilters) {
   list.sort(sorters[f.sort ?? "korting"]);
   const page = f.page ?? 1;
   return {
-    deals: list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    deals: list.slice((page - 1) * pageSize, page * pageSize),
     total: list.length,
   };
 }

@@ -1,32 +1,42 @@
 import {
+  AlertTriangle,
+  BadgeCheck,
   CheckCircle2,
   Clock,
   ExternalLink,
+  Globe,
   Info,
   Tag,
+  Truck,
   XCircle,
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { PriceAlertForm } from "@/components/alerts/PriceAlertForm";
 import { DealRow } from "@/components/deals/DealRow";
 import { DiscountBadge } from "@/components/deals/DiscountBadge";
+import { LowestBadge } from "@/components/deals/LowestBadge";
 import { PriceBlock } from "@/components/deals/PriceBlock";
 import { PriceHistoryChart } from "@/components/deals/PriceHistoryChart";
 import { ProductImage } from "@/components/deals/ProductImage";
 import { ShopBadge } from "@/components/deals/ShopBadge";
 import { buttonVariants } from "@/components/ui/button";
+import { WatchButton } from "@/components/watchlist/WatchButton";
 import { alternates } from "@/i18n/metadata";
 import { getI18n } from "@/i18n/server";
-import { t } from "@/i18n/translate";
+import { rich, t } from "@/i18n/translate";
 import {
+  brandSlug,
   type Deal,
+  getAlternatives,
   getDeal,
   getPriceHistory,
   getRelatedDeals,
 } from "@/lib/deals";
-import { productLink } from "@/lib/shops";
+import { SITE_URL } from "@/lib/newsletter-mail";
+import { getShop, outLink, shippingCost } from "@/lib/shops";
 import { cn } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -37,21 +47,27 @@ export async function generateMetadata({
   if (!deal) return { title: dict.product.notFound };
   const p = dict.product;
   return {
-    title: t(p.metaTitle, {
-      name: deal.name,
-      percent: Math.round(deal.discountPercent),
-    }),
+    title: deal.isDeal
+      ? t(p.metaTitle, {
+          name: deal.name,
+          percent: Math.round(deal.discountPercent),
+        })
+      : deal.name,
     description: t(p.metaDescription, {
       name: deal.name,
       price: fmt.euro(deal.price),
       shop: deal.shopName,
       save:
-        deal.discountAmount > 0
+        deal.isDeal && deal.discountAmount > 0
           ? t(p.metaSave, { amount: fmt.euro(deal.discountAmount) })
           : "",
     }),
     alternates: alternates(lang, `/product/${deal.id}`),
-    openGraph: deal.imageUrl ? { images: [deal.imageUrl] } : undefined,
+    // Gegenereerde deelafbeelding met foto, prijs en korting (src/app/api/og/[id]).
+    openGraph: {
+      images: [{ url: `/api/og/${deal.id}`, width: 1200, height: 630 }],
+    },
+    twitter: { card: "summary_large_image", images: [`/api/og/${deal.id}`] },
   };
 }
 
@@ -72,14 +88,22 @@ async function ProductDetail({
 }) {
   const deal = await getDeal(Number((await params).id));
   if (!deal) notFound();
-  const { dict, href, fmt } = await getI18n();
+  const { lang, dict, href, fmt } = await getI18n();
   const p = dict.product;
   const categoryName = dict.categories[deal.categorySlug]?.name;
-  const reference = deal.referencePrice;
-  const link = productLink(deal);
+  const reference = deal.isDeal ? deal.referencePrice : null;
+  const link = outLink(deal);
+  const shop = getShop(deal.shopSlug);
+  const shipping = shippingCost(deal.shopSlug, deal.price);
+  // De "van"-prijs van de webshop zelf, naast onze eigen referentieprijs.
+  const shopPercent =
+    deal.isDeal && deal.oldPrice && deal.oldPrice > deal.price
+      ? Math.round(((deal.oldPrice - deal.price) / deal.oldPrice) * 100)
+      : null;
 
   return (
     <div className="flex flex-col gap-14 pb-4">
+      <ProductJsonLd deal={deal} url={SITE_URL + href(`/product/${deal.id}`)} />
       <div className="mx-auto w-full max-w-7xl px-4 pt-6">
         <nav
           aria-label={dict.breadcrumb.label}
@@ -115,7 +139,7 @@ async function ProductDetail({
               eager
               className="aspect-square w-full p-6"
             />
-            {deal.discountPercent > 0 ? (
+            {deal.isDeal && deal.discountPercent > 0 ? (
               <DiscountBadge
                 percent={deal.discountPercent}
                 size="lg"
@@ -133,17 +157,33 @@ async function ProductDetail({
             <h1 className="text-3xl leading-tight font-black tracking-tight sm:text-4xl">
               {deal.name}
             </h1>
-            {deal.brand ? (
+            {deal.brand && brandSlug(deal.brand) ? (
               <p className="text-lg text-muted-foreground">
-                {t(p.brand, { brand: deal.brand })}
+                {rich(p.brand, {
+                  brand: (
+                    <Link
+                      href={href(`/merk/${brandSlug(deal.brand)}`)}
+                      className="font-semibold text-foreground underline hover:text-primary"
+                    >
+                      {deal.brand}
+                    </Link>
+                  ),
+                })}
               </p>
             ) : null}
 
             <div className="rounded-2xl border-2 border-dashed border-primary/40 bg-accent/60 p-5">
+              {deal.isDeal ? (
+                <LowestBadge lowest={deal.lowest} className="mb-2 text-sm" />
+              ) : (
+                <p className="mb-2 text-sm font-semibold text-muted-foreground">
+                  {p.noDeal}
+                </p>
+              )}
               <PriceBlock
                 price={deal.price}
                 referencePrice={reference}
-                discountAmount={deal.discountAmount}
+                discountAmount={deal.isDeal ? deal.discountAmount : 0}
                 size="lg"
               />
               {reference && reference > deal.price ? (
@@ -152,20 +192,46 @@ async function ProductDetail({
                   {p.referenceExplained}
                 </p>
               ) : null}
+              {shopPercent !== null && deal.oldPrice ? (
+                shopPercent - deal.discountPercent >= 5 ? (
+                  <p className="mt-3 flex items-start gap-2 text-sm font-semibold">
+                    <AlertTriangle className="mt-0.5 size-4 shrink-0 text-primary" />
+                    {t(p.claimHigher, {
+                      shop: deal.shopName,
+                      shopPercent,
+                      old: fmt.euro(deal.oldPrice),
+                      ourPercent: Math.round(deal.discountPercent),
+                    })}
+                  </p>
+                ) : (
+                  <p className="mt-3 flex items-start gap-2 text-sm text-muted-foreground">
+                    <BadgeCheck className="mt-0.5 size-4 shrink-0 text-savings" />
+                    {t(p.claimMatches, { shop: deal.shopName, shopPercent })}
+                  </p>
+                )
+              ) : null}
             </div>
 
-            <a
-              href={link.href}
-              target="_blank"
-              rel={link.rel}
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "h-14 text-lg font-black",
-              )}
-            >
-              {t(p.viewAt, { shop: deal.shopName })}{" "}
-              <ExternalLink className="size-5" />
-            </a>
+            <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+              <a
+                href={link.href}
+                target="_blank"
+                rel={link.rel}
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "h-14 text-lg font-black",
+                )}
+              >
+                {t(p.viewAt, { shop: deal.shopName })}{" "}
+                <ExternalLink className="size-5" />
+              </a>
+              <WatchButton
+                id={deal.id}
+                name={deal.name}
+                full
+                className="h-14"
+              />
+            </div>
 
             <ul className="flex flex-col gap-3 text-base">
               <li className="flex items-center gap-2">
@@ -194,6 +260,23 @@ async function ProductDetail({
                   })}
                 </li>
               ) : null}
+              {shop?.country ? (
+                <li className="flex items-center gap-2">
+                  <Globe className="size-5 text-muted-foreground" />
+                  {t(p.shopCountry, { country: fmt.country(shop.country) })}
+                </li>
+              ) : null}
+              {shipping !== null ? (
+                <li className="flex items-center gap-2">
+                  <Truck className="size-5 text-muted-foreground" />
+                  {shipping === 0
+                    ? p.shippingFree
+                    : t(p.shipping, {
+                        cost: fmt.euro(shipping),
+                        total: fmt.euro(deal.price + shipping),
+                      })}
+                </li>
+              ) : null}
               {deal.shopCategory ? (
                 <li className="flex items-center gap-2">
                   <Tag className="size-5 text-muted-foreground" />
@@ -209,22 +292,164 @@ async function ProductDetail({
           </div>
         </div>
 
-        <section className="mt-12 rounded-2xl border bg-card p-5">
-          <h2 className="mb-4 text-2xl font-black">{p.history}</h2>
-          <Suspense
-            fallback={
-              <div className="h-64 animate-pulse rounded-xl bg-muted" />
-            }
-          >
-            <History id={deal.id} />
-          </Suspense>
-        </section>
+        <Suspense fallback={null}>
+          <Alternatives deal={deal} />
+        </Suspense>
+
+        <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_22rem]">
+          <section className="min-w-0 rounded-2xl border bg-card p-5">
+            <h2 className="mb-4 text-2xl font-black">{p.history}</h2>
+            <Suspense
+              fallback={
+                <div className="h-64 animate-pulse rounded-xl bg-muted" />
+              }
+            >
+              <History id={deal.id} />
+            </Suspense>
+          </section>
+          <PriceAlertForm
+            key={lang}
+            productId={deal.id}
+            price={deal.price}
+            className="self-start"
+          />
+        </div>
       </div>
 
       <Suspense fallback={null}>
         <Related deal={deal} />
       </Suspense>
     </div>
+  );
+}
+
+/** Hetzelfde artikelnummer bij andere webshops (zie getAlternatives()). */
+async function Alternatives({ deal }: { deal: Deal }) {
+  const others = await getAlternatives(deal);
+  if (others.length === 0) return null;
+  const { dict, href, fmt } = await getI18n();
+  const p = dict.product;
+  const c = dict.comparePage;
+  const all = [deal, ...others].sort((a, b) => a.price - b.price);
+  const cheapest = all[0];
+  return (
+    <section className="mt-12 rounded-2xl border bg-card p-5">
+      <h2 className="text-2xl font-black">{p.alternatives}</h2>
+      <p className="mb-4 text-muted-foreground">
+        {t(p.alternativesText, { sku: deal.sku ?? "" })}
+      </p>
+      <ol className="divide-y rounded-xl border">
+        {all.map((o) => {
+          const self = o.id === deal.id;
+          const link = outLink(o);
+          const shipping = shippingCost(o.shopSlug, o.price);
+          return (
+            <li
+              key={o.id}
+              className={cn(
+                "flex flex-wrap items-center gap-x-4 gap-y-1 px-3 py-2.5",
+                self && "bg-accent/60",
+              )}
+            >
+              <ShopBadge
+                slug={o.shopSlug}
+                name={o.shopName}
+                className="min-w-0 flex-1 basis-40"
+              />
+              <span className="flex items-center gap-2 text-sm">
+                {self ? (
+                  <span className="font-semibold">{p.thisOffer}</span>
+                ) : null}
+                {o.inStock === false ? (
+                  <span className="text-muted-foreground">{c.outOfStock}</span>
+                ) : null}
+                {o.isDeal && o.discountPercent > 0 ? (
+                  <span className="rounded bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
+                    {t(c.deal, { percent: Math.round(o.discountPercent) })}
+                  </span>
+                ) : null}
+              </span>
+              <span className="ml-auto flex items-baseline gap-2 tabular-nums">
+                {o.id === cheapest.id ? (
+                  <span className="text-xs font-bold text-savings uppercase">
+                    {c.cheapest}
+                  </span>
+                ) : (
+                  <span className="text-sm text-muted-foreground">
+                    +{fmt.euro(o.price - cheapest.price)}
+                  </span>
+                )}
+                <span className="text-lg font-bold">{fmt.euro(o.price)}</span>
+                {shipping ? (
+                  <span className="text-xs text-muted-foreground">
+                    {t(c.plusShipping, { cost: fmt.euro(shipping) })}
+                  </span>
+                ) : null}
+              </span>
+              <span className="flex items-center gap-1">
+                {self ? null : (
+                  <Link
+                    href={href(`/product/${o.id}`)}
+                    className={buttonVariants({ variant: "ghost", size: "sm" })}
+                  >
+                    {c.history}
+                  </Link>
+                )}
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel={link.rel}
+                  aria-label={`${c.toShop}: ${o.shopName}`}
+                  className={buttonVariants({
+                    variant: "outline",
+                    size: "icon",
+                  })}
+                >
+                  <ExternalLink className="size-4" />
+                </a>
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
+/** Structured data voor zoekmachines (Product + Offer, schema.org). */
+function ProductJsonLd({ deal, url }: { deal: Deal; url: string }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: deal.name,
+    url,
+    ...(deal.imageUrl ? { image: [deal.imageUrl] } : {}),
+    ...(deal.brand ? { brand: { "@type": "Brand", name: deal.brand } } : {}),
+    ...(deal.sku ? { sku: deal.sku } : {}),
+    offers: {
+      "@type": "Offer",
+      url: deal.url,
+      price: deal.price.toFixed(2),
+      priceCurrency: "EUR",
+      itemCondition: "https://schema.org/NewCondition",
+      ...(deal.inStock === null
+        ? {}
+        : {
+            availability: deal.inStock
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+          }),
+      seller: { "@type": "Organization", name: deal.shopName },
+    },
+  };
+  return (
+    <script
+      type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD; "<" wordt ge-escaped.
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+      }}
+    />
   );
 }
 

@@ -61,7 +61,10 @@ const SELECT = {
 
 type Row = Prisma.ProductGetPayload<{ select: typeof SELECT }>;
 
-/** "TRX-3655 " → "TRX3655"; te korte of generieke nummers tellen niet als koppeling. */
+/**
+ * "TRX-3655 " → "TRX3655"; te korte of generieke nummers tellen niet als koppeling.
+ * Houd gelijk met normalize_sku() in prisma/migrations/20261018000000_features (kolom sku_norm).
+ */
 export function normalizeSku(sku: string | null | undefined): string | null {
   const s = (sku ?? "").toUpperCase().replace(/[^A-Z0-9]/g, "");
   return s.length >= 4 && /\d/.test(s) ? s : null;
@@ -142,16 +145,17 @@ export async function comparePrices(
     truncated = matches.length > MAX_MATCHES;
     const found = matches.slice(0, MAX_MATCHES);
 
-    // Hetzelfde artikelnummer bij andere shops, ook als de naam daar niet op de zoekterm lijkt.
-    const skus = [
+    // Hetzelfde artikelnummer bij andere shops, ook als de naam daar niet op de zoekterm lijkt
+    // en de shop het nummer anders schrijft ("TRX-3655" / "TRX3655"): kolom sku_norm.
+    const norms = [
       ...new Set(
         found
-          .map((r) => r.sku?.trim())
-          .filter((s): s is string => Boolean(s && normalizeSku(s))),
+          .map((r) => normalizeSku(r.sku))
+          .filter((s): s is string => s !== null),
       ),
     ].slice(0, 100);
     const siblings =
-      skus.length === 0
+      norms.length === 0
         ? []
         : await prisma.product.findMany({
             select: SELECT,
@@ -159,11 +163,7 @@ export async function comparePrices(
               AND: [
                 base,
                 { id: { notIn: found.map((r) => r.id) } },
-                {
-                  OR: skus.map((sku) => ({
-                    sku: { equals: sku, mode: "insensitive" as const },
-                  })),
-                },
+                { skuNorm: { in: norms } },
               ],
             },
             take: 300,

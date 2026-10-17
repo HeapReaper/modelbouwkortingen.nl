@@ -36,7 +36,7 @@ export async function DealsBrowser({
 }: {
   searchParams: SearchParams;
   basePath: string;
-  fixed?: Pick<DealFilters, "category" | "shop">;
+  fixed?: Pick<DealFilters, "category" | "shop" | "brands">;
 }) {
   const { dict, href, fmt } = await getI18n();
   const localBase = href(basePath);

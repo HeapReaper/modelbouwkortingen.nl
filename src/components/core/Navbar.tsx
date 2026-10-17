@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Heart, Search } from "lucide-react";
 import Link from "next/link";
 import { LanguageSwitcher } from "@/components/core/LanguageSwitcher";
 import { Logo } from "@/components/core/Logo";
@@ -18,6 +18,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { WatchlistCount } from "@/components/watchlist/WatchButton";
 import { useI18n } from "@/i18n/client";
 import { CATEGORIES } from "@/lib/categories";
 import { SHOPS } from "@/lib/shops";
@@ -122,6 +123,18 @@ export default function Navbar() {
                     }
                   />
                 </li>
+                <li>
+                  <NavigationMenuLink
+                    render={
+                      <Link
+                        href={href("/merken")}
+                        className="font-semibold text-primary"
+                      >
+                        {dict.nav.allBrands}
+                      </Link>
+                    }
+                  />
+                </li>
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
@@ -150,6 +163,18 @@ export default function Navbar() {
           )}
         >
           <Search className="size-5" />
+        </Link>
+        <Link
+          href={href("/volglijst")}
+          aria-label={dict.nav.watchlist}
+          title={dict.nav.watchlist}
+          className={cn(
+            buttonVariants({ variant: "ghost", size: "icon-lg" }),
+            "relative",
+          )}
+        >
+          <Heart className="size-5" />
+          <WatchlistCount />
         </Link>
         <LanguageSwitcher />
         {/* Op smalle schermen staat de themakeuze in het menu, zodat alles past. */}

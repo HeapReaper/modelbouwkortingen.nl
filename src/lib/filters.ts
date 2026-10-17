@@ -12,6 +12,8 @@ export type DealFilters = {
   q?: string;
   category?: string;
   shop?: string;
+  /** Exacte merknamen (alle schrijfwijzen van één merk); niet via de URL, zie /merk/[slug]. */
+  brands?: string[];
   minDiscount?: number;
   minPrice?: number;
   maxPrice?: number;

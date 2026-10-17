@@ -25,6 +25,14 @@ export function ShopBadge({
         </span>
       ) : null}
       {name}
+      {shop?.country ? (
+        <span
+          title={shop.country}
+          className="rounded bg-muted px-1 py-px text-[10px] leading-tight font-bold text-muted-foreground"
+        >
+          {shop.country}
+        </span>
+      ) : null}
     </span>
   );
 }

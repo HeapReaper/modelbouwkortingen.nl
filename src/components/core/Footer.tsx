@@ -7,7 +7,7 @@ import { CATEGORIES } from "@/lib/categories";
 import { SHOPS } from "@/lib/shops";
 
 export default async function Footer() {
-  const { dict, href } = await getI18n();
+  const { lang, dict, href } = await getI18n();
   const f = dict.footer;
   return (
     <footer className="mt-16 border-t bg-card">
@@ -47,8 +47,15 @@ export default async function Footer() {
           links={[
             { href: href("/aanbiedingen"), label: f.allDeals },
             { href: href("/prijsvergelijker"), label: f.compare },
+            { href: href("/merken"), label: f.brands },
+            { href: href("/volglijst"), label: f.watchlist },
             { href: href("/nieuwsbrief"), label: f.newsletter },
             { href: href("/discord"), label: f.discord },
+            {
+              href: `/feed.xml${lang === "nl" ? "" : `?lang=${lang}`}`,
+              label: f.rss,
+              plain: true,
+            },
             { href: href("/over"), label: f.howItWorks },
             { href: href("/over#webshops"), label: f.forShops },
             { href: href("/contact"), label: f.contact },
@@ -72,7 +79,8 @@ function FooterList({
   links,
 }: {
   title: string;
-  links: { href: string; label: string }[];
+  /** `plain`: gewone link, geen pagina van de app (zoals de RSS-feed). */
+  links: { href: string; label: string; plain?: boolean }[];
 }) {
   return (
     <div>
@@ -80,12 +88,21 @@ function FooterList({
       <ul className="flex flex-col gap-2">
         {links.map((l) => (
           <li key={l.href}>
-            <Link
-              href={l.href}
-              className="text-muted-foreground hover:text-foreground hover:underline"
-            >
-              {l.label}
-            </Link>
+            {l.plain ? (
+              <a
+                href={l.href}
+                className="text-muted-foreground hover:text-foreground hover:underline"
+              >
+                {l.label}
+              </a>
+            ) : (
+              <Link
+                href={l.href}
+                className="text-muted-foreground hover:text-foreground hover:underline"
+              >
+                {l.label}
+              </Link>
+            )}
           </li>
         ))}
       </ul>

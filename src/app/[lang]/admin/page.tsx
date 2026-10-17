@@ -1,9 +1,11 @@
 import {
   Activity,
   AlertTriangle,
+  BellRing,
   Database,
   Gauge,
   Mail,
+  MousePointerClick,
   Package,
   Tag,
 } from "lucide-react";
@@ -34,6 +36,8 @@ import {
 } from "@/lib/admin";
 import { formatDateTime, formatNumber, timeAgo } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
+const DAY_MS = 24 * 60 * 60_000;
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -74,8 +78,19 @@ async function AdminContent() {
       {!data.db.ok ? (
         <Notice tone="warn">Database: {data.db.error}</Notice>
       ) : null}
+      {data.crawlAlerts
+        .filter(
+          (a) => Date.now() - new Date(a.startedAt).getTime() < 2 * DAY_MS,
+        )
+        .map((a) => (
+          <Notice key={a.runId} tone="warn">
+            Crawler: <strong>{a.shop}</strong> zag in ronde #{a.runId} (
+            {formatDateTime(a.startedAt)}) maar {formatNumber(a.seen)}{" "}
+            producten, normaal ±{formatNumber(a.baseline)}. Werkt de parser nog?
+          </Notice>
+        ))}
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Kpi icon={Tag} label="Deals live" value={formatNumber(totalDeals)} />
         <Kpi
           icon={Package}
@@ -108,6 +123,18 @@ async function AdminContent() {
           sub={live.ok ? `uptime ${live.uptime}` : undefined}
           tone={live.ok ? "good" : "bad"}
         />
+        <Kpi
+          icon={MousePointerClick}
+          label="Kliks naar shops (7d)"
+          value={formatNumber(data.clicks.last7)}
+          sub={`${formatNumber(data.clicks.last30)} in 30 dagen`}
+        />
+        <Kpi
+          icon={BellRing}
+          label="Prijsalarmen actief"
+          value={formatNumber(data.priceAlerts.active)}
+          sub={`${formatNumber(data.priceAlerts.unconfirmed)} onbevestigd · ${formatNumber(data.priceAlerts.sent30)} verstuurd (30d)`}
+        />
       </div>
 
       <CrawlerSection live={live} />
@@ -122,6 +149,7 @@ async function AdminContent() {
       </Section>
 
       <RunsSection data={data} />
+      <ClicksSection data={data} />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_1.4fr]">
         <Section title="Categorieën">
@@ -414,6 +442,89 @@ function RunsSection({ data }: { data: AdminOverview }) {
               ))}
             </TableBody>
           </Table>
+        </div>
+      )}
+    </Section>
+  );
+}
+
+const SOURCE_LABELS: Record<string, string> = {
+  site: "Website",
+  mail: "Kortingsmail",
+  discord: "Discord",
+  alarm: "Prijsalarm",
+  feed: "RSS-feed",
+};
+
+function ClicksSection({ data }: { data: AdminOverview }) {
+  const c = data.clicks;
+  return (
+    <Section
+      title="Kliks naar webshops"
+      icon={<MousePointerClick className="size-5 text-primary" />}
+    >
+      {c.last30 === 0 ? (
+        <Empty>Nog geen kliks in de afgelopen 30 dagen.</Empty>
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Shop</TableHead>
+                  <TableHead className="text-right">7 dagen</TableHead>
+                  <TableHead className="text-right">30 dagen</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {c.byShop.map((s) => (
+                  <TableRow key={s.slug}>
+                    <TableCell className="font-semibold">{s.name}</TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {formatNumber(s.last7)}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {formatNumber(s.last30)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <p className="mt-3 flex flex-wrap gap-2 text-sm">
+              {c.bySource.map((s) => (
+                <Badge key={s.source} variant="secondary">
+                  {SOURCE_LABELS[s.source] ?? s.source}:{" "}
+                  {formatNumber(s.clicks)}
+                </Badge>
+              ))}
+            </p>
+          </div>
+          <div>
+            <h3 className="mb-2 font-bold">Meest geklikt (30 dagen)</h3>
+            <ol className="flex flex-col gap-2">
+              {c.topProducts.map((p) => (
+                <li
+                  key={p.id}
+                  className="flex items-baseline justify-between gap-3 rounded-lg border p-2"
+                >
+                  <span className="min-w-0">
+                    <a
+                      href={`/product/${p.id}`}
+                      className="line-clamp-1 font-semibold hover:underline"
+                    >
+                      {p.name}
+                    </a>
+                    <span className="text-sm text-muted-foreground">
+                      {p.shop}
+                    </span>
+                  </span>
+                  <span className="shrink-0 font-bold tabular-nums">
+                    {formatNumber(p.clicks)}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       )}
     </Section>

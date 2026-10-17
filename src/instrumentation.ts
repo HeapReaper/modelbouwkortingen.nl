@@ -2,7 +2,10 @@
  * Planner: roept elke paar minuten de eigen routes aan voor
  *   - /api/nieuwsbrief/verzenden: de dagelijkse kortingsmail. Die bepaalt zelf of het tijd is en
  *     verstuurt hooguit één keer per dag (slot in de database);
- *   - /api/discord/verzenden: nieuwe deals naar de Discord-webhooks (eigen cursor per abonnee).
+ *   - /api/discord/verzenden: nieuwe deals naar de Discord-webhooks (eigen cursor per abonnee);
+ *   - /api/prijsalarm/controleren: prijsalarmen waarvan de doelprijs bereikt is (claim per alarm);
+ *   - /api/crawler/controleren: crawl-rondes die opvallend weinig producten zagen (één melding
+ *     per ronde, primary key op run_id).
  * Meerdere servers of herstarts zijn dus geen probleem.
  *
  * Bewust een HTTP-aanroep en geen directe import: deze code draait buiten de
@@ -36,6 +39,8 @@ export async function register() {
     Promise.all([
       call("/api/nieuwsbrief/verzenden"),
       call("/api/discord/verzenden"),
+      call("/api/prijsalarm/controleren"),
+      call("/api/crawler/controleren"),
     ]);
   setTimeout(tick, 60_000).unref();
   setInterval(tick, 5 * 60_000).unref();

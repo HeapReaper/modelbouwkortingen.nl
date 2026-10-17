@@ -1,14 +1,16 @@
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { DiscountBadge } from "@/components/deals/DiscountBadge";
+import { LowestBadge } from "@/components/deals/LowestBadge";
 import { PriceBlock } from "@/components/deals/PriceBlock";
 import { ProductImage } from "@/components/deals/ProductImage";
 import { ShopBadge } from "@/components/deals/ShopBadge";
 import { buttonVariants } from "@/components/ui/button";
+import { WatchButton } from "@/components/watchlist/WatchButton";
 import { getI18n } from "@/i18n/server";
 import { t } from "@/i18n/translate";
 import type { Deal } from "@/lib/deals";
-import { productLink } from "@/lib/shops";
+import { outLink } from "@/lib/shops";
 import { cn } from "@/lib/utils";
 
 export async function DealCard({
@@ -21,7 +23,7 @@ export async function DealCard({
   eager?: boolean;
 }) {
   const { dict, href } = await getI18n();
-  const link = productLink(deal);
+  const link = outLink(deal);
   return (
     <article
       className={cn(
@@ -37,9 +39,16 @@ export async function DealCard({
           eager={eager}
           className="aspect-[4/3] w-full"
         />
-        <DiscountBadge
-          percent={deal.discountPercent}
-          className="absolute top-3 right-0"
+        {deal.isDeal ? (
+          <DiscountBadge
+            percent={deal.discountPercent}
+            className="absolute top-3 right-0"
+          />
+        ) : null}
+        <WatchButton
+          id={deal.id}
+          name={deal.name}
+          className="absolute top-2 left-2 z-10"
         />
         {deal.inStock === false ? (
           <span className="absolute bottom-2 left-2 rounded-md bg-foreground/85 px-2 py-0.5 text-xs font-semibold text-background">
@@ -61,12 +70,20 @@ export async function DealCard({
             {deal.name}
           </Link>
         </h3>
-        <PriceBlock
-          price={deal.price}
-          referencePrice={deal.referencePrice}
-          discountAmount={deal.discountAmount}
-          className="mt-auto"
-        />
+        <div className="mt-auto flex flex-col gap-2">
+          {deal.isDeal ? (
+            <LowestBadge lowest={deal.lowest} />
+          ) : (
+            <span className="text-sm font-semibold text-muted-foreground">
+              {dict.deals.noLongerDeal}
+            </span>
+          )}
+          <PriceBlock
+            price={deal.price}
+            referencePrice={deal.isDeal ? deal.referencePrice : null}
+            discountAmount={deal.isDeal ? deal.discountAmount : 0}
+          />
+        </div>
         <a
           href={link.href}
           target="_blank"

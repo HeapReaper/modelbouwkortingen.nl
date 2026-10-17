@@ -1,6 +1,7 @@
 import "server-only";
 
 import { connection } from "next/server";
+import { type CrawlAlertRow, getCrawlAlerts } from "@/lib/crawl-alerts";
 import { getPrisma, isDbConfigured, num } from "@/lib/db";
 
 export type ShopOverview = {
@@ -40,6 +41,20 @@ export type ContactMessage = {
   createdAt: string;
 };
 
+export type ClickStats = {
+  last7: number;
+  last30: number;
+  byShop: { slug: string; name: string; last7: number; last30: number }[];
+  bySource: { source: string; clicks: number }[];
+  topProducts: { id: number; name: string; shop: string; clicks: number }[];
+};
+
+export type AlertStats = {
+  active: number;
+  unconfirmed: number;
+  sent30: number;
+};
+
 export type AdminOverview = {
   db: {
     ok: boolean;
@@ -53,6 +68,9 @@ export type AdminOverview = {
   categories: { slug: string; deals: number; products: number }[];
   messages: ContactMessage[];
   unhandledMessages: number;
+  clicks: ClickStats;
+  crawlAlerts: CrawlAlertRow[];
+  priceAlerts: AlertStats;
 };
 
 const iso = (d: Date | null) => d?.toISOString() ?? null;
@@ -78,11 +96,16 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     categories: [],
     messages: [],
     unhandledMessages: 0,
+    clicks: { last7: 0, last30: 0, byShop: [], bySource: [], topProducts: [] },
+    crawlAlerts: [],
+    priceAlerts: { active: 0, unconfirmed: 0, sent30: 0 },
   };
   if (!isDbConfigured()) return empty;
   const prisma = getPrisma();
   const days = lastDays(14);
   const since = new Date(`${days[0]}T00:00:00Z`);
+  const ago7 = new Date(Date.now() - 7 * DAY_MS);
+  const ago30 = new Date(Date.now() - 30 * DAY_MS);
   try {
     const [
       shops,
@@ -98,6 +121,14 @@ export async function getAdminOverview(): Promise<AdminOverview> {
       priceHistoryRows,
       unhandledMessages,
       [size],
+      clicks7,
+      clicks30,
+      clickSources,
+      clickProducts,
+      crawlAlerts,
+      alertsActive,
+      alertsUnconfirmed,
+      alertsSent30,
     ] = await Promise.all([
       prisma.shop.findMany({
         select: { id: true, slug: true, name: true, enabled: true },
@@ -151,7 +182,52 @@ export async function getAdminOverview(): Promise<AdminOverview> {
       prisma.$queryRaw<
         { size: bigint }[]
       >`SELECT pg_database_size(current_database()) AS size`,
+      prisma.outboundClick.groupBy({
+        by: ["shopId"],
+        where: { createdAt: { gte: ago7 } },
+        _count: true,
+      }),
+      prisma.outboundClick.groupBy({
+        by: ["shopId"],
+        where: { createdAt: { gte: ago30 } },
+        _count: true,
+      }),
+      prisma.outboundClick.groupBy({
+        by: ["source"],
+        where: { createdAt: { gte: ago30 } },
+        _count: true,
+      }),
+      prisma.outboundClick.groupBy({
+        by: ["productId"],
+        where: { createdAt: { gte: ago30 }, productId: { not: null } },
+        _count: { _all: true },
+        orderBy: { _count: { productId: "desc" } },
+        take: 10,
+      }),
+      getCrawlAlerts(10),
+      prisma.priceAlert.count({
+        where: {
+          confirmedAt: { not: null },
+          triggeredAt: null,
+          cancelledAt: null,
+        },
+      }),
+      prisma.priceAlert.count({
+        where: { confirmedAt: null, cancelledAt: null },
+      }),
+      prisma.priceAlert.count({ where: { triggeredAt: { gte: ago30 } } }),
     ]);
+    const topIds = clickProducts.flatMap((c) => c.productId ?? []);
+    const topNames = new Map(
+      (
+        await prisma.product.findMany({
+          select: { id: true, name: true, shop: { select: { name: true } } },
+          where: { id: { in: topIds } },
+        })
+      ).map((p) => [p.id, p]),
+    );
+    const clicks7ByShop = new Map(clicks7.map((c) => [c.shopId, c._count]));
+    const clicks30ByShop = new Map(clicks30.map((c) => [c.shopId, c._count]));
 
     const byShop = <T extends { shopId: number }>(rows: T[]) =>
       new Map(rows.map((r) => [r.shopId, r]));
@@ -225,6 +301,41 @@ export async function getAdminOverview(): Promise<AdminOverview> {
         createdAt: m.createdAt.toISOString(),
       })),
       unhandledMessages,
+      clicks: {
+        last7: clicks7.reduce((n, c) => n + c._count, 0),
+        last30: clicks30.reduce((n, c) => n + c._count, 0),
+        byShop: shops
+          .map((s) => ({
+            slug: s.slug,
+            name: s.name,
+            last7: clicks7ByShop.get(s.id) ?? 0,
+            last30: clicks30ByShop.get(s.id) ?? 0,
+          }))
+          .filter((s) => s.last30 > 0)
+          .sort((a, b) => b.last30 - a.last30),
+        bySource: clickSources
+          .map((c) => ({ source: c.source, clicks: c._count }))
+          .sort((a, b) => b.clicks - a.clicks),
+        topProducts: clickProducts.flatMap((c) => {
+          const p = c.productId ? topNames.get(c.productId) : undefined;
+          return p
+            ? [
+                {
+                  id: num(p.id),
+                  name: p.name,
+                  shop: p.shop.name,
+                  clicks: c._count._all,
+                },
+              ]
+            : [];
+        }),
+      },
+      crawlAlerts,
+      priceAlerts: {
+        active: alertsActive,
+        unconfirmed: alertsUnconfirmed,
+        sent30: alertsSent30,
+      },
     };
   } catch (err) {
     return {

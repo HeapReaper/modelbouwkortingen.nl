@@ -31,6 +31,9 @@ export const nl = {
     themeDark: "Donker",
     themeSystem: "Systeem",
     language: "Taal kiezen",
+    watchlist: "Volglijst",
+    brands: "Merken",
+    allBrands: "Alle merken bekijken →",
   },
   search: {
     placeholder: "Zoek een deal…",
@@ -57,6 +60,9 @@ export const nl = {
     rights: "Alle rechten voorbehouden.",
     disclaimer:
       "Prijzen en voorraad kunnen afwijken. De prijs in de webshop is altijd leidend.",
+    brands: "Merken",
+    watchlist: "Volglijst",
+    rss: "RSS-feed",
   },
   breadcrumb: { label: "Kruimelpad", home: "Home" },
   categories: {
@@ -168,6 +174,9 @@ export const nl = {
     pagination: "Paginering",
     previous: "Vorige",
     next: "Volgende",
+    noLongerDeal: "Nu geen aanbieding",
+    lowestEver: "Laagste prijs ooit",
+    lowest30: "Laagste prijs in 30 dagen",
   },
   filters: {
     category: "Categorie",
@@ -299,7 +308,8 @@ export const nl = {
     toShop: "Naar shop",
     history: "Prijsverloop",
     disclaimer:
-      "We koppelen producten op artikelnummer; controleer bij de webshop of het precies hetzelfde product is. Verzendkosten zijn niet meegerekend.",
+      "We koppelen producten op artikelnummer; controleer bij de webshop of het precies hetzelfde product is. Verzendkosten staan erbij als we ze kennen.",
+    plusShipping: "+ {cost} verzending",
   },
   notFound: {
     title: "Oeps! Deze pagina bestaat niet.",
@@ -328,6 +338,18 @@ export const nl = {
     related: "Meer {category} met korting",
     relatedFallback: "deals",
     chartPrice: "Prijs",
+    noDeal: "Op dit moment geen aanbieding: dit is de gewone prijs.",
+    claimHigher:
+      "{shop} noemt {shopPercent}% korting (van {old}), maar volgens onze eigen prijshistorie is het {ourPercent}%.",
+    claimMatches:
+      "{shop} noemt zelf {shopPercent}% korting; dat klopt met wat wij zagen.",
+    shopCountry: "Webshop uit {country}",
+    shipping: "Verzending naar Nederland: {cost} (totaal {total})",
+    shippingFree: "Gratis verzending naar Nederland",
+    alternatives: "Ook verkrijgbaar bij",
+    alternativesText:
+      "Hetzelfde artikelnummer ({sku}) bij andere webshops, goedkoopste eerst. Controleer even of het precies hetzelfde product is.",
+    thisOffer: "Dit aanbod",
   },
   about: {
     title: "Hoe werkt het?",
@@ -474,6 +496,9 @@ export const nl = {
     unsubscribePending: "Afmelden…",
     unsubscribeOk: "Je bent afgemeld en krijgt geen kortingsmails meer.",
     unsubscribeInvalid: "Deze afmeldlink is onbekend.",
+    preferencesHint:
+      "Alleen deals uit bepaalde categorieën of webshops? Stel je {link} in.",
+    preferencesLink: "voorkeuren",
   },
   discord: {
     metaTitle: "Deals in je Discord",
@@ -543,7 +568,7 @@ export const nl = {
     embedHistory: "Prijsverloop",
     welcomeTitle: "Gekoppeld met Modelbouwkortingen.nl",
     welcomeText:
-      "Vanaf nu verschijnt hier elke nieuwe RC-deal zodra we hem spotten.\n\nGeen meldingen meer? [Afmelden]({url}) of verwijder de webhook in Discord.",
+      "Vanaf nu verschijnt hier elke nieuwe RC-deal zodra we hem spotten.\n\nAlleen bepaalde categorieën of webshops? [Voorkeuren instellen]({prefs}).\n\nGeen meldingen meer? [Afmelden]({url}) of verwijder de webhook in Discord.",
   },
   mail: {
     confirmSubject: "Bevestig je aanmelding voor de dagelijkse RC-deals",
@@ -568,6 +593,126 @@ export const nl = {
     digestFooter:
       "Je ontvangt deze mail omdat je je hebt aangemeld voor de dagelijkse deals van {site}. Prijzen en voorraad kunnen inmiddels gewijzigd zijn; de prijs in de webshop is leidend. Sommige links zijn affiliate-links.",
     unsubscribe: "Afmelden",
+    preferences: "Voorkeuren aanpassen",
+    alertConfirmSubject: "Bevestig je prijsalarm voor {name}",
+    alertConfirmPreheader: "We mailen je zodra het {target} of minder kost.",
+    alertConfirmHeading: "Bevestig je prijsalarm",
+    alertConfirmText:
+      "Je wilt een mail zodra {name} bij {shop} {target} of minder kost (nu {price}). Bevestig je alarm, dan houden we de prijs voor je in de gaten.",
+    alertConfirmButton: "Prijsalarm bevestigen",
+    alertConfirmFooter:
+      "Heb je dit alarm niet aangevraagd? Dan kun je deze mail negeren: zonder bevestiging sturen we je niets.",
+    alertCancel: "Alarm annuleren",
+    alertSubject: "Prijsalarm: {name} nu {price}",
+    alertHeading: "Je doelprijs is bereikt!",
+    alertText: "{name} kost nu {price} bij {shop}. Je doelprijs was {target}.",
+    alertCta: "Bekijk bij {shop}",
+    alertHistory: "Prijsverloop bekijken",
+    alertFooter:
+      "Dit was een eenmalig prijsalarm van {site}; over dit product krijg je geen mail meer. Prijzen en voorraad kunnen inmiddels gewijzigd zijn; de prijs in de webshop is leidend. Sommige links zijn affiliate-links.",
+  },
+  priceAlert: {
+    title: "Prijsalarm",
+    text: "Nu {price}. Kies je doelprijs, dan mailen we je één keer zodra die bereikt is.",
+    targetLabel: "Doelprijs (€)",
+    emailLabel: "E-mailadres",
+    submit: "Alarm instellen",
+    submitting: "Instellen…",
+    privacy:
+      "Je krijgt eerst een bevestigingsmail. We gebruiken je adres alleen voor dit alarm.",
+    created:
+      "Check je inbox en bevestig je prijsalarm. Daarna houden we de prijs voor je in de gaten.",
+    invalidEmail: "Vul een geldig e-mailadres in.",
+    invalidPrice: "Vul een geldige doelprijs in.",
+    targetTooHigh: "Kies een doelprijs onder de huidige prijs.",
+    notFound: "Dit product bestaat niet (meer).",
+    tooMany:
+      "Je hebt al veel lopende prijsalarmen. Wacht tot er een afgaat of annuleer er een.",
+    rateLimited:
+      "Je hebt al een paar alarmen ingesteld. Probeer het later opnieuw.",
+    failed: "Er ging iets mis. Probeer het later opnieuw.",
+    unavailable: "Prijsalarmen zijn nu niet beschikbaar.",
+    confirmTitle: "Prijsalarm bevestigen",
+    confirmDescription:
+      "Nog één klik en we houden de prijs voor je in de gaten.",
+    confirmCrumb: "Prijsalarm bevestigen",
+    confirmMissing:
+      "Deze link is onvolledig. Open de link uit de bevestigingsmail opnieuw.",
+    confirmButton: "Ja, houd de prijs voor mij in de gaten",
+    confirmPending: "Bevestigen…",
+    confirmOk:
+      "Je prijsalarm staat aan. We mailen je zodra je doelprijs bereikt is.",
+    confirmInvalid:
+      "Deze link werkt niet (meer). Misschien is het alarm al afgegaan of geannuleerd.",
+    cancelTitle: "Prijsalarm annuleren",
+    cancelDescription:
+      "Na het annuleren krijg je over dit product geen mail meer.",
+    cancelCrumb: "Prijsalarm annuleren",
+    cancelMissing:
+      "Deze link is onvolledig. Gebruik de link uit de bevestigingsmail.",
+    cancelButton: "Alarm annuleren",
+    cancelPending: "Annuleren…",
+    cancelOk: "Je prijsalarm is geannuleerd.",
+    cancelInvalid: "Deze link is onbekend of het alarm is al geannuleerd.",
+  },
+  preferences: {
+    crumb: "Voorkeuren",
+    mailTitle: "Voorkeuren voor de kortingsmail",
+    mailDescription:
+      "Kies welke deals je in de dagelijkse mail wilt zien. Zijn er die dag geen nieuwe deals die passen, dan sturen we niets.",
+    discordTitle: "Voorkeuren voor Discord",
+    discordDescription: "Kies welke deals er in je Discord-kanaal verschijnen.",
+    webhook: "Webhook: {name}",
+    categories: "Categorieën",
+    categoriesHint:
+      "Vink aan wat je wilt zien. Niets of alles aangevinkt = alle categorieën, ook nieuwe.",
+    shops: "Webshops",
+    shopsHint:
+      "Niets of alles aangevinkt = alle webshops. Liever korte levertijden? Kies dan alleen shops uit {countries}.",
+    minDiscount: "Minimale korting",
+    save: "Voorkeuren opslaan",
+    saving: "Opslaan…",
+    saved: "Opgeslagen! Je nieuwe voorkeuren gelden vanaf de volgende deal.",
+    invalid:
+      "Deze link is onbekend of je bent afgemeld. Gebruik de link uit je laatste mail of Discord-bericht.",
+  },
+  watchlist: {
+    title: "Volglijst",
+    description:
+      "Producten die je met het hartje bewaart. De lijst staat alleen in deze browser; je hebt geen account nodig.",
+    empty:
+      "Je volglijst is nog leeg. Tik op het hartje bij een product om het hier te bewaren.",
+    hint: "De prijzen zijn actueel. Wil je een mail als een prijs zakt? Stel dan een prijsalarm in op de productpagina.",
+    save: "Volgen",
+    saved: "Gevolgd",
+    addLabel: "{name} op je volglijst zetten",
+    removeLabel: "{name} van je volglijst halen",
+  },
+  brandPage: {
+    notFound: "Merk niet gevonden",
+    metaTitle: "{name} aanbiedingen",
+    metaDescription:
+      "{count} producten van {name} met minstens €5 of 5% korting bij Nederlandse en Europese RC-webshops.",
+    title: "{name} in de aanbieding",
+    description:
+      "Alle producten van {name} die nu minstens €5 of 5% goedkoper zijn, bij alle webshops die we volgen.",
+    compare: "Vergelijk alle prijzen van {name} →",
+  },
+  brandsPage: {
+    title: "Merken",
+    metaDescription:
+      "RC-merken met korting, van Traxxas en Arrma tot Spektrum en CNHL.",
+    description:
+      "Alle merken die nu in de aanbieding zijn. Kies een merk om al zijn deals te zien.",
+    popular: "Populaire merken",
+    all: "Alle merken van A tot Z",
+  },
+  feed: {
+    title: "Nieuwe RC-aanbiedingen",
+    titleFiltered: "{subject} met korting",
+    description: "De nieuwste RC-producten met minstens €5 of 5% korting.",
+    item: "{price} bij {shop} (was {was}, -{percent}%)",
+    toShop: "Bekijk bij {shop}",
   },
 };
 

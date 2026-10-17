@@ -8,7 +8,8 @@ import { getPrisma } from "@/lib/db";
 import { type Deal, getDealsAfter } from "@/lib/deals";
 import { formatters } from "@/lib/format";
 import { SITE_URL, siteUrl } from "@/lib/newsletter-mail";
-import { productLink } from "@/lib/shops";
+import type { DealPreferences } from "@/lib/preferences";
+import { outLink } from "@/lib/shops";
 
 /**
  * Discord-meldingen: abonnees geven een webhook-URL op en krijgen elke nieuwe deal als embed.
@@ -57,7 +58,7 @@ type PostResult =
   | { ok: true }
   | { ok: false; gone: boolean; retryAfterMs?: number; error: string };
 
-async function postWebhook(
+export async function postWebhook(
   url: string,
   body: { content?: string; embeds: DiscordEmbed[] },
 ): Promise<PostResult> {
@@ -114,7 +115,7 @@ export function dealEmbed(deal: Deal, lang: Locale): DiscordEmbed {
   ];
   return {
     title: truncate(deal.name, 256),
-    url: productLink(deal).href,
+    url: outLink(deal, "discord", SITE_URL).href,
     description: `${t(d.embedAt, { shop: deal.shopName })} · [${d.embedHistory}](${siteUrl(lang, `/product/${deal.id}`)})`,
     color: BRAND_COLOR,
     fields,
@@ -175,13 +176,15 @@ export async function subscribeWebhook(
   });
 
   const d = getDictionary(lang).discord;
-  const unsubscribe = `${siteUrl(lang, "/discord/afmelden")}?token=${encodeURIComponent(sub.token)}`;
+  const q = `?token=${encodeURIComponent(sub.token)}`;
+  const unsubscribe = siteUrl(lang, "/discord/afmelden") + q;
+  const preferences = siteUrl(lang, "/discord/voorkeuren") + q;
   const welcome = await postWebhook(parsed.url, {
     embeds: [
       {
         title: d.welcomeTitle,
         url: siteUrl(lang, "/aanbiedingen?sort=nieuw"),
-        description: t(d.welcomeText, { url: unsubscribe }),
+        description: t(d.welcomeText, { url: unsubscribe, prefs: preferences }),
         color: BRAND_COLOR,
         footer: { text: "Modelbouwkortingen.nl" },
       },
@@ -195,6 +198,40 @@ export async function subscribeWebhook(
     return { ok: false, error: "cannotPost" };
   }
   return { ok: true, name: info.name ?? null };
+}
+
+/** Voorkeuren van een webhook, of null bij een onbekende of uitgezette link. */
+export async function getWebhookPreferences(
+  token: string,
+): Promise<(DealPreferences & { name: string | null }) | null> {
+  const sub = await getPrisma().discordSubscriber.findUnique({
+    where: { token },
+    select: {
+      name: true,
+      categories: true,
+      shops: true,
+      minDiscount: true,
+      disabledAt: true,
+    },
+  });
+  if (!sub || sub.disabledAt) return null;
+  return {
+    name: sub.name,
+    categories: sub.categories,
+    shops: sub.shops,
+    minDiscount: sub.minDiscount,
+  };
+}
+
+export async function saveWebhookPreferences(
+  token: string,
+  prefs: DealPreferences,
+): Promise<boolean> {
+  const { count } = await getPrisma().discordSubscriber.updateMany({
+    where: { token, disabledAt: null },
+    data: prefs,
+  });
+  return count > 0;
 }
 
 export async function unsubscribeWebhook(token: string): Promise<boolean> {
@@ -236,6 +273,7 @@ export async function postNewDeals(): Promise<DiscordRunResult> {
         sub.cursorAt,
         sub.cursorProductId,
         DEALS_PER_RUN,
+        sub,
       );
       for (let i = 0; i < deals.length; i += EMBEDS_PER_MESSAGE) {
         const batch = deals.slice(i, i + EMBEDS_PER_MESSAGE);

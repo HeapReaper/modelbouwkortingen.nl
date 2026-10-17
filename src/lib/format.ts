@@ -26,6 +26,7 @@ export function formatters(lang: Locale) {
     day: "numeric",
     month: "short",
   });
+  const regions = new Intl.DisplayNames(locale, { type: "region" });
   return {
     euro: (value: number, opts?: { round?: boolean }) =>
       (opts?.round ? euroRound : euro).format(value),
@@ -40,6 +41,14 @@ export function formatters(lang: Locale) {
     dateTime: (iso: string | null | undefined) =>
       iso ? dateTime.format(new Date(iso)) : "—",
     shortDate: (date: Date | number) => shortDate.format(date),
+    /** "DE" → "Duitsland" / "Germany" / "Deutschland". */
+    country: (code: string) => {
+      try {
+        return regions.of(code) ?? code;
+      } catch {
+        return code;
+      }
+    },
   };
 }
 

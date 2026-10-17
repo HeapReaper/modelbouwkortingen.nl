@@ -28,6 +28,9 @@ export const en: Dictionary = {
     themeDark: "Dark",
     themeSystem: "System",
     language: "Choose language",
+    watchlist: "Watchlist",
+    brands: "Brands",
+    allBrands: "View all brands →",
   },
   search: {
     placeholder: "Search for a deal…",
@@ -54,6 +57,9 @@ export const en: Dictionary = {
     rights: "All rights reserved.",
     disclaimer:
       "Prices and stock may differ. The price in the shop always applies.",
+    brands: "Brands",
+    watchlist: "Watchlist",
+    rss: "RSS feed",
   },
   breadcrumb: { label: "Breadcrumb", home: "Home" },
   categories: {
@@ -166,6 +172,9 @@ export const en: Dictionary = {
     pagination: "Pagination",
     previous: "Previous",
     next: "Next",
+    noLongerDeal: "Not on sale right now",
+    lowestEver: "Lowest price ever",
+    lowest30: "Lowest price in 30 days",
   },
   filters: {
     category: "Category",
@@ -295,7 +304,8 @@ export const en: Dictionary = {
     toShop: "Go to shop",
     history: "Price history",
     disclaimer:
-      "We match products by part number; check at the shop that it is exactly the same product. Shipping costs are not included.",
+      "We match products by part number; check at the shop that it is exactly the same product. Shipping costs are shown when we know them.",
+    plusShipping: "+ {cost} shipping",
   },
   notFound: {
     title: "Oops! This page doesn't exist.",
@@ -324,6 +334,18 @@ export const en: Dictionary = {
     related: "More {category} on sale",
     relatedFallback: "deals",
     chartPrice: "Price",
+    noDeal: "Not on sale right now: this is the regular price.",
+    claimHigher:
+      "{shop} advertises {shopPercent}% off (from {old}), but according to our own price history it's {ourPercent}%.",
+    claimMatches:
+      "{shop} itself advertises {shopPercent}% off; that matches what we saw.",
+    shopCountry: "Shop based in {country}",
+    shipping: "Shipping to the Netherlands: {cost} (total {total})",
+    shippingFree: "Free shipping to the Netherlands",
+    alternatives: "Also available at",
+    alternativesText:
+      "The same part number ({sku}) at other shops, cheapest first. Do check that it's exactly the same product.",
+    thisOffer: "This offer",
   },
   about: {
     title: "How does it work?",
@@ -471,6 +493,9 @@ export const en: Dictionary = {
     unsubscribeOk:
       "You've been unsubscribed and won't get any more deals emails.",
     unsubscribeInvalid: "This unsubscribe link is unknown.",
+    preferencesHint:
+      "Only want deals from certain categories or shops? Set your {link}.",
+    preferencesLink: "preferences",
   },
   discord: {
     metaTitle: "Deals in your Discord",
@@ -542,7 +567,7 @@ export const en: Dictionary = {
     embedHistory: "Price history",
     welcomeTitle: "Connected to Modelbouwkortingen.nl",
     welcomeText:
-      "From now on every new RC deal will appear here as soon as we spot it.\n\nNo more notifications? [Unsubscribe]({url}) or delete the webhook in Discord.",
+      "From now on every new RC deal will appear here as soon as we spot it.\n\nOnly certain categories or shops? [Set preferences]({prefs}).\n\nNo more notifications? [Unsubscribe]({url}) or delete the webhook in Discord.",
   },
   mail: {
     confirmSubject: "Confirm your subscription to the daily RC deals",
@@ -565,5 +590,126 @@ export const en: Dictionary = {
     digestFooter:
       "You're receiving this email because you signed up for the daily deals from {site}. Prices and stock may have changed since; the price in the shop applies. Some links are affiliate links.",
     unsubscribe: "Unsubscribe",
+    preferences: "Change preferences",
+    alertConfirmSubject: "Confirm your price alert for {name}",
+    alertConfirmPreheader:
+      "We'll email you as soon as it costs {target} or less.",
+    alertConfirmHeading: "Confirm your price alert",
+    alertConfirmText:
+      "You'd like an email as soon as {name} costs {target} or less at {shop} (now {price}). Confirm your alert and we'll keep an eye on the price for you.",
+    alertConfirmButton: "Confirm price alert",
+    alertConfirmFooter:
+      "Didn't request this alert? Then you can ignore this email: without confirmation we won't send you anything.",
+    alertCancel: "Cancel alert",
+    alertSubject: "Price alert: {name} now {price}",
+    alertHeading: "Your target price has been reached!",
+    alertText:
+      "{name} now costs {price} at {shop}. Your target price was {target}.",
+    alertCta: "View at {shop}",
+    alertHistory: "View price history",
+    alertFooter:
+      "This was a one-time price alert from {site}; you won't receive any more emails about this product. Prices and stock may have changed since; the price in the shop applies. Some links are affiliate links.",
+  },
+  priceAlert: {
+    title: "Price alert",
+    text: "Now {price}. Pick your target price and we'll email you once as soon as it's reached.",
+    targetLabel: "Target price (€)",
+    emailLabel: "Email address",
+    submit: "Set alert",
+    submitting: "Setting…",
+    privacy:
+      "You'll get a confirmation email first. We only use your address for this alert.",
+    created:
+      "Check your inbox and confirm your price alert. After that we'll keep an eye on the price for you.",
+    invalidEmail: "Please enter a valid email address.",
+    invalidPrice: "Please enter a valid target price.",
+    targetTooHigh: "Choose a target price below the current price.",
+    notFound: "This product no longer exists.",
+    tooMany:
+      "You already have a lot of active price alerts. Wait for one to go off or cancel one.",
+    rateLimited: "You've already set a few alerts. Please try again later.",
+    failed: "Something went wrong. Please try again later.",
+    unavailable: "Price alerts are not available right now.",
+    confirmTitle: "Confirm price alert",
+    confirmDescription:
+      "One more click and we'll keep an eye on the price for you.",
+    confirmCrumb: "Confirm price alert",
+    confirmMissing:
+      "This link is incomplete. Open the link from the confirmation email again.",
+    confirmButton: "Yes, watch the price for me",
+    confirmPending: "Confirming…",
+    confirmOk:
+      "Your price alert is on. We'll email you as soon as your target price is reached.",
+    confirmInvalid:
+      "This link no longer works. Maybe the alert already went off or was cancelled.",
+    cancelTitle: "Cancel price alert",
+    cancelDescription:
+      "After cancelling you won't receive any emails about this product.",
+    cancelCrumb: "Cancel price alert",
+    cancelMissing:
+      "This link is incomplete. Use the link from the confirmation email.",
+    cancelButton: "Cancel alert",
+    cancelPending: "Cancelling…",
+    cancelOk: "Your price alert has been cancelled.",
+    cancelInvalid: "This link is unknown or the alert was already cancelled.",
+  },
+  preferences: {
+    crumb: "Preferences",
+    mailTitle: "Daily deals email preferences",
+    mailDescription:
+      "Choose which deals you want to see in the daily email. If there are no new matching deals that day, we won't send anything.",
+    discordTitle: "Discord preferences",
+    discordDescription: "Choose which deals appear in your Discord channel.",
+    webhook: "Webhook: {name}",
+    categories: "Categories",
+    categoriesHint:
+      "Tick what you want to see. Nothing or everything ticked = all categories, including new ones.",
+    shops: "Shops",
+    shopsHint:
+      "Nothing or everything ticked = all shops. Prefer short delivery times? Then only pick shops from {countries}.",
+    minDiscount: "Minimum discount",
+    save: "Save preferences",
+    saving: "Saving…",
+    saved: "Saved! Your new preferences apply from the next deal.",
+    invalid:
+      "This link is unknown or you've unsubscribed. Use the link from your latest email or Discord message.",
+  },
+  watchlist: {
+    title: "Watchlist",
+    description:
+      "Products you saved with the heart. The list is only stored in this browser; no account needed.",
+    empty:
+      "Your watchlist is still empty. Tap the heart on a product to save it here.",
+    hint: "Prices are up to date. Want an email when a price drops? Set a price alert on the product page.",
+    save: "Watch",
+    saved: "Watching",
+    addLabel: "Add {name} to your watchlist",
+    removeLabel: "Remove {name} from your watchlist",
+  },
+  brandPage: {
+    notFound: "Brand not found",
+    metaTitle: "{name} deals",
+    metaDescription:
+      "{count} {name} products with at least €5 or 5% off at Dutch and European RC shops.",
+    title: "{name} on sale",
+    description:
+      "All {name} products that are now at least €5 or 5% cheaper, at every shop we follow.",
+    compare: "Compare all {name} prices →",
+  },
+  brandsPage: {
+    title: "Brands",
+    metaDescription:
+      "Discounted RC brands, from Traxxas and Arrma to Spektrum and CNHL.",
+    description:
+      "All brands that are on sale right now. Pick a brand to see all its deals.",
+    popular: "Popular brands",
+    all: "All brands from A to Z",
+  },
+  feed: {
+    title: "New RC deals",
+    titleFiltered: "{subject} on sale",
+    description: "The newest RC products with at least €5 or 5% off.",
+    item: "{price} at {shop} (was {was}, -{percent}%)",
+    toShop: "View at {shop}",
   },
 };

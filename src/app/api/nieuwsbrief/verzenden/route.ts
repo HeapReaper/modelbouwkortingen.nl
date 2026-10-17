@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import { isAuthorized, safeEqual } from "@/lib/admin-auth";
+import { isCronAuthorized } from "@/lib/admin-auth";
 import { isDbConfigured } from "@/lib/db";
 import { sendDailyDigest } from "@/lib/newsletter";
 
@@ -10,13 +10,7 @@ import { sendDailyDigest } from "@/lib/newsletter";
  */
 export async function POST(request: Request) {
   await connection();
-  const auth = request.headers.get("authorization");
-  const cronToken = process.env.NEWSLETTER_CRON_TOKEN;
-  const viaCron =
-    Boolean(cronToken) &&
-    auth?.startsWith("Bearer ") === true &&
-    safeEqual(auth.slice(7), cronToken ?? "");
-  if (!viaCron && !isAuthorized(auth)) {
+  if (!isCronAuthorized(request.headers.get("authorization"))) {
     return Response.json({ error: "unauthorized" }, { status: 401 });
   }
   if (!isDbConfigured()) {
