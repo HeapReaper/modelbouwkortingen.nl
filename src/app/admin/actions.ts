@@ -3,7 +3,7 @@
 import { refresh } from "next/cache";
 import { headers } from "next/headers";
 import { isAuthorized } from "@/lib/admin-auth";
-import { isDbConfigured, query } from "@/lib/db";
+import { getPrisma, isDbConfigured } from "@/lib/db";
 
 async function assertAdmin() {
   if (!isAuthorized((await headers()).get("authorization")))
@@ -13,15 +13,15 @@ async function assertAdmin() {
 
 export async function toggleMessageHandled(id: number, handled: boolean) {
   await assertAdmin();
-  await query("UPDATE contact_messages SET handled = $2 WHERE id = $1", [
-    id,
-    handled,
-  ]);
+  await getPrisma().contactMessage.updateMany({
+    where: { id: BigInt(id) },
+    data: { handled },
+  });
   refresh();
 }
 
 export async function toggleShopEnabled(slug: string, enabled: boolean) {
   await assertAdmin();
-  await query("UPDATE shops SET enabled = $2 WHERE slug = $1", [slug, enabled]);
+  await getPrisma().shop.updateMany({ where: { slug }, data: { enabled } });
   refresh();
 }

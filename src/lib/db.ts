@@ -1,49 +1,52 @@
 import "server-only";
 
-import { Pool, types } from "pg";
-
-// NUMERIC (1700) en BIGINT/COUNT (20) als getal teruggeven in plaats van string.
-types.setTypeParser(1700, (v) => Number.parseFloat(v));
-types.setTypeParser(20, (v) => Number.parseInt(v, 10));
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@/generated/prisma/client";
 
 const globalForDb = globalThis as unknown as {
-  pgPool?: Pool;
-  pgPoolUrl?: string;
+  prisma?: PrismaClient;
+  prismaUrl?: string;
 };
 
 export function isDbConfigured() {
   return Boolean(process.env.DATABASE_URL);
 }
 
-export function getPool(): Pool {
+export function getPrisma(): PrismaClient {
   const url = process.env.DATABASE_URL;
   if (!url) {
     throw new Error("DATABASE_URL is niet ingesteld");
   }
   // `next dev` herlaadt .env.local zonder de module-globals te resetten: bouw de
-  // pool opnieuw op als de URL veranderd is, anders blijft de oude URL in gebruik.
-  if (globalForDb.pgPool && globalForDb.pgPoolUrl !== url) {
-    globalForDb.pgPool.end().catch(() => {});
-    globalForDb.pgPool = undefined;
+  // client opnieuw op als de URL veranderd is, anders blijft de oude URL in gebruik.
+  if (globalForDb.prisma && globalForDb.prismaUrl !== url) {
+    globalForDb.prisma.$disconnect().catch(() => {});
+    globalForDb.prisma = undefined;
   }
-  if (!globalForDb.pgPool) {
-    globalForDb.pgPoolUrl = url;
-    globalForDb.pgPool = new Pool({
-      connectionString: url,
-      max: Number(process.env.DATABASE_POOL_SIZE ?? 10),
-      idleTimeoutMillis: 30_000,
-      connectionTimeoutMillis: 5_000,
+  if (!globalForDb.prisma) {
+    globalForDb.prismaUrl = url;
+    globalForDb.prisma = new PrismaClient({
+      adapter: new PrismaPg({
+        connectionString: url,
+        max: Number(process.env.DATABASE_POOL_SIZE ?? 10),
+        idleTimeoutMillis: 30_000,
+        connectionTimeoutMillis: 5_000,
+      }),
     });
   }
-  return globalForDb.pgPool;
+  return globalForDb.prisma;
 }
 
-export async function query<T>(
-  text: string,
-  params: unknown[] = [],
-): Promise<T[]> {
-  const res = await getPool().query(text, params);
-  return res.rows as T[];
+/** Decimal/BigInt uit Prisma naar een gewoon getal (bedragen en tellingen passen ruim). */
+export function num(v: { toString(): string } | number | bigint): number;
+export function num(
+  v: { toString(): string } | number | bigint | null | undefined,
+): number | null;
+export function num(
+  v: { toString(): string } | number | bigint | null | undefined,
+): number | null {
+  if (v === null || v === undefined) return null;
+  return typeof v === "number" ? v : Number(v.toString());
 }
 
 /** Kleine in-memory cache zodat drukke pagina's niet elke request de database raken. */

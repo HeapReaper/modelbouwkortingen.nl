@@ -1,7 +1,7 @@
 import "server-only";
 
 import { connection } from "next/server";
-import { isDbConfigured, query } from "@/lib/db";
+import { getPrisma, isDbConfigured, num } from "@/lib/db";
 
 export type ShopOverview = {
   slug: string;
@@ -55,7 +55,18 @@ export type AdminOverview = {
   unhandledMessages: number;
 };
 
-const iso = (d: Date | null) => (d ? new Date(d).toISOString() : null);
+const iso = (d: Date | null) => d?.toISOString() ?? null;
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** De laatste n dagen (UTC), oudste eerst, als "YYYY-MM-DD". */
+function lastDays(n: number): string[] {
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+  return Array.from({ length: n }, (_, i) =>
+    new Date(today.getTime() - (n - 1 - i) * DAY_MS).toISOString().slice(0, 10),
+  );
+}
 
 export async function getAdminOverview(): Promise<AdminOverview> {
   await connection();
@@ -69,114 +80,151 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     unhandledMessages: 0,
   };
   if (!isDbConfigured()) return empty;
+  const prisma = getPrisma();
+  const days = lastDays(14);
+  const since = new Date(`${days[0]}T00:00:00Z`);
   try {
-    const [shops, runs, daily, categories, messages, meta] = await Promise.all([
-      query<{
-        slug: string;
-        name: string;
-        enabled: boolean;
-        products: number;
-        deals: number;
-        avg_discount: number | null;
-        last_seen: Date | null;
-        crawled_24h: number;
-      }>(`
-        SELECT s.slug, s.name, s.enabled, COUNT(p.id) AS products,
-               COUNT(p.id) FILTER (WHERE p.is_deal) AS deals,
-               ROUND(AVG(p.discount_percent) FILTER (WHERE p.is_deal), 1) AS avg_discount,
-               MAX(p.last_seen_at) AS last_seen,
-               COUNT(p.id) FILTER (WHERE p.last_crawled_at > now() - interval '24 hours') AS crawled_24h
-        FROM shops s LEFT JOIN products p ON p.shop_id = s.id
-        GROUP BY s.id ORDER BY s.name`),
-      query<{
-        id: number;
-        shop: string;
-        started_at: Date;
-        finished_at: Date | null;
-        status: string;
-        pages_fetched: number;
-        products_seen: number;
-        deals_found: number;
-        errors: number;
-        rate_limited: number;
-        message: string | null;
-      }>(`
-        SELECT r.id, s.name AS shop, r.started_at, r.finished_at, r.status, r.pages_fetched,
-               r.products_seen, r.deals_found, r.errors, r.rate_limited, r.message
-        FROM crawl_runs r JOIN shops s ON s.id = r.shop_id
-        ORDER BY r.started_at DESC LIMIT 25`),
-      query<{ day: Date; new_deals: number; pages: number }>(`
-        WITH days AS (
-          SELECT generate_series(date_trunc('day', now()) - interval '13 days', date_trunc('day', now()), interval '1 day') AS day
-        )
-        SELECT d.day,
-          (SELECT COUNT(*) FROM products p WHERE p.is_deal AND date_trunc('day', p.deal_since) = d.day) AS new_deals,
-          (SELECT COALESCE(SUM(pages_fetched), 0) FROM crawl_runs r WHERE date_trunc('day', r.started_at) = d.day) AS pages
-        FROM days d ORDER BY d.day`),
-      query<{ slug: string; deals: number; products: number }>(`
-        SELECT c.slug, COUNT(p.id) FILTER (WHERE p.is_deal) AS deals, COUNT(p.id) AS products
-        FROM categories c LEFT JOIN products p ON p.category_slug = c.slug
-        GROUP BY c.slug, c.sort_order ORDER BY c.sort_order`),
-      query<{
-        id: number;
-        name: string;
-        email: string;
-        subject: string;
-        message: string;
-        handled: boolean;
-        created_at: Date;
-      }>(`SELECT id, name, email, subject, message, handled, created_at FROM contact_messages
-          ORDER BY handled ASC, created_at DESC LIMIT 30`),
-      query<{ size: number; history: number; unhandled: number }>(`
-        SELECT pg_database_size(current_database()) AS size,
-               (SELECT COUNT(*) FROM price_history) AS history,
-               (SELECT COUNT(*) FROM contact_messages WHERE NOT handled) AS unhandled`),
+    const [
+      shops,
+      productsPerShop,
+      dealsPerShop,
+      crawledPerShop,
+      runs,
+      recentDeals,
+      recentRuns,
+      categories,
+      dealsPerCategory,
+      messages,
+      priceHistoryRows,
+      unhandledMessages,
+      [size],
+    ] = await Promise.all([
+      prisma.shop.findMany({
+        select: { id: true, slug: true, name: true, enabled: true },
+        orderBy: { name: "asc" },
+      }),
+      prisma.product.groupBy({
+        by: ["shopId"],
+        _count: true,
+        _max: { lastSeenAt: true },
+      }),
+      prisma.product.groupBy({
+        by: ["shopId"],
+        where: { isDeal: true },
+        _count: true,
+        _avg: { discountPercent: true },
+      }),
+      prisma.product.groupBy({
+        by: ["shopId"],
+        where: { lastCrawledAt: { gt: new Date(Date.now() - DAY_MS) } },
+        _count: true,
+      }),
+      prisma.crawlRun.findMany({
+        include: { shop: { select: { name: true } } },
+        orderBy: { startedAt: "desc" },
+        take: 25,
+      }),
+      prisma.product.findMany({
+        select: { dealSince: true },
+        where: { isDeal: true, dealSince: { gte: since } },
+      }),
+      prisma.crawlRun.findMany({
+        select: { startedAt: true, pagesFetched: true },
+        where: { startedAt: { gte: since } },
+      }),
+      prisma.category.findMany({
+        select: { slug: true, _count: { select: { products: true } } },
+        orderBy: { sortOrder: "asc" },
+      }),
+      prisma.product.groupBy({
+        by: ["categorySlug"],
+        where: { isDeal: true },
+        _count: true,
+      }),
+      prisma.contactMessage.findMany({
+        orderBy: [{ handled: "asc" }, { createdAt: "desc" }],
+        take: 30,
+      }),
+      prisma.priceHistory.count(),
+      prisma.contactMessage.count({ where: { handled: false } }),
+      // Geen ORM-equivalent voor de databasegrootte.
+      prisma.$queryRaw<
+        { size: bigint }[]
+      >`SELECT pg_database_size(current_database()) AS size`,
     ]);
+
+    const byShop = <T extends { shopId: number }>(rows: T[]) =>
+      new Map(rows.map((r) => [r.shopId, r]));
+    const products = byShop(productsPerShop);
+    const deals = byShop(dealsPerShop);
+    const crawled = byShop(crawledPerShop);
+    const catDeals = new Map(
+      dealsPerCategory.map((c) => [c.categorySlug, c._count]),
+    );
+
+    const newDeals = new Map<string, number>();
+    for (const d of recentDeals) {
+      const day = d.dealSince?.toISOString().slice(0, 10);
+      if (day) newDeals.set(day, (newDeals.get(day) ?? 0) + 1);
+    }
+    const pages = new Map<string, number>();
+    for (const r of recentRuns) {
+      const day = r.startedAt.toISOString().slice(0, 10);
+      pages.set(day, (pages.get(day) ?? 0) + r.pagesFetched);
+    }
+
     return {
       db: {
         ok: true,
-        sizeBytes: meta[0]?.size,
-        priceHistoryRows: meta[0]?.history,
+        sizeBytes: num(size?.size) ?? undefined,
+        priceHistoryRows,
       },
-      shops: shops.map((s) => ({
-        slug: s.slug,
-        name: s.name,
-        enabled: s.enabled,
-        products: s.products,
-        deals: s.deals,
-        avgDiscount: s.avg_discount,
-        lastSeen: iso(s.last_seen),
-        crawledLast24h: s.crawled_24h,
-      })),
+      shops: shops.map((s) => {
+        const avg = num(deals.get(s.id)?._avg.discountPercent);
+        return {
+          slug: s.slug,
+          name: s.name,
+          enabled: s.enabled,
+          products: products.get(s.id)?._count ?? 0,
+          deals: deals.get(s.id)?._count ?? 0,
+          avgDiscount: avg === null ? null : Math.round(avg * 10) / 10,
+          lastSeen: iso(products.get(s.id)?._max.lastSeenAt ?? null),
+          crawledLast24h: crawled.get(s.id)?._count ?? 0,
+        };
+      }),
       runs: runs.map((r) => ({
-        id: r.id,
-        shop: r.shop,
-        startedAt: new Date(r.started_at).toISOString(),
-        finishedAt: iso(r.finished_at),
+        id: num(r.id),
+        shop: r.shop.name,
+        startedAt: r.startedAt.toISOString(),
+        finishedAt: iso(r.finishedAt),
         status: r.status,
-        pagesFetched: r.pages_fetched,
-        productsSeen: r.products_seen,
-        dealsFound: r.deals_found,
+        pagesFetched: r.pagesFetched,
+        productsSeen: r.productsSeen,
+        dealsFound: r.dealsFound,
         errors: r.errors,
-        rateLimited: r.rate_limited,
+        rateLimited: r.rateLimited,
         message: r.message,
       })),
-      daily: daily.map((d) => ({
-        day: new Date(d.day).toISOString().slice(0, 10),
-        newDeals: d.new_deals,
-        pages: d.pages,
+      daily: days.map((day) => ({
+        day,
+        newDeals: newDeals.get(day) ?? 0,
+        pages: pages.get(day) ?? 0,
       })),
-      categories,
+      categories: categories.map((c) => ({
+        slug: c.slug,
+        deals: catDeals.get(c.slug) ?? 0,
+        products: c._count.products,
+      })),
       messages: messages.map((m) => ({
-        id: m.id,
+        id: num(m.id),
         name: m.name,
         email: m.email,
         subject: m.subject,
         message: m.message,
         handled: m.handled,
-        createdAt: new Date(m.created_at).toISOString(),
+        createdAt: m.createdAt.toISOString(),
       })),
-      unhandledMessages: meta[0]?.unhandled ?? 0,
+      unhandledMessages,
     };
   } catch (err) {
     return {

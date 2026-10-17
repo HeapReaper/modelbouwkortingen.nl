@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { type ContactState, SUBJECTS } from "@/app/contact/shared";
-import { isDbConfigured, query } from "@/lib/db";
+import { getPrisma, isDbConfigured } from "@/lib/db";
 
 // Eenvoudige rate limit per IP (in-memory, per serverproces).
 const recent = new Map<string, number[]>();
@@ -58,10 +58,14 @@ export async function sendContact(
     return { ok: true, message: "Bedankt! Je bericht is ontvangen." };
   }
   try {
-    await query(
-      "INSERT INTO contact_messages (name, email, subject, message) VALUES ($1, $2, $3, $4)",
-      [values.name, values.email, values.subject, values.message],
-    );
+    await getPrisma().contactMessage.create({
+      data: {
+        name: values.name,
+        email: values.email,
+        subject: values.subject,
+        message: values.message,
+      },
+    });
   } catch (err) {
     console.error("[contact] opslaan mislukt", err);
     return {
