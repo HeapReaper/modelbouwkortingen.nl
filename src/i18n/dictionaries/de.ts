@@ -281,6 +281,7 @@ export const de: Dictionary = {
       "Suche ein Produkt oder eine Artikelnummer und sieh sofort, in welchem Shop es am günstigsten ist.",
     placeholder: "z. B. Traxxas TRX-4M, CNHL 5000mAh 4S oder TRX3655",
     button: "Vergleichen",
+    comparing: "Wird verglichen…",
     inStock: "Nur auf Lager",
     sort: "Sortieren",
     sortPrice: "Niedrigster Preis",

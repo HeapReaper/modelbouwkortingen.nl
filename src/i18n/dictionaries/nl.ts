@@ -276,6 +276,7 @@ export const nl = {
       "Zoek een product of artikelnummer en zie meteen bij welke webshop het het goedkoopst is.",
     placeholder: "Bijv. Traxxas TRX-4M, CNHL 5000mAh 4S of TRX3655",
     button: "Vergelijken",
+    comparing: "Vergelijken…",
     inStock: "Alleen op voorraad",
     sort: "Sorteren",
     sortPrice: "Laagste prijs",

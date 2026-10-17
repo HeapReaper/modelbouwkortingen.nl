@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import Form from "next/form";
 import { Suspense } from "react";
 import { CompareCard } from "@/components/compare/CompareResults";
+import { CompareSubmit } from "@/components/compare/CompareSubmit";
 import { PageHeader } from "@/components/core/PageHeader";
-import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
@@ -98,13 +98,7 @@ async function CompareForm({ searchParams }: { searchParams: SearchParams }) {
             className="text-lg"
           />
         </InputGroup>
-        <Button
-          type="submit"
-          size="lg"
-          className="h-14 px-6 text-base font-bold"
-        >
-          {c.button}
-        </Button>
+        <CompareSubmit label={c.button} pendingLabel={c.comparing} />
       </div>
       <div className="flex flex-wrap items-center gap-4">
         <label className="flex items-center gap-2 text-base font-semibold">
