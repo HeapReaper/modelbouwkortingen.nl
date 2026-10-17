@@ -370,7 +370,7 @@ func (r *Runner) save(ctx context.Context, sr *shopRun, p parse.Product, fromPro
 
 // usedRe herkent tweedehands/occasion-producten: hun "van"-prijs is de nieuwprijs,
 // dus dat zijn geen echte kortingen.
-var usedRe = regexp.MustCompile(`(?i)\b(occasions?|tweedehands|2e hands|gebruikt|in (een )?(nette|goede|prima) staat|donor|verkocht|demo-?model|b-keuze|refurbished)\b`)
+var usedRe = regexp.MustCompile(`(?i)\b(occasions?|tweedehands|2e hands|gebruikt|in (een )?(nette|goede|prima) staat|donor|verkocht|demo-?model|b-keuze|refurbished|tweede kans)\b`)
 
 func isUsed(p parse.Product) bool {
 	return usedRe.MatchString(p.Name) || usedRe.MatchString(strings.Join(p.Breadcrumbs, " ")) ||

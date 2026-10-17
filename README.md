@@ -67,6 +67,7 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | MG-Modellbau (DE) | eigen systeem | `sitemapN.xml` (`.html`) | onderste categorieën, `?apg=N` |
 | Hacker Motor (DE) | e-vendo | geen sitemap: categorieboom volgen | categoriepagina's, `&Start=60` |
 | RC Motorsports | Shopify | `sitemap_products_N.xml` (microdata, geen JSON-LD) | `/products.json?limit=250` (~50 requests) |
+| Droneshop.nl | Magento 2 (yourstore) | `/sitemap/sitemap.xml` (URL's met `<image:image>`) | onderste categorieën onder `/drones`, `/accessoires`, `/onderdelen` + `/populair/aanbiedingen`, `?p=N` |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

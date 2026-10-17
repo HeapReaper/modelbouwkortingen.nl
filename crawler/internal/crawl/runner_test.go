@@ -11,6 +11,7 @@ func TestIsUsed(t *testing.T) {
 		"Maverick RC Ion XT 1/18 Truck RTR Compleet Met Accu (Donor Chassis Gebruikt / Niet Compleet)!",
 		"Arrma Mojave 4x4 4S in een nette staat met 1 jaar garantie",
 		"Verkocht !!",
+		"DJI Avata 2 - Fly Smart Combo (Three Batteries) (Tweede Kans)",
 	}
 	for _, n := range used {
 		if !isUsed(parse.Product{Name: n}) {

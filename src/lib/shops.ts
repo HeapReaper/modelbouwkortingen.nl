@@ -1,5 +1,6 @@
 import type { StaticImageData } from "next/image";
 import berlinskiLogo from "@/assets/shops/berlinski.svg";
+import droneshopLogo from "@/assets/shops/droneshop.png";
 import hackerLogo from "@/assets/shops/hacker.png";
 import hoelleinLogo from "@/assets/shops/hoellein.png";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
@@ -112,6 +113,16 @@ export const SHOPS: ShopInfo[] = [
       "RC-dealer in Nieuwerkerk aan den IJssel met o.a. Traxxas, Arrma, Axial en Tamiya, plus veel onderdelen.",
     logo: rcmotorsportsLogo,
     logoBg: "bg-[#191919]",
+  },
+  {
+    slug: "droneshop",
+    name: "Droneshop.nl",
+    url: "https://droneshop.nl",
+    domain: "droneshop.nl",
+    description:
+      "Dronespecialist met camera-, FPV- en racedrones, plus accu's, propellers en onderdelen.",
+    logo: droneshopLogo,
+    logoBg: "bg-white ring-1 ring-border",
   },
 ];
 

@@ -18,6 +18,9 @@ func TestClassify(t *testing.T) {
 		{nil, "", "", "Huina 1/14 graafmachine 22 kanaals", "werkvoertuigen"},
 		{nil, "", "", "Futaba T10J zender met R3008SB ontvanger", "zenders"},
 		{nil, "", "", "Pro Boat Blackjack 24 catamaran RTR boat", "boten"},
+		{nil, "Accessoires | RC | Remote controllers", "", "DJI RC 2", "zenders"},
+		{nil, "Onderdelen | Accu | Drones", "", "DJI Mini 4 Pro Intelligent Flight Battery", "accus-laders"},
+		{nil, "Drones | Camera | Luchtfotografie", "", "DJI Neo", "drones"},
 		{nil, "", "", "Iets compleet onbekends", "overig"},
 	}
 	for _, c := range cases {

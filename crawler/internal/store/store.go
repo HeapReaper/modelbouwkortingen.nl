@@ -234,7 +234,8 @@ func (s *Store) UpsertProduct(ctx context.Context, shopID int, p parse.Product, 
 		shopCategory = p.CategoryHint
 	}
 	// Een listing kent vaak alleen een grove categorie; overschrijf geen betere data van de productpagina.
-	if !fromProductPage && !res.IsNew && prevShopCategory != nil && *prevShopCategory != "" {
+	// Omgekeerd houden we de categorie uit de listing als de productpagina er zelf geen heeft (Droneshop).
+	if (!fromProductPage || shopCategory == "") && !res.IsNew && prevShopCategory != nil && *prevShopCategory != "" {
 		shopCategory = *prevShopCategory
 		category = prevCategory
 	}
