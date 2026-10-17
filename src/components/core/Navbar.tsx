@@ -74,7 +74,7 @@ export default function Navbar() {
               Webshops
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="flex w-96 flex-col gap-1 p-2">
+              <ul className="grid w-[40rem] grid-cols-2 gap-1 p-2">
                 {SHOPS.map((s) => (
                   <li key={s.slug}>
                     <NavigationMenuLink

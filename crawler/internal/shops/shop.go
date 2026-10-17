@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 
@@ -29,8 +30,26 @@ type Shop interface {
 	ParseProduct(pageURL string, doc *goquery.Document) *parse.Product
 }
 
+// RawListingParser is voor shops waarvan de listing-URL's geen HTML maar bv. JSON
+// teruggeven (Shopify /products.json). De runner gebruikt dan deze methode i.p.v. ParseListing.
+type RawListingParser interface {
+	ParseListingRaw(pageURL string, body []byte) (products []parse.Product, next string)
+}
+
+// ProductPageLimiter beperkt het aantal productpagina's per ronde voor shops die
+// (via Crawl-delay) heel langzaam gecrawld moeten worden; de prijzen komen dan uit de listings.
+type ProductPageLimiter interface {
+	MaxProductPages() int
+}
+
+// HostPolicy is voor shops die een eigen user-agent of een rustiger tempo nodig hebben.
+type HostPolicy interface {
+	UserAgent() string
+	MinDelay() time.Duration
+}
+
 func All() []Shop {
-	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}}
+	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}}
 }
 
 func BySlug(slugs []string) []Shop {
@@ -61,7 +80,7 @@ func discoverSaleLinks(ctx context.Context, f *fetch.Fetcher, home string, skip 
 	if err != nil {
 		return nil
 	}
-	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(resp.Body)))
+	doc, err := parse.Document(resp.Body, resp.Header.Get("Content-Type"))
 	if err != nil {
 		return nil
 	}
@@ -121,4 +140,56 @@ func unescapeJSONString(s string) string {
 		return parse.Clean(s)
 	}
 	return parse.Clean(out)
+}
+
+// fetchDoc haalt een HTML-pagina op en parset hem (met tekenset-conversie).
+func fetchDoc(ctx context.Context, f *fetch.Fetcher, u string) (*goquery.Document, string, error) {
+	resp, err := f.Get(ctx, u)
+	if err != nil {
+		return nil, "", err
+	}
+	doc, err := parse.Document(resp.Body, resp.Header.Get("Content-Type"))
+	return doc, resp.URL, err
+}
+
+// leafCategories houdt alleen de categorieën over die zelf geen subcategorieën hebben:
+// bovenliggende categorieën tonen dezelfde producten nog een keer. minDepth is het
+// minimale aantal padsegmenten (filtert losse pagina's als /versand).
+func leafCategories(urls []string, minDepth int) []string {
+	norm := func(u string) string { return strings.TrimRight(stripQuery(u), "/") }
+	var out []string
+	for _, u := range urls {
+		n := norm(u)
+		path := n
+		if i := strings.Index(path, "://"); i >= 0 {
+			path = path[i+3:]
+		}
+		if strings.Count(path, "/") < minDepth {
+			continue
+		}
+		leaf := true
+		for _, other := range urls {
+			if strings.HasPrefix(norm(other), n+"/") {
+				leaf = false
+				break
+			}
+		}
+		if leaf {
+			out = append(out, u)
+		}
+	}
+	return dedupe(out)
+}
+
+// inStockFrom geeft voorraadinformatie op basis van "groen/rood"-iconen (nil = onbekend).
+func inStockFrom(green, red bool) *bool {
+	switch {
+	case green:
+		t := true
+		return &t
+	case red:
+		f := false
+		return &f
+	}
+	return nil
 }

@@ -1,4 +1,9 @@
 import type { StaticImageData } from "next/image";
+import berlinskiLogo from "@/assets/shops/berlinski.svg";
+import hackerLogo from "@/assets/shops/hacker.png";
+import hoelleinLogo from "@/assets/shops/hoellein.png";
+import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
+import minizshopLogo from "@/assets/shops/minizshop.svg";
 import toemenLogo from "@/assets/shops/toemen.png";
 import toprcLogo from "@/assets/shops/toprc.svg";
 import wetronicLogo from "@/assets/shops/wetronic.png";
@@ -46,6 +51,56 @@ export const SHOPS: ShopInfo[] = [
       "Modelbouwspecialist met veel vliegtuigen, zenders, elektronica en onderdelen.",
     logo: wetronicLogo,
     logoBg: "bg-[#0b1530]",
+  },
+  {
+    slug: "minizshop",
+    name: "Mini-Zshop",
+    url: "https://mini-zshop.nl",
+    domain: "mini-zshop.nl",
+    description:
+      "Specialist in Kyosho Mini-Z en kleine RC-auto's, met veel onderdelen en Traxxas-parts.",
+    logo: minizshopLogo,
+    logoBg: "bg-[#800f0b]",
+  },
+  {
+    slug: "berlinski",
+    name: "Modellbau Berlinski",
+    url: "https://www.modellbau-berlinski.de",
+    domain: "modellbau-berlinski.de",
+    description:
+      "Grote Duitse modelbouwwinkel met RC-auto's, trucks, boten, vliegtuigen en veel onderdelen.",
+    logo: berlinskiLogo,
+    logoBg: "bg-white ring-1 ring-border",
+  },
+  {
+    slug: "hoellein",
+    name: "Hoellein",
+    url: "https://hoelleinshop.com",
+    domain: "hoelleinshop.com",
+    description:
+      "Duitse modelvliegspecialist met motoren, regelaars, servo's, propellers en bouwmaterialen.",
+    logo: hoelleinLogo,
+    logoBg: "bg-white ring-1 ring-border",
+  },
+  {
+    slug: "mgmodellbau",
+    name: "MG-Modellbau",
+    url: "https://www.mg-modellbau.de",
+    domain: "mg-modellbau.de",
+    description:
+      "Duitse modelbouwshop met veel zenders, ontvangers, elektronica en onderdelen.",
+    logo: mgmodellbauLogo,
+    logoBg: "bg-white ring-1 ring-border",
+  },
+  {
+    slug: "hacker",
+    name: "Hacker Motor",
+    url: "https://www.hacker-motor-shop.com",
+    domain: "hacker-motor-shop.com",
+    description:
+      "Duitse fabrikant van brushless motoren, met eigen webshop voor motoren, regelaars, accu's en modellen.",
+    logo: hackerLogo,
+    logoBg: "bg-white ring-1 ring-border",
   },
 ];
 

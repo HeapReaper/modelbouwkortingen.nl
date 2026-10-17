@@ -41,3 +41,26 @@ func TestClassifyNames(t *testing.T) {
 		}
 	}
 }
+
+// Duitse shops (Hoellein, Berlinski, MG-Modellbau, Hacker) gebruiken Duitse categorieën.
+func TestClassifyGerman(t *testing.T) {
+	cases := []struct {
+		crumbs     []string
+		hint, name string
+		want       string
+	}{
+		{[]string{"Regler", "Flug"}, "RC Elektronik und Akkus | Regler | Flug", "AVICON 20A S-BEC Brushless Regler", "elektronica"},
+		{[]string{"Fernsteuerungen", "Zubehör", "Jeti Zubehör"}, "", "Jeti USB-Adapter", "zenders"},
+		{[]string{"Elektromotoren", "Hacker Außenläufer", "Hacker A20"}, "", "A20-26 M EVO kv1130", "elektronica"},
+		{nil, " | carbon | klappluftschrauben", "CFK Klappluftschraube RFM 16,0x8,0", "onderdelen"},
+		{nil, " | akkus", "SLS LiPo Akku XTRON 1S/350mAh", "accus-laders"},
+		{[]string{"RC Flugzeuge und Zubehör", "Segelflugzeuge"}, "", "Multiplex Heron RR", "vliegtuigen"},
+		{[]string{"RC Schiffe und Zubehör", "Rennboote"}, "", "Pro Boat Recoil 2", "boten"},
+		{[]string{"Traxxas", "Aandrijving & transmissie", "Tandwielen / pinions / spur gears"}, "", "Traxxas TRX6790X Gear adapters", "onderdelen"},
+	}
+	for _, c := range cases {
+		if got := Classify(c.crumbs, c.hint, "", c.name); got != c.want {
+			t.Errorf("Classify(%v, %q, %q) = %q, want %q", c.crumbs, c.hint, c.name, got, c.want)
+		}
+	}
+}

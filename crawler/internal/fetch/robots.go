@@ -2,13 +2,17 @@ package fetch
 
 import (
 	"bufio"
+	"strconv"
 	"strings"
+	"time"
 )
 
 // Robots is een minimale robots.txt implementatie (RFC 9309): groepen per
 // user-agent, Allow/Disallow met `*` en `$` wildcards, langste match wint.
+// Crawl-delay (geen onderdeel van RFC 9309, maar veel gebruikt) wordt ook gerespecteerd.
 type Robots struct {
-	rules []robotsRule
+	rules      []robotsRule
+	CrawlDelay time.Duration
 }
 
 type robotsRule struct {
@@ -22,6 +26,7 @@ func ParseRobots(body string, agentToken string) *Robots {
 	type group struct {
 		agents []string
 		rules  []robotsRule
+		delay  time.Duration
 	}
 	var groups []*group
 	var cur *group
@@ -53,28 +58,38 @@ func ParseRobots(body string, agentToken string) *Robots {
 				continue
 			}
 			cur.rules = append(cur.rules, robotsRule{allow: key == "allow", pattern: val})
+		case "crawl-delay":
+			lastWasAgent = false
+			if cur == nil {
+				continue
+			}
+			if secs, err := strconv.ParseFloat(val, 64); err == nil && secs > 0 {
+				cur.delay = time.Duration(secs * float64(time.Second))
+			}
 		default:
 			lastWasAgent = false
 		}
 	}
 
-	var specific, wildcard []robotsRule
+	var specific, wildcard Robots
 	foundSpecific := false
 	for _, g := range groups {
 		for _, a := range g.agents {
 			switch {
 			case a == "*":
-				wildcard = append(wildcard, g.rules...)
+				wildcard.rules = append(wildcard.rules, g.rules...)
+				wildcard.CrawlDelay = max(wildcard.CrawlDelay, g.delay)
 			case agentToken != "" && strings.Contains(agentToken, a):
-				specific = append(specific, g.rules...)
+				specific.rules = append(specific.rules, g.rules...)
+				specific.CrawlDelay = max(specific.CrawlDelay, g.delay)
 				foundSpecific = true
 			}
 		}
 	}
 	if foundSpecific {
-		return &Robots{rules: specific}
+		return &specific
 	}
-	return &Robots{rules: wildcard}
+	return &wildcard
 }
 
 // Allowed meldt of het pad (inclusief query string) gecrawld mag worden.

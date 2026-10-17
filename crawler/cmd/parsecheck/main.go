@@ -10,14 +10,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/PuerkitoBio/goquery"
-
 	"github.com/heapreaper/modelbouwkortingen/crawler/internal/categorize"
+	"github.com/heapreaper/modelbouwkortingen/crawler/internal/parse"
 	"github.com/heapreaper/modelbouwkortingen/crawler/internal/shops"
 )
 
 func main() {
-	shopSlug := flag.String("shop", "", "toprc | toemen | wetronic")
+	shopSlug := flag.String("shop", "", "toprc | toemen | wetronic | hoellein | berlinski | minizshop | mgmodellbau | hacker")
 	kind := flag.String("kind", "product", "product | listing")
 	pageURL := flag.String("url", "", "URL van de pagina")
 	flag.Parse()
@@ -26,11 +25,11 @@ func main() {
 		fmt.Fprintln(os.Stderr, "gebruik: parsecheck -shop <slug> -kind product|listing -url <url> <bestand.html>")
 		os.Exit(2)
 	}
-	f, err := os.Open(flag.Arg(0))
+	body, err := os.ReadFile(flag.Arg(0))
 	if err != nil {
 		panic(err)
 	}
-	doc, err := goquery.NewDocumentFromReader(f)
+	doc, err := parse.Document(body, "")
 	if err != nil {
 		panic(err)
 	}
@@ -38,7 +37,13 @@ func main() {
 	enc.SetIndent("", "  ")
 	shop := list[0]
 	if *kind == "listing" {
-		products, next := shop.ParseListing(*pageURL, doc)
+		var products []parse.Product
+		var next string
+		if raw, ok := shop.(shops.RawListingParser); ok {
+			products, next = raw.ParseListingRaw(*pageURL, body)
+		} else {
+			products, next = shop.ParseListing(*pageURL, doc)
+		}
 		for _, p := range products {
 			fmt.Printf("%-8s %8.2f %8.2f  %-14s %s\n", p.ExternalID, p.Price, p.OldPrice,
 				categorize.Classify(p.Breadcrumbs, p.CategoryHint, p.URL, p.Name), p.Name)

@@ -1,6 +1,9 @@
 package fetch
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestRobots(t *testing.T) {
 	r := ParseRobots(`User-agent: AhrefsBot
@@ -32,5 +35,12 @@ Disallow: /*page/
 	}
 	if ParseRobots("User-agent: AhrefsBot\nDisallow: /\n", "AhrefsBot").Allowed("/x") {
 		t.Error("specifieke groep moet gelden")
+	}
+	if d := r.CrawlDelay; d != 0 {
+		t.Errorf("CrawlDelay = %v, want 0", d)
+	}
+	cd := ParseRobots("User-agent: *\nCrawl-delay: 10\nDisallow: /cart/\n\nUser-agent: AhrefsBot\nCrawl-delay: 30\n", "ModelbouwkortingenBot")
+	if cd.CrawlDelay != 10*time.Second || cd.Allowed("/cart/") {
+		t.Errorf("Crawl-delay groep: delay=%v cart=%v", cd.CrawlDelay, cd.Allowed("/cart/"))
 	}
 }

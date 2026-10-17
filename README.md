@@ -61,6 +61,11 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | TopRC | Magento 2 (Hyvä) | `/sitemap/sitemap.xml` (`*.html`) | categoriepagina's (`data-price-type="oldPrice"`), `/aanbiedingen/` |
 | Toemen | WooCommerce | `product-sitemapN.xml` | `<del>`/`<ins>` op categorie- en productpagina's, `/deals-2026` |
 | Wetronic | OpenCart (Journal) | uksb image-sitemaps | `route=product/special` (met paginering), `.product-price-old` |
+| Hoellein (DE) | Shopify | `sitemap_products_N.xml` | `/products.json?limit=250` (alle producten in ~41 requests) |
+| Modellbau Berlinski (DE) | eigen systeem | `/sitemap2.xml` (~45 MB; URL's met `<image:image>`) | onderste categorieën, `/categorie/2/` |
+| Mini-Zshop | WooCommerce | `minizshop-sitemap-products-N.xml` | onderste categorieën, `?product-page=N` |
+| MG-Modellbau (DE) | eigen systeem | `sitemapN.xml` (`.html`) | onderste categorieën, `?apg=N` |
+| Hacker Motor (DE) | e-vendo | geen sitemap: categorieboom volgen | categoriepagina's, `&Start=60` |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 
@@ -79,13 +84,19 @@ overgeslagen (hun "van"-prijs is de nieuwprijs), net als kortingen boven 90% (vr
 
 **Netjes crawlen:**
 - User-agent ziet eruit als Chrome, maar met `ModelbouwkortingenBot/1.0; +https://modelbouwkortingen.nl/over`, plus een `From`-header.
-- robots.txt wordt gerespecteerd, ook bij redirects.
+- robots.txt wordt gerespecteerd, ook bij redirects, inclusief `Crawl-delay` (Mini-Zshop: 10s per request;
+  daar halen we per ronde maar 300 productpagina's op, de prijzen komen uit de categoriepagina's).
+- Hoellein (Shopify/Cloudflare) blokkeert een Chrome-user-agent vanuit Go met HTTP 429; die shop krijgt
+  een eerlijke bot-user-agent en minimaal 1s tussen requests (`HostPolicy` in `crawler/internal/shops`).
 - Per host minimaal `CRAWLER_HOST_DELAY` (500ms) tussen requests; alle shops lopen parallel met `CRAWLER_WORKERS_PER_SHOP` workers.
 - **HTTP 429/503**: die host pauzeert 5s, bij een volgende 429 10s, 20s, … (max 5 min, of `Retry-After`).
   Ondertussen crawlen de andere shops gewoon door. Na een 429 gaat het tempo voor die host ook omlaag, en
   na een reeks succesvolle requests weer langzaam omhoog. (TopRC is hier gevoelig voor.)
 
 Live stats: `http://<crawler>:8080/stats` (JSON) en `/healthz`. De website toont ze op `/admin` via `CRAWLER_STATS_URL`.
+
+Productpagina's waarop geen product gevonden wordt (bv. uit het assortiment gehaald) staan met
+`LOG_LEVEL=debug` in de log.
 
 Werkt een shop zijn HTML om? Sla een pagina op en test de parser:
 

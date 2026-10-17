@@ -2,7 +2,6 @@
 package crawl
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -81,6 +80,9 @@ func (r *Runner) RunShop(ctx context.Context, shop shops.Shop) (err error) {
 	if u, e := url.Parse(shop.BaseURL()); e == nil {
 		sr.host = u.Host
 		sr.rateLimitedBase = r.stats.RateLimited(sr.host)
+		if hp, ok := shop.(shops.HostPolicy); ok {
+			r.fetcher.SetHostPolicy(sr.host, hp.UserAgent(), hp.MinDelay())
+		}
 	}
 	r.stats.UpdateShop(shop.Slug(), func(s *stats.ShopStats) {
 		*s = stats.ShopStats{Shop: shop.Slug(), Phase: "sitemap", RunStartedAt: start, LastRunAt: s.LastRunAt, LastRunStatus: s.LastRunStatus}
@@ -216,8 +218,12 @@ func (r *Runner) productQueue(ctx context.Context, sr *shopRun, products []sitem
 		}
 		return a.lastmod.After(b.lastmod)
 	})
-	if r.cfg.MaxProductPages > 0 && len(items) > r.cfg.MaxProductPages {
-		items = items[:r.cfg.MaxProductPages]
+	limit := r.cfg.MaxProductPages
+	if l, ok := sr.shop.(shops.ProductPageLimiter); ok && (limit == 0 || l.MaxProductPages() < limit) {
+		limit = l.MaxProductPages()
+	}
+	if limit > 0 && len(items) > limit {
+		items = items[:limit]
 	}
 	out := make([]string, len(items))
 	for i, it := range items {
@@ -256,17 +262,25 @@ feed:
 	wg.Wait()
 }
 
-func (r *Runner) get(ctx context.Context, sr *shopRun, u string) (*goquery.Document, string, error) {
+func (r *Runner) getRaw(ctx context.Context, sr *shopRun, u string) (*fetch.Response, error) {
 	resp, err := r.fetcher.Get(ctx, u)
 	if err != nil {
 		if !errors.Is(err, fetch.ErrNotFound) && !errors.Is(err, fetch.ErrRobots) && ctx.Err() == nil {
 			sr.errs.Add(1)
 			sr.log.Warn("ophalen mislukt", "url", u, "err", err)
 		}
-		return nil, "", err
+		return nil, err
 	}
 	sr.pages.Add(1)
-	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(resp.Body))
+	return resp, nil
+}
+
+func (r *Runner) get(ctx context.Context, sr *shopRun, u string) (*goquery.Document, string, error) {
+	resp, err := r.getRaw(ctx, sr, u)
+	if err != nil {
+		return nil, "", err
+	}
+	doc, err := parse.Document(resp.Body, resp.Header.Get("Content-Type"))
 	if err != nil {
 		sr.errs.Add(1)
 		return nil, "", err
@@ -278,11 +292,21 @@ func (r *Runner) crawlListing(ctx context.Context, sr *shopRun, seed string) {
 	defer r.stats.UpdateShop(sr.shop.Slug(), func(s *stats.ShopStats) { s.QueueDone++ })
 	u := seed
 	for page := 0; u != "" && page < maxListingPagesPerSeed && ctx.Err() == nil; page++ {
-		doc, finalURL, err := r.get(ctx, sr, u)
-		if err != nil {
-			return
+		var products []parse.Product
+		var next string
+		if raw, ok := sr.shop.(shops.RawListingParser); ok {
+			resp, err := r.getRaw(ctx, sr, u)
+			if err != nil {
+				return
+			}
+			products, next = raw.ParseListingRaw(resp.URL, resp.Body)
+		} else {
+			doc, finalURL, err := r.get(ctx, sr, u)
+			if err != nil {
+				return
+			}
+			products, next = sr.shop.ParseListing(finalURL, doc)
 		}
-		products, next := sr.shop.ParseListing(finalURL, doc)
 		for _, p := range products {
 			p.URL = parse.AbsURL(sr.shop.BaseURL(), p.URL)
 			r.save(ctx, sr, p, false)
@@ -305,6 +329,7 @@ func (r *Runner) crawlProduct(ctx context.Context, sr *shopRun, u string) {
 	}
 	p := sr.shop.ParseProduct(finalURL, doc)
 	if p == nil {
+		sr.log.Debug("geen product gevonden op pagina", "url", finalURL)
 		sr.parseErrs.Add(1)
 		r.stats.UpdateShop(sr.shop.Slug(), func(s *stats.ShopStats) { s.ParseErrors++ })
 		return

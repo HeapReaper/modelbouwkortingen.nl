@@ -6,6 +6,7 @@
 package fetch
 
 import (
+	"cmp"
 	"compress/gzip"
 	"context"
 	"errors"
@@ -29,7 +30,7 @@ var (
 )
 
 const (
-	maxBodySize  = 25 << 20 // 25 MB, ruim genoeg voor grote sitemaps
+	maxBodySize  = 64 << 20 // 64 MB: de sitemap van Berlinski is al ~45 MB
 	maxHostDelay = 15 * time.Second
 )
 
@@ -62,6 +63,8 @@ type host struct {
 
 	robotsOnce sync.Once
 	robots     *Robots
+	minDelay   time.Duration // Crawl-delay uit robots.txt of SetHostPolicy
+	userAgent  string        // afwijkende user-agent voor deze host ("" = standaard)
 }
 
 type Response struct {
@@ -119,6 +122,16 @@ func (f *Fetcher) host(h string) *host {
 	return hs
 }
 
+// SetHostPolicy geeft één host een eigen user-agent (leeg = standaard) en een minimale
+// tijd tussen requests (bovenop HostDelay en een eventuele Crawl-delay).
+func (f *Fetcher) SetHostPolicy(hostName, userAgent string, minDelay time.Duration) {
+	hs := f.host(hostName)
+	hs.mu.Lock()
+	defer hs.mu.Unlock()
+	hs.userAgent = userAgent
+	hs.minDelay = max(hs.minDelay, minDelay)
+}
+
 // Allowed controleert robots.txt voor de URL (robots.txt wordt één keer per host opgehaald).
 func (f *Fetcher) Allowed(ctx context.Context, rawURL string) bool {
 	u, err := url.Parse(rawURL)
@@ -132,6 +145,12 @@ func (f *Fetcher) Allowed(ctx context.Context, rawURL string) bool {
 		switch {
 		case err == nil && resp.StatusCode == http.StatusOK:
 			hs.robots = ParseRobots(string(resp.Body), "ModelbouwkortingenBot")
+			if d := hs.robots.CrawlDelay; d > 0 {
+				hs.mu.Lock()
+				hs.minDelay = max(hs.minDelay, d)
+				hs.mu.Unlock()
+				f.log.Info("crawl-delay uit robots.txt", "host", u.Host, "delay", hs.minDelay)
+			}
 		case err == nil && resp.StatusCode >= 400 && resp.StatusCode < 500:
 			hs.robots = &Robots{} // geen robots.txt = alles toegestaan
 		default:
@@ -242,8 +261,8 @@ func (f *Fetcher) recovered(hs *host, hostName string) {
 		hs.backoff = 0
 		cleared = true
 	}
-	if hs.okStreak%20 == 0 && hs.delay > f.opts.HostDelay {
-		hs.delay = max(f.opts.HostDelay, hs.delay*3/4)
+	if floor := max(f.opts.HostDelay, hs.minDelay); hs.okStreak%20 == 0 && hs.delay > floor {
+		hs.delay = max(floor, hs.delay*3/4)
 	}
 	hs.mu.Unlock()
 	if cleared {
@@ -263,8 +282,9 @@ func (f *Fetcher) reserve(hs *host) time.Time {
 	if hs.blockedUntil.After(at) {
 		at = hs.blockedUntil
 	}
-	if hs.delay < f.opts.HostDelay {
-		hs.delay = f.opts.HostDelay
+	floor := max(f.opts.HostDelay, hs.minDelay)
+	if hs.delay < floor {
+		hs.delay = floor
 	}
 	hs.next = at.Add(hs.delay)
 	return at
@@ -278,7 +298,10 @@ func (f *Fetcher) do(ctx context.Context, hs *host, hostName, rawURL string) (*R
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", f.opts.UserAgent)
+	hs.mu.Lock()
+	ua := cmp.Or(hs.userAgent, f.opts.UserAgent)
+	hs.mu.Unlock()
+	req.Header.Set("User-Agent", ua)
 	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	req.Header.Set("Accept-Language", "nl-NL,nl;q=0.9,en;q=0.6")
 	req.Header.Set("Accept-Encoding", "gzip")

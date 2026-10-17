@@ -12,14 +12,18 @@ import (
 )
 
 type URL struct {
-	Loc     string
-	LastMod time.Time
+	Loc      string
+	LastMod  time.Time
+	HasImage bool // <image:image> aanwezig; bij sommige shops het kenmerk van een productpagina
 }
 
 type urlset struct {
 	URLs []struct {
 		Loc     string `xml:"loc"`
 		LastMod string `xml:"lastmod"`
+		Images  []struct {
+			Loc string `xml:"loc"`
+		} `xml:"image"`
 	} `xml:"url"`
 	Sitemaps []struct {
 		Loc string `xml:"loc"`
@@ -62,7 +66,7 @@ func Fetch(ctx context.Context, f *fetch.Fetcher, sitemapURL string, follow func
 			if loc == "" {
 				continue
 			}
-			out = append(out, URL{Loc: loc, LastMod: parseTime(x.LastMod)})
+			out = append(out, URL{Loc: loc, LastMod: parseTime(x.LastMod), HasImage: len(x.Images) > 0})
 		}
 		return ctx.Err()
 	}

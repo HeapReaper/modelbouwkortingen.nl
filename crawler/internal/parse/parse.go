@@ -3,14 +3,18 @@
 package parse
 
 import (
+	"bytes"
 	"encoding/json"
 	"html"
 	"math"
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/PuerkitoBio/goquery"
+
+	"golang.org/x/net/html/charset"
 )
 
 // Product is wat een shop-parser over één product teruggeeft.
@@ -114,8 +118,9 @@ func JSONLD(doc *goquery.Document) (*JSONLDProduct, []string) {
 					product = jsonldProduct(obj)
 				}
 			case "breadcrumblist":
-				if crumbs == nil {
-					crumbs = jsonldCrumbs(obj)
+				// Sommige shops hebben meerdere lijsten (bv. "Home > Winkel" naast het echte pad).
+				if c := jsonldCrumbs(obj); len(c) > len(crumbs) {
+					crumbs = c
 				}
 			}
 		})
@@ -256,4 +261,19 @@ func AbsURL(base, ref string) string {
 	}
 	base = strings.TrimRight(base, "/")
 	return base + "/" + strings.TrimLeft(ref, "/")
+}
+
+// Document parset een HTML-pagina en zet daarbij een afwijkende tekenset (bv. Windows-1252)
+// om naar UTF-8, op basis van de Content-Type header of de <meta charset> in de pagina.
+func Document(body []byte, contentType string) (*goquery.Document, error) {
+	// Zonder charset in de header en met geldige UTF-8 niets omzetten: de detectie kijkt
+	// alleen naar de eerste 1024 bytes en valt anders terug op Windows-1252.
+	if !strings.Contains(strings.ToLower(contentType), "charset") && utf8.Valid(body) {
+		return goquery.NewDocumentFromReader(bytes.NewReader(body))
+	}
+	r, err := charset.NewReader(bytes.NewReader(body), contentType)
+	if err != nil {
+		r = bytes.NewReader(body)
+	}
+	return goquery.NewDocumentFromReader(r)
 }
