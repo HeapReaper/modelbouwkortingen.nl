@@ -177,6 +177,31 @@ export async function getTopDeals(limit = 12): Promise<Deal[]> {
 }
 
 /**
+ * Lopende deals die ná de cursor (deal_since, product-id) zijn ontstaan, oudste eerst (voor de
+ * Discord-meldingen). Het id breekt gelijke tijdstempels, zodat niets dubbel of overgeslagen wordt.
+ */
+export async function getDealsAfter(
+  cursorAt: Date,
+  cursorId: bigint,
+  limit: number,
+): Promise<Deal[]> {
+  if (!isDbConfigured()) return [];
+  const rows = await getPrisma().product.findMany({
+    select: DEAL_SELECT,
+    where: {
+      ...ACTIVE_DEAL,
+      OR: [
+        { dealSince: { gt: cursorAt } },
+        { dealSince: cursorAt, id: { gt: cursorId } },
+      ],
+    },
+    orderBy: [{ dealSince: "asc" }, { id: "asc" }],
+    take: limit,
+  });
+  return rows.map(toDeal);
+}
+
+/**
  * Deals die sinds `since` zijn ontstaan en nog lopen, hoogste korting eerst, met maximaal
  * `perShop` per webshop (voor de dagelijkse kortingsmail).
  */

@@ -17,8 +17,7 @@ export function NewsletterForm({ className }: { className?: string }) {
 
   if (state.ok) {
     return (
-      <p
-        role="status"
+      <output
         className={cn(
           "flex items-start gap-2 text-base font-semibold",
           className,
@@ -26,7 +25,7 @@ export function NewsletterForm({ className }: { className?: string }) {
       >
         <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-savings" />
         {state.message}
-      </p>
+      </output>
     );
   }
 

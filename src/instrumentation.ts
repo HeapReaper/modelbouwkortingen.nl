@@ -1,7 +1,9 @@
 /**
- * Planner voor de dagelijkse kortingsmail: roept elke paar minuten de eigen route
- * /api/nieuwsbrief/verzenden aan. Die bepaalt zelf of het tijd is en verstuurt hooguit één
- * keer per dag (slot in de database), dus meerdere servers of herstarts zijn geen probleem.
+ * Planner: roept elke paar minuten de eigen routes aan voor
+ *   - /api/nieuwsbrief/verzenden: de dagelijkse kortingsmail. Die bepaalt zelf of het tijd is en
+ *     verstuurt hooguit één keer per dag (slot in de database);
+ *   - /api/discord/verzenden: nieuwe deals naar de Discord-webhooks (eigen cursor per abonnee).
+ * Meerdere servers of herstarts zijn dus geen probleem.
  *
  * Bewust een HTTP-aanroep en geen directe import: deze code draait buiten de
  * React Server-omgeving, waar onze server-only modules (database, mail) niet geladen mogen
@@ -14,23 +16,27 @@ export async function register() {
 
   // Zonder ingesteld token: een willekeurig token dat alleen dit serverproces kent.
   process.env.NEWSLETTER_CRON_TOKEN ||= crypto.randomUUID();
-  const url = `http://127.0.0.1:${process.env.PORT ?? 3000}/api/nieuwsbrief/verzenden`;
+  const base = `http://127.0.0.1:${process.env.PORT ?? 3000}`;
 
-  const tick = async () => {
+  const call = async (path: string) => {
     try {
-      const res = await fetch(url, {
+      const res = await fetch(base + path, {
         method: "POST",
         headers: {
           authorization: `Bearer ${process.env.NEWSLETTER_CRON_TOKEN}`,
         },
         signal: AbortSignal.timeout(30 * 60_000),
       });
-      if (!res.ok)
-        console.error(`[nieuwsbrief] planner kreeg HTTP ${res.status}`);
+      if (!res.ok) console.error(`[planner] ${path} gaf HTTP ${res.status}`);
     } catch (err) {
-      console.error("[nieuwsbrief] planner kon de server niet bereiken", err);
+      console.error(`[planner] ${path} niet bereikbaar`, err);
     }
   };
+  const tick = () =>
+    Promise.all([
+      call("/api/nieuwsbrief/verzenden"),
+      call("/api/discord/verzenden"),
+    ]);
   setTimeout(tick, 60_000).unref();
   setInterval(tick, 5 * 60_000).unref();
 }

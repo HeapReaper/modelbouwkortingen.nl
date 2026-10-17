@@ -48,6 +48,8 @@ koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coo
 | `/nieuwsbrief` | Aanmelden voor de dagelijkse kortingsmail (ook op de homepage en in de footer) |
 | `/nieuwsbrief/bevestigen`, `/nieuwsbrief/afmelden` | Double opt-in en afmelden (knop, zodat virusscanners van mailproviders niets per ongeluk bevestigen) |
 | `/api/nieuwsbrief/verzenden` | Verstuurt de dagelijkse mail (`Bearer NEWSLETTER_CRON_TOKEN` of admin-login; `?nu=1` negeert het verzenduur) |
+| `/discord`, `/discord/afmelden` | Discord-webhook koppelen / afmelden |
+| `/api/discord/verzenden` | Post nieuwe deals naar de webhooks (zelfde beveiliging als `/api/nieuwsbrief/verzenden`) |
 | `/api/nieuwsbrief/afmelden` | Afmelden met één klik vanuit de mailclient (`List-Unsubscribe-Post`, RFC 8058) |
 | `/admin` | Admin panel: live crawlerstatus, 429's, crawl-rondes, grafiek, berichten (Basic Auth) |
 | `/api/stats` | JSON met alle statistieken (Basic Auth of `Bearer STATS_TOKEN`) |
@@ -66,6 +68,17 @@ De planner zit in `src/instrumentation.ts` en roept elke 5 minuten
 slot, dus ook met meerdere servers of na een herstart gaat de mail hooguit één keer per dag
 uit. Gebruik je liever een externe cron, zet dan `NEWSLETTER_SCHEDULER=off` en
 `NEWSLETTER_CRON_TOKEN`.
+
+### Deals in Discord
+
+Op `/discord` plakt iemand een Discord-webhook-URL. We accepteren alleen `discord.com/api/webhooks/…`,
+controleren bij Discord dat de webhook bestaat en sturen een welkomstbericht met afmeldlink.
+Dezelfde planner (`src/instrumentation.ts`) roept elke 5 minuten `POST /api/discord/verzenden`
+aan: elke nieuwe deal gaat als embed (prijs, was-prijs, korting, foto, affiliate-link via
+`productLink()`) naar alle actieve webhooks, 10 embeds per bericht en maximaal 50 deals per
+webhook per ronde. Elke abonnee heeft een eigen cursor (`deal_since`, product-id) die pas
+opschuift na een geslaagd bericht. Geeft Discord 401/403/404 (webhook verwijderd), dan wordt
+het abonnement uitgezet.
 
 Het thema (rood + "prijskaartje"-geel, groen voor besparingen) staat in `src/app/globals.css`.
 Licht/donker volgt het systeem en kan in de navbar aangepast worden.

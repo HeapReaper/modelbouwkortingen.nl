@@ -155,3 +155,28 @@ model NewsletterRun {
 
   @@map("newsletter_runs")
 }
+
+/// Discord-webhook die elke nieuwe deal als embed ontvangt.
+model DiscordSubscriber {
+  id              BigInt    @id @default(autoincrement())
+  /// Het id-deel van de webhook-URL; één abonnement per webhook.
+  webhookId       String    @unique @map("webhook_id")
+  /// Volledige webhook-URL (bevat het geheime webhook-token).
+  webhookUrl      String    @map("webhook_url")
+  /// Geheim token voor de afmeldlink.
+  token           String    @unique
+  guildId         String?   @map("guild_id")
+  channelId       String?   @map("channel_id")
+  name            String?
+  /// Tot en met deze deal (deal_since, product-id) is alles gepost.
+  cursorAt        DateTime  @default(now()) @map("cursor_at") @db.Timestamptz
+  cursorProductId BigInt    @default(0) @map("cursor_product_id")
+  lastPostedAt    DateTime? @map("last_posted_at") @db.Timestamptz
+  /// Gezet bij afmelden of als Discord de webhook niet meer kent; dan posten we niet meer.
+  disabledAt      DateTime? @map("disabled_at") @db.Timestamptz
+  disabledReason  String?   @map("disabled_reason")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([disabledAt], map: "discord_subscribers_active_idx")
+  @@map("discord_subscribers")
+}

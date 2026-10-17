@@ -1,5 +1,6 @@
 import { BellRing, MailCheck, MousePointerClick } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { PageHeader } from "@/components/core/PageHeader";
 import { NewsletterSignup } from "@/components/newsletter/NewsletterSignup";
 
@@ -37,6 +38,17 @@ export default function NieuwsbriefPage() {
       />
       <div className="flex flex-col gap-12 py-10">
         <NewsletterSignup />
+        <p className="mx-auto w-full max-w-7xl px-4 text-muted-foreground">
+          Heb je een Discord-server? Laat elke nieuwe deal direct in je kanaal
+          posten via een{" "}
+          <Link
+            href="/discord"
+            className="font-semibold text-primary underline"
+          >
+            Discord-webhook
+          </Link>
+          .
+        </p>
         <ul className="mx-auto grid w-full max-w-7xl gap-8 px-4 md:grid-cols-3">
           {POINTS.map((p) => (
             <li key={p.title} className="flex flex-col gap-2">

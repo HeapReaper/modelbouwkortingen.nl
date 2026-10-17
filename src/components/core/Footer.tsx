@@ -49,6 +49,7 @@ export default function Footer() {
           links={[
             { href: "/aanbiedingen", label: "Alle aanbiedingen" },
             { href: "/nieuwsbrief", label: "Dagelijkse kortingsmail" },
+            { href: "/discord", label: "Deals in je Discord" },
             { href: "/over", label: "Hoe werkt het?" },
             { href: "/over#webshops", label: "Voor webshops" },
             { href: "/contact", label: "Contact" },
