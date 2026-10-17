@@ -4,6 +4,7 @@ import hackerLogo from "@/assets/shops/hacker.png";
 import hoelleinLogo from "@/assets/shops/hoellein.png";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
+import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
 import toemenLogo from "@/assets/shops/toemen.png";
 import toprcLogo from "@/assets/shops/toprc.svg";
 import wetronicLogo from "@/assets/shops/wetronic.png";
@@ -101,6 +102,16 @@ export const SHOPS: ShopInfo[] = [
       "Duitse fabrikant van brushless motoren, met eigen webshop voor motoren, regelaars, accu's en modellen.",
     logo: hackerLogo,
     logoBg: "bg-white ring-1 ring-border",
+  },
+  {
+    slug: "rcmotorsports",
+    name: "RC Motorsports",
+    url: "https://www.rcmotorsports.nl",
+    domain: "rcmotorsports.nl",
+    description:
+      "RC-dealer in Nieuwerkerk aan den IJssel met o.a. Traxxas, Arrma, Axial en Tamiya, plus veel onderdelen.",
+    logo: rcmotorsportsLogo,
+    logoBg: "bg-[#191919]",
   },
 ];
 

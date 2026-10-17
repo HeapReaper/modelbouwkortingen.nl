@@ -49,7 +49,7 @@ type HostPolicy interface {
 }
 
 func All() []Shop {
-	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}}
+	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}, &RCMotorsports{}}
 }
 
 func BySlug(slugs []string) []Shop {

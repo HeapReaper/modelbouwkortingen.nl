@@ -1,4 +1,4 @@
-import { BadgePercent, Clock, Store } from "lucide-react";
+import { BadgePercent, Clock, PackageSearch, Store } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { SearchForm } from "@/components/core/SearchForm";
@@ -90,6 +90,10 @@ async function HeroStats() {
   const stats = await getSiteStats();
   const items = [
     { icon: BadgePercent, label: `${formatNumber(stats.deals)} deals` },
+    {
+      icon: PackageSearch,
+      label: `${formatNumber(stats.products)} producten gevolgd`,
+    },
     { icon: Store, label: `${stats.shops} webshops` },
     ...(stats.maxDiscount > 0
       ? [{ icon: BadgePercent, label: `tot ${stats.maxDiscount}% korting` }]
