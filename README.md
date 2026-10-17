@@ -69,6 +69,7 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | RC Motorsports | Shopify | `sitemap_products_N.xml` (microdata, geen JSON-LD) | `/products.json?limit=250` (~50 requests) |
 | Droneshop.nl | Magento 2 (yourstore) | `/sitemap/sitemap.xml` (URL's met `<image:image>`) | onderste categorieën onder `/drones`, `/accessoires`, `/onderdelen` + `/populair/aanbiedingen`, `?p=N` |
 | Tamico (DE) | JTL-Shop 5 | geen (XML-sitemap is gzip en dubbel DE/EN): alleen listings | subcategorieën uit `/Sitemap`, `?af=50`, `_sN` (Crawl-delay 5s, ~1.000 requests) |
+| ChinaHobbyLine (CNHL) | Shopify (USD) | geen: productpagina's tonen dollars | `/nl/products.json?country=NL` (europrijzen via Shopify Markets) |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 
@@ -89,7 +90,7 @@ overgeslagen (hun "van"-prijs is de nieuwprijs), net als kortingen boven 90% (vr
 - User-agent ziet eruit als Chrome, maar met `ModelbouwkortingenBot/1.0; +https://modelbouwkortingen.nl/over`, plus een `From`-header.
 - robots.txt wordt gerespecteerd, ook bij redirects, inclusief `Crawl-delay` (Mini-Zshop: 10s per request;
   daar halen we per ronde maar 300 productpagina's op, de prijzen komen uit de categoriepagina's).
-- Shopify/Cloudflare (Hoellein, RC Motorsports) blokkeert een Chrome-user-agent vanuit Go met HTTP 429; die shops krijgen
+- Shopify/Cloudflare (Hoellein, RC Motorsports, ChinaHobbyLine) blokkeert een Chrome-user-agent vanuit Go met HTTP 429; die shops krijgen
   een eerlijke bot-user-agent en minimaal 1s tussen requests (`HostPolicy` in `crawler/internal/shops`).
 - Per host minimaal `CRAWLER_HOST_DELAY` (500ms) tussen requests; alle shops lopen parallel met `CRAWLER_WORKERS_PER_SHOP` workers.
 - **HTTP 429/503**: die host pauzeert 5s, bij een volgende 429 10s, 20s, … (max 5 min, of `Retry-After`).

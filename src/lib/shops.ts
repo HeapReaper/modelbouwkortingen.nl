@@ -1,5 +1,6 @@
 import type { StaticImageData } from "next/image";
 import berlinskiLogo from "@/assets/shops/berlinski.svg";
+import chinahobbylineLogo from "@/assets/shops/chinahobbyline.png";
 import droneshopLogo from "@/assets/shops/droneshop.png";
 import hackerLogo from "@/assets/shops/hacker.png";
 import hoelleinLogo from "@/assets/shops/hoellein.png";
@@ -21,6 +22,11 @@ export type ShopInfo = {
   logo: StaticImageData;
   /** Achtergrond waarop het logo goed leesbaar is (TopRC en Wetronic zijn licht). */
   logoBg: string;
+  /**
+   * Affiliate-partnerschap: deze query-parameters komen op de link naar het product,
+   * eventueel alleen voor producten in de genoemde categorieën.
+   */
+  affiliate?: { params: Record<string, string>; categories?: string[] };
 };
 
 // Houd de slugs gelijk met crawler/internal/shops/*.go.
@@ -135,10 +141,49 @@ export const SHOPS: ShopInfo[] = [
     logo: tamicoLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
+  {
+    slug: "chinahobbyline",
+    name: "ChinaHobbyLine",
+    url: "https://chinahobbyline.com/nl",
+    domain: "chinahobbyline.com",
+    description:
+      "Webshop van accumerk CNHL met LiPo-, LiHV- en LiFe-accu's, laders en RC-modellen.",
+    logo: chinahobbylineLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    affiliate: { params: { ref: "rc-garage" }, categories: ["accus-laders"] },
+  },
 ];
 
 const bySlug = new Map(SHOPS.map((s) => [s.slug, s]));
 
 export function getShop(slug: string | null | undefined): ShopInfo | undefined {
   return slug ? bySlug.get(slug) : undefined;
+}
+
+/**
+ * Link en rel-attribuut voor "naar de webshop". Affiliate-links krijgen de partnerparameters
+ * en rel="sponsored", zoals zoekmachines voor betaalde links vragen.
+ */
+export function productLink(deal: {
+  url: string;
+  shopSlug: string;
+  categorySlug: string;
+}): { href: string; rel: string } {
+  const affiliate = getShop(deal.shopSlug)?.affiliate;
+  if (
+    !affiliate ||
+    (affiliate.categories && !affiliate.categories.includes(deal.categorySlug))
+  ) {
+    return { href: deal.url, rel: "noopener nofollow" };
+  }
+  let url: URL;
+  try {
+    url = new URL(deal.url);
+  } catch {
+    return { href: deal.url, rel: "noopener nofollow" };
+  }
+  for (const [k, v] of Object.entries(affiliate.params)) {
+    url.searchParams.set(k, v);
+  }
+  return { href: url.toString(), rel: "noopener nofollow sponsored" };
 }

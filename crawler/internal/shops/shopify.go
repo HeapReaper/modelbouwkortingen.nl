@@ -89,8 +89,9 @@ func parseShopifyFeed(baseURL, pageURL string, body []byte, keepTag func(string)
 			out = append(out, p)
 		}
 	}
-	// Een volle pagina betekent dat er mogelijk nog meer producten zijn.
-	if len(feed.Products) < 250 {
+	// Shopify laat soms producten weg, waardoor ook een pagina vóór het einde minder dan 250
+	// producten kan hebben; pas een lege pagina betekent dat we klaar zijn.
+	if len(feed.Products) == 0 {
 		return out, ""
 	}
 	u, err := url.Parse(pageURL)

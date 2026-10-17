@@ -25,6 +25,7 @@ import {
   getRelatedDeals,
 } from "@/lib/deals";
 import { formatDateTime, formatEuro, timeAgo } from "@/lib/format";
+import { productLink } from "@/lib/shops";
 import { cn } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -60,6 +61,7 @@ async function ProductDetail({
   if (!deal) notFound();
   const category = getCategory(deal.categorySlug);
   const reference = deal.referencePrice;
+  const link = productLink(deal);
 
   return (
     <div className="flex flex-col gap-14 pb-4">
@@ -137,9 +139,9 @@ async function ProductDetail({
             </div>
 
             <a
-              href={deal.url}
+              href={link.href}
               target="_blank"
-              rel="noopener nofollow"
+              rel={link.rel}
               className={cn(
                 buttonVariants({ size: "lg" }),
                 "h-14 text-lg font-black",

@@ -6,6 +6,7 @@ import { ProductImage } from "@/components/deals/ProductImage";
 import { ShopBadge } from "@/components/deals/ShopBadge";
 import { buttonVariants } from "@/components/ui/button";
 import type { Deal } from "@/lib/deals";
+import { productLink } from "@/lib/shops";
 import { cn } from "@/lib/utils";
 
 export function DealCard({
@@ -17,6 +18,7 @@ export function DealCard({
   className?: string;
   eager?: boolean;
 }) {
+  const link = productLink(deal);
   return (
     <article
       className={cn(
@@ -63,9 +65,9 @@ export function DealCard({
           className="mt-auto"
         />
         <a
-          href={deal.url}
+          href={link.href}
           target="_blank"
-          rel="noopener nofollow"
+          rel={link.rel}
           aria-label={`Bekijk ${deal.name} bij ${deal.shopName}`}
           className={cn(
             buttonVariants({ size: "lg" }),
