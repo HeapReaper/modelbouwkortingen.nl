@@ -105,6 +105,7 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | Bliek Modelbouw | Magento 2 | `bliek_modelbouw-8-N.xml` (alleen voor de categorieën) | onderste RC-/verf-/uitloper-categorieën, `?product_list_limit=32`, `?p=N` |
 | Aerobertics (BE) | eigen systeem (ASP.NET) | geen sitemap: menu op `/nl/homepage` | onderste categorieën, `?Page=N` |
 | Heligear | CCV Shop | `/ExportBestanden/SiteMap.php` (~1.000 producten) | geen: alle productpagina's (JSON-LD) |
+| Area51 RC (ES) | PrestaShop 1.4 | geen: XML-sitemap is dubbel EN/ES | alle ~1.250 categorieën uit de boom (PrestaShop 1.4 toont alleen direct gekoppelde producten), `?n=50&p=N` |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

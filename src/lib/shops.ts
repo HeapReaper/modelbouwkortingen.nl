@@ -1,5 +1,6 @@
 import type { StaticImageData } from "next/image";
 import aeroberticsLogo from "@/assets/shops/aerobertics.png";
+import area51Logo from "@/assets/shops/area51.png";
 import berlinskiLogo from "@/assets/shops/berlinski.svg";
 import bliekLogo from "@/assets/shops/bliek.png";
 import chinahobbylineLogo from "@/assets/shops/chinahobbyline.png";
@@ -195,6 +196,16 @@ export const SHOPS: ShopInfo[] = [
       "Helikopterspecialist uit Breda met Mikado LOGO, Goblin, OMP en Tron, plus rotorbladen, elektronica en laders.",
     logo: heligearLogo,
     logoBg: "bg-[#1e1e1e]",
+  },
+  {
+    slug: "area51",
+    name: "Area51 RC",
+    url: "https://www.area51-rc.es/shop/en/",
+    domain: "area51-rc.es",
+    description:
+      "Spaanse helikopterspecialist met Align, SAB en BeastX, plus vliegtuigen, auto's, drones, accu's en Optifuel.",
+    logo: area51Logo,
+    logoBg: "bg-[#212121]",
   },
 ];
 

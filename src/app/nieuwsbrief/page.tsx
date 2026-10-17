@@ -7,7 +7,7 @@ import { NewsletterSignup } from "@/components/newsletter/NewsletterSignup";
 export const metadata: Metadata = {
   title: "Dagelijkse kortingsmail",
   description:
-    "Ontvang elke ochtend de grootste nieuwe RC-aanbiedingen van Nederlandse, Belgische, Duitse en Oostenrijkse modelbouw-webshops in je mail.",
+    "Ontvang elke ochtend de grootste nieuwe RC-aanbiedingen van Nederlandse en Europese modelbouw-webshops in je mail.",
 };
 
 const POINTS = [

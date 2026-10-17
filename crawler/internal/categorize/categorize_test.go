@@ -66,6 +66,11 @@ func TestClassifyGerman(t *testing.T) {
 		{nil, "trucks | rc opleggers", "Tamiya Trailer 3-assig", "werkvoertuigen"},
 		{nil, "bouwmachines", "Huina 1592 kiepwagen", "werkvoertuigen"},
 		{nil, "rc auto s | traxxas", "TRAXXAS Rustler 4x4 rood RTR met accu + LED-verlichting", "rc-autos"},
+		{nil, "Helicopters | E-FLITE | E-Flite Blade 180 CFX", "BLADE Trio 180 CFX BNF Basic", "helicopters"},
+		{nil, "Helicopters | SAB GOBLIN | Goblin RAW 420 | Repuestos Competition", "Steel Main Shaft", "onderdelen"},
+		{nil, "Main Blades | SAB Blackline", "SAB 600mm Blackline", "onderdelen"},
+		{nil, "Electronics | Transmitters | Futaba", "Futaba T16IZ", "zenders"},
+		{nil, "RC Planes | E-FLITE", "E-flite Timber X 1.2m", "vliegtuigen"},
 		{nil, "LiHV", "CNHL Lightning LiHV 3200mAh 15,2V 4S 120C HV Lipo-accu met XT60-stekker", "accus-laders"},
 	}
 	for _, c := range cases {
