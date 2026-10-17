@@ -16,6 +16,7 @@ export const en: Dictionary = {
     homeLabel: "Modelbouwkortingen.nl home",
     deals: "Deals",
     allDeals: "All deals",
+    compare: "Price comparison",
     categories: "Categories",
     shops: "Shops",
     allShops: "View all shops →",
@@ -44,6 +45,7 @@ export const en: Dictionary = {
     allShops: "All shops",
     site: "Modelbouwkortingen",
     allDeals: "All deals",
+    compare: "Price comparison",
     newsletter: "Daily deals email",
     discord: "Deals in your Discord",
     howItWorks: "How does it work?",
@@ -260,6 +262,39 @@ export const en: Dictionary = {
   searchPage: {
     title: "Search",
     metaDescription: "Search all RC deals.",
+  },
+  comparePage: {
+    metaTitle: "Price comparison for RC products",
+    metaDescription:
+      "Search for an RC product or part number and see which shop has it cheapest.",
+    title: "Price comparison",
+    description:
+      "Search for a product or part number and instantly see which shop has it cheapest.",
+    placeholder: "E.g. Traxxas TRX-4M, CNHL 5000mAh 4S or TRX3655",
+    button: "Compare",
+    inStock: "In stock only",
+    sort: "Sort",
+    sortPrice: "Lowest price",
+    sortOffers: "Most shops",
+    intro:
+      "Type a product, brand or part number above. We search every product we track at {count} shops, not just the deals.",
+    resultsOne: "1 product found for {query}",
+    resultsOther: "{count} products found for {query}",
+    truncated:
+      "There are more matches. Make your search more specific for a better comparison.",
+    none: "Nothing found for {query}. Try a different spelling or just the part number.",
+    cheapestAt: "Cheapest at {shop}",
+    shopsOne: "1 shop",
+    shopsOther: "{count} shops",
+    sku: "Part no. {sku}",
+    cheapest: "Cheapest",
+    deal: "{percent}% off",
+    outOfStock: "Out of stock",
+    inStockLabel: "In stock",
+    toShop: "Go to shop",
+    history: "Price history",
+    disclaimer:
+      "We match products by part number; check at the shop that it is exactly the same product. Shipping costs are not included.",
   },
   notFound: {
     title: "Oops! This page doesn't exist.",

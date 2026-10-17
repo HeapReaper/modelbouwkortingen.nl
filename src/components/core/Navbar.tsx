@@ -46,6 +46,14 @@ export default function Navbar() {
             />
           </NavigationMenuItem>
           <NavigationMenuItem>
+            <NavigationMenuLink
+              className={cn(navigationMenuTriggerStyle(), "text-base")}
+              render={
+                <Link href={href("/prijsvergelijker")}>{dict.nav.compare}</Link>
+              }
+            />
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <NavigationMenuTrigger className="text-base">
               {dict.nav.categories}
             </NavigationMenuTrigger>
@@ -126,17 +134,19 @@ export default function Navbar() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <div className="ml-auto hidden w-full max-w-sm md:block">
+      {/* Zoekveld: tussen md en lg (menu verborgen) en vanaf xl; tussen lg en xl past het niet
+          naast het menu, dan het zoekicoon. */}
+      <div className="ml-auto hidden w-full max-w-sm md:block lg:hidden xl:block">
         <SearchForm />
       </div>
 
-      <div className="ml-auto flex shrink-0 items-center md:ml-0">
+      <div className="ml-auto flex shrink-0 items-center md:ml-0 lg:ml-auto xl:ml-0">
         <Link
           href={href("/zoeken")}
           aria-label={dict.nav.search}
           className={cn(
             buttonVariants({ variant: "ghost", size: "icon-lg" }),
-            "md:hidden",
+            "md:hidden lg:inline-flex xl:hidden",
           )}
         >
           <Search className="size-5" />

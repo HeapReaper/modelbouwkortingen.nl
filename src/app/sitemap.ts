@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/", priority: 1 },
     ...[
       "/aanbiedingen",
+      "/prijsvergelijker",
       "/webshops",
       "/over",
       "/contact",

@@ -19,6 +19,7 @@ export const nl = {
     homeLabel: "Modelbouwkortingen.nl home",
     deals: "Aanbiedingen",
     allDeals: "Alle aanbiedingen",
+    compare: "Prijsvergelijker",
     categories: "Categorieën",
     shops: "Webshops",
     allShops: "Alle webshops bekijken →",
@@ -47,6 +48,7 @@ export const nl = {
     allShops: "Alle webshops",
     site: "Modelbouwkortingen",
     allDeals: "Alle aanbiedingen",
+    compare: "Prijsvergelijker",
     newsletter: "Dagelijkse kortingsmail",
     discord: "Deals in je Discord",
     howItWorks: "Hoe werkt het?",
@@ -264,6 +266,39 @@ export const nl = {
   searchPage: {
     title: "Zoeken",
     metaDescription: "Zoek tussen alle RC-aanbiedingen.",
+  },
+  comparePage: {
+    metaTitle: "Prijsvergelijker voor RC-producten",
+    metaDescription:
+      "Zoek een RC-product of artikelnummer en zie bij welke webshop het het goedkoopst is.",
+    title: "Prijsvergelijker",
+    description:
+      "Zoek een product of artikelnummer en zie meteen bij welke webshop het het goedkoopst is.",
+    placeholder: "Bijv. Traxxas TRX-4M, CNHL 5000mAh 4S of TRX3655",
+    button: "Vergelijken",
+    inStock: "Alleen op voorraad",
+    sort: "Sorteren",
+    sortPrice: "Laagste prijs",
+    sortOffers: "Meeste webshops",
+    intro:
+      "Typ hierboven een product, merk of artikelnummer. We zoeken in alle producten die we bij {count} webshops volgen, niet alleen in de aanbiedingen.",
+    resultsOne: "1 product gevonden voor {query}",
+    resultsOther: "{count} producten gevonden voor {query}",
+    truncated:
+      "Er zijn nog meer treffers. Maak je zoekopdracht specifieker voor een betere vergelijking.",
+    none: "Niets gevonden voor {query}. Probeer een andere schrijfwijze of alleen het artikelnummer.",
+    cheapestAt: "Goedkoopst bij {shop}",
+    shopsOne: "1 webshop",
+    shopsOther: "{count} webshops",
+    sku: "Art.nr. {sku}",
+    cheapest: "Goedkoopst",
+    deal: "{percent}% korting",
+    outOfStock: "Niet op voorraad",
+    inStockLabel: "Op voorraad",
+    toShop: "Naar shop",
+    history: "Prijsverloop",
+    disclaimer:
+      "We koppelen producten op artikelnummer; controleer bij de webshop of het precies hetzelfde product is. Verzendkosten zijn niet meegerekend.",
   },
   notFound: {
     title: "Oeps! Deze pagina bestaat niet.",

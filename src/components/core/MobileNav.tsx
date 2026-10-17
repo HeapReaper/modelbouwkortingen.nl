@@ -1,6 +1,6 @@
 "use client";
 
-import { Flame, Mail, Menu, Store } from "lucide-react";
+import { Flame, Mail, Menu, Scale, Store } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Logo } from "@/components/core/Logo";
@@ -53,6 +53,13 @@ export function MobileNav() {
               className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted"
             >
               <Flame className="size-5 text-primary" /> {dict.nav.allDeals}
+            </Link>
+            <Link
+              href={href("/prijsvergelijker")}
+              onClick={close}
+              className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted"
+            >
+              <Scale className="size-5 text-primary" /> {dict.nav.compare}
             </Link>
             <Link
               href={href("/webshops")}

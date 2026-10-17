@@ -46,6 +46,7 @@ export default async function Footer() {
           title={f.site}
           links={[
             { href: href("/aanbiedingen"), label: f.allDeals },
+            { href: href("/prijsvergelijker"), label: f.compare },
             { href: href("/nieuwsbrief"), label: f.newsletter },
             { href: href("/discord"), label: f.discord },
             { href: href("/over"), label: f.howItWorks },

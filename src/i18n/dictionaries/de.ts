@@ -16,6 +16,7 @@ export const de: Dictionary = {
     homeLabel: "Modelbouwkortingen.nl Startseite",
     deals: "Angebote",
     allDeals: "Alle Angebote",
+    compare: "Preisvergleich",
     categories: "Kategorien",
     shops: "Shops",
     allShops: "Alle Shops ansehen →",
@@ -45,6 +46,7 @@ export const de: Dictionary = {
     allShops: "Alle Shops",
     site: "Modelbouwkortingen",
     allDeals: "Alle Angebote",
+    compare: "Preisvergleich",
     newsletter: "Täglicher Angebots-Newsletter",
     discord: "Angebote in deinem Discord",
     howItWorks: "Wie funktioniert es?",
@@ -269,6 +271,39 @@ export const de: Dictionary = {
   searchPage: {
     title: "Suchen",
     metaDescription: "Alle RC-Angebote durchsuchen.",
+  },
+  comparePage: {
+    metaTitle: "Preisvergleich für RC-Produkte",
+    metaDescription:
+      "Suche ein RC-Produkt oder eine Artikelnummer und sieh, in welchem Shop es am günstigsten ist.",
+    title: "Preisvergleich",
+    description:
+      "Suche ein Produkt oder eine Artikelnummer und sieh sofort, in welchem Shop es am günstigsten ist.",
+    placeholder: "z. B. Traxxas TRX-4M, CNHL 5000mAh 4S oder TRX3655",
+    button: "Vergleichen",
+    inStock: "Nur auf Lager",
+    sort: "Sortieren",
+    sortPrice: "Niedrigster Preis",
+    sortOffers: "Meiste Shops",
+    intro:
+      "Gib oben ein Produkt, eine Marke oder eine Artikelnummer ein. Wir durchsuchen alle Produkte, die wir bei {count} Shops beobachten, nicht nur die Angebote.",
+    resultsOne: "1 Produkt gefunden für {query}",
+    resultsOther: "{count} Produkte gefunden für {query}",
+    truncated:
+      "Es gibt noch mehr Treffer. Formuliere deine Suche genauer für einen besseren Vergleich.",
+    none: "Nichts gefunden für {query}. Versuche eine andere Schreibweise oder nur die Artikelnummer.",
+    cheapestAt: "Am günstigsten bei {shop}",
+    shopsOne: "1 Shop",
+    shopsOther: "{count} Shops",
+    sku: "Art.-Nr. {sku}",
+    cheapest: "Am günstigsten",
+    deal: "{percent} % Rabatt",
+    outOfStock: "Nicht auf Lager",
+    inStockLabel: "Auf Lager",
+    toShop: "Zum Shop",
+    history: "Preisverlauf",
+    disclaimer:
+      "Wir ordnen Produkte über die Artikelnummer zu; prüfe im Shop, ob es genau dasselbe Produkt ist. Versandkosten sind nicht enthalten.",
   },
   notFound: {
     title: "Hoppla! Diese Seite gibt es nicht.",

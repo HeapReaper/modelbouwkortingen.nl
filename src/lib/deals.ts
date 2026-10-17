@@ -133,7 +133,7 @@ export async function getDeals(
   return { deals: rows.map(toDeal), total };
 }
 
-function searchTerms(q?: string) {
+export function searchTerms(q?: string) {
   return (q ?? "")
     .toLowerCase()
     .split(/\s+/)

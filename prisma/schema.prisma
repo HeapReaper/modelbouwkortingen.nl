@@ -77,6 +77,8 @@ model Product {
   @@index([shopId, lastCrawledAt], map: "products_crawled_idx")
   @@index([name(ops: raw("gin_trgm_ops"))], map: "products_name_trgm_idx", type: Gin)
   @@index([brand(ops: raw("gin_trgm_ops"))], map: "products_brand_trgm_idx", type: Gin)
+  /// Voor de prijsvergelijker: zoeken op (een deel van) het artikelnummer.
+  @@index([sku(ops: raw("gin_trgm_ops"))], map: "products_sku_trgm_idx", type: Gin)
   @@map("products")
 }
 

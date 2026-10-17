@@ -42,6 +42,7 @@ koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coo
 | `/categorie/[slug]` | Deals per categorie |
 | `/webshops`, `/webshops/[slug]` | Deals per webshop |
 | `/zoeken?q=` | Zoeken (naam, merk, SKU; pg_trgm-index) |
+| `/prijsvergelijker?q=` | Prijsvergelijker: zoekt in álle producten (niet alleen deals) en toont per product alle webshops van goedkoop naar duur. Zelfde product = zelfde artikelnummer (SKU zonder spaties/streepjes); producten die 14 dagen niet gezien zijn tellen niet mee |
 | `/product/[id]` | Detailpagina met prijsverloop en vergelijkbare deals |
 | `/contact` | Contactformulier (Server Action, honeypot + rate limit, opgeslagen in Postgres) |
 | `/over` | Uitleg + informatie voor webshops over de crawler |
