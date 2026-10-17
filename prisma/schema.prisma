@@ -122,3 +122,36 @@ model ContactMessage {
 
   @@map("contact_messages")
 }
+
+/// Aanmelding voor de dagelijkse kortingsmail (double opt-in).
+model NewsletterSubscriber {
+  id                 BigInt    @id @default(autoincrement())
+  /// Altijd in kleine letters opgeslagen.
+  email              String    @unique
+  /// Geheim token voor de bevestigings- en afmeldlink.
+  token              String    @unique
+  /// NULL = nog niet bevestigd; zolang krijgt het adres geen kortingsmails.
+  confirmedAt        DateTime? @map("confirmed_at") @db.Timestamptz
+  unsubscribedAt     DateTime? @map("unsubscribed_at") @db.Timestamptz
+  confirmationSentAt DateTime? @map("confirmation_sent_at") @db.Timestamptz
+  lastSentAt         DateTime? @map("last_sent_at") @db.Timestamptz
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([confirmedAt, unsubscribedAt], map: "newsletter_subscribers_active_idx")
+  @@map("newsletter_subscribers")
+}
+
+/// Eén rij per verzenddag: de primary key voorkomt dat de mail twee keer per dag uitgaat.
+model NewsletterRun {
+  day        DateTime  @id @db.Date
+  startedAt  DateTime  @default(now()) @map("started_at") @db.Timestamptz
+  finishedAt DateTime? @map("finished_at") @db.Timestamptz
+  /// running | ok | skipped | failed
+  status     String    @default("running")
+  deals      Int       @default(0)
+  recipients Int       @default(0)
+  errors     Int       @default(0)
+  message    String?
+
+  @@map("newsletter_runs")
+}

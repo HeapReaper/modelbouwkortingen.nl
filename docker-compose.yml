@@ -86,6 +86,15 @@ services:
       - STATS_TOKEN=${STATS_TOKEN:-}
       - CRAWLER_STATS_URL=http://crawler:8080/stats
       - CRAWLER_STATS_TOKEN=${SERVICE_PASSWORD_64_CRAWLERSTATS}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_SECURE=${SMTP_SECURE:-}
+      - MAIL_FROM=${MAIL_FROM:-}
+      - NEWSLETTER_SEND_HOUR=${NEWSLETTER_SEND_HOUR:-8}
+      - NEWSLETTER_SCHEDULER=${NEWSLETTER_SCHEDULER:-}
+      - NEWSLETTER_CRON_TOKEN=${NEWSLETTER_CRON_TOKEN:-}
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
       interval: 30s

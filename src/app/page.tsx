@@ -6,6 +6,7 @@ import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { Hero } from "@/components/home/Hero";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { ShopCards } from "@/components/home/ShopCards";
+import { NewsletterSignup } from "@/components/newsletter/NewsletterSignup";
 import { getNewestDeals, getTopDeals } from "@/lib/deals";
 
 export default function Home() {
@@ -20,6 +21,8 @@ export default function Home() {
       <Suspense fallback={<RowSkeleton />}>
         <NewestDealsRow />
       </Suspense>
+
+      <NewsletterSignup />
 
       <CategoryGrid />
       <ShopCards />

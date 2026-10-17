@@ -176,6 +176,40 @@ export async function getTopDeals(limit = 12): Promise<Deal[]> {
   });
 }
 
+/**
+ * Deals die sinds `since` zijn ontstaan en nog lopen, hoogste korting eerst, met maximaal
+ * `perShop` per webshop (voor de dagelijkse kortingsmail).
+ */
+export async function getDealsSince(
+  since: Date,
+  limit = 12,
+  perShop = 3,
+): Promise<Deal[]> {
+  if (!isDbConfigured())
+    return filterDemo({ sort: "korting" }).deals.slice(0, limit);
+  const rows = await getPrisma().product.findMany({
+    select: DEAL_SELECT,
+    where: {
+      ...ACTIVE_DEAL,
+      ...NOT_OUT_OF_STOCK,
+      imageUrl: { not: null },
+      dealSince: { gte: since },
+    },
+    orderBy: [{ discountPercent: "desc" }, { discountAmount: "desc" }],
+    take: limit * 10,
+  });
+  const counts = new Map<string, number>();
+  const out: Deal[] = [];
+  for (const deal of rows.map(toDeal)) {
+    const n = counts.get(deal.shopSlug) ?? 0;
+    if (n >= perShop) continue;
+    counts.set(deal.shopSlug, n + 1);
+    out.push(deal);
+    if (out.length === limit) break;
+  }
+  return out;
+}
+
 export async function getNewestDeals(limit = 12): Promise<Deal[]> {
   await connection();
   if (!isDbConfigured())

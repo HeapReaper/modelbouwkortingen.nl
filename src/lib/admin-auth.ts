@@ -7,7 +7,7 @@ export function adminEnabled() {
   return Boolean(process.env.ADMIN_PASSWORD);
 }
 
-function safeEqual(a: string, b: string) {
+export function safeEqual(a: string, b: string) {
   if (a.length !== b.length) return false;
   let diff = 0;
   for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);

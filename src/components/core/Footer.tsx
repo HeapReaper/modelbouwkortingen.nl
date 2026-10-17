@@ -1,12 +1,24 @@
 import Link from "next/link";
 import { CurrentYear } from "@/components/core/CurrentYear";
 import { Logo } from "@/components/core/Logo";
+import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { CATEGORIES } from "@/lib/categories";
 import { SHOPS } from "@/lib/shops";
 
 export default function Footer() {
   return (
     <footer className="mt-16 border-t bg-card">
+      <div className="border-b">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 className="text-lg font-bold">Dagelijkse kortingsmail</h2>
+            <p className="text-muted-foreground">
+              Elke ochtend de grootste nieuwe RC-deals in je inbox.
+            </p>
+          </div>
+          <NewsletterForm className="w-full lg:max-w-md" />
+        </div>
+      </div>
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-3">
           <Logo />
@@ -36,6 +48,7 @@ export default function Footer() {
           title="Modelbouwkortingen"
           links={[
             { href: "/aanbiedingen", label: "Alle aanbiedingen" },
+            { href: "/nieuwsbrief", label: "Dagelijkse kortingsmail" },
             { href: "/over", label: "Hoe werkt het?" },
             { href: "/over#webshops", label: "Voor webshops" },
             { href: "/contact", label: "Contact" },

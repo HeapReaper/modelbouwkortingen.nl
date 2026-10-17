@@ -45,9 +45,27 @@ koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coo
 | `/product/[id]` | Detailpagina met prijsverloop en vergelijkbare deals |
 | `/contact` | Contactformulier (Server Action, honeypot + rate limit, opgeslagen in Postgres) |
 | `/over` | Uitleg + informatie voor webshops over de crawler |
+| `/nieuwsbrief` | Aanmelden voor de dagelijkse kortingsmail (ook op de homepage en in de footer) |
+| `/nieuwsbrief/bevestigen`, `/nieuwsbrief/afmelden` | Double opt-in en afmelden (knop, zodat virusscanners van mailproviders niets per ongeluk bevestigen) |
+| `/api/nieuwsbrief/verzenden` | Verstuurt de dagelijkse mail (`Bearer NEWSLETTER_CRON_TOKEN` of admin-login; `?nu=1` negeert het verzenduur) |
+| `/api/nieuwsbrief/afmelden` | Afmelden met één klik vanuit de mailclient (`List-Unsubscribe-Post`, RFC 8058) |
 | `/admin` | Admin panel: live crawlerstatus, 429's, crawl-rondes, grafiek, berichten (Basic Auth) |
 | `/api/stats` | JSON met alle statistieken (Basic Auth of `Bearer STATS_TOKEN`) |
 | `/api/health` | Publieke health check |
+
+### Dagelijkse kortingsmail
+
+Bezoekers melden zich aan met hun e-mailadres en bevestigen via een link (double opt-in).
+Elke dag vanaf `NEWSLETTER_SEND_HOUR` (Nederlandse tijd) krijgen bevestigde abonnees de
+deals die sinds de vorige mail zijn ontstaan: hoogste korting eerst, maximaal 12, hooguit
+3 per webshop. Zijn er geen nieuwe deals, dan gaat er niets uit. Productlinks gebruiken
+`productLink()` uit `src/lib/shops.ts`, dus affiliate-links werken ook in de mail.
+
+De planner zit in `src/instrumentation.ts` en roept elke 5 minuten
+`POST /api/nieuwsbrief/verzenden` aan. De tabel `newsletter_runs` heeft één rij per dag als
+slot, dus ook met meerdere servers of na een herstart gaat de mail hooguit één keer per dag
+uit. Gebruik je liever een externe cron, zet dan `NEWSLETTER_SCHEDULER=off` en
+`NEWSLETTER_CRON_TOKEN`.
 
 Het thema (rood + "prijskaartje"-geel, groen voor besparingen) staat in `src/app/globals.css`.
 Licht/donker volgt het systeem en kan in de navbar aangepast worden.
@@ -119,6 +137,9 @@ Zie `.env.example` voor alle variabelen. De belangrijkste:
 | `DATABASE_URL` | beide | — (website: demo-modus) |
 | `ADMIN_PASSWORD` / `ADMIN_USER` | website | admin uit / `admin` |
 | `CRAWLER_STATS_URL` | website | — |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASSWORD` | website | — / `587` (zonder SMTP: geen mail) |
+| `MAIL_FROM` | website | — |
+| `NEWSLETTER_SEND_HOUR` | website | `8` |
 | `CRAWLER_INTERVAL` | crawler | `6h` |
 | `CRAWLER_WORKERS_PER_SHOP` | crawler | `4` |
 | `CRAWLER_HOST_DELAY` | crawler | `500ms` |
