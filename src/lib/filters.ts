@@ -1,11 +1,12 @@
-export const SORT_OPTIONS = {
-  korting: "Hoogste korting (%)",
-  besparing: "Hoogste besparing (€)",
-  nieuw: "Nieuwste deals",
-  "prijs-laag": "Prijs laag → hoog",
-  "prijs-hoog": "Prijs hoog → laag",
-} as const;
-export type SortKey = keyof typeof SORT_OPTIONS;
+/** Sorteeropties; de labels staan per taal in dict.deals.sortOptions. */
+export const SORT_KEYS = [
+  "korting",
+  "besparing",
+  "nieuw",
+  "prijs-laag",
+  "prijs-hoog",
+] as const;
+export type SortKey = (typeof SORT_KEYS)[number];
 
 export type DealFilters = {
   q?: string;
@@ -42,7 +43,9 @@ export function parseFilters(
     minPrice: num("min"),
     maxPrice: num("max"),
     inStock: one("voorraad") === "1" || undefined,
-    sort: sort && sort in SORT_OPTIONS ? (sort as SortKey) : undefined,
+    sort: (SORT_KEYS as readonly string[]).includes(sort ?? "")
+      ? (sort as SortKey)
+      : undefined,
     page: Math.max(1, Math.floor(num("pagina") ?? 1)),
   };
 }

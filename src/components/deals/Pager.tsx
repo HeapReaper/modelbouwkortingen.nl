@@ -1,9 +1,10 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { getI18n } from "@/i18n/server";
 import { cn } from "@/lib/utils";
 
-export function Pager({
+export async function Pager({
   page,
   totalPages,
   href,
@@ -13,6 +14,7 @@ export function Pager({
   href: (page: number) => string;
 }) {
   if (totalPages <= 1) return null;
+  const { dict } = await getI18n();
   const pages = new Set(
     [1, totalPages, page - 1, page, page + 1].filter(
       (p) => p >= 1 && p <= totalPages,
@@ -25,12 +27,12 @@ export function Pager({
   );
   return (
     <nav
-      aria-label="Paginering"
+      aria-label={dict.deals.pagination}
       className="flex flex-wrap items-center justify-center gap-2"
     >
       {page > 1 ? (
         <Link href={href(page - 1)} className={btn} rel="prev">
-          <ChevronLeft className="size-4" /> Vorige
+          <ChevronLeft className="size-4" /> {dict.deals.previous}
         </Link>
       ) : null}
       {list.map((p, i) => (
@@ -53,7 +55,7 @@ export function Pager({
       ))}
       {page < totalPages ? (
         <Link href={href(page + 1)} className={btn} rel="next">
-          Volgende <ChevronRight className="size-4" />
+          {dict.deals.next} <ChevronRight className="size-4" />
         </Link>
       ) : null}
     </nav>

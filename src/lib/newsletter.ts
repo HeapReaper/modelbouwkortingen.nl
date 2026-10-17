@@ -2,6 +2,7 @@ import "server-only";
 
 import { randomBytes } from "node:crypto";
 import { Prisma } from "@/generated/prisma/client";
+import { DEFAULT_LOCALE, hasLocale, type Locale } from "@/i18n/config";
 import { getPrisma } from "@/lib/db";
 import { getDealsSince } from "@/lib/deals";
 import { isMailConfigured, sendMail } from "@/lib/mail";
@@ -18,7 +19,7 @@ const newToken = () => randomBytes(24).toString("base64url");
  * Meldt een adres aan en stuurt de bevestigingsmail. Geeft bewust geen verschil terug
  * tussen nieuwe en bestaande adressen, zodat het formulier niet verraadt wie al abonnee is.
  */
-export async function subscribe(rawEmail: string): Promise<void> {
+export async function subscribe(rawEmail: string, lang: Locale): Promise<void> {
   const email = rawEmail.trim().toLowerCase();
   const prisma = getPrisma();
   const existing = await prisma.newsletterSubscriber.findUnique({
@@ -35,6 +36,7 @@ export async function subscribe(rawEmail: string): Promise<void> {
   // Opnieuw aanmelden na afmelden vraagt weer om bevestiging.
   const data = {
     token,
+    locale: lang,
     confirmedAt: null,
     unsubscribedAt: null,
     confirmationSentAt: new Date(),
@@ -45,7 +47,7 @@ export async function subscribe(rawEmail: string): Promise<void> {
     update: data,
   });
 
-  const mail = confirmationMail(email, token);
+  const mail = confirmationMail(email, token, lang);
   if (!isMailConfigured()) {
     console.info(
       "[nieuwsbrief] SMTP niet ingesteld; bevestigingslink:",
@@ -160,7 +162,7 @@ export async function sendDailyDigest(
   for (;;) {
     const batch = await prisma.newsletterSubscriber.findMany({
       where: { confirmedAt: { not: null }, unsubscribedAt: null },
-      select: { id: true, email: true, token: true },
+      select: { id: true, email: true, token: true, locale: true },
       orderBy: { id: "asc" },
       take: 200,
       ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
@@ -169,7 +171,8 @@ export async function sendDailyDigest(
     const sent: bigint[] = [];
     for (const s of batch) {
       try {
-        await sendMail(digestMail(s.email, s.token, deals));
+        const lang = hasLocale(s.locale) ? s.locale : DEFAULT_LOCALE;
+        await sendMail(digestMail(s.email, s.token, deals, lang));
         sent.push(s.id);
       } catch (err) {
         errors++;

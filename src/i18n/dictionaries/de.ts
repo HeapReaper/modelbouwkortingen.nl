@@ -1,0 +1,548 @@
+import type { Dictionary } from "@/i18n/dictionaries/nl";
+
+export const de: Dictionary = {
+  meta: {
+    defaultTitle: "Modelbouwkortingen.nl — Die besten RC-Angebote an einem Ort",
+    description:
+      "Finde reduzierte RC-Autos, Flugzeuge, Hubschrauber, Drohnen und Ersatzteile bei TopRC, Toemen, Wetronic und mehr. Täglich aktualisiert.",
+  },
+  layout: {
+    skipToContent: "Zum Inhalt",
+    bannerBefore: "Nur echte Rabatte: mindestens",
+    bannerHighlight: "5 € oder 5 %",
+    bannerAfter: "günstiger — täglich aktualisiert",
+  },
+  nav: {
+    homeLabel: "Modelbouwkortingen.nl Startseite",
+    deals: "Angebote",
+    allDeals: "Alle Angebote",
+    categories: "Kategorien",
+    shops: "Shops",
+    allShops: "Alle Shops ansehen →",
+    contact: "Kontakt",
+    search: "Suchen",
+    openMenu: "Menü öffnen",
+    theme: "Farbschema wählen",
+    themeLight: "Hell",
+    themeDark: "Dunkel",
+    themeSystem: "System",
+    language: "Sprache wählen",
+  },
+  search: {
+    placeholder: "Angebot suchen…",
+    placeholderLarge: "z. B. Arrma Kraton, LiPo 4S, Spektrum…",
+    label: "Angebote durchsuchen",
+    button: "Suchen",
+  },
+  footer: {
+    newsletterTitle: "Täglicher Angebots-Newsletter",
+    newsletterText:
+      "Jeden Morgen die größten neuen RC-Angebote in deinem Postfach.",
+    about:
+      "Wir durchsuchen täglich die großen RC-Shops und zeigen nur Produkte, die wirklich reduziert sind: mindestens 5 € oder 5 % günstiger.",
+    categories: "Kategorien",
+    shops: "Shops",
+    allShops: "Alle Shops",
+    site: "Modelbouwkortingen",
+    allDeals: "Alle Angebote",
+    newsletter: "Täglicher Angebots-Newsletter",
+    discord: "Angebote in deinem Discord",
+    howItWorks: "Wie funktioniert es?",
+    forShops: "Für Shops",
+    contact: "Kontakt",
+    rights: "Alle Rechte vorbehalten.",
+    disclaimer:
+      "Preise und Verfügbarkeit können abweichen. Es gilt immer der Preis im Shop.",
+  },
+  breadcrumb: { label: "Brotkrümelnavigation", home: "Start" },
+  categories: {
+    "rc-autos": {
+      name: "RC-Autos",
+      description: "Buggys, Monstertrucks, Crawler und Drift-Cars",
+    },
+    vliegtuigen: {
+      name: "Flugzeuge",
+      description: "Trainer, Warbirds, Jets und Segelflugzeuge",
+    },
+    helicopters: {
+      name: "Hubschrauber",
+      description: "Vom Einsteiger-Heli bis zur 3D-Maschine",
+    },
+    drones: {
+      name: "Drohnen",
+      description: "FPV-, Kamera- und Racing-Drohnen",
+    },
+    boten: { name: "Boote", description: "Rennboote, Segelboote und Schiffe" },
+    werkvoertuigen: {
+      name: "Baufahrzeuge & Trucks",
+      description: "Trucks, Bagger, Radlader und Kräne",
+    },
+    tanks: {
+      name: "Panzer & Militär",
+      description: "RC-Panzer und Militärfahrzeuge",
+    },
+    zenders: {
+      name: "Sender & Empfänger",
+      description: "Sender, Empfänger und Telemetrie",
+    },
+    elektronica: {
+      name: "Elektronik",
+      description: "Servos, Regler, Motoren und Beleuchtung",
+    },
+    "accus-laders": {
+      name: "Akkus & Ladegeräte",
+      description: "LiPo, NiMH, Ladegeräte und Netzteile",
+    },
+    onderdelen: {
+      name: "Ersatzteile",
+      description: "Reifen, Tuningteile und Ersatzteile",
+    },
+    gereedschap: {
+      name: "Werkzeug",
+      description: "Werkzeug, Kleber, Farbe und Werkstatt",
+    },
+    overig: {
+      name: "Sonstiges",
+      description: "Alles, was sonst nirgends passt",
+    },
+  },
+  shops: {
+    toprc:
+      "Großer RC-Spezialist mit Autos, Hubschraubern, Flugzeugen, Booten und Ersatzteilen.",
+    toemen:
+      "Modellsportgeschäft in Oisterwijk (NL) mit riesigem Sortiment an RC, Gebrauchtmodellen und Ersatzteilen.",
+    wetronic:
+      "Modellbauspezialist mit vielen Flugzeugen, Sendern, Elektronik und Ersatzteilen.",
+    minizshop:
+      "Spezialist für Kyosho Mini-Z und kleine RC-Autos, mit vielen Ersatz- und Traxxas-Teilen.",
+    berlinski:
+      "Großes deutsches Modellbaugeschäft mit RC-Autos, Trucks, Booten, Flugzeugen und vielen Ersatzteilen.",
+    hoellein:
+      "Deutscher Modellflugspezialist mit Motoren, Reglern, Servos, Luftschrauben und Baumaterial.",
+    mgmodellbau:
+      "Deutscher Modellbaushop mit vielen Sendern, Empfängern, Elektronik und Ersatzteilen.",
+    hacker:
+      "Deutscher Hersteller von Brushless-Motoren mit eigenem Shop für Motoren, Regler, Akkus und Modelle.",
+    rcmotorsports:
+      "RC-Händler in Nieuwerkerk aan den IJssel (NL) mit u. a. Traxxas, Arrma, Axial und Tamiya sowie vielen Ersatzteilen.",
+    droneshop:
+      "Drohnenspezialist mit Kamera-, FPV- und Racing-Drohnen sowie Akkus, Propellern und Ersatzteilen.",
+    tamico:
+      "Deutscher RC-Car-Spezialist mit viel Tamiya, Kyosho und Traxxas sowie Trucks, Panzern und riesigem Ersatzteilsortiment.",
+    chinahobbyline:
+      "Shop der Akkumarke CNHL mit LiPo-, LiHV- und LiFe-Akkus, Ladegeräten und RC-Modellen.",
+    hepf: "Österreichischer Modellflugspezialist mit Flugzeugen, Seglern, Jets und Turbinen sowie Helis, RC-Autos und Elektronik.",
+    bliek:
+      "Modellbaugeschäft in Breda (NL) mit RC-Autos, Trucks, Flugzeugen, Hubschraubern und Booten sowie Ersatzteilen und Farben.",
+    aerobertics:
+      "Belgischer RC-Spezialist mit großem Angebot an Flugzeugen, Hubschraubern, Autos und Booten sowie Elektronik und Antrieben.",
+    heligear:
+      "Hubschrauberspezialist aus Breda (NL) mit Mikado LOGO, Goblin, OMP und Tron sowie Rotorblättern, Elektronik und Ladegeräten.",
+    area51:
+      "Spanischer Hubschrauberspezialist mit Align, SAB und BeastX sowie Flugzeugen, Autos, Drohnen, Akkus und Optifuel.",
+  },
+  deals: {
+    outOfStock: "Nicht auf Lager",
+    viewAt: "{name} bei {shop} ansehen",
+    toShop: "Zum Shop",
+    wasSr: "Vorher ",
+    youSave: "Du sparst {amount}",
+    viewAll: "Alle ansehen",
+    noneYet:
+      "Noch keine Angebote gefunden. Der Crawler ist auf der Suche — schau bald wieder vorbei!",
+    countOne: "1 Angebot",
+    countOther: "{count} Angebote",
+    foundOne: "Angebot gefunden",
+    foundOther: "Angebote gefunden",
+    forQuery: "für",
+    emptyTitle: "Keine Angebote gefunden",
+    emptyText:
+      "Versuche weniger Filter oder einen anderen Suchbegriff. Jeden Tag kommen neue Angebote hinzu.",
+    emptyCta: "Alle Angebote ansehen",
+    filters: "Filter",
+    sort: "Sortieren",
+    sortOptions: {
+      korting: "Höchster Rabatt (%)",
+      besparing: "Größte Ersparnis (€)",
+      nieuw: "Neueste Angebote",
+      "prijs-laag": "Preis aufsteigend",
+      "prijs-hoog": "Preis absteigend",
+    },
+    pagination: "Seitennavigation",
+    previous: "Zurück",
+    next: "Weiter",
+  },
+  filters: {
+    category: "Kategorie",
+    allCategories: "Alle Kategorien",
+    shop: "Shop",
+    allShops: "Alle Shops",
+    minDiscount: "Mindestrabatt",
+    all: "Alle",
+    price: "Preis (€)",
+    min: "Min",
+    max: "Max",
+    minLabel: "Mindestpreis",
+    maxLabel: "Höchstpreis",
+    to: "bis",
+    inStock: "Nur auf Lager",
+    apply: "Filter anwenden",
+    clear: "Alle zurücksetzen",
+  },
+  home: {
+    badge: "Täglich neue RC-Angebote",
+    titleStart: "Mehr RC.",
+    titleHighlight: "Weniger zahlen.",
+    intro:
+      "Die besten Angebote für RC-Autos, Flugzeuge, Hubschrauber und Drohnen. Gesammelt bei deinen Lieblings-Modellbaushops — nur echte Rabatte von mindestens 5 € oder 5 %.",
+    popular: "Beliebt:",
+    statDealsOne: "1 Angebot",
+    statProductsOne: "1 Produkt beobachtet",
+    statShopsOne: "1 Shop",
+    statDeals: "{count} Angebote",
+    statProducts: "{count} Produkte beobachtet",
+    statShops: "{count} Shops",
+    statMaxDiscount: "bis zu {percent} % Rabatt",
+    statUpdated: "aktualisiert {ago}",
+    featured: "Top-Angebot im Moment",
+    saveSr: "Spare {amount}",
+    topTitle: "Größte Rabatte",
+    topSubtitle: "Die höchsten Rabatte im Moment",
+    newTitle: "Neu dabei",
+    newSubtitle: "Frisch entdeckte Angebote",
+    categoriesTitle: "Nach Kategorie shoppen",
+    categoriesSubtitle:
+      "Wähle, was du suchst — wir zeigen nur reduzierte Produkte.",
+    shopsTitle: "Shops, die wir im Blick behalten",
+    shopDeals: "{count} Angebote ansehen",
+    shopDealsFallback: "Angebote ansehen",
+    howTitle: "Wie funktioniert Modelbouwkortingen?",
+    howSteps: [
+      {
+        title: "Wir durchsuchen die Shops",
+        text: "Unser Crawler besucht täglich tausende Produktseiten bei TopRC, Toemen, Wetronic und mehr.",
+      },
+      {
+        title: "Nur echte Rabatte",
+        text: "Ein Produkt erscheint erst, wenn es mindestens 5 € oder 5 % günstiger ist als der normale Preis.",
+      },
+      {
+        title: "Du bestellst direkt im Shop",
+        text: "Klicke dich zum Shop durch und bestelle wie immer. Wir verlangen nichts extra.",
+      },
+    ],
+  },
+  dealsPage: {
+    metaTitle: "Alle RC-Angebote",
+    metaDescription:
+      "Alle RC-Produkte mit mindestens 5 € oder 5 % Rabatt, aus allen Shops an einem Ort.",
+    title: "Alle Angebote",
+    description:
+      "Alle RC-Produkte, die jetzt mindestens 5 € oder 5 % günstiger sind. Filtere nach Kategorie, Shop, Rabatt oder Preis.",
+    crumb: "Angebote",
+  },
+  categoryPage: {
+    metaTitle: "{name} im Angebot",
+    metaDescription:
+      "{name} im Angebot: {description} mit mindestens 5 € oder 5 % Rabatt.",
+    title: "{name} im Angebot",
+    description:
+      "{description}. Nur Produkte mit mindestens 5 € oder 5 % Rabatt.",
+    others: "Andere Kategorien",
+  },
+  shopsPage: {
+    title: "Shops",
+    metaDescription:
+      "Diese RC- und Modellbaushops behalten wir täglich im Blick.",
+    description:
+      "Diese Modellbaushops behalten wir täglich im Blick. Wähle einen Shop, um alle seine Angebote zu sehen.",
+    allTitle: "Alle Shops",
+    missing: "Fehlt dir ein Shop? Sag es uns über das {link}.",
+    missingLink: "Kontaktformular",
+  },
+  shopPage: {
+    title: "{name} Angebote",
+    metaDescription:
+      "Alle aktuellen Angebote von {name} ({domain}) mit mindestens 5 € oder 5 % Rabatt.",
+    visit: "Zu {domain}",
+  },
+  searchPage: {
+    title: "Suchen",
+    metaDescription: "Alle RC-Angebote durchsuchen.",
+  },
+  notFound: {
+    title: "Hoppla! Diese Seite gibt es nicht.",
+    text: "Vielleicht ist das Angebot abgelaufen oder der Link hat sich geändert. Suche unten weiter oder sieh dir alle Angebote an.",
+    cta: "Alle Angebote ansehen",
+  },
+  product: {
+    notFound: "Produkt nicht gefunden",
+    metaTitle: "{name} — {percent} % Rabatt",
+    metaDescription: "{name} jetzt für {price} bei {shop}{save}.",
+    metaSave: " (du sparst {amount})",
+    brand: "Marke: {brand}",
+    referenceExplained:
+      "Der durchgestrichene Preis ist der Preis, den wir in diesem Shop vor der Preissenkung gesehen haben (der höchste der letzten 30 Tage).",
+    viewAt: "Bei {shop} ansehen",
+    outOfStock: "Im Shop nicht auf Lager",
+    inStock: "Auf Lager",
+    stockUnknown: "Verfügbarkeit: siehe Shop",
+    dealSince: "Im Angebot seit {date} ({ago})",
+    shopCategory: "Kategorie im Shop: {category}",
+    disclaimer:
+      "Preise werden automatisch erfasst und können sich inzwischen geändert haben. Es gilt immer der Preis auf der Website von {shop}.",
+    history: "Preisverlauf",
+    historyEmpty:
+      "Wir beobachten dieses Produkt noch nicht lange genug für ein Diagramm. Schau später wieder vorbei!",
+    related: "Mehr {category} im Angebot",
+    relatedFallback: "Angebote",
+    chartPrice: "Preis",
+  },
+  about: {
+    title: "Wie funktioniert es?",
+    metaDescription:
+      "So findet Modelbouwkortingen.nl die besten RC-Angebote, plus Informationen für Shops über unseren Crawler.",
+    description:
+      "Modelbouwkortingen.nl sammelt automatisch RC-Angebote von niederländischen und anderen europäischen Modellbaushops, damit du nicht überall suchen musst.",
+    faqTitle: "Häufige Fragen",
+    faq: [
+      {
+        q: "Wann erscheint ein Produkt auf Modelbouwkortingen.nl?",
+        a: "Wir verfolgen die Preise selbst. Ein Produkt erscheint erst, wenn der Preis um mindestens 5 € oder 5 % unter den Preis fällt, den wir vorher in diesem Shop gesehen haben (den höchsten der letzten 30 Tage). Einen 'Statt'-Preis, den der Shop selbst anzeigt, zählen wir nicht. Das Produkt bleibt, bis der Preis wieder steigt.",
+      },
+      {
+        q: "Wie oft werden die Preise aktualisiert?",
+        a: "Unser Crawler läuft den ganzen Tag. Beliebte Angebote werden mehrmals täglich geprüft, das gesamte Sortiment mindestens ein paar Mal pro Woche.",
+      },
+      {
+        q: "Kostet mich das etwas?",
+        a: "Nein. Du bestellst einfach direkt im Shop, zum gleichen Preis wie immer.",
+      },
+      {
+        q: "Der Preis im Shop ist anders als hier. Wie kann das sein?",
+        a: "Angebote können sich schnell ändern. Es gilt immer der Preis auf der Website des Shops. Fehler entdeckt? Sag es uns über das Kontaktformular.",
+      },
+      {
+        q: "Mein Lieblingsshop ist nicht dabei.",
+        a: "Sag es uns! Wir erweitern die Anzahl der Shops regelmäßig.",
+      },
+    ],
+    forShopsTitle: "Informationen für Shops",
+    crawlerIntro:
+      "Unser Crawler identifiziert sich mit dem User-Agent {userAgent} mit einem Verweis auf diese Seite und sendet einen {from}-Header mit unserer Kontaktadresse.",
+    crawlerRules: [
+      "Wir respektieren robots.txt, auch bei Weiterleitungen.",
+      "Wir besuchen pro Shop höchstens einige Seiten pro Sekunde.",
+      "Bei HTTP 429 oder 503 pausieren wir automatisch (5, 10, 20 Sekunden, …) und machen danach langsamer weiter.",
+      "Wir lesen nur öffentliche Produktinformationen: Name, Preis, Bild und Kategorie.",
+      "Jedes Angebot verlinkt direkt auf die Produktseite in deinem Shop.",
+    ],
+    crawlerContact:
+      "Sollen wir deinen Shop anders oder gar nicht mehr crawlen, oder möchtest du aufgenommen werden? Dann {contact} — wir antworten schnell. Du kannst uns auch per robots.txt blockieren mit {robots}.",
+    crawlerContactLink: "melde dich bei uns",
+  },
+  contact: {
+    title: "Kontakt",
+    metaDescription:
+      "Frage, Tipp oder Anmerkung? Nimm Kontakt mit Modelbouwkortingen.nl auf.",
+    description:
+      "Eine Frage, ein Angebot, das nicht stimmt, oder ein Shop, der dir fehlt? Sag es uns.",
+    priceTitle: "Stimmt ein Preis nicht?",
+    priceText:
+      "Wir erfassen Preise automatisch. Es kann also sein, dass ein Angebot gerade abgelaufen ist. Sag uns Bescheid, dann schauen wir es uns an.",
+    ownerTitle: "Shopbetreiber?",
+    ownerText:
+      'Möchtest du deinen Shop hinzufügen, etwas ändern oder nicht mehr aufgeführt werden? Wähle "{subject}" als Betreff, dann kümmern wir uns schnell darum.',
+    name: "Name",
+    email: "E-Mail-Adresse",
+    subject: "Betreff",
+    message: "Nachricht",
+    send: "Nachricht senden",
+    sending: "Wird gesendet…",
+    sentTitle: "Nachricht gesendet",
+    subjects: {
+      general: "Allgemeine Frage",
+      price: "Angebot oder Preis stimmt nicht",
+      addShop: "Shop hinzufügen",
+      owner: "Ich betreibe einen Shop",
+      collaboration: "Zusammenarbeit",
+      other: "Sonstiges",
+    },
+    errors: {
+      name: "Bitte gib deinen Namen ein.",
+      email: "Bitte gib eine gültige E-Mail-Adresse ein.",
+      subject: "Bitte wähle einen Betreff.",
+      messageShort: "Deine Nachricht ist etwas kurz (mindestens 10 Zeichen).",
+      messageLong: "Deine Nachricht ist zu lang (höchstens 5000 Zeichen).",
+      rateLimited:
+        "Du hast schon ein paar Nachrichten gesendet. Bitte versuche es später erneut.",
+      failed:
+        "Beim Senden ist etwas schiefgelaufen. Bitte versuche es später erneut.",
+    },
+    thanks: "Danke für deine Nachricht!",
+    thanksReceived: "Danke! Deine Nachricht ist angekommen.",
+    thanksReply: "Danke! Wir antworten meist innerhalb weniger Tage.",
+  },
+  newsletter: {
+    metaTitle: "Täglicher Angebots-Newsletter",
+    metaDescription:
+      "Erhalte jeden Morgen die größten neuen RC-Angebote niederländischer und anderer europäischer Modellbaushops per E-Mail.",
+    title: "Täglicher Angebots-Newsletter",
+    description:
+      "Verpasse nie wieder ein RC-Angebot: die größten neuen Angebote jeden Morgen in deinem Postfach.",
+    crumb: "Newsletter",
+    discordHint:
+      "Du hast einen Discord-Server? Lass jedes neue Angebot direkt in deinem Kanal posten über einen {link}.",
+    discordLink: "Discord-Webhook",
+    points: [
+      {
+        title: "Eine E-Mail pro Tag",
+        text: "Jeden Morgen die höchsten neuen Rabatte. Gibt es nichts Neues, senden wir nichts.",
+      },
+      {
+        title: "Nur mit deiner Bestätigung",
+        text: "Nach der Anmeldung bekommst du eine Bestätigungs-E-Mail. Erst nach deinem Klick senden wir Angebote.",
+      },
+      {
+        title: "Abmelden mit einem Klick",
+        text: "Unter jeder E-Mail steht ein Abmeldelink. Wir nutzen deine Adresse nur für diese E-Mail.",
+      },
+    ],
+    signupTitle: "Jeden Morgen die größten RC-Rabatte per E-Mail",
+    signupText:
+      "Eine E-Mail pro Tag mit den besten neuen Angeboten. Kein Spam, und abmelden geht jederzeit mit einem Klick.",
+    emailLabel: "E-Mail-Adresse",
+    emailPlaceholder: "du@beispiel.de",
+    submit: "Anmelden",
+    submitting: "Wird angemeldet…",
+    subscribed:
+      "Schau in dein Postfach und klicke auf den Bestätigungslink. Schon angemeldet? Dann musst du nichts tun.",
+    invalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
+    rateLimited:
+      "Du hast dich schon ein paar Mal angemeldet. Bitte versuche es später erneut.",
+    failed:
+      "Bei der Anmeldung ist etwas schiefgelaufen. Bitte versuche es später erneut.",
+    confirmTitle: "Anmeldung bestätigen",
+    confirmDescription:
+      "Noch ein Klick und du bekommst jeden Morgen die größten RC-Rabatte.",
+    confirmCrumb: "Bestätigen",
+    confirmMissing:
+      "Dieser Link ist unvollständig. Öffne den Link aus der Bestätigungs-E-Mail erneut.",
+    confirmButton: "Ja, schickt mir die täglichen Angebote",
+    confirmPending: "Wird bestätigt…",
+    confirmOk:
+      "Deine Anmeldung ist bestätigt. Morgen früh bekommst du die ersten Angebote!",
+    confirmInvalid:
+      "Dieser Link funktioniert nicht (mehr). Melde dich erneut an, dann senden wir dir einen neuen.",
+    unsubscribeTitle: "Vom Angebots-Newsletter abmelden",
+    unsubscribeMetaTitle: "Abmelden",
+    unsubscribeDescription:
+      "Schade, dass du gehst! Nach der Abmeldung senden wir dir keine Angebots-E-Mails mehr.",
+    unsubscribeCrumb: "Abmelden",
+    unsubscribeMissing:
+      "Dieser Link ist unvollständig. Nutze den Abmeldelink unter einer unserer E-Mails.",
+    unsubscribeButton: "Abmelden",
+    unsubscribePending: "Wird abgemeldet…",
+    unsubscribeOk:
+      "Du bist abgemeldet und bekommst keine Angebots-E-Mails mehr.",
+    unsubscribeInvalid: "Dieser Abmeldelink ist unbekannt.",
+  },
+  discord: {
+    metaTitle: "Angebote in deinem Discord",
+    metaDescription:
+      "Verbinde einen Discord-Webhook und erhalte jedes neue RC-Angebot direkt als Nachricht in deinem eigenen Discord-Kanal.",
+    title: "Angebote in deinem Discord",
+    description:
+      "Verbinde einen Discord-Webhook und jedes neue RC-Angebot erscheint sofort in deinem eigenen Kanal.",
+    crumb: "Discord",
+    howTitle: "So erstellst du einen Webhook",
+    steps: [
+      "Öffne in Discord die Einstellungen des Kanals, in dem die Angebote erscheinen sollen.",
+      "Gehe zu Integrationen → Webhooks → Neuer Webhook.",
+      "Gib ihm optional einen Namen und klicke auf Webhook-URL kopieren.",
+      "Füge die URL in das Feld ein und klicke auf Verbinden.",
+    ],
+    permission:
+      'Dafür brauchst du auf dem Server die Berechtigung "Webhooks verwalten".',
+    points: [
+      {
+        title: "Jedes neue Angebot",
+        text: "Wenige Minuten nachdem wir eine Preissenkung entdecken, mit Preis, Rabatt und Foto.",
+      },
+      {
+        title: "Nur in deinem Kanal",
+        text: "Der Webhook kann nur Nachrichten posten; wir lesen nichts und erwähnen niemanden.",
+      },
+      {
+        title: "Jederzeit beenden",
+        text: "Über den Abmeldelink in der Willkommensnachricht, oder lösche den Webhook in Discord.",
+      },
+    ],
+    mailHint:
+      "Lieber eine E-Mail pro Tag mit den größten Rabatten? Melde dich für den {link} an.",
+    mailLink: "täglichen Angebots-Newsletter",
+    urlLabel: "Webhook-URL",
+    submit: "Verbinden",
+    submitting: "Wird verbunden…",
+    linked:
+      "Verbunden! In deinem Kanal steht eine Willkommensnachricht; neue Angebote erscheinen dort automatisch.",
+    linkedNamed:
+      'Verbunden mit "{name}"! In deinem Kanal steht eine Willkommensnachricht; neue Angebote erscheinen dort automatisch.',
+    rateLimited:
+      "Du hast schon ein paar Webhooks angegeben. Bitte versuche es später erneut.",
+    unavailable: "Discord-Benachrichtigungen sind gerade nicht verfügbar.",
+    failed:
+      "Beim Verbinden ist etwas schiefgelaufen. Bitte versuche es später erneut.",
+    invalidUrl:
+      "Das ist keine Discord-Webhook-URL. Sie beginnt mit https://discord.com/api/webhooks/…",
+    unknownWebhook:
+      "Discord kennt diesen Webhook nicht. Prüfe, ob du die ganze URL kopiert hast.",
+    cannotPost:
+      "Wir konnten in diesem Kanal keine Nachricht posten. Bitte versuche es später erneut.",
+    unsubscribeTitle: "Discord-Benachrichtigungen beenden",
+    unsubscribeDescription:
+      "Nach der Abmeldung posten wir keine Angebote mehr in diesem Kanal. Den Webhook selbst kannst du danach in Discord löschen.",
+    unsubscribeCrumb: "Abmelden",
+    unsubscribeMissing:
+      "Dieser Link ist unvollständig. Nutze den Abmeldelink aus der Willkommensnachricht in deinem Discord-Kanal.",
+    unsubscribeButton: "Benachrichtigungen beenden",
+    unsubscribePending: "Wird abgemeldet…",
+    unsubscribeOk:
+      "Abgemeldet: wir posten keine Angebote mehr in diesem Kanal.",
+    unsubscribeInvalid:
+      "Dieser Abmeldelink ist unbekannt oder wurde bereits verwendet.",
+    embedPrice: "Preis",
+    embedWas: "Vorher",
+    embedDiscount: "Rabatt",
+    embedAt: "Bei **{shop}**",
+    embedHistory: "Preisverlauf",
+    welcomeTitle: "Mit Modelbouwkortingen.nl verbunden",
+    welcomeText:
+      "Ab jetzt erscheint hier jedes neue RC-Angebot, sobald wir es entdecken.\n\nKeine Benachrichtigungen mehr? [Abmelden]({url}) oder lösche den Webhook in Discord.",
+  },
+  mail: {
+    confirmSubject: "Bestätige deine Anmeldung für die täglichen RC-Angebote",
+    confirmPreheader:
+      "Noch ein Klick und du bekommst jeden Tag die besten RC-Rabatte.",
+    confirmHeading: "Fast geschafft!",
+    confirmText:
+      "Bestätige deine Anmeldung, dann senden wir dir jeden Morgen die größten neuen RC-Rabatte des Tages.",
+    confirmButton: "Anmeldung bestätigen",
+    confirmFallback:
+      "Der Button funktioniert nicht? Kopiere diesen Link in deinen Browser:",
+    confirmFooter:
+      "Du hast dich nicht angemeldet? Dann kannst du diese E-Mail ignorieren: ohne Bestätigung senden wir dir nichts.",
+    digestSubjectOne: "Bis zu {percent} % Rabatt: 1 neues RC-Angebot von heute",
+    digestSubjectOther:
+      "Bis zu {percent} % Rabatt: {count} neue RC-Angebote von heute",
+    digestHeading: "Die größten neuen Rabatte",
+    digestIntro:
+      "Seit der letzten E-Mail bei den RC-Shops entdeckt, die wir beobachten.",
+    digestCta: "Alle neuen Angebote ansehen",
+    digestAllDeals: "Alle neuen Angebote",
+    digestInsteadOf: "statt",
+    digestFooter:
+      "Du erhältst diese E-Mail, weil du dich für die täglichen Angebote von {site} angemeldet hast. Preise und Verfügbarkeit können sich inzwischen geändert haben; es gilt der Preis im Shop. Einige Links sind Affiliate-Links.",
+    unsubscribe: "Abmelden",
+  },
+};

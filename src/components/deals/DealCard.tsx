@@ -5,11 +5,13 @@ import { PriceBlock } from "@/components/deals/PriceBlock";
 import { ProductImage } from "@/components/deals/ProductImage";
 import { ShopBadge } from "@/components/deals/ShopBadge";
 import { buttonVariants } from "@/components/ui/button";
+import { getI18n } from "@/i18n/server";
+import { t } from "@/i18n/translate";
 import type { Deal } from "@/lib/deals";
 import { productLink } from "@/lib/shops";
 import { cn } from "@/lib/utils";
 
-export function DealCard({
+export async function DealCard({
   deal,
   className,
   eager,
@@ -18,6 +20,7 @@ export function DealCard({
   className?: string;
   eager?: boolean;
 }) {
+  const { dict, href } = await getI18n();
   const link = productLink(deal);
   return (
     <article
@@ -40,7 +43,7 @@ export function DealCard({
         />
         {deal.inStock === false ? (
           <span className="absolute bottom-2 left-2 rounded-md bg-foreground/85 px-2 py-0.5 text-xs font-semibold text-background">
-            Niet op voorraad
+            {dict.deals.outOfStock}
           </span>
         ) : null}
       </div>
@@ -52,7 +55,7 @@ export function DealCard({
         />
         <h3 className="line-clamp-2 font-sans text-base leading-snug font-semibold">
           <Link
-            href={`/product/${deal.id}`}
+            href={href(`/product/${deal.id}`)}
             className="after:absolute after:inset-0 hover:underline"
           >
             {deal.name}
@@ -68,13 +71,16 @@ export function DealCard({
           href={link.href}
           target="_blank"
           rel={link.rel}
-          aria-label={`Bekijk ${deal.name} bij ${deal.shopName}`}
+          aria-label={t(dict.deals.viewAt, {
+            name: deal.name,
+            shop: deal.shopName,
+          })}
           className={cn(
             buttonVariants({ size: "lg" }),
             "relative z-10 h-11 w-full min-w-0 text-base font-bold",
           )}
         >
-          Naar de webshop
+          {dict.deals.toShop}
           <ExternalLink className="size-4" />
         </a>
       </div>

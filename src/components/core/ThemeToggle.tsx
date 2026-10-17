@@ -10,9 +10,11 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useI18n } from "@/i18n/client";
 
-export function ThemeToggle() {
+export function ThemeToggle({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme();
+  const { dict } = useI18n();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -20,7 +22,8 @@ export function ThemeToggle() {
           <Button
             variant="ghost"
             size="icon-lg"
-            aria-label="Kleurenthema kiezen"
+            aria-label={dict.nav.theme}
+            className={className}
           />
         }
       >
@@ -33,13 +36,13 @@ export function ThemeToggle() {
           onValueChange={(v) => setTheme(String(v))}
         >
           <DropdownMenuRadioItem value="light">
-            <Sun /> Licht
+            <Sun /> {dict.nav.themeLight}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="dark">
-            <Moon /> Donker
+            <Moon /> {dict.nav.themeDark}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="system">
-            <Monitor /> Systeem
+            <Monitor /> {dict.nav.themeSystem}
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>

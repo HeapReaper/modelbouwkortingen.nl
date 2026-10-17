@@ -13,6 +13,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { getI18n } from "@/i18n/server";
 import { getDeals } from "@/lib/deals";
 import {
   type DealFilters,
@@ -20,13 +21,13 @@ import {
   PAGE_SIZE,
   parseFilters,
 } from "@/lib/filters";
-import { formatNumber, withParams } from "@/lib/format";
+import { withParams } from "@/lib/format";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 /**
  * Lijst met deals + filters + paginering. Leest de query-string, dus altijd binnen
- * een <Suspense> gebruiken.
+ * een <Suspense> gebruiken. `basePath` zonder taalprefix.
  */
 export async function DealsBrowser({
   searchParams,
@@ -37,6 +38,8 @@ export async function DealsBrowser({
   basePath: string;
   fixed?: Pick<DealFilters, "category" | "shop">;
 }) {
+  const { dict, href, fmt } = await getI18n();
+  const localBase = href(basePath);
   const filters = { ...parseFilters(await searchParams), ...fixed };
   const { deals, total } = await getDeals(filters);
   const page = filters.page ?? 1;
@@ -55,7 +58,7 @@ export async function DealsBrowser({
     filters.inStock,
   ].filter(Boolean).length;
   const filterProps = {
-    basePath,
+    basePath: localBase,
     filters: urlFilters,
     hideCategory: Boolean(fixed.category),
     hideShop: Boolean(fixed.shop),
@@ -65,19 +68,19 @@ export async function DealsBrowser({
     <div className="grid gap-8 lg:grid-cols-[17rem_1fr]">
       <aside className="hidden lg:block">
         <div className="sticky top-24 rounded-2xl border bg-card p-5">
-          <h2 className="mb-4 text-xl font-black">Filters</h2>
+          <h2 className="mb-4 text-xl font-black">{dict.deals.filters}</h2>
           <FilterForm {...filterProps} idPrefix="d" />
         </div>
       </aside>
       <div className="flex min-w-0 flex-col gap-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-lg" aria-live="polite">
-            <strong className="font-black">{formatNumber(total)}</strong>{" "}
-            {total === 1 ? "deal" : "deals"} gevonden
+            <strong className="font-black">{fmt.number(total)}</strong>{" "}
+            {total === 1 ? dict.deals.foundOne : dict.deals.foundOther}
             {filters.q ? (
               <>
                 {" "}
-                voor <strong>“{filters.q}”</strong>
+                {dict.deals.forQuery} <strong>“{filters.q}”</strong>
               </>
             ) : null}
           </p>
@@ -89,18 +92,19 @@ export async function DealsBrowser({
               <EmptyMedia variant="icon">
                 <SearchX />
               </EmptyMedia>
-              <EmptyTitle className="text-xl">Geen deals gevonden</EmptyTitle>
+              <EmptyTitle className="text-xl">
+                {dict.deals.emptyTitle}
+              </EmptyTitle>
               <EmptyDescription className="text-base">
-                Probeer minder filters of een andere zoekterm. Er komen elke dag
-                nieuwe aanbiedingen bij.
+                {dict.deals.emptyText}
               </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
               <Link
-                href="/aanbiedingen"
+                href={href("/aanbiedingen")}
                 className={buttonVariants({ size: "lg" })}
               >
-                Alle aanbiedingen bekijken
+                {dict.deals.emptyCta}
               </Link>
             </EmptyContent>
           </Empty>
@@ -111,7 +115,7 @@ export async function DealsBrowser({
           page={page}
           totalPages={totalPages}
           href={(p) =>
-            withParams(basePath, {
+            withParams(localBase, {
               ...filtersToParams(urlFilters),
               pagina: p > 1 ? p : undefined,
             })

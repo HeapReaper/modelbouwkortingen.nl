@@ -1,7 +1,8 @@
-import { formatEuro } from "@/lib/format";
+import { getI18n } from "@/i18n/server";
+import { t } from "@/i18n/translate";
 import { cn } from "@/lib/utils";
 
-export function PriceBlock({
+export async function PriceBlock({
   price,
   referencePrice,
   discountAmount,
@@ -14,6 +15,7 @@ export function PriceBlock({
   size?: "default" | "lg";
   className?: string;
 }) {
+  const { dict, fmt } = await getI18n();
   const lg = size === "lg";
   return (
     <div className={cn("flex flex-col gap-0.5", className)}>
@@ -24,7 +26,7 @@ export function PriceBlock({
             lg ? "text-4xl" : "text-2xl",
           )}
         >
-          {formatEuro(price)}
+          {fmt.euro(price)}
         </span>
         {referencePrice && referencePrice > price ? (
           <span
@@ -33,8 +35,8 @@ export function PriceBlock({
               lg ? "text-xl" : "text-base",
             )}
           >
-            <span className="sr-only">Was </span>
-            {formatEuro(referencePrice)}
+            <span className="sr-only">{dict.deals.wasSr}</span>
+            {fmt.euro(referencePrice)}
           </span>
         ) : null}
       </div>
@@ -42,7 +44,7 @@ export function PriceBlock({
         <span
           className={cn("font-bold text-savings", lg ? "text-lg" : "text-sm")}
         >
-          Je bespaart {formatEuro(discountAmount)}
+          {t(dict.deals.youSave, { amount: fmt.euro(discountAmount) })}
         </span>
       ) : null}
     </div>

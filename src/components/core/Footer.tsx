@@ -2,19 +2,20 @@ import Link from "next/link";
 import { CurrentYear } from "@/components/core/CurrentYear";
 import { Logo } from "@/components/core/Logo";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
+import { getI18n } from "@/i18n/server";
 import { CATEGORIES } from "@/lib/categories";
 import { SHOPS } from "@/lib/shops";
 
-export default function Footer() {
+export default async function Footer() {
+  const { dict, href } = await getI18n();
+  const f = dict.footer;
   return (
     <footer className="mt-16 border-t bg-card">
       <div className="border-b">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 className="text-lg font-bold">Dagelijkse kortingsmail</h2>
-            <p className="text-muted-foreground">
-              Elke ochtend de grootste nieuwe RC-deals in je inbox.
-            </p>
+            <h2 className="text-lg font-bold">{f.newsletterTitle}</h2>
+            <p className="text-muted-foreground">{f.newsletterText}</p>
           </div>
           <NewsletterForm className="w-full lg:max-w-md" />
         </div>
@@ -22,49 +23,43 @@ export default function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-3">
           <Logo />
-          <p className="text-muted-foreground">
-            Wij speuren dagelijks de grote RC-webshops af en tonen alleen
-            producten die écht afgeprijsd zijn: minstens €5 of 5% goedkoper.
-          </p>
+          <p className="text-muted-foreground">{f.about}</p>
         </div>
         <FooterList
-          title="Categorieën"
+          title={f.categories}
           links={CATEGORIES.slice(0, 7).map((c) => ({
-            href: `/categorie/${c.slug}`,
-            label: c.name,
+            href: href(`/categorie/${c.slug}`),
+            label: dict.categories[c.slug].name,
           }))}
         />
         <FooterList
-          title="Webshops"
+          title={f.shops}
           links={[
             ...SHOPS.map((s) => ({
-              href: `/webshops/${s.slug}`,
+              href: href(`/webshops/${s.slug}`),
               label: s.name,
             })),
-            { href: "/webshops", label: "Alle webshops" },
+            { href: href("/webshops"), label: f.allShops },
           ]}
         />
         <FooterList
-          title="Modelbouwkortingen"
+          title={f.site}
           links={[
-            { href: "/aanbiedingen", label: "Alle aanbiedingen" },
-            { href: "/nieuwsbrief", label: "Dagelijkse kortingsmail" },
-            { href: "/discord", label: "Deals in je Discord" },
-            { href: "/over", label: "Hoe werkt het?" },
-            { href: "/over#webshops", label: "Voor webshops" },
-            { href: "/contact", label: "Contact" },
+            { href: href("/aanbiedingen"), label: f.allDeals },
+            { href: href("/nieuwsbrief"), label: f.newsletter },
+            { href: href("/discord"), label: f.discord },
+            { href: href("/over"), label: f.howItWorks },
+            { href: href("/over#webshops"), label: f.forShops },
+            { href: href("/contact"), label: f.contact },
           ]}
         />
       </div>
       <div className="border-t">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:justify-between">
           <p>
-            © <CurrentYear /> Modelbouwkortingen.nl — Alle rechten voorbehouden.
+            © <CurrentYear /> Modelbouwkortingen.nl — {f.rights}
           </p>
-          <p>
-            Prijzen en voorraad kunnen afwijken. De prijs in de webshop is
-            altijd leidend.
-          </p>
+          <p>{f.disclaimer}</p>
         </div>
       </div>
     </footer>

@@ -2,9 +2,10 @@
 
 import { CheckCircle2, XCircle } from "lucide-react";
 import { useActionState } from "react";
-import type { NewsletterState } from "@/app/nieuwsbrief/shared";
+import type { NewsletterState } from "@/app/[lang]/nieuwsbrief/shared";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/i18n/client";
 
 /**
  * Knop voor bevestigen/afmelden. Bewust een knop en geen actie bij het openen van de link:
@@ -26,6 +27,7 @@ export function TokenActionForm({
   pendingLabel: string;
   variant?: "default" | "outline";
 }) {
+  const { lang } = useI18n();
   const [state, formAction, pending] = useActionState(action, { ok: false });
 
   if (state.message) {
@@ -41,6 +43,7 @@ export function TokenActionForm({
   return (
     <form action={formAction}>
       <input type="hidden" name="token" value={token} />
+      <input type="hidden" name="lang" value={lang} />
       <Button
         type="submit"
         size="lg"

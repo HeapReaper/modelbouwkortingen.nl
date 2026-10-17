@@ -10,6 +10,7 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
+import { useI18n } from "@/i18n/client";
 import { CATEGORIES } from "@/lib/categories";
 import type { DealFilters } from "@/lib/filters";
 import { SHOPS } from "@/lib/shops";
@@ -36,6 +37,8 @@ export function FilterForm({
   idPrefix: string;
   onApplied?: () => void;
 }) {
+  const { dict } = useI18n();
+  const f = dict.filters;
   const ref = useRef<HTMLFormElement>(null);
   const submit = () => ref.current?.requestSubmit();
   const id = (s: string) => `${idPrefix}-${s}`;
@@ -56,7 +59,7 @@ export function FilterForm({
       {!hideCategory && (
         <div className="flex flex-col gap-2">
           <Label htmlFor={id("cat")} className="text-base font-bold">
-            Categorie
+            {f.category}
           </Label>
           <NativeSelect
             id={id("cat")}
@@ -65,10 +68,10 @@ export function FilterForm({
             onChange={submit}
             className="w-full [&_select]:h-11 [&_select]:text-base"
           >
-            <NativeSelectOption value="">Alle categorieën</NativeSelectOption>
+            <NativeSelectOption value="">{f.allCategories}</NativeSelectOption>
             {CATEGORIES.map((c) => (
               <NativeSelectOption key={c.slug} value={c.slug}>
-                {c.name}
+                {dict.categories[c.slug].name}
               </NativeSelectOption>
             ))}
           </NativeSelect>
@@ -78,7 +81,7 @@ export function FilterForm({
       {!hideShop && (
         <div className="flex flex-col gap-2">
           <Label htmlFor={id("shop")} className="text-base font-bold">
-            Webshop
+            {f.shop}
           </Label>
           <NativeSelect
             id={id("shop")}
@@ -87,7 +90,7 @@ export function FilterForm({
             onChange={submit}
             className="w-full [&_select]:h-11 [&_select]:text-base"
           >
-            <NativeSelectOption value="">Alle webshops</NativeSelectOption>
+            <NativeSelectOption value="">{f.allShops}</NativeSelectOption>
             {SHOPS.map((s) => (
               <NativeSelectOption key={s.slug} value={s.slug}>
                 {s.name}
@@ -98,7 +101,7 @@ export function FilterForm({
       )}
 
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 text-base font-bold">Minimale korting</legend>
+        <legend className="mb-2 text-base font-bold">{f.minDiscount}</legend>
         <div className="flex flex-wrap gap-2">
           {DISCOUNT_STEPS.map((step) => {
             const checked = (filters.minDiscount ?? 0) === step;
@@ -120,7 +123,7 @@ export function FilterForm({
                   onChange={submit}
                   className="sr-only"
                 />
-                {step === 0 ? "Alles" : `${step}%+`}
+                {step === 0 ? f.all : `${step}%+`}
               </label>
             );
           })}
@@ -128,26 +131,26 @@ export function FilterForm({
       </fieldset>
 
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 text-base font-bold">Prijs (€)</legend>
+        <legend className="mb-2 text-base font-bold">{f.price}</legend>
         <div className="flex items-center gap-2">
           <Input
             name="min"
             type="number"
             inputMode="decimal"
             min={0}
-            placeholder="Min"
-            aria-label="Minimale prijs"
+            placeholder={f.min}
+            aria-label={f.minLabel}
             defaultValue={filters.minPrice ?? ""}
             className="h-11 text-base"
           />
-          <span className="text-muted-foreground">tot</span>
+          <span className="text-muted-foreground">{f.to}</span>
           <Input
             name="max"
             type="number"
             inputMode="decimal"
             min={0}
-            placeholder="Max"
-            aria-label="Maximale prijs"
+            placeholder={f.max}
+            aria-label={f.maxLabel}
             defaultValue={filters.maxPrice ?? ""}
             className="h-11 text-base"
           />
@@ -164,13 +167,13 @@ export function FilterForm({
           className="size-5"
         />
         <Label htmlFor={id("stock")} className="text-base">
-          Alleen op voorraad
+          {f.inStock}
         </Label>
       </div>
 
       <div className="flex flex-col gap-2">
         <Button type="submit" size="lg" className="h-11 text-base font-bold">
-          Filters toepassen
+          {f.apply}
         </Button>
         <Button
           type="button"
@@ -183,7 +186,7 @@ export function FilterForm({
               (filters.q ? `?q=${encodeURIComponent(filters.q)}` : "");
           }}
         >
-          Alles wissen
+          {f.clear}
         </Button>
       </div>
     </Form>

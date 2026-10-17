@@ -2,14 +2,17 @@
 
 import { CheckCircle2, Mail } from "lucide-react";
 import { useActionState, useId } from "react";
-import { subscribeNewsletter } from "@/app/nieuwsbrief/actions";
-import type { NewsletterState } from "@/app/nieuwsbrief/shared";
+import { subscribeNewsletter } from "@/app/[lang]/nieuwsbrief/actions";
+import type { NewsletterState } from "@/app/[lang]/nieuwsbrief/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useI18n } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 
 export function NewsletterForm({ className }: { className?: string }) {
   const id = useId();
+  const { lang, dict } = useI18n();
+  const n = dict.newsletter;
   const [state, action, pending] = useActionState<NewsletterState, FormData>(
     subscribeNewsletter,
     { ok: false },
@@ -35,8 +38,9 @@ export function NewsletterForm({ className }: { className?: string }) {
       className={cn("flex flex-col gap-2", className)}
       noValidate
     >
+      <input type="hidden" name="lang" value={lang} />
       <label htmlFor={`${id}-email`} className="sr-only">
-        E-mailadres
+        {n.emailLabel}
       </label>
       <div className="flex flex-col gap-2 sm:flex-row">
         <Input
@@ -45,7 +49,7 @@ export function NewsletterForm({ className }: { className?: string }) {
           type="email"
           autoComplete="email"
           required
-          placeholder="jouw@email.nl"
+          placeholder={n.emailPlaceholder}
           defaultValue={state.email}
           aria-invalid={Boolean(state.message)}
           aria-describedby={state.message ? `${id}-error` : undefined}
@@ -58,7 +62,7 @@ export function NewsletterForm({ className }: { className?: string }) {
           className="h-12 shrink-0 text-base font-bold sm:px-6"
         >
           <Mail className="size-4" />
-          {pending ? "Aanmelden…" : "Aanmelden"}
+          {pending ? n.submitting : n.submit}
         </Button>
       </div>
       {state.message ? (

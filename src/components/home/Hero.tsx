@@ -6,8 +6,9 @@ import { DiscountBadge } from "@/components/deals/DiscountBadge";
 import { PriceBlock } from "@/components/deals/PriceBlock";
 import { ProductImage } from "@/components/deals/ProductImage";
 import { ShopBadge } from "@/components/deals/ShopBadge";
+import { getI18n } from "@/i18n/server";
+import { t } from "@/i18n/translate";
 import { getSiteStats, getTopDeals } from "@/lib/deals";
-import { formatEuro, formatNumber, timeAgo } from "@/lib/format";
 
 const QUICK_SEARCHES = [
   "Arrma",
@@ -18,7 +19,9 @@ const QUICK_SEARCHES = [
   "Spektrum",
 ];
 
-export function Hero() {
+export async function Hero() {
+  const { dict, href } = await getI18n();
+  const h = dict.home;
   return (
     <section className="relative overflow-hidden border-b bg-accent">
       <div
@@ -28,12 +31,12 @@ export function Hero() {
       <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:py-14 lg:grid-cols-[1.25fr_1fr] lg:items-center lg:py-20">
         <div className="flex flex-col gap-6">
           <span className="inline-flex w-fit -rotate-1 items-center gap-2 rounded-md bg-primary px-3 py-1.5 font-heading text-sm font-black tracking-wider text-primary-foreground uppercase shadow-md">
-            <BadgePercent className="size-4" /> Dagelijks nieuwe RC-deals
+            <BadgePercent className="size-4" /> {h.badge}
           </span>
           <h1 className="text-4xl leading-[1.05] font-black tracking-tight text-balance sm:text-5xl lg:text-6xl">
-            Meer RC.{" "}
+            {h.titleStart}{" "}
             <span className="relative inline-block text-primary">
-              Minder betalen.
+              {h.titleHighlight}
               <svg
                 viewBox="0 0 300 12"
                 preserveAspectRatio="none"
@@ -51,19 +54,17 @@ export function Hero() {
             </span>
           </h1>
           <p className="max-w-xl text-lg text-pretty text-foreground/80 sm:text-xl">
-            De beste aanbiedingen voor RC-auto's, vliegtuigen, helicopters en
-            drones. Verzameld bij jouw favoriete modelbouw-webshops — alleen
-            échte kortingen van minstens €5 of 5%.
+            {h.intro}
           </p>
           <SearchForm size="lg" className="max-w-2xl" />
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-semibold text-muted-foreground">
-              Populair:
+              {h.popular}
             </span>
             {QUICK_SEARCHES.map((q) => (
               <Link
                 key={q}
-                href={`/zoeken?q=${encodeURIComponent(q)}`}
+                href={href(`/zoeken?q=${encodeURIComponent(q)}`)}
                 className="rounded-full border bg-background/80 px-3 py-1 text-sm font-semibold hover:border-primary hover:text-primary"
               >
                 {q}
@@ -87,19 +88,48 @@ export function Hero() {
 }
 
 async function HeroStats() {
+  const { dict, fmt } = await getI18n();
+  const h = dict.home;
   const stats = await getSiteStats();
   const items = [
-    { icon: BadgePercent, label: `${formatNumber(stats.deals)} deals` },
+    {
+      icon: BadgePercent,
+      label:
+        stats.deals === 1
+          ? h.statDealsOne
+          : t(h.statDeals, { count: fmt.number(stats.deals) }),
+    },
     {
       icon: PackageSearch,
-      label: `${formatNumber(stats.products)} producten gevolgd`,
+      label:
+        stats.products === 1
+          ? h.statProductsOne
+          : t(h.statProducts, { count: fmt.number(stats.products) }),
     },
-    { icon: Store, label: `${stats.shops} webshops` },
+    {
+      icon: Store,
+      label:
+        stats.shops === 1
+          ? h.statShopsOne
+          : t(h.statShops, { count: stats.shops }),
+    },
     ...(stats.maxDiscount > 0
-      ? [{ icon: BadgePercent, label: `tot ${stats.maxDiscount}% korting` }]
+      ? [
+          {
+            icon: BadgePercent,
+            label: t(h.statMaxDiscount, { percent: stats.maxDiscount }),
+          },
+        ]
       : []),
     ...(stats.lastUpdate
-      ? [{ icon: Clock, label: `bijgewerkt ${timeAgo(stats.lastUpdate)}` }]
+      ? [
+          {
+            icon: Clock,
+            label: t(h.statUpdated, {
+              ago: fmt.timeAgo(stats.lastUpdate) ?? "",
+            }),
+          },
+        ]
       : []),
   ];
   return (
@@ -114,15 +144,16 @@ async function HeroStats() {
 }
 
 async function FeaturedDeal() {
+  const { dict, href, fmt } = await getI18n();
   const [deal] = await getTopDeals(1);
   if (!deal) return null;
   return (
     <Link
-      href={`/product/${deal.id}`}
+      href={href(`/product/${deal.id}`)}
       className="group relative hidden rotate-1 flex-col overflow-hidden rounded-3xl border-4 border-foreground bg-card shadow-[10px_10px_0_0_var(--foreground)] transition hover:rotate-0 lg:flex"
     >
       <span className="absolute top-0 left-0 z-10 rounded-br-2xl bg-deal px-4 py-2 font-heading text-sm font-black tracking-wider text-deal-foreground uppercase">
-        Topdeal van dit moment
+        {dict.home.featured}
       </span>
       <ProductImage
         src={deal.imageUrl}
@@ -150,7 +181,9 @@ async function FeaturedDeal() {
           referencePrice={deal.referencePrice}
           discountAmount={deal.discountAmount}
         />
-        <p className="sr-only">Bespaar {formatEuro(deal.discountAmount)}</p>
+        <p className="sr-only">
+          {t(dict.home.saveSr, { amount: fmt.euro(deal.discountAmount) })}
+        </p>
       </div>
     </Link>
   );

@@ -8,10 +8,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { getI18n } from "@/i18n/server";
 import type { Deal } from "@/lib/deals";
 
-/** Horizontale rij met deals: swipen op mobiel, pijltjes op desktop. */
-export function DealRow({
+/** Horizontale rij met deals: swipen op mobiel, pijltjes op desktop. `href` zonder taalprefix. */
+export async function DealRow({
   title,
   subtitle,
   href,
@@ -24,6 +25,7 @@ export function DealRow({
   deals: Deal[];
   icon?: React.ReactNode;
 }) {
+  const { dict, href: localize } = await getI18n();
   return (
     <section className="mx-auto w-full max-w-7xl px-4">
       <Carousel
@@ -42,10 +44,10 @@ export function DealRow({
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <Link
-              href={href}
+              href={localize(href)}
               className="hidden items-center gap-1 font-semibold text-primary hover:underline sm:flex"
             >
-              Bekijk alles <ArrowRight className="size-4" />
+              {dict.deals.viewAll} <ArrowRight className="size-4" />
             </Link>
             <div className="hidden gap-2 md:flex">
               <CarouselPrevious className="static size-10 translate-y-0" />
@@ -55,7 +57,7 @@ export function DealRow({
         </div>
         {deals.length === 0 ? (
           <p className="rounded-2xl border border-dashed p-8 text-center text-muted-foreground">
-            Nog geen deals gevonden. De crawler is op zoek — kom snel terug!
+            {dict.deals.noneYet}
           </p>
         ) : (
           <CarouselContent className="-ml-4">
@@ -70,10 +72,10 @@ export function DealRow({
           </CarouselContent>
         )}
         <Link
-          href={href}
+          href={localize(href)}
           className="flex items-center gap-1 self-start font-semibold text-primary hover:underline sm:hidden"
         >
-          Bekijk alles <ArrowRight className="size-4" />
+          {dict.deals.viewAll} <ArrowRight className="size-4" />
         </Link>
       </Carousel>
     </section>

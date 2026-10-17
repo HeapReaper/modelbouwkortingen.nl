@@ -1,7 +1,10 @@
 "use client";
 
 import { useTransition } from "react";
-import { toggleMessageHandled, toggleShopEnabled } from "@/app/admin/actions";
+import {
+  toggleMessageHandled,
+  toggleShopEnabled,
+} from "@/app/[lang]/admin/actions";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 

@@ -7,22 +7,14 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useI18n } from "@/i18n/client";
 import type { PricePoint } from "@/lib/deals";
 
-const config = {
-  price: { label: "Prijs", color: "var(--chart-1)" },
-} satisfies ChartConfig;
-
-const dateFmt = new Intl.DateTimeFormat("nl-NL", {
-  day: "numeric",
-  month: "short",
-});
-const euroFmt = new Intl.NumberFormat("nl-NL", {
-  style: "currency",
-  currency: "EUR",
-});
-
 export function PriceHistoryChart({ points }: { points: PricePoint[] }) {
+  const { dict, fmt } = useI18n();
+  const config = {
+    price: { label: dict.product.chartPrice, color: "var(--chart-1)" },
+  } satisfies ChartConfig;
   // Laat de lijn doorlopen tot vandaag.
   const data = [
     ...points.map((p) => ({ t: new Date(p.date).getTime(), price: p.price })),
@@ -39,7 +31,7 @@ export function PriceHistoryChart({ points }: { points: PricePoint[] }) {
           type="number"
           scale="time"
           domain={["dataMin", "dataMax"]}
-          tickFormatter={(t) => dateFmt.format(new Date(t))}
+          tickFormatter={(t) => fmt.shortDate(new Date(t))}
           tickLine={false}
           axisLine={false}
           tickMargin={8}
@@ -58,9 +50,9 @@ export function PriceHistoryChart({ points }: { points: PricePoint[] }) {
             <ChartTooltipContent
               labelFormatter={(_, payload) => {
                 const t = payload?.[0]?.payload?.t;
-                return t ? dateFmt.format(new Date(t)) : "";
+                return t ? fmt.shortDate(new Date(t)) : "";
               }}
-              formatter={(value) => euroFmt.format(Number(value))}
+              formatter={(value) => fmt.euro(Number(value))}
             />
           }
         />

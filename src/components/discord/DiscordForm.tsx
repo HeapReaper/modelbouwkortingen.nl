@@ -2,14 +2,17 @@
 
 import { CheckCircle2, Webhook } from "lucide-react";
 import { useActionState, useId } from "react";
-import { subscribeDiscord } from "@/app/discord/actions";
-import type { NewsletterState } from "@/app/nieuwsbrief/shared";
+import { subscribeDiscord } from "@/app/[lang]/discord/actions";
+import type { NewsletterState } from "@/app/[lang]/nieuwsbrief/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useI18n } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 
 export function DiscordForm({ className }: { className?: string }) {
   const id = useId();
+  const { lang, dict } = useI18n();
+  const d = dict.discord;
   const [state, action, pending] = useActionState<NewsletterState, FormData>(
     subscribeDiscord,
     { ok: false },
@@ -35,8 +38,9 @@ export function DiscordForm({ className }: { className?: string }) {
       className={cn("flex flex-col gap-2", className)}
       noValidate
     >
+      <input type="hidden" name="lang" value={lang} />
       <label htmlFor={`${id}-webhook`} className="text-base font-semibold">
-        Webhook-URL
+        {d.urlLabel}
       </label>
       <div className="flex flex-col gap-2 sm:flex-row">
         <Input
@@ -60,7 +64,7 @@ export function DiscordForm({ className }: { className?: string }) {
           className="h-12 shrink-0 text-base font-bold sm:px-6"
         >
           <Webhook className="size-4" />
-          {pending ? "Koppelen…" : "Koppelen"}
+          {pending ? d.submitting : d.submit}
         </Button>
       </div>
       {state.message ? (

@@ -1,3 +1,5 @@
+"use client";
+
 import { Search } from "lucide-react";
 import Form from "next/form";
 import { Button } from "@/components/ui/button";
@@ -6,6 +8,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { useI18n } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 
 /** Zoekformulier dat naar /zoeken navigeert (werkt ook zonder JavaScript). */
@@ -20,10 +23,11 @@ export function SearchForm({
   className?: string;
   autoFocus?: boolean;
 }) {
+  const { dict, href } = useI18n();
   const lg = size === "lg";
   return (
     <Form
-      action="/zoeken"
+      action={href("/zoeken")}
       role="search"
       className={cn("flex w-full gap-2", className)}
     >
@@ -38,11 +42,9 @@ export function SearchForm({
           type="search"
           defaultValue={defaultValue}
           placeholder={
-            lg
-              ? "Zoek bijv. Arrma Kraton, LiPo 4S, Spektrum…"
-              : "Zoek een deal…"
+            lg ? dict.search.placeholderLarge : dict.search.placeholder
           }
-          aria-label="Zoek naar aanbiedingen"
+          aria-label={dict.search.label}
           autoComplete="off"
           enterKeyHint="search"
           autoFocus={autoFocus}
@@ -54,7 +56,7 @@ export function SearchForm({
         size="lg"
         className={cn(lg ? "h-14 px-6 text-base font-bold" : "h-10 px-4")}
       >
-        Zoeken
+        {dict.search.button}
       </Button>
     </Form>
   );

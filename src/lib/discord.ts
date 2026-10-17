@@ -1,10 +1,13 @@
 import "server-only";
 
 import { randomBytes } from "node:crypto";
+import { DEFAULT_LOCALE, hasLocale, type Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
+import { t } from "@/i18n/translate";
 import { getPrisma } from "@/lib/db";
 import { type Deal, getDealsAfter } from "@/lib/deals";
-import { formatEuro } from "@/lib/format";
-import { SITE_URL } from "@/lib/newsletter-mail";
+import { formatters } from "@/lib/format";
+import { SITE_URL, siteUrl } from "@/lib/newsletter-mail";
 import { productLink } from "@/lib/shops";
 
 /**
@@ -89,22 +92,30 @@ async function postWebhook(
 const truncate = (s: string, n: number) =>
   s.length > n ? `${s.slice(0, n - 1)}…` : s;
 
-export function dealEmbed(deal: Deal): DiscordEmbed {
+export function dealEmbed(deal: Deal, lang: Locale): DiscordEmbed {
+  const d = getDictionary(lang).discord;
+  const fmt = formatters(lang);
   const fields = [
-    { name: "Prijs", value: formatEuro(deal.price), inline: true },
+    { name: d.embedPrice, value: fmt.euro(deal.price), inline: true },
     ...(deal.referencePrice
-      ? [{ name: "Was", value: formatEuro(deal.referencePrice), inline: true }]
+      ? [
+          {
+            name: d.embedWas,
+            value: fmt.euro(deal.referencePrice),
+            inline: true,
+          },
+        ]
       : []),
     {
-      name: "Korting",
-      value: `-${Math.round(deal.discountPercent)}% (${formatEuro(deal.discountAmount)})`,
+      name: d.embedDiscount,
+      value: `-${Math.round(deal.discountPercent)}% (${fmt.euro(deal.discountAmount)})`,
       inline: true,
     },
   ];
   return {
     title: truncate(deal.name, 256),
     url: productLink(deal).href,
-    description: `Bij **${deal.shopName}** · [Prijsverloop](${SITE_URL}/product/${deal.id})`,
+    description: `${t(d.embedAt, { shop: deal.shopName })} · [${d.embedHistory}](${siteUrl(lang, `/product/${deal.id}`)})`,
     color: BRAND_COLOR,
     fields,
     ...(deal.imageUrl?.startsWith("http")
@@ -115,28 +126,24 @@ export function dealEmbed(deal: Deal): DiscordEmbed {
   };
 }
 
+/** Bij een fout de sleutel van de melding in dict.discord. */
 export type SubscribeResult =
   | { ok: true; name: string | null }
-  | { ok: false; error: string };
+  | { ok: false; error: "invalidUrl" | "unknownWebhook" | "cannotPost" };
 
 /** Koppelt een webhook (of zet een eerder afgemelde weer aan) en stuurt een welkomstbericht. */
-export async function subscribeWebhook(raw: string): Promise<SubscribeResult> {
+export async function subscribeWebhook(
+  raw: string,
+  lang: Locale,
+): Promise<SubscribeResult> {
   const parsed = parseWebhookUrl(raw);
   if (!parsed) {
-    return {
-      ok: false,
-      error:
-        "Dit is geen Discord-webhook-URL. Die begint met https://discord.com/api/webhooks/…",
-    };
+    return { ok: false, error: "invalidUrl" };
   }
   // Bestaat de webhook? Discord geeft met het token de naam en het kanaal terug.
   const res = await fetch(parsed.url, { signal: AbortSignal.timeout(10_000) });
   if (!res.ok) {
-    return {
-      ok: false,
-      error:
-        "Discord kent deze webhook niet. Controleer of je de hele URL hebt gekopieerd.",
-    };
+    return { ok: false, error: "unknownWebhook" };
   }
   const info = (await res.json()) as {
     name?: string;
@@ -155,6 +162,7 @@ export async function subscribeWebhook(raw: string): Promise<SubscribeResult> {
     cursorProductId: BigInt(0),
     disabledAt: null,
     disabledReason: null,
+    locale: lang,
   };
   const sub = await prisma.discordSubscriber.upsert({
     where: { webhookId: parsed.id },
@@ -166,13 +174,14 @@ export async function subscribeWebhook(raw: string): Promise<SubscribeResult> {
     update: data,
   });
 
-  const unsubscribe = `${SITE_URL}/discord/afmelden?token=${encodeURIComponent(sub.token)}`;
+  const d = getDictionary(lang).discord;
+  const unsubscribe = `${siteUrl(lang, "/discord/afmelden")}?token=${encodeURIComponent(sub.token)}`;
   const welcome = await postWebhook(parsed.url, {
     embeds: [
       {
-        title: "Gekoppeld met Modelbouwkortingen.nl",
-        url: `${SITE_URL}/aanbiedingen?sort=nieuw`,
-        description: `Vanaf nu verschijnt hier elke nieuwe RC-deal zodra we hem spotten.\n\nGeen meldingen meer? [Afmelden](${unsubscribe}) of verwijder de webhook in Discord.`,
+        title: d.welcomeTitle,
+        url: siteUrl(lang, "/aanbiedingen?sort=nieuw"),
+        description: t(d.welcomeText, { url: unsubscribe }),
         color: BRAND_COLOR,
         footer: { text: "Modelbouwkortingen.nl" },
       },
@@ -183,11 +192,7 @@ export async function subscribeWebhook(raw: string): Promise<SubscribeResult> {
       where: { id: sub.id },
       data: { disabledAt: new Date(), disabledReason: welcome.error },
     });
-    return {
-      ok: false,
-      error:
-        "We konden geen bericht in dit kanaal plaatsen. Probeer het later opnieuw.",
-    };
+    return { ok: false, error: "cannotPost" };
   }
   return { ok: true, name: info.name ?? null };
 }
@@ -226,6 +231,7 @@ export async function postNewDeals(): Promise<DiscordRunResult> {
     let posted = 0;
     let disabled = 0;
     for (const sub of subs) {
+      const lang = hasLocale(sub.locale) ? sub.locale : DEFAULT_LOCALE;
       const deals = await getDealsAfter(
         sub.cursorAt,
         sub.cursorProductId,
@@ -234,12 +240,12 @@ export async function postNewDeals(): Promise<DiscordRunResult> {
       for (let i = 0; i < deals.length; i += EMBEDS_PER_MESSAGE) {
         const batch = deals.slice(i, i + EMBEDS_PER_MESSAGE);
         let result = await postWebhook(sub.webhookUrl, {
-          embeds: batch.map(dealEmbed),
+          embeds: batch.map((deal) => dealEmbed(deal, lang)),
         });
         if (!result.ok && result.retryAfterMs && result.retryAfterMs < 30_000) {
           await sleep(result.retryAfterMs);
           result = await postWebhook(sub.webhookUrl, {
-            embeds: batch.map(dealEmbed),
+            embeds: batch.map((deal) => dealEmbed(deal, lang)),
           });
         }
         if (!result.ok) {

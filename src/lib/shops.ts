@@ -17,12 +17,12 @@ import toemenLogo from "@/assets/shops/toemen.png";
 import toprcLogo from "@/assets/shops/toprc.svg";
 import wetronicLogo from "@/assets/shops/wetronic.png";
 
+/** De omschrijving staat per taal in de woordenboeken (dict.shops[slug]). */
 export type ShopInfo = {
   slug: string;
   name: string;
   url: string;
   domain: string;
-  description: string;
   /** Logo zoals de webshop het zelf op zijn site gebruikt. */
   logo: StaticImageData;
   /** Achtergrond waarop het logo goed leesbaar is (TopRC en Wetronic zijn licht). */
@@ -41,8 +41,6 @@ export const SHOPS: ShopInfo[] = [
     name: "TopRC",
     url: "https://www.toprc.nl",
     domain: "toprc.nl",
-    description:
-      "Grote RC-specialist met auto's, helicopters, vliegtuigen, boten en onderdelen.",
     logo: toprcLogo,
     logoBg: "bg-[#00607b]",
   },
@@ -51,8 +49,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Toemen Modelsport",
     url: "https://www.toemen.nl",
     domain: "toemen.nl",
-    description:
-      "Modelsportwinkel in Oisterwijk met een enorm assortiment RC, occasions en onderdelen.",
     logo: toemenLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
@@ -61,8 +57,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Wetronic",
     url: "https://wetronic.nl",
     domain: "wetronic.nl",
-    description:
-      "Modelbouwspecialist met veel vliegtuigen, zenders, elektronica en onderdelen.",
     logo: wetronicLogo,
     logoBg: "bg-[#0b1530]",
   },
@@ -71,8 +65,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Mini-Zshop",
     url: "https://mini-zshop.nl",
     domain: "mini-zshop.nl",
-    description:
-      "Specialist in Kyosho Mini-Z en kleine RC-auto's, met veel onderdelen en Traxxas-parts.",
     logo: minizshopLogo,
     logoBg: "bg-[#800f0b]",
   },
@@ -81,8 +73,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Modellbau Berlinski",
     url: "https://www.modellbau-berlinski.de",
     domain: "modellbau-berlinski.de",
-    description:
-      "Grote Duitse modelbouwwinkel met RC-auto's, trucks, boten, vliegtuigen en veel onderdelen.",
     logo: berlinskiLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
@@ -91,8 +81,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Hoellein",
     url: "https://hoelleinshop.com",
     domain: "hoelleinshop.com",
-    description:
-      "Duitse modelvliegspecialist met motoren, regelaars, servo's, propellers en bouwmaterialen.",
     logo: hoelleinLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
@@ -101,8 +89,6 @@ export const SHOPS: ShopInfo[] = [
     name: "MG-Modellbau",
     url: "https://www.mg-modellbau.de",
     domain: "mg-modellbau.de",
-    description:
-      "Duitse modelbouwshop met veel zenders, ontvangers, elektronica en onderdelen.",
     logo: mgmodellbauLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
@@ -111,8 +97,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Hacker Motor",
     url: "https://www.hacker-motor-shop.com",
     domain: "hacker-motor-shop.com",
-    description:
-      "Duitse fabrikant van brushless motoren, met eigen webshop voor motoren, regelaars, accu's en modellen.",
     logo: hackerLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
@@ -121,8 +105,6 @@ export const SHOPS: ShopInfo[] = [
     name: "RC Motorsports",
     url: "https://www.rcmotorsports.nl",
     domain: "rcmotorsports.nl",
-    description:
-      "RC-dealer in Nieuwerkerk aan den IJssel met o.a. Traxxas, Arrma, Axial en Tamiya, plus veel onderdelen.",
     logo: rcmotorsportsLogo,
     logoBg: "bg-[#191919]",
   },
@@ -131,8 +113,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Droneshop.nl",
     url: "https://droneshop.nl",
     domain: "droneshop.nl",
-    description:
-      "Dronespecialist met camera-, FPV- en racedrones, plus accu's, propellers en onderdelen.",
     logo: droneshopLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
@@ -141,8 +121,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Tamico",
     url: "https://tamico.de",
     domain: "tamico.de",
-    description:
-      "Duitse RC-car-specialist met veel Tamiya, Kyosho en Traxxas, plus trucks, tanks en een enorm onderdelenassortiment.",
     logo: tamicoLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
@@ -151,8 +129,6 @@ export const SHOPS: ShopInfo[] = [
     name: "ChinaHobbyLine",
     url: "https://chinahobbyline.com/nl",
     domain: "chinahobbyline.com",
-    description:
-      "Webshop van accumerk CNHL met LiPo-, LiHV- en LiFe-accu's, laders en RC-modellen.",
     logo: chinahobbylineLogo,
     logoBg: "bg-white ring-1 ring-border",
     affiliate: { params: { ref: "rc-garage" }, categories: ["accus-laders"] },
@@ -162,8 +138,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Hepf",
     url: "https://hepf.com",
     domain: "hepf.com",
-    description:
-      "Oostenrijkse modelvliegspecialist met vliegtuigen, zwevers, jets en turbines, plus heli's, RC-auto's en elektronica.",
     logo: hepfLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
@@ -172,8 +146,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Bliek Modelbouw",
     url: "https://webshop.bliekmodelbouw.nl",
     domain: "bliekmodelbouw.nl",
-    description:
-      "Modelbouwwinkel in Breda met RC-auto's, trucks, vliegtuigen, helikopters en boten, plus onderdelen en verf.",
     logo: bliekLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
@@ -182,8 +154,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Aerobertics",
     url: "https://aerobertics.be/nl",
     domain: "aerobertics.be",
-    description:
-      "Belgische RC-specialist met een groot aanbod vliegtuigen, helikopters, auto's en boten, plus elektronica en aandrijvingen.",
     logo: aeroberticsLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
@@ -192,8 +162,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Heligear",
     url: "https://www.heligear.nl",
     domain: "heligear.nl",
-    description:
-      "Helikopterspecialist uit Breda met Mikado LOGO, Goblin, OMP en Tron, plus rotorbladen, elektronica en laders.",
     logo: heligearLogo,
     logoBg: "bg-[#1e1e1e]",
   },
@@ -202,8 +170,6 @@ export const SHOPS: ShopInfo[] = [
     name: "Area51 RC",
     url: "https://www.area51-rc.es/shop/en/",
     domain: "area51-rc.es",
-    description:
-      "Spaanse helikopterspecialist met Align, SAB en BeastX, plus vliegtuigen, auto's, drones, accu's en Optifuel.",
     logo: area51Logo,
     logoBg: "bg-[#212121]",
   },

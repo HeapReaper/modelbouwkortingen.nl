@@ -55,6 +55,25 @@ koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coo
 | `/api/stats` | JSON met alle statistieken (Basic Auth of `Bearer STATS_TOKEN`) |
 | `/api/health` | Publieke health check |
 
+### Talen (Nederlands, Engels, Duits)
+
+Alle pagina's staan onder `src/app/[lang]/`. Nederlands houdt de oorspronkelijke URL's zonder
+prefix (`src/proxy.ts` herschrijft `/aanbiedingen` intern naar `/nl/aanbiedingen`); Engels en
+Duits staan onder `/en/…` en `/de/…`, met dezelfde (Nederlandse) paden.
+
+- **Detectie:** bij een URL zonder prefix stuurt de proxy door naar `/en` of `/de` als de
+  bezoeker die taal koos (cookie `NEXT_LOCALE`, gezet door de taalkiezer in de navbar) of, zonder
+  keuze, als de browser die taal liever wil (`Accept-Language`). Zonder `Accept-Language` (zoals
+  bij de meeste zoekmachines) blijft het Nederlands; een andere browsertaal (bv. Frans) krijgt Engels.
+- **Teksten:** `src/i18n/dictionaries/{nl,en,de}.ts`. `nl.ts` is de bron; `en` en `de` hebben
+  hetzelfde type, dus een ontbrekende vertaling is een TypeScript-fout. Server Components gebruiken
+  `await getI18n()` (via `next/root-params`), Client Components `useI18n()`; Server Actions en mails
+  krijgen de taal expliciet mee.
+- **Links:** altijd via `href()`/`localePath()`, zodat ze in de huidige taal blijven.
+- **SEO:** elke pagina heeft canonical + `hreflang`-links, en de sitemap bevat alle talen.
+- **Mail en Discord:** abonnees krijgen berichten in de taal waarin ze zich aanmeldden
+  (kolom `locale`).
+
 ### Dagelijkse kortingsmail
 
 Bezoekers melden zich aan met hun e-mailadres en bevestigen via een link (double opt-in).

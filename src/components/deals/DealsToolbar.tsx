@@ -16,7 +16,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { type DealFilters, filtersToParams, SORT_OPTIONS } from "@/lib/filters";
+import { useI18n } from "@/i18n/client";
+import { type DealFilters, filtersToParams, SORT_KEYS } from "@/lib/filters";
 import { withParams } from "@/lib/format";
 
 export type FilterProps = {
@@ -28,6 +29,7 @@ export type FilterProps = {
 
 /** Sorteren + (op mobiel) de filterknop met een uitschuifpaneel. */
 export function DealsToolbar(props: FilterProps & { activeCount: number }) {
+  const { dict } = useI18n();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const { basePath, filters, activeCount } = props;
@@ -45,7 +47,7 @@ export function DealsToolbar(props: FilterProps & { activeCount: number }) {
           }
         >
           <SlidersHorizontal className="size-4" />
-          Filters
+          {dict.deals.filters}
           {activeCount > 0 ? (
             <span className="ml-1 rounded-full bg-primary px-2 text-sm text-primary-foreground">
               {activeCount}
@@ -54,7 +56,7 @@ export function DealsToolbar(props: FilterProps & { activeCount: number }) {
         </SheetTrigger>
         <SheetContent side="left" className="w-[88%] overflow-y-auto">
           <SheetHeader>
-            <SheetTitle className="text-xl">Filters</SheetTitle>
+            <SheetTitle className="text-xl">{dict.deals.filters}</SheetTitle>
           </SheetHeader>
           <div className="px-4 pb-8">
             <FilterForm
@@ -67,7 +69,7 @@ export function DealsToolbar(props: FilterProps & { activeCount: number }) {
       </Sheet>
 
       <label className="sr-only" htmlFor="sort">
-        Sorteren
+        {dict.deals.sort}
       </label>
       <NativeSelect
         id="sort"
@@ -82,9 +84,9 @@ export function DealsToolbar(props: FilterProps & { activeCount: number }) {
         }
         className="[&_select]:h-11 [&_select]:text-base"
       >
-        {Object.entries(SORT_OPTIONS).map(([k, label]) => (
+        {SORT_KEYS.map((k) => (
           <NativeSelectOption key={k} value={k}>
-            {label}
+            {dict.deals.sortOptions[k]}
           </NativeSelectOption>
         ))}
       </NativeSelect>

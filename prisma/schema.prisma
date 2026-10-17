@@ -135,6 +135,8 @@ model NewsletterSubscriber {
   unsubscribedAt     DateTime? @map("unsubscribed_at") @db.Timestamptz
   confirmationSentAt DateTime? @map("confirmation_sent_at") @db.Timestamptz
   lastSentAt         DateTime? @map("last_sent_at") @db.Timestamptz
+  /// Taal van de site bij het aanmelden (nl, en, de); de mails gaan in deze taal.
+  locale             String    @default("nl")
   createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([confirmedAt, unsubscribedAt], map: "newsletter_subscribers_active_idx")
@@ -175,6 +177,8 @@ model DiscordSubscriber {
   /// Gezet bij afmelden of als Discord de webhook niet meer kent; dan posten we niet meer.
   disabledAt      DateTime? @map("disabled_at") @db.Timestamptz
   disabledReason  String?   @map("disabled_reason")
+  /// Taal van de site bij het koppelen (nl, en, de); de berichten gaan in deze taal.
+  locale          String    @default("nl")
   createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([disabledAt], map: "discord_subscribers_active_idx")
