@@ -63,6 +63,9 @@ func TestClassifyGerman(t *testing.T) {
 		{nil, "Tuning- & Teile | Panzer", "Tamiya Kettenglieder Leopard 2A6", "onderdelen"},
 		{nil, "RC-Trucks | Panzer", "Tamiya 56020 Panzer Leopard 2A6 Full Option 1:16 Bausatz", "tanks"},
 		{nil, "RC-Elektronik | Akkus", "Carson LiFe Akku 6,6V 1600mAh", "accus-laders"},
+		{nil, "trucks | rc opleggers", "Tamiya Trailer 3-assig", "werkvoertuigen"},
+		{nil, "bouwmachines", "Huina 1592 kiepwagen", "werkvoertuigen"},
+		{nil, "rc auto s | traxxas", "TRAXXAS Rustler 4x4 rood RTR met accu + LED-verlichting", "rc-autos"},
 		{nil, "LiHV", "CNHL Lightning LiHV 3200mAh 15,2V 4S 120C HV Lipo-accu met XT60-stekker", "accus-laders"},
 	}
 	for _, c := range cases {

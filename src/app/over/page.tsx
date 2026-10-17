@@ -45,7 +45,7 @@ export default function OverPage() {
       <PageHeader
         title="Hoe werkt het?"
         icon={<HelpCircle className="size-8 text-primary" />}
-        description="Modelbouwkortingen.nl verzamelt automatisch RC-aanbiedingen van Nederlandse en Duitse modelbouw-webshops, zodat jij niet overal hoeft te zoeken."
+        description="Modelbouwkortingen.nl verzamelt automatisch RC-aanbiedingen van Nederlandse, Belgische, Duitse en Oostenrijkse modelbouw-webshops, zodat jij niet overal hoeft te zoeken."
         crumbs={[{ href: "/over", label: "Hoe werkt het?" }]}
       />
       <div className="flex flex-col gap-14 py-10">

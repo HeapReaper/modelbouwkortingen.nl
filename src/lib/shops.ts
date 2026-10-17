@@ -1,8 +1,12 @@
 import type { StaticImageData } from "next/image";
+import aeroberticsLogo from "@/assets/shops/aerobertics.png";
 import berlinskiLogo from "@/assets/shops/berlinski.svg";
+import bliekLogo from "@/assets/shops/bliek.png";
 import chinahobbylineLogo from "@/assets/shops/chinahobbyline.png";
 import droneshopLogo from "@/assets/shops/droneshop.png";
 import hackerLogo from "@/assets/shops/hacker.png";
+import heligearLogo from "@/assets/shops/heligear.png";
+import hepfLogo from "@/assets/shops/hepf.svg";
 import hoelleinLogo from "@/assets/shops/hoellein.png";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
@@ -151,6 +155,46 @@ export const SHOPS: ShopInfo[] = [
     logo: chinahobbylineLogo,
     logoBg: "bg-white ring-1 ring-border",
     affiliate: { params: { ref: "rc-garage" }, categories: ["accus-laders"] },
+  },
+  {
+    slug: "hepf",
+    name: "Hepf",
+    url: "https://hepf.com",
+    domain: "hepf.com",
+    description:
+      "Oostenrijkse modelvliegspecialist met vliegtuigen, zwevers, jets en turbines, plus heli's, RC-auto's en elektronica.",
+    logo: hepfLogo,
+    logoBg: "bg-white ring-1 ring-border",
+  },
+  {
+    slug: "bliek",
+    name: "Bliek Modelbouw",
+    url: "https://webshop.bliekmodelbouw.nl",
+    domain: "bliekmodelbouw.nl",
+    description:
+      "Modelbouwwinkel in Breda met RC-auto's, trucks, vliegtuigen, helikopters en boten, plus onderdelen en verf.",
+    logo: bliekLogo,
+    logoBg: "bg-white ring-1 ring-border",
+  },
+  {
+    slug: "aerobertics",
+    name: "Aerobertics",
+    url: "https://aerobertics.be/nl",
+    domain: "aerobertics.be",
+    description:
+      "Belgische RC-specialist met een groot aanbod vliegtuigen, helikopters, auto's en boten, plus elektronica en aandrijvingen.",
+    logo: aeroberticsLogo,
+    logoBg: "bg-white ring-1 ring-border",
+  },
+  {
+    slug: "heligear",
+    name: "Heligear",
+    url: "https://www.heligear.nl",
+    domain: "heligear.nl",
+    description:
+      "Helikopterspecialist uit Breda met Mikado LOGO, Goblin, OMP en Tron, plus rotorbladen, elektronica en laders.",
+    logo: heligearLogo,
+    logoBg: "bg-[#1e1e1e]",
   },
 ];
 

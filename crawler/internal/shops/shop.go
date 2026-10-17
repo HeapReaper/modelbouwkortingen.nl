@@ -49,7 +49,7 @@ type HostPolicy interface {
 }
 
 func All() []Shop {
-	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}, &RCMotorsports{}, &Droneshop{}, &Tamico{}, &ChinaHobbyLine{}}
+	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}, &RCMotorsports{}, &Droneshop{}, &Tamico{}, &ChinaHobbyLine{}, &Hepf{}, &Bliek{}, &Aerobertics{}, &Heligear{}}
 }
 
 func BySlug(slugs []string) []Shop {
@@ -118,7 +118,7 @@ func attr(s *goquery.Selection, name string) string {
 
 // imgSrc pakt de echte afbeelding, ook als de shop lazy loading gebruikt.
 func imgSrc(img *goquery.Selection) string {
-	for _, a := range []string{"data-lazy-src", "data-src", "src"} {
+	for _, a := range []string{"data-lazy-src", "data-original", "data-src", "src"} {
 		if v := attr(img, a); v != "" && !strings.HasPrefix(v, "data:") {
 			return v
 		}
@@ -156,7 +156,8 @@ func fetchDoc(ctx context.Context, f *fetch.Fetcher, u string) (*goquery.Documen
 // bovenliggende categorieën tonen dezelfde producten nog een keer. minDepth is het
 // minimale aantal padsegmenten (filtert losse pagina's als /versand).
 func leafCategories(urls []string, minDepth int) []string {
-	norm := func(u string) string { return strings.TrimRight(stripQuery(u), "/") }
+	// "/auto-s.html" is de ouder van "/auto-s/traxxas.html" (Magento met URL-suffix).
+	norm := func(u string) string { return strings.TrimSuffix(strings.TrimRight(stripQuery(u), "/"), ".html") }
 	var out []string
 	for _, u := range urls {
 		n := norm(u)

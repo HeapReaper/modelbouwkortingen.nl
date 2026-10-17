@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	shopSlug := flag.String("shop", "", "toprc | toemen | wetronic | hoellein | berlinski | minizshop | mgmodellbau | hacker | rcmotorsports | droneshop | tamico | chinahobbyline")
+	shopSlug := flag.String("shop", "", "toprc | toemen | wetronic | hoellein | berlinski | minizshop | mgmodellbau | hacker | rcmotorsports | droneshop | tamico | chinahobbyline | hepf | bliek | aerobertics | heligear")
 	kind := flag.String("kind", "product", "product | listing")
 	pageURL := flag.String("url", "", "URL van de pagina")
 	flag.Parse()

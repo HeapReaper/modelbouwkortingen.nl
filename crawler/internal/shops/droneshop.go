@@ -54,7 +54,6 @@ func (s *Droneshop) Discover(ctx context.Context, f *fetch.Fetcher) ([]string, [
 }
 
 func (s *Droneshop) ParseListing(pageURL string, doc *goquery.Document) ([]parse.Product, string) {
-	var out []parse.Product
 	var crumbs []string
 	doc.Find(".breadcrumb_list li").Each(func(_ int, li *goquery.Selection) {
 		if c := parse.Clean(li.Text()); c != "" && !li.HasClass("home") {
@@ -70,24 +69,7 @@ func (s *Droneshop) ParseListing(pageURL string, doc *goquery.Document) ([]parse
 	if strings.Contains(pageURL, "/populair/") {
 		hint = ""
 	}
-	doc.Find("li.product-item").Each(func(_ int, card *goquery.Selection) {
-		link := card.Find("a.product-item-link").First()
-		box := card.Find(".price-box").First()
-		p := parse.Product{
-			ExternalID:   firstNonEmpty(attr(card.Find(`input[name="product"]`).First(), "value"), attr(box, "data-product-id")),
-			URL:          stripQuery(attr(link, "href")),
-			Name:         parse.Clean(link.Text()),
-			ImageURL:     attr(card.Find("img.product-image-photo").First(), "data-original"),
-			Price:        parse.Price(attr(box.Find(`[data-price-type="finalPrice"]`).First(), "data-price-amount")),
-			OldPrice:     parse.Price(attr(box.Find(`[data-price-type="oldPrice"]`).First(), "data-price-amount")),
-			CategoryHint: hint,
-		}
-		p.InStock = inStockFrom(card.Find("button.tocart").Length() > 0, card.Find(".stock.unavailable").Length() > 0)
-		if p.ExternalID != "" && p.URL != "" && p.Name != "" && p.Price > 0 {
-			out = append(out, p)
-		}
-	})
-	return out, attr(doc.Find("a.action.next").First(), "href")
+	return magentoListing(doc, hint)
 }
 
 func (s *Droneshop) ParseProduct(pageURL string, doc *goquery.Document) *parse.Product {

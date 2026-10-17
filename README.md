@@ -88,6 +88,10 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | Droneshop.nl | Magento 2 (yourstore) | `/sitemap/sitemap.xml` (URL's met `<image:image>`) | onderste categorieën onder `/drones`, `/accessoires`, `/onderdelen` + `/populair/aanbiedingen`, `?p=N` |
 | Tamico (DE) | JTL-Shop 5 | geen (XML-sitemap is gzip en dubbel DE/EN): alleen listings | subcategorieën uit `/Sitemap`, `?af=50`, `_sN` (Crawl-delay 5s, ~1.000 requests) |
 | ChinaHobbyLine (CNHL) | Shopify (USD) | geen: productpagina's tonen dollars | `/nl/products.json?country=NL` (europrijzen via Shopify Markets) |
+| Hepf (AT) | JTL-Shop 5 | geen: alleen listings | subcategorieën uit `/Sitemap`, 24 per pagina via `_sN` (`?af=` is verboden) |
+| Bliek Modelbouw | Magento 2 | `bliek_modelbouw-8-N.xml` (alleen voor de categorieën) | onderste RC-/verf-/uitloper-categorieën, `?product_list_limit=32`, `?p=N` |
+| Aerobertics (BE) | eigen systeem (ASP.NET) | geen sitemap: menu op `/nl/homepage` | onderste categorieën, `?Page=N` |
+| Heligear | CCV Shop | `/ExportBestanden/SiteMap.php` (~1.000 producten) | geen: alle productpagina's (JSON-LD) |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 
