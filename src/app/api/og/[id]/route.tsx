@@ -1,5 +1,8 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { connection } from "next/server";
+import sharp from "sharp";
 import { getDeal } from "@/lib/deals";
 import { formatEuro } from "@/lib/format";
 
@@ -12,23 +15,73 @@ import { formatEuro } from "@/lib/format";
 const SIZE = { width: 1200, height: 630 };
 const BRAND = "#d2161e"; // --primary uit globals.css
 const DEAL = "#f5d03b"; // ≈ --deal uit globals.css ("prijskaartje"-geel)
-/** Satori kan geen WebP/AVIF; die foto's laten we weg. */
-const IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif"];
-const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+const PHOTO_SIZE = 480;
 
-/** Productfoto als data-URL, of null als die niet (snel genoeg) te gebruiken is. */
+/** Zelfde lettertypes als de site (Archivo voor koppen, Geist voor tekst); één keer inlezen. */
+const fontFile = (name: string) =>
+  readFile(join(process.cwd(), "src/assets/fonts", name));
+const FONTS = Promise.all([
+  fontFile("archivo-latin-800-normal.woff"),
+  fontFile("geist-sans-latin-400-normal.woff"),
+  fontFile("geist-sans-latin-700-normal.woff"),
+]).then(([archivo, geist, geistBold]) => [
+  {
+    name: "Archivo",
+    data: archivo,
+    weight: 800 as const,
+    style: "normal" as const,
+  },
+  {
+    name: "Geist",
+    data: geist,
+    weight: 400 as const,
+    style: "normal" as const,
+  },
+  {
+    name: "Geist",
+    data: geistBold,
+    weight: 700 as const,
+    style: "normal" as const,
+  },
+]);
+
+/** WordPress-miniatuur ("foto-300x200.webp") → origineel ("foto.webp"); anders null. */
+const WP_THUMB_RE = /-\d{2,4}x\d{2,4}(\.\w+)$/;
+
+/**
+ * Productfoto als PNG-data-URL, of null als die niet (snel genoeg) te gebruiken is. Bij een
+ * WordPress-miniatuur eerst het origineel, want die is vaak te klein en wordt wazig.
+ */
 async function loadImage(url: string | null): Promise<string | null> {
   if (!url?.startsWith("http")) return null;
+  const original = url.replace(WP_THUMB_RE, "$1");
+  return (original !== url ? await fetchPng(original) : null) ?? fetchPng(url);
+}
+
+/** Satori kan geen WebP/AVIF lezen (veel shops leveren alleen dat), dus alles gaat via sharp naar PNG. */
+async function fetchPng(url: string): Promise<string | null> {
   try {
     const res = await fetch(url, {
       signal: AbortSignal.timeout(4000),
-      headers: { accept: IMAGE_TYPES.join(",") },
+      headers: {
+        accept: "image/*",
+        // Sommige shops weigeren verzoeken zonder browserachtige user-agent.
+        "user-agent":
+          "Mozilla/5.0 (compatible; ModelbouwkortingenBot/1.0; +https://modelbouwkortingen.nl)",
+      },
     });
-    const type = res.headers.get("content-type")?.split(";")[0].trim() ?? "";
-    if (!res.ok || !IMAGE_TYPES.includes(type)) return null;
-    const data = await res.arrayBuffer();
+    if (!res.ok) return null;
+    const data = Buffer.from(await res.arrayBuffer());
     if (data.byteLength > MAX_IMAGE_BYTES) return null;
-    return `data:${type};base64,${Buffer.from(data).toString("base64")}`;
+    const png = await sharp(data, { animated: false })
+      .resize(PHOTO_SIZE, PHOTO_SIZE, {
+        fit: "inside",
+        withoutEnlargement: false,
+      })
+      .png()
+      .toBuffer();
+    return `data:image/png;base64,${png.toString("base64")}`;
   } catch {
     return null;
   }
@@ -54,7 +107,7 @@ export async function GET(
         height: "100%",
         display: "flex",
         background: "#fbfaf7",
-        fontFamily: "sans-serif",
+        fontFamily: "Geist",
       }}
     >
       <div
@@ -79,7 +132,11 @@ export async function GET(
             style={{ objectFit: "contain" }}
           />
         ) : (
-          <div style={{ fontSize: 120, color: "#d4d4d8" }}>RC</div>
+          <div
+            style={{ fontSize: 120, fontFamily: "Archivo", color: "#d4d4d8" }}
+          >
+            RC
+          </div>
         )}
         {showDeal ? (
           <div
@@ -90,6 +147,7 @@ export async function GET(
               background: BRAND,
               color: "#ffffff",
               fontSize: 56,
+              fontFamily: "Archivo",
               fontWeight: 800,
               padding: "10px 26px",
               borderRadius: "16px 0 0 16px",
@@ -123,6 +181,7 @@ export async function GET(
           <div
             style={{
               fontSize: 46,
+              fontFamily: "Archivo",
               fontWeight: 800,
               color: "#12161f",
               lineHeight: 1.15,
@@ -133,7 +192,14 @@ export async function GET(
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 20 }}>
-            <div style={{ fontSize: 76, fontWeight: 800, color: "#12161f" }}>
+            <div
+              style={{
+                fontSize: 76,
+                fontFamily: "Archivo",
+                fontWeight: 800,
+                color: "#12161f",
+              }}
+            >
               {formatEuro(deal.price)}
             </div>
             {showDeal && deal.referencePrice ? (
@@ -155,6 +221,7 @@ export async function GET(
               background: DEAL,
               color: "#12161f",
               fontSize: 30,
+              fontFamily: "Archivo",
               fontWeight: 800,
               padding: "10px 20px",
               borderRadius: 12,
@@ -168,6 +235,7 @@ export async function GET(
     </div>,
     {
       ...SIZE,
+      fonts: await FONTS,
       headers: { "Cache-Control": "public, max-age=3600, s-maxage=3600" },
     },
   );
