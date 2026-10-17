@@ -6,6 +6,7 @@ import hoelleinLogo from "@/assets/shops/hoellein.png";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
+import tamicoLogo from "@/assets/shops/tamico.png";
 import toemenLogo from "@/assets/shops/toemen.png";
 import toprcLogo from "@/assets/shops/toprc.svg";
 import wetronicLogo from "@/assets/shops/wetronic.png";
@@ -122,6 +123,16 @@ export const SHOPS: ShopInfo[] = [
     description:
       "Dronespecialist met camera-, FPV- en racedrones, plus accu's, propellers en onderdelen.",
     logo: droneshopLogo,
+    logoBg: "bg-white ring-1 ring-border",
+  },
+  {
+    slug: "tamico",
+    name: "Tamico",
+    url: "https://tamico.de",
+    domain: "tamico.de",
+    description:
+      "Duitse RC-car-specialist met veel Tamiya, Kyosho en Traxxas, plus trucks, tanks en een enorm onderdelenassortiment.",
+    logo: tamicoLogo,
     logoBg: "bg-white ring-1 ring-border",
   },
 ];

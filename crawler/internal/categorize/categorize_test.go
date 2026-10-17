@@ -60,6 +60,9 @@ func TestClassifyGerman(t *testing.T) {
 		{[]string{"RC Flugzeuge und Zubehör", "Segelflugzeuge"}, "", "Multiplex Heron RR", "vliegtuigen"},
 		{[]string{"RC Schiffe und Zubehör", "Rennboote"}, "", "Pro Boat Recoil 2", "boten"},
 		{[]string{"Traxxas", "Aandrijving & transmissie", "Tandwielen / pinions / spur gears"}, "", "Traxxas TRX6790X Gear adapters", "onderdelen"},
+		{nil, "Tuning- & Teile | Panzer", "Tamiya Kettenglieder Leopard 2A6", "onderdelen"},
+		{nil, "RC-Trucks | Panzer", "Tamiya 56020 Panzer Leopard 2A6 Full Option 1:16 Bausatz", "tanks"},
+		{nil, "RC-Elektronik | Akkus", "Carson LiFe Akku 6,6V 1600mAh", "accus-laders"},
 	}
 	for _, c := range cases {
 		if got := Classify(c.crumbs, c.hint, "", c.name); got != c.want {
