@@ -1,9 +1,5 @@
 # Volledige stack: Postgres + migraties + website + crawler.
 #
-# De images worden gebouwd in Codeberg CI (.forgejo/workflows/images.yml) en hier alleen
-# opgehaald; de server bouwt dus niets meer. IMAGE_TAG (standaard `latest`) kan op een
-# `sha-<commit>` gezet worden om een oudere versie terug te zetten.
-#
 # Coolify (Docker Compose build pack):
 #   - SERVICE_USER_POSTGRES / SERVICE_PASSWORD_POSTGRES / SERVICE_PASSWORD_64_CRAWLERSTATS
 #     worden automatisch door Coolify gegenereerd.
@@ -12,9 +8,7 @@
 #   - Overige variabelen (ADMIN_PASSWORD, STATS_TOKEN, ...) verschijnen in de Coolify UI.
 #
 # Lokaal: zet SERVICE_USER_POSTGRES, SERVICE_PASSWORD_POSTGRES en
-# SERVICE_PASSWORD_64_CRAWLERSTATS in .env en draai `docker compose up -d` (images uit het
-# register) of `docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build`
-# (zelf bouwen).
+# SERVICE_PASSWORD_64_CRAWLERSTATS in .env en draai `docker compose up -d --build`.
 # De website is dan bereikbaar via de container op poort 3000 (voeg eventueel
 # een `ports:` override toe in docker-compose.override.yml).
 services:
@@ -35,8 +29,9 @@ services:
 
   # Past de Prisma-migraties toe en stopt daarna; crawler en web wachten hierop.
   migrate:
-    image: codeberg.org/heapreaper/modelbouwkortingen-migrate:${IMAGE_TAG:-latest}
-    pull_policy: always
+    build:
+      context: .
+      target: migrate
     restart: "no"
     # Eenmalige container: niet meenemen in de Coolify health status.
     exclude_from_hc: true
@@ -47,8 +42,8 @@ services:
       DATABASE_URL: postgres://${SERVICE_USER_POSTGRES}:${SERVICE_PASSWORD_POSTGRES}@db:5432/modelbouwkortingen?sslmode=disable
 
   crawler:
-    image: codeberg.org/heapreaper/modelbouwkortingen-crawler:${IMAGE_TAG:-latest}
-    pull_policy: always
+    build:
+      context: ./crawler
     restart: unless-stopped
     depends_on:
       migrate:
@@ -72,8 +67,9 @@ services:
       retries: 3
 
   web:
-    image: codeberg.org/heapreaper/modelbouwkortingen-web:${IMAGE_TAG:-latest}
-    pull_policy: always
+    build:
+      context: .
+      target: runner
     restart: unless-stopped
     depends_on:
       migrate:

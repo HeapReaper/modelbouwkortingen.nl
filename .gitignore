@@ -4,4 +4,3 @@ node_modules/
 *.tsbuildinfo
 .env.local
 /src/generated/prisma
-dist/
