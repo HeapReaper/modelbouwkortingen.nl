@@ -269,13 +269,16 @@ export async function getDealsAfter(
   prefs: DealPreferences = NO_PREFERENCES,
 ): Promise<Deal[]> {
   if (!isDbConfigured()) return [];
+  // De cursor is een JS Date (milliseconden); een deal_since met microseconden binnen dezelfde
+  // milliseconde telt als gelijk aan de cursor, anders zou die deal elke ronde terugkomen.
+  const nextMs = new Date(cursorAt.getTime() + 1);
   const rows = await getPrisma().product.findMany({
     select: DEAL_SELECT,
     where: {
       ...ACTIVE_DEAL,
       OR: [
-        { dealSince: { gt: cursorAt } },
-        { dealSince: cursorAt, id: { gt: cursorId } },
+        { dealSince: { gte: nextMs } },
+        { dealSince: { gte: cursorAt, lt: nextMs }, id: { gt: cursorId } },
       ],
       ...(prefs.categories.length > 0
         ? { categorySlug: { in: prefs.categories } }

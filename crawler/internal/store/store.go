@@ -240,13 +240,16 @@ func (s *Store) UpsertProduct(ctx context.Context, shopID int, p parse.Product, 
 		category = prevCategory
 	}
 
+	// deal_since in milliseconden: de website bewaart (deal_since, id) als Discord-cursor in een
+	// JS Date; met microseconden bleef de laatste deal "nieuwer" dan de cursor en werd hij elke
+	// ronde opnieuw gepost.
 	if res.IsNew {
 		err = tx.QueryRow(ctx, `
 			INSERT INTO products (shop_id, external_id, url, sku, name, brand, image_url, category_slug, shop_category,
 				price, old_price, reference_price, discount_amount, discount_percent, is_deal, in_stock, deal_since,
 				last_crawled_at)
 			VALUES ($1,$2,$3,NULLIF($4,''),$5,NULLIF($6,''),NULLIF($7,''),$8,NULLIF($9,''),$10,$11,$12,$13,$14,$15,$16,
-				CASE WHEN $15 THEN now() END, CASE WHEN $17 THEN now() END)
+				CASE WHEN $15 THEN date_trunc('milliseconds', now()) END, CASE WHEN $17 THEN now() END)
 			RETURNING id`,
 			shopID, p.ExternalID, p.URL, p.SKU, p.Name, p.Brand, p.ImageURL, category, shopCategory,
 			p.Price, oldArg, refArg, discount, percent, res.IsDeal, p.InStock, fromProductPage).Scan(&id)
@@ -257,7 +260,7 @@ func (s *Store) UpsertProduct(ctx context.Context, shopID int, p parse.Product, 
 				image_url = COALESCE(NULLIF($6,''), image_url), category_slug = $7, shop_category = NULLIF($8,''),
 				price = $9, old_price = $10, reference_price = $11, discount_amount = $12, discount_percent = $13,
 				is_deal = $14, in_stock = COALESCE($15, in_stock),
-				deal_since = CASE WHEN NOT $14 THEN NULL WHEN is_deal THEN deal_since ELSE now() END,
+				deal_since = CASE WHEN NOT $14 THEN NULL WHEN is_deal THEN deal_since ELSE date_trunc('milliseconds', now()) END,
 				baseline_since = CASE WHEN $17 THEN now() ELSE baseline_since END,
 				last_seen_at = now(), updated_at = now(),
 				last_crawled_at = CASE WHEN $16 THEN now() ELSE last_crawled_at END
