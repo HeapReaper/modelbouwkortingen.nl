@@ -79,23 +79,6 @@ export default function Navbar() {
             <NavigationMenuTrigger className="text-base">{dict.nav.shops}</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[40rem] grid-cols-2 gap-1 p-2">
-                {SHOPS.map((s) => (
-                  <li key={s.slug}>
-                    <NavigationMenuLink
-                      render={
-                        <Link href={href(`/webshops/${s.slug}`)} className="flex items-start gap-3">
-                          <ShopLogo shop={s} className="h-9 w-24" />
-                          <span className="flex flex-col gap-0.5">
-                            <span className="font-semibold">{s.name}</span>
-                            <span className="line-clamp-2 text-muted-foreground">
-                              {dict.shops[s.slug]}
-                            </span>
-                          </span>
-                        </Link>
-                      }
-                    />
-                  </li>
-                ))}
                 <li>
                   <NavigationMenuLink
                     render={
@@ -114,6 +97,23 @@ export default function Navbar() {
                     }
                   />
                 </li>
+                {SHOPS.map((s) => (
+                  <li key={s.slug}>
+                    <NavigationMenuLink
+                      render={
+                        <Link href={href(`/webshops/${s.slug}`)} className="flex items-start gap-3">
+                          <ShopLogo shop={s} className="h-9 w-24" />
+                          <span className="flex flex-col gap-0.5">
+                            <span className="font-semibold">{s.name}</span>
+                            <span className="line-clamp-2 text-muted-foreground">
+                              {dict.shops[s.slug]}
+                            </span>
+                          </span>
+                        </Link>
+                      }
+                    />
+                  </li>
+                ))}
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
