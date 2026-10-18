@@ -28,7 +28,7 @@ func (*RCMotorsports) Description() string {
 
 func (*RCMotorsports) UserAgent() string { return shopifyUserAgent }
 
-func (*RCMotorsports) MinDelay() time.Duration { return time.Second }
+func (*RCMotorsports) MinDelay() time.Duration { return 2 * time.Second } // bij 1 s kwamen er 429/503's
 
 // Productpagina's zijn alleen een terugvaloptie: /products.json bevat alle prijzen al.
 func (*RCMotorsports) MaxProductPages() int { return 300 }

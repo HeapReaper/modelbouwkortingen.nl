@@ -9,7 +9,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -35,8 +34,7 @@ import (
 //     productsitemaps van "Toys Hobbies and Robot" (~30.000 URL's, ruwe .xml.gz) met een
 //     voorselectie op de Engelse URL: RC-modellen wel, onderdelen, zenders en accu's niet.
 //   - Productpagina's: de categorie-ID uit de pixel beslist. Andere categorieën (onderdelen,
-//     speelgoed) slaan we over en onthouden we, anders staan ze elke ronde weer vooraan in de
-//     wachtrij (zonder productrij hebben ze geen crawl-status).
+//     speelgoed) geven geen product; de runner zet ze dan een week in crawl_misses.
 //   - Werkvoertuigen (graafmachines, shovels, kiepwagens) staan bij Banggood onder RC auto;
 //     die herkennen we aan de URL.
 //   - Affiliate: de partnercode komt als ?p=... op de link, zie src/lib/shops.ts.
@@ -44,8 +42,6 @@ type Banggood struct {
 	// eurRate is dollar → euro zoals de site rekent; Discover zet hem elke ronde opnieuw,
 	// voordat de productpagina's opgehaald worden.
 	eurRate float64
-	// rejected onthoudt productpagina's buiten onze categorieën zolang de crawler draait.
-	rejected sync.Map
 }
 
 const banggoodNL = "https://nl.banggood.com"
@@ -108,11 +104,8 @@ func (s *Banggood) Discover(ctx context.Context, f *fetch.Fetcher) ([]string, []
 	seen := map[string]bool{}
 	var products []sitemap.URL
 	add := func(u sitemap.URL) {
-		if seen[u.Loc] {
-			return
-		}
-		seen[u.Loc] = true
-		if _, skip := s.rejected.Load(u.Loc); !skip {
+		if !seen[u.Loc] {
+			seen[u.Loc] = true
 			products = append(products, u)
 		}
 	}
@@ -211,8 +204,6 @@ func (s *Banggood) ParseProduct(pageURL string, doc *goquery.Document) *parse.Pr
 	}
 	label, ok := banggoodCategories[int(category)]
 	if !ok {
-		s.rejected.Store(stripQuery(pageURL), true)
-		s.rejected.Store(url, true)
 		return nil
 	}
 	usd, _ := px.Price.Float64()

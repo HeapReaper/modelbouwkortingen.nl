@@ -28,7 +28,7 @@ func (*Hoellein) Description() string {
 
 func (*Hoellein) UserAgent() string { return shopifyUserAgent }
 
-func (*Hoellein) MinDelay() time.Duration { return time.Second }
+func (*Hoellein) MinDelay() time.Duration { return 2 * time.Second } // bij 1 s kwamen er 429/503's
 
 // Productpagina's zijn alleen een terugvaloptie: /products.json bevat alle prijzen al.
 func (*Hoellein) MaxProductPages() int { return 300 }

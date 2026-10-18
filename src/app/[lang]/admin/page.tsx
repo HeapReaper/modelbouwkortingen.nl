@@ -17,6 +17,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import {
   MessageHandledButton,
+  ResolveAlertButton,
   ShopEnabledSwitch,
 } from "@/components/admin/AdminButtons";
 import { AutoRefresh } from "@/components/admin/AutoRefresh";
@@ -53,8 +54,6 @@ import {
 } from "@/lib/service-status";
 import { getSiteContact } from "@/lib/site-contact";
 import { cn } from "@/lib/utils";
-
-const DAY_MS = 24 * 60 * 60_000;
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -97,17 +96,24 @@ async function AdminContent() {
       {!data.db.ok ? (
         <Notice tone="warn">Database: {data.db.error}</Notice>
       ) : null}
-      {data.crawlAlerts
-        .filter(
-          (a) => Date.now() - new Date(a.startedAt).getTime() < 2 * DAY_MS,
-        )
-        .map((a) => (
-          <Notice key={a.runId} tone="warn">
-            Crawler: <strong>{a.shop}</strong> zag in ronde #{a.runId} (
-            {formatDateTime(a.startedAt)}) maar {formatNumber(a.seen)}{" "}
-            producten, normaal ±{formatNumber(a.baseline)}. Werkt de parser nog?
-          </Notice>
-        ))}
+      {data.crawlAlerts.map((a) => (
+        <Notice
+          key={a.runId}
+          tone="warn"
+          action={<ResolveAlertButton runId={a.runId} />}
+        >
+          Crawler: <strong>{a.shop}</strong> zag in ronde #{a.runId} (
+          {formatDateTime(a.startedAt)}) maar {formatNumber(a.seen)} producten,
+          normaal ±{formatNumber(a.baseline)}
+          {a.status === "failed" ? " (ronde mislukt)" : ""}. Werkt de parser
+          nog?
+        </Notice>
+      ))}
+      {data.crawlAlerts.length > 1 ? (
+        <div className="flex justify-end">
+          <ResolveAlertButton />
+        </div>
+      ) : null}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Kpi icon={Tag} label="Deals live" value={formatNumber(totalDeals)} />
@@ -763,20 +769,23 @@ function Kpi({
 
 function Notice({
   tone,
+  action,
   children,
 }: {
   tone: "warn";
+  action?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <div
       className={cn(
-        "flex items-start gap-2 rounded-xl border p-4",
+        "flex flex-wrap items-start gap-2 rounded-xl border p-4",
         tone === "warn" && "border-deal bg-accent text-accent-foreground",
       )}
     >
       <AlertTriangle className="mt-0.5 size-5 shrink-0" />
-      <p>{children}</p>
+      <p className="min-w-0 flex-1">{children}</p>
+      {action}
     </div>
   );
 }

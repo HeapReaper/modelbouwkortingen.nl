@@ -87,9 +87,14 @@ func (s *Store) UpdateRun(ctx context.Context, runID int64, r RunResult, finishe
 type CrawlState struct {
 	CrawledAt time.Time // zero = productpagina nog nooit bezocht
 	IsDeal    bool
+	// Miss: bij het laatste bezoek stond er geen product op de pagina (crawl_misses).
+	Miss bool
+	// Known: de URL heeft een rij in products (de shop had hier eerder een product).
+	Known bool
 }
 
-// CrawlStates geeft per product-URL wanneer de productpagina voor het laatst bezocht is.
+// CrawlStates geeft per product-URL wanneer de productpagina voor het laatst bezocht is,
+// ook als daar toen geen product stond (crawl_misses).
 func (s *Store) CrawlStates(ctx context.Context, shopID int) (map[string]CrawlState, error) {
 	rows, err := s.pool.Query(ctx, `SELECT url, last_crawled_at, is_deal FROM products WHERE shop_id=$1`, shopID)
 	if err != nil {
@@ -106,13 +111,50 @@ func (s *Store) CrawlStates(ctx context.Context, shopID int) (map[string]CrawlSt
 		if err := rows.Scan(&u, &at, &isDeal); err != nil {
 			return nil, err
 		}
-		st := CrawlState{IsDeal: isDeal}
+		st := CrawlState{IsDeal: isDeal, Known: true}
 		if at != nil {
 			st.CrawledAt = *at
 		}
 		out[u] = st
 	}
-	return out, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	misses, err := s.pool.Query(ctx, `SELECT url, crawled_at FROM crawl_misses WHERE shop_id=$1`, shopID)
+	if err != nil {
+		return nil, err
+	}
+	defer misses.Close()
+	for misses.Next() {
+		var (
+			u  string
+			at time.Time
+		)
+		if err := misses.Scan(&u, &at); err != nil {
+			return nil, err
+		}
+		// Alleen als de misser nieuwer is dan het laatste bezoek mét product.
+		if st := out[u]; at.After(st.CrawledAt) {
+			st.CrawledAt, st.Miss = at, true
+			out[u] = st
+		}
+	}
+	return out, misses.Err()
+}
+
+// RecordMiss onthoudt dat er op een productpagina geen product stond (of dat hij 404 gaf).
+func (s *Store) RecordMiss(ctx context.Context, shopID int, url string) error {
+	_, err := s.pool.Exec(ctx, `
+		INSERT INTO crawl_misses (shop_id, url, crawled_at) VALUES ($1, $2, now())
+		ON CONFLICT (shop_id, url) DO UPDATE SET crawled_at = now()`, shopID, url)
+	return err
+}
+
+// PruneMisses ruimt missers op die al lang niet meer bezocht zijn (niet meer in de sitemap).
+func (s *Store) PruneMisses(ctx context.Context, shopID int, before time.Time) error {
+	_, err := s.pool.Exec(ctx, `DELETE FROM crawl_misses WHERE shop_id=$1 AND crawled_at < $2`, shopID, before)
+	return err
 }
 
 // ExpireStale zet deals uit van producten die we sinds `cutoff` niet meer gezien hebben

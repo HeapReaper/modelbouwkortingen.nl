@@ -13,8 +13,9 @@ import { SITE_URL } from "@/lib/newsletter-mail";
  *
  * Minder producten is op zich normaal als een ronde kort na de vorige start (bv. na een
  * deploy): productpagina's die de crawler minder dan CRAWLER_RECRAWL_AFTER geleden bezocht,
- * slaat hij over. Daarom telt alleen een ronde die ook per opgehaalde pagina opvallend minder
- * producten vond (of niets kon ophalen).
+ * slaat hij over. Daarom telt een geslaagde ronde alleen als hij niets vond, of als hij genoeg
+ * pagina's ophaalde (MIN_PAGES) en daarop per pagina opvallend minder producten vond. Een
+ * mislukte ronde telt altijd.
  */
 
 /** Melden als een ronde minder dan dit deel van het mediaan van de vorige rondes zag. */
@@ -23,6 +24,11 @@ const DROP_RATIO = Number(process.env.CRAWL_ALERT_RATIO ?? 0.5);
 const BASELINE_RUNS = 5;
 /** Kleine shops schommelen te veel om op te letten. */
 const MIN_BASELINE = 50;
+/**
+ * Een kleine ronde (alleen de paar pagina's die aan de beurt waren) zegt te weinig over de
+ * parser; een kapotte parser valt dan in de volgende grote ronde op.
+ */
+const MIN_PAGES = 100;
 /** Alleen recente rondes bekijken; oudere zijn al beoordeeld. */
 const LOOKBACK_MS = 48 * 60 * 60_000;
 
@@ -51,6 +57,7 @@ export async function checkCrawlRuns(): Promise<CrawlCheckResult> {
       id: true,
       shopId: true,
       startedAt: true,
+      status: true,
       productsSeen: true,
       pagesFetched: true,
     },
@@ -74,11 +81,17 @@ export async function checkCrawlRuns(): Promise<CrawlCheckResult> {
     const baseline = Math.round(median(previous.map((r) => r.productsSeen)));
     if (baseline < MIN_BASELINE || run.productsSeen >= baseline * DROP_RATIO)
       continue;
-    const perPage = (r: { productsSeen: number; pagesFetched: number }) =>
-      r.productsSeen / Math.max(r.pagesFetched, 1);
-    const baselinePerPage = median(previous.map(perPage));
-    if (run.pagesFetched > 0 && perPage(run) >= baselinePerPage * DROP_RATIO)
-      continue;
+    if (run.status === "ok") {
+      // Niets opgehaald: alles was recent al bezocht.
+      if (run.pagesFetched === 0) continue;
+      if (run.productsSeen > 0) {
+        if (run.pagesFetched < MIN_PAGES) continue;
+        const perPage = (r: { productsSeen: number; pagesFetched: number }) =>
+          r.productsSeen / Math.max(r.pagesFetched, 1);
+        const baselinePerPage = median(previous.map(perPage));
+        if (perPage(run) >= baselinePerPage * DROP_RATIO) continue;
+      }
+    }
     try {
       await prisma.crawlAlert.create({
         data: {
@@ -152,8 +165,10 @@ export type CrawlAlertRow = {
   notifiedAt: string | null;
 };
 
+/** Open meldingen (nog niet afgehandeld in /admin), nieuwste eerst. */
 export async function getCrawlAlerts(limit = 10): Promise<CrawlAlertRow[]> {
   const rows = await getPrisma().crawlAlert.findMany({
+    where: { resolvedAt: null },
     include: { run: { include: { shop: { select: { name: true } } } } },
     orderBy: { createdAt: "desc" },
     take: limit,

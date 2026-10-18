@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"html"
 	"log/slog"
 	"math"
 	"net/url"
@@ -129,6 +130,7 @@ func (r *Runner) RunShop(ctx context.Context, shop shops.Shop) (err error) {
 			if n, e := r.store.ExpireStale(context.Background(), sr.shopID, start.Add(-r.cfg.StaleAfter)); e == nil && n > 0 {
 				sr.log.Info("verlopen deals uitgezet", "aantal", n)
 			}
+			_ = r.store.PruneMisses(context.Background(), sr.shopID, start.Add(-4*r.cfg.MissRecrawlAfter))
 			_ = r.store.UpdateRun(context.Background(), sr.runID, sr.result(status, msg), true)
 		}
 		r.stats.UpdateShop(shop.Slug(), func(s *stats.ShopStats) {
@@ -179,6 +181,9 @@ func (r *Runner) productQueue(ctx context.Context, sr *shopRun, products []sitem
 		}
 	}
 	cutoff := time.Now().Add(-r.cfg.RecrawlAfter)
+	// Onbekende pagina's zonder product (dood, of buiten de categorieën) veel langer overslaan.
+	// Een bekend product dat even niet te parsen was komt na RecrawlAfter gewoon terug.
+	missCutoff := time.Now().Add(-r.cfg.MissRecrawlAfter)
 	type item struct {
 		url     string
 		lastmod time.Time
@@ -192,8 +197,13 @@ func (r *Runner) productQueue(ctx context.Context, sr *shopRun, products []sitem
 			continue
 		}
 		seen[p.Loc] = true
-		st := states[p.Loc]
-		if st.CrawledAt.After(cutoff) {
+		st, ok := states[p.Loc]
+		if !ok {
+			// Sommige sitemaps zijn dubbel ge-escaped ("Bind&amp;Fly"); het product staat onder
+			// de canonieke URL ("Bind&Fly") en kreeg anders nooit een crawl-status (Heligear).
+			st = states[html.UnescapeString(p.Loc)]
+		}
+		if st.CrawledAt.After(cutoff) || (st.Miss && !st.Known && st.CrawledAt.After(missCutoff)) {
 			skipped++
 			continue
 		}
@@ -324,12 +334,17 @@ func (r *Runner) crawlProduct(ctx context.Context, sr *shopRun, u string) {
 	doc, finalURL, err := r.get(ctx, sr, u)
 	if errors.Is(err, fetch.ErrNotFound) && r.store != nil {
 		_ = r.store.MarkGone(ctx, sr.shopID, u)
+		_ = r.store.RecordMiss(ctx, sr.shopID, u)
 	}
 	if err != nil {
 		return
 	}
 	p := sr.shop.ParseProduct(finalURL, doc)
 	if p == nil {
+		// Onder de URL uit de wachtrij, zodat productQueue hem volgende ronde herkent.
+		if r.store != nil {
+			_ = r.store.RecordMiss(ctx, sr.shopID, u)
+		}
 		sr.log.Debug("geen product gevonden op pagina", "url", finalURL)
 		sr.parseErrs.Add(1)
 		r.stats.UpdateShop(sr.shop.Slug(), func(s *stats.ShopStats) { s.ParseErrors++ })

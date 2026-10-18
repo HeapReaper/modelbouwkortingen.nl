@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import {
+  resolveCrawlAlerts,
   toggleMessageHandled,
   toggleShopEnabled,
 } from "@/app/[lang]/admin/actions";
@@ -24,6 +25,21 @@ export function MessageHandledButton({
       onClick={() => start(() => toggleMessageHandled(id, !handled))}
     >
       {handled ? "Markeer als open" : "Markeer als afgehandeld"}
+    </Button>
+  );
+}
+
+/** Eén crawlermelding afhandelen, of zonder runId alle open meldingen. */
+export function ResolveAlertButton({ runId }: { runId?: number }) {
+  const [pending, start] = useTransition();
+  return (
+    <Button
+      size="sm"
+      variant="outline"
+      disabled={pending}
+      onClick={() => start(() => resolveCrawlAlerts(runId))}
+    >
+      {runId === undefined ? "Alles afhandelen" : "Afgehandeld"}
     </Button>
   );
 }

@@ -81,6 +81,19 @@ export async function toggleMessageHandled(id: number, handled: boolean) {
   refresh();
 }
 
+/** Crawlermelding afhandelen; zonder runId alle open meldingen. */
+export async function resolveCrawlAlerts(runId?: number) {
+  await assertAdmin();
+  await getPrisma().crawlAlert.updateMany({
+    where: {
+      resolvedAt: null,
+      ...(runId === undefined ? {} : { runId: BigInt(runId) }),
+    },
+    data: { resolvedAt: new Date() },
+  });
+  refresh();
+}
+
 export async function toggleShopEnabled(slug: string, enabled: boolean) {
   await assertAdmin();
   await getPrisma().shop.updateMany({ where: { slug }, data: { enabled } });

@@ -32,7 +32,10 @@ type Config struct {
 	MaxProductPages int  // max productpagina's per shop per ronde (0 = onbeperkt)
 	MaxListingPages int  // max listing/categoriepagina's per shop per ronde (0 = onbeperkt)
 	RecrawlAfter    time.Duration
-	StaleAfter      time.Duration // deals die zo lang niet meer gezien zijn worden uitgezet
+	// MissRecrawlAfter: zo lang slaan we een pagina over waar geen product stond en die geen
+	// bekend product is (dode pagina, of buiten de categorieën van de shop).
+	MissRecrawlAfter time.Duration
+	StaleAfter       time.Duration // deals die zo lang niet meer gezien zijn worden uitgezet
 
 	MinDiscountEUR     float64
 	MinDiscountPercent float64
@@ -57,6 +60,7 @@ func Load() (*Config, error) {
 		MaxProductPages:    envInt("CRAWLER_MAX_PRODUCT_PAGES", 4000),
 		MaxListingPages:    envInt("CRAWLER_MAX_LISTING_PAGES", 0),
 		RecrawlAfter:       envDuration("CRAWLER_RECRAWL_AFTER", 20*time.Hour),
+		MissRecrawlAfter:   envDuration("CRAWLER_MISS_RECRAWL_AFTER", 7*24*time.Hour),
 		StaleAfter:         envDuration("CRAWLER_STALE_AFTER", 96*time.Hour),
 		MinDiscountEUR:     envFloat("MIN_DISCOUNT_EUR", 5),
 		MinDiscountPercent: envFloat("MIN_DISCOUNT_PERCENT", 5),

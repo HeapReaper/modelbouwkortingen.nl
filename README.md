@@ -198,8 +198,16 @@ rondes van die shop, dan heeft de webshop waarschijnlijk zijn HTML veranderd. Zo
 `crawl_alerts` (zichtbaar in `/admin`) en, als `ALERT_DISCORD_WEBHOOK` is ingesteld, in dat
 Discord-kanaal. Shops met minder dan 50 producten worden overgeslagen. Een ronde die kort na de
 vorige start (bv. na een deploy) ziet vanzelf minder producten, omdat productpagina's die minder
-dan `CRAWLER_RECRAWL_AFTER` (20 uur) geleden bezocht zijn worden overgeslagen; daarom telt een
-ronde pas als ook het aantal producten per opgehaalde pagina sterk daalt.
+dan `CRAWLER_RECRAWL_AFTER` (20 uur) geleden bezocht zijn worden overgeslagen. Daarom telt een
+geslaagde ronde alleen als hij niets vond, of als hij minstens 100 pagina's ophaalde en daarop per
+pagina sterk minder producten vond. Een mislukte ronde telt altijd. In `/admin` zet je een melding
+met **Afgehandeld** (of **Alles afhandelen**) uit de lijst.
+
+Productpagina's zonder product (dode pagina's, of bij Banggood producten buiten onze categorieën)
+komen in `crawl_misses` en worden een week (`CRAWLER_MISS_RECRAWL_AFTER`) overgeslagen; een bekend
+product dat even niet te parsen was komt gewoon na `CRAWLER_RECRAWL_AFTER` terug. Na het repareren
+van een kapotte parser wil je nieuwe pagina's misschien meteen opnieuw proberen:
+`DELETE FROM crawl_misses WHERE shop_id = (SELECT id FROM shops WHERE slug = '<shop>');`
 
 Het thema (rood + "prijskaartje"-geel, groen voor besparingen) staat in `src/app/globals.css`.
 Licht/donker volgt het systeem en kan in de navbar aangepast worden.

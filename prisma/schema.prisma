@@ -23,6 +23,7 @@ model Shop {
   createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz
   products    Product[]
   crawlRuns   CrawlRun[]
+  crawlMisses CrawlMiss[]
   clicks      OutboundClick[]
 
   @@map("shops")
@@ -38,40 +39,40 @@ model Category {
 }
 
 model Product {
-  id              BigInt          @id @default(autoincrement())
-  shopId          Int             @map("shop_id")
-  externalId      String          @map("external_id")
+  id              BigInt               @id @default(autoincrement())
+  shopId          Int                  @map("shop_id")
+  externalId      String               @map("external_id")
   url             String
   sku             String?
   /// Artikelnummer in hoofdletters zonder spaties/streepjes (zie normalizeSku() in src/lib/compare.ts),
   /// NULL als het te kort is of geen cijfer bevat. Door Postgres berekend (GENERATED ALWAYS ... STORED,
   /// zie migratie 20261018000000_features): nooit zelf schrijven.
-  skuNorm         String?         @map("sku_norm")
+  skuNorm         String?              @map("sku_norm")
   name            String
   brand           String?
-  imageUrl        String?         @map("image_url")
-  categorySlug    String          @default("overig") @map("category_slug")
-  shopCategory    String?         @map("shop_category")
-  price           Decimal         @db.Decimal(10, 2)
+  imageUrl        String?              @map("image_url")
+  categorySlug    String               @default("overig") @map("category_slug")
+  shopCategory    String?              @map("shop_category")
+  price           Decimal              @db.Decimal(10, 2)
   /// "Van"-prijs zoals de webshop die toont (doorgestreept), of NULL.
-  oldPrice        Decimal?        @map("old_price") @db.Decimal(10, 2)
+  oldPrice        Decimal?             @map("old_price") @db.Decimal(10, 2)
   /// Referentieprijs waartegen de korting berekend wordt: de hoogste prijs die we zelf
   /// sinds baseline_since (max. 30 dagen terug) zagen; blijft vast zolang de deal loopt.
-  referencePrice  Decimal?        @map("reference_price") @db.Decimal(10, 2)
-  discountAmount  Decimal         @default(0) @map("discount_amount") @db.Decimal(10, 2)
-  discountPercent Decimal         @default(0) @map("discount_percent") @db.Decimal(5, 2)
-  isDeal          Boolean         @default(false) @map("is_deal")
-  inStock         Boolean?        @map("in_stock")
-  dealSince       DateTime?       @map("deal_since") @db.Timestamptz
+  referencePrice  Decimal?             @map("reference_price") @db.Decimal(10, 2)
+  discountAmount  Decimal              @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  discountPercent Decimal              @default(0) @map("discount_percent") @db.Decimal(5, 2)
+  isDeal          Boolean              @default(false) @map("is_deal")
+  inStock         Boolean?             @map("in_stock")
+  dealSince       DateTime?            @map("deal_since") @db.Timestamptz
   /// Nulmeting: prijshistorie van vóór dit moment telt niet mee voor de referentieprijs
   /// (gezet wanneer de prijs na een deal weer stijgt). NULL = alle historie.
-  baselineSince   DateTime?       @map("baseline_since") @db.Timestamptz
-  firstSeenAt     DateTime        @default(now()) @map("first_seen_at") @db.Timestamptz
-  lastSeenAt      DateTime        @default(now()) @map("last_seen_at") @db.Timestamptz
-  lastCrawledAt   DateTime?       @map("last_crawled_at") @db.Timestamptz
-  updatedAt       DateTime        @default(now()) @map("updated_at") @db.Timestamptz
-  shop            Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  category        Category        @relation(fields: [categorySlug], references: [slug])
+  baselineSince   DateTime?            @map("baseline_since") @db.Timestamptz
+  firstSeenAt     DateTime             @default(now()) @map("first_seen_at") @db.Timestamptz
+  lastSeenAt      DateTime             @default(now()) @map("last_seen_at") @db.Timestamptz
+  lastCrawledAt   DateTime?            @map("last_crawled_at") @db.Timestamptz
+  updatedAt       DateTime             @default(now()) @map("updated_at") @db.Timestamptz
+  shop            Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  category        Category             @relation(fields: [categorySlug], references: [slug])
   priceHistory    PriceHistory[]
   priceAlerts     PriceAlert[]
   clicks          OutboundClick[]
@@ -279,11 +280,26 @@ model CrawlAlert {
   baseline   Int
   /// Gezet zodra de melding naar ALERT_DISCORD_WEBHOOK is gestuurd.
   notifiedAt DateTime? @map("notified_at") @db.Timestamptz
+  /// Gezet met "Afgehandeld" in /admin; daarna staat de melding niet meer in de lijst.
+  resolvedAt DateTime? @map("resolved_at") @db.Timestamptz
   createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
   run        CrawlRun  @relation(fields: [runId], references: [id], onDelete: Cascade)
 
   @@index([createdAt(sort: Desc)], map: "crawl_alerts_created_idx")
   @@map("crawl_alerts")
+}
+
+/// Productpagina's waar de crawler geen product vond (dode pagina, of buiten de categorieën die we
+/// van een shop nemen). Ze hebben geen rij in products en dus geen crawl-status; zonder deze tabel
+/// staan ze elke ronde weer vooraan in de wachtrij. De crawler slaat ze een week over.
+model CrawlMiss {
+  shopId    Int      @map("shop_id")
+  url       String
+  crawledAt DateTime @default(now()) @map("crawled_at") @db.Timestamptz
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@id([shopId, url])
+  @@map("crawl_misses")
 }
 
 /// Telefoonnummer in de rode balk bovenaan de site (beheerd in het adminpanel).

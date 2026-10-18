@@ -4,6 +4,7 @@ import (
 	"context"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 
@@ -20,6 +21,8 @@ import (
 //     (sub)categorie; dat zijn er ruim 2000, dus dat dekt veel af.
 //   - Productpagina's tonen de oude prijs pas via JavaScript, daar halen we de actuele
 //     prijs, breadcrumbs en het merk vandaan. Prijsdalingen zien we via de prijshistorie.
+//   - Bij het standaardtempo (500 ms) gaf TopRC voortdurend 429; met 2 s komt een ronde sneller
+//     rond dan met steeds minutenlang wachten.
 type TopRC struct{}
 
 func (*TopRC) Slug() string    { return "toprc" }
@@ -28,6 +31,11 @@ func (*TopRC) BaseURL() string { return "https://www.toprc.nl" }
 func (*TopRC) Description() string {
 	return "Grote RC-specialist met auto's, helicopters, vliegtuigen, boten en onderdelen."
 }
+
+// UserAgent: leeg = de standaard user-agent van de crawler.
+func (*TopRC) UserAgent() string { return "" }
+
+func (*TopRC) MinDelay() time.Duration { return 2 * time.Second }
 
 func (s *TopRC) Discover(ctx context.Context, f *fetch.Fetcher) ([]string, []sitemap.URL, error) {
 	urls, err := sitemap.Fetch(ctx, f, s.BaseURL()+"/sitemap/sitemap.xml", nil)

@@ -65,9 +65,6 @@ func TestBanggoodRejectsOtherCategories(t *testing.T) {
 	if p := s.ParseProduct("https://nl.banggood.com/Blade-p-2.html", doc); p != nil {
 		t.Fatalf("onderdeel niet overgeslagen: %+v", p)
 	}
-	if _, ok := s.rejected.Load("https://nl.banggood.com/Blade-p-2.html"); !ok {
-		t.Fatal("afgewezen pagina niet onthouden")
-	}
 }
 
 func TestBanggoodCandidateURLs(t *testing.T) {
