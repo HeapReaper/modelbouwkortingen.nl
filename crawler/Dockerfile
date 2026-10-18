@@ -3,9 +3,11 @@
 FROM golang:1.27-alpine AS build
 WORKDIR /src
 COPY go.mod go.sum ./
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
 COPY . .
-RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/crawler ./cmd/crawler
+# Module- en buildcache blijven op de buildserver staan: alleen gewijzigde packages compileren.
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/crawler ./cmd/crawler
 
 FROM alpine:3.22
 RUN apk add --no-cache ca-certificates tzdata && adduser -S -u 1001 crawler
