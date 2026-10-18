@@ -215,8 +215,8 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-[#1e1e1e]",
     // De prijzen zijn die van het Chinese magazijn (standaard op de productpagina).
     country: "CN",
-    // Partnerlink zodra het affiliate-account er is: Banggood gebruikt ?p=<partnercode>.
-    // affiliate: { params: { p: "..." } },
+    // Partnerlink: Banggood gebruikt ?p=<referral code> (account BG104716091).
+    affiliate: { params: { p: "IM180966903162202610" } },
   },
 ];
 
