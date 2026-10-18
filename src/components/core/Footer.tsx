@@ -6,7 +6,6 @@ import { Logo } from "@/components/core/Logo";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { getI18n } from "@/i18n/server";
 import { CATEGORIES } from "@/lib/categories";
-import { SHOPS } from "@/lib/shops";
 
 export default async function Footer() {
   const { lang, dict, href } = await getI18n();
@@ -22,8 +21,8 @@ export default async function Footer() {
           <NewsletterForm className="w-full lg:max-w-md" />
         </div>
       </div>
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="flex flex-col gap-3">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-4 py-12 lg:grid-cols-3">
+        <div className="col-span-2 flex flex-col gap-3 lg:col-span-1">
           <Logo />
           <p className="text-muted-foreground">{f.about}</p>
           <Suspense fallback={null}>
@@ -36,16 +35,6 @@ export default async function Footer() {
             href: href(`/categorie/${c.slug}`),
             label: dict.categories[c.slug].name,
           }))}
-        />
-        <FooterList
-          title={f.shops}
-          links={[
-            ...SHOPS.map((s) => ({
-              href: href(`/webshops/${s.slug}`),
-              label: s.name,
-            })),
-            { href: href("/webshops"), label: f.allShops },
-          ]}
         />
         <FooterList
           title={f.site}
