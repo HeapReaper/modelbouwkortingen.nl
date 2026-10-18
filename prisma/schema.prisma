@@ -25,6 +25,7 @@ model Shop {
   crawlRuns   CrawlRun[]
   crawlMisses CrawlMiss[]
   clicks      OutboundClick[]
+  promotions  Promotion[]
 
   @@map("shops")
 }
@@ -77,6 +78,7 @@ model Product {
   priceAlerts     PriceAlert[]
   clicks          OutboundClick[]
   translations    ProductTranslation[]
+  promotions      Promotion[]
 
   @@unique([shopId, externalId])
   @@index([isDeal, discountPercent(sort: Desc)], map: "products_deals_idx", where: raw("is_deal"))
@@ -258,7 +260,7 @@ model OutboundClick {
   id        BigInt   @id @default(autoincrement())
   productId BigInt?  @map("product_id")
   shopId    Int      @map("shop_id")
-  /// Waar de klik vandaan kwam: site | mail | discord | alarm | feed.
+  /// Waar de klik vandaan kwam: site | mail | discord | alarm | feed | featured.
   source    String   @default("site")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
@@ -325,4 +327,25 @@ model SocialLink {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("social_links")
+}
+
+/// Betaalde plaatsing (beheerd in het adminpanel): zonder product een uitgelichte webshop, met
+/// product een uitgelicht product. Zichtbaar van starts_on tot en met ends_on (Nederlandse
+/// datum; ends_on NULL = doorlopend) zolang enabled aanstaat. Kliks hierop krijgen source
+/// "featured" in outbound_clicks.
+model Promotion {
+  id        Int       @id @default(autoincrement())
+  shopId    Int       @map("shop_id")
+  productId BigInt?   @map("product_id")
+  startsOn  DateTime  @map("starts_on") @db.Date
+  endsOn    DateTime? @map("ends_on") @db.Date
+  enabled   Boolean   @default(true)
+  /// Alleen voor het adminpanel, bv. adverteerder en afgesproken prijs.
+  note      String    @default("")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  shop      Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  product   Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([startsOn, endsOn], map: "promotions_period_idx")
+  @@map("promotions")
 }

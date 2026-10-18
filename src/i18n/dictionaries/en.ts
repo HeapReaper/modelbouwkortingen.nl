@@ -280,6 +280,17 @@ export const en: Dictionary = {
     missing: "Missing a shop? Let us know via the {link}.",
     missingLink: "contact form",
   },
+  promo: {
+    sponsored: "Sponsored",
+    sponsoredInfo:
+      "Paid placement: the store pays to be featured here. Prices and discounts still come from our crawler.",
+    dealsTitle: "Featured",
+    dealsSubtitle: "Products that stores are putting in the spotlight",
+    shopsTitle: "Featured stores",
+    shopsSubtitle: "Stores we would like you to know about",
+    visitShop: "Visit store",
+    viewDeals: "View deals",
+  },
   shopPage: {
     title: "{name} deals",
     metaDescription:

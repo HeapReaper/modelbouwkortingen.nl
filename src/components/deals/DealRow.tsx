@@ -10,24 +10,32 @@ import {
 } from "@/components/ui/carousel";
 import { getI18n } from "@/i18n/server";
 import type { Deal } from "@/lib/deals";
+import { cn } from "@/lib/utils";
 
-/** Horizontale rij met deals: swipen op mobiel, pijltjes op desktop. `href` zonder taalprefix. */
+/**
+ * Horizontale rij met deals: swipen op mobiel, pijltjes op desktop. `href` zonder taalprefix;
+ * zonder href geen "Bekijk alles". `sponsored` = uitgelichte producten (zie DealCard).
+ */
 export async function DealRow({
   title,
   subtitle,
   href,
   deals,
   icon,
+  sponsored,
+  className,
 }: {
   title: string;
   subtitle?: string;
-  href: string;
+  href?: string;
   deals: Deal[];
   icon?: React.ReactNode;
+  sponsored?: boolean;
+  className?: string;
 }) {
   const { dict, href: localize } = await getI18n();
   return (
-    <section className="mx-auto w-full max-w-7xl px-4">
+    <section className={cn("mx-auto w-full max-w-7xl px-4", className)}>
       <Carousel
         opts={{ align: "start", dragFree: true }}
         className="flex flex-col gap-4"
@@ -43,12 +51,14 @@ export async function DealRow({
             ) : null}
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <Link
-              href={localize(href)}
-              className="hidden items-center gap-1 font-semibold text-primary hover:underline sm:flex"
-            >
-              {dict.deals.viewAll} <ArrowRight className="size-4" />
-            </Link>
+            {href ? (
+              <Link
+                href={localize(href)}
+                className="hidden items-center gap-1 font-semibold text-primary hover:underline sm:flex"
+              >
+                {dict.deals.viewAll} <ArrowRight className="size-4" />
+              </Link>
+            ) : null}
             <div className="hidden gap-2 md:flex">
               <CarouselPrevious className="static size-10 translate-y-0" />
               <CarouselNext className="static size-10 translate-y-0" />
@@ -66,17 +76,19 @@ export async function DealRow({
                 key={d.id}
                 className="basis-[78%] pl-4 min-[420px]:basis-1/2 lg:basis-1/3 xl:basis-1/4"
               >
-                <DealCard deal={d} eager={i < 2} />
+                <DealCard deal={d} eager={i < 2} sponsored={sponsored} />
               </CarouselItem>
             ))}
           </CarouselContent>
         )}
-        <Link
-          href={localize(href)}
-          className="flex items-center gap-1 self-start font-semibold text-primary hover:underline sm:hidden"
-        >
-          {dict.deals.viewAll} <ArrowRight className="size-4" />
-        </Link>
+        {href ? (
+          <Link
+            href={localize(href)}
+            className="flex items-center gap-1 self-start font-semibold text-primary hover:underline sm:hidden"
+          >
+            {dict.deals.viewAll} <ArrowRight className="size-4" />
+          </Link>
+        ) : null}
       </Carousel>
     </section>
   );

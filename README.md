@@ -31,6 +31,11 @@ komt het op de website (Next.js 16 + shadcn/ui).
 - Productnamen van Duitstalige webshops automatisch vertaald via Amazon Translate.
 - Mail en Discord in de taal waarin de abonnee zich aanmeldde.
 
+**Verdienen**
+- Affiliate-links per webshop (partnerparameters in `src/lib/shops.ts`, `rel="sponsored"`).
+- Uitgelichte webshops en producten (betaalde plaatsingen) met start- en einddatum, beheerd
+  in het adminpanel, altijd met het label "Gesponsord", en kliks per promotie.
+
 **Delen en SEO**
 - Gegenereerde deelafbeelding (Open Graph) per product met foto, prijs en korting.
 - Structured data (schema.org Product/Offer), canonical- en `hreflang`-links, sitemap in alle
@@ -39,7 +44,8 @@ komt het op de website (Next.js 16 + shadcn/ui).
 **Beheer**
 - Adminpanel: status van de diensten (database, SMTP, Amazon Translate, crawler, planner) met
   een knop voor een testmail, live crawlerstatus en crawler-logs, HTTP 429's, crawl-rondes, statistieken van de afgelopen 14
-  dagen, kliks naar webshops, contactberichten, webshops aan/uit, telefoonnummers en
+  dagen, kliks naar webshops, uitgelichte webshops en producten, contactberichten, webshops
+  aan/uit, telefoonnummers en
   social-medialinks.
 - Bewaking van de crawler: een ronde met opvallend weinig producten (parser kapot?) komt in
   het adminpanel en optioneel in een Discord-kanaal.
@@ -190,6 +196,21 @@ e-mailadres; prijzen ouder dan 2 dagen tellen niet). De planner controleert dit 
 
 De volglijst (hartje op elke deal) heeft geen account nodig: de product-id's staan in
 `localStorage` (maximaal 100). Werkt de opslag niet (privévenster), dan is de lijst gewoon leeg.
+
+### Uitgelichte webshops en producten
+
+Betaalde plaatsingen staan in de tabel `promotions` en worden beheerd in `/admin` (sectie
+"Uitgelicht"). Een promotie zonder product licht een webshop uit: die staat dan op de homepage
+en bovenaan `/webshops`, met een knop naar de webshop via `/api/uit/webshop/[slug]`. Met
+product (op te geven als id, als link naar `/product/[id]` of als link naar de webshop) staat
+het product in de rij "Uitgelicht" op de homepage, `/aanbiedingen`, zijn categorie en zijn
+webshop; uitverkochte producten slaan we over. Een promotie loopt van de startdatum tot en met
+de einddatum (Nederlandse tijd; zonder einddatum doorlopend) zolang hij aanstaat.
+
+Alles staat met het label "Gesponsord" op de site, want reclame moet herkenbaar zijn, en
+links zijn `rel="sponsored"`. Kliks krijgen `source = 'featured'` in `outbound_clicks`; het
+adminpanel toont per promotie de kliks binnen de looptijd, handig om aan een adverteerder te
+rapporteren. De site onthoudt de lopende promoties een minuut (`src/lib/promotions.ts`).
 
 ### Bewaking van de crawler
 

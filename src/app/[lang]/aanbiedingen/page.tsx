@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { PageHeader } from "@/components/core/PageHeader";
 import { DealGridSkeleton } from "@/components/deals/DealGrid";
 import { DealsBrowser } from "@/components/deals/DealsBrowser";
+import { FeaturedDeals } from "@/components/promo/FeaturedDeals";
 import { alternates } from "@/i18n/metadata";
 import { getI18n } from "@/i18n/server";
 
@@ -29,6 +30,9 @@ export default async function AanbiedingenPage({
         crumbs={[{ href: "/aanbiedingen", label: dict.dealsPage.crumb }]}
       />
       <div className="mx-auto max-w-7xl px-4 py-8">
+        <Suspense fallback={null}>
+          <FeaturedDeals className="mb-10 px-0" />
+        </Suspense>
         <Suspense fallback={<DealGridSkeleton />}>
           <DealsBrowser searchParams={searchParams} basePath="/aanbiedingen" />
         </Suspense>

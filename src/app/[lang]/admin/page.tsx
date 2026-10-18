@@ -5,6 +5,7 @@ import {
   Database,
   Gauge,
   Mail,
+  Megaphone,
   MousePointerClick,
   Package,
   Phone,
@@ -27,6 +28,7 @@ import {
 } from "@/components/admin/ContactAdmin";
 import { CrawlerLogs } from "@/components/admin/CrawlerLogs";
 import { DailyChart } from "@/components/admin/DailyChart";
+import { PromotionsAdmin } from "@/components/admin/PromotionsAdmin";
 import { RecheckButton, TestMailForm } from "@/components/admin/ServiceAdmin";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -45,7 +47,9 @@ import {
   getAdminOverview,
   getCrawlerLive,
 } from "@/lib/admin";
+import { isDbConfigured } from "@/lib/db";
 import { formatDateTime, formatNumber, timeAgo } from "@/lib/format";
+import { listPromotions, todayNL } from "@/lib/promotions";
 import {
   getServiceStatus,
   type ServiceCheck,
@@ -82,11 +86,12 @@ export default function AdminPage() {
 }
 
 async function AdminContent() {
-  const [data, live, contact, status] = await Promise.all([
+  const [data, live, contact, status, promotions] = await Promise.all([
     getAdminOverview(),
     getCrawlerLive(),
     getSiteContact(),
     getServiceStatus(),
+    loadPromotions(),
   ]);
   const totalDeals = data.shops.reduce((s, x) => s + x.deals, 0);
   const totalProducts = data.shops.reduce((s, x) => s + x.products, 0);
@@ -171,6 +176,20 @@ async function AdminContent() {
         <CrawlerLogs shops={data.shops.map((s) => s.slug).sort()} />
       </Section>
       <ShopsSection data={data} />
+      {promotions ? (
+        <Section
+          title="Uitgelicht (betaalde plaatsingen)"
+          icon={<Megaphone className="size-5 text-primary" />}
+        >
+          <PromotionsAdmin
+            promotions={promotions}
+            shops={data.shops
+              .map((s) => ({ slug: s.slug, name: s.name }))
+              .sort((a, b) => a.name.localeCompare(b.name))}
+            today={todayNL()}
+          />
+        </Section>
+      ) : null}
 
       {contact ? (
         <div className="grid gap-8 lg:grid-cols-2">
@@ -225,6 +244,17 @@ async function AdminContent() {
       </div>
     </>
   );
+}
+
+/** null zonder (bereikbare) database: dan valt er niets te beheren. */
+async function loadPromotions() {
+  if (!isDbConfigured()) return null;
+  try {
+    return await listPromotions();
+  } catch (err) {
+    console.error("[admin] promoties laden mislukt", err);
+    return null;
+  }
 }
 
 const SERVICE_BADGE: Record<
@@ -589,6 +619,7 @@ const SOURCE_LABELS: Record<string, string> = {
   discord: "Discord",
   alarm: "Prijsalarm",
   feed: "RSS-feed",
+  featured: "Uitgelicht",
 };
 
 function ClicksSection({ data }: { data: AdminOverview }) {

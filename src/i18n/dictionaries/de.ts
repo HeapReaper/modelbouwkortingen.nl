@@ -289,6 +289,17 @@ export const de: Dictionary = {
     missing: "Fehlt dir ein Shop? Sag es uns über das {link}.",
     missingLink: "Kontaktformular",
   },
+  promo: {
+    sponsored: "Gesponsert",
+    sponsoredInfo:
+      "Bezahlte Platzierung: Der Shop bezahlt dafür, hier hervorgehoben zu werden. Preise und Rabatte stammen weiterhin aus unserem Crawler.",
+    dealsTitle: "Empfohlen",
+    dealsSubtitle: "Produkte, die Shops ins Rampenlicht stellen",
+    shopsTitle: "Empfohlene Shops",
+    shopsSubtitle: "Shops, die wir dir gerne vorstellen",
+    visitShop: "Zum Shop",
+    viewDeals: "Angebote ansehen",
+  },
   shopPage: {
     title: "{name} Angebote",
     metaDescription:

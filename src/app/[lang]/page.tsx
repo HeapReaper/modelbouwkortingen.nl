@@ -7,6 +7,8 @@ import { Hero } from "@/components/home/Hero";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { ShopCards } from "@/components/home/ShopCards";
 import { NewsletterSignup } from "@/components/newsletter/NewsletterSignup";
+import { FeaturedDeals } from "@/components/promo/FeaturedDeals";
+import { FeaturedShops } from "@/components/promo/FeaturedShops";
 import { getI18n } from "@/i18n/server";
 import { getNewestDeals, getTopDeals } from "@/lib/deals";
 import { localizeDeals } from "@/lib/translate";
@@ -15,6 +17,11 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-14 pb-4 sm:gap-20">
       <Hero />
+
+      {/* Betaalde plaatsingen; zonder lopende promoties rendert dit niets. */}
+      <Suspense fallback={null}>
+        <FeaturedDeals />
+      </Suspense>
 
       <Suspense fallback={<RowSkeleton />}>
         <TopDealsRow />
@@ -27,6 +34,9 @@ export default function Home() {
       <NewsletterSignup />
 
       <CategoryGrid />
+      <Suspense fallback={null}>
+        <FeaturedShops />
+      </Suspense>
       <ShopCards />
       <HowItWorks />
     </div>

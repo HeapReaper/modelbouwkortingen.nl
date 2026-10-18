@@ -284,6 +284,17 @@ export const nl = {
     missing: "Mis je een webshop? Laat het ons weten via het {link}.",
     missingLink: "contactformulier",
   },
+  promo: {
+    sponsored: "Gesponsord",
+    sponsoredInfo:
+      "Betaalde plaatsing: de webshop betaalt om hier uitgelicht te worden. De prijzen en kortingen komen gewoon uit onze crawler.",
+    dealsTitle: "Uitgelicht",
+    dealsSubtitle: "Producten die webshops onder de aandacht brengen",
+    shopsTitle: "Uitgelichte webshops",
+    shopsSubtitle: "Webshops die we graag onder je aandacht brengen",
+    visitShop: "Naar de webshop",
+    viewDeals: "Bekijk aanbiedingen",
+  },
   shopPage: {
     title: "{name} aanbiedingen",
     metaDescription:

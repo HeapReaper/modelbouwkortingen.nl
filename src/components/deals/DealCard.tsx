@@ -5,6 +5,7 @@ import { LowestBadge } from "@/components/deals/LowestBadge";
 import { PriceBlock } from "@/components/deals/PriceBlock";
 import { ProductImage } from "@/components/deals/ProductImage";
 import { ShopBadge } from "@/components/deals/ShopBadge";
+import { SponsoredBadge } from "@/components/promo/SponsoredBadge";
 import { buttonVariants } from "@/components/ui/button";
 import { WatchButton } from "@/components/watchlist/WatchButton";
 import { getI18n } from "@/i18n/server";
@@ -17,13 +18,16 @@ export async function DealCard({
   deal,
   className,
   eager,
+  sponsored,
 }: {
   deal: Deal;
   className?: string;
   eager?: boolean;
+  /** Uitgelicht product (betaalde plaatsing): label "Gesponsord", kliks tellen als "featured". */
+  sponsored?: boolean;
 }) {
   const { dict, href } = await getI18n();
-  const link = outLink(deal);
+  const link = outLink(deal, sponsored ? "featured" : "site");
   return (
     <article
       className={cn(
@@ -57,11 +61,14 @@ export async function DealCard({
         ) : null}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
-        <ShopBadge
-          slug={deal.shopSlug}
-          name={deal.shopName}
-          className="text-muted-foreground"
-        />
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <ShopBadge
+            slug={deal.shopSlug}
+            name={deal.shopName}
+            className="text-muted-foreground"
+          />
+          {sponsored ? <SponsoredBadge /> : null}
+        </div>
         <h3 className="line-clamp-2 font-sans text-base leading-snug font-semibold">
           <Link
             href={href(`/product/${deal.id}`)}

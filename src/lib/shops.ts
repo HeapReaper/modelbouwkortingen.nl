@@ -316,6 +316,8 @@ export const CLICK_SOURCES = [
   "discord",
   "alarm",
   "feed",
+  /** Uitgelichte (betaalde) plaatsing, zie src/lib/promotions.ts. */
+  "featured",
 ] as const;
 export type ClickSource = (typeof CLICK_SOURCES)[number];
 
@@ -329,10 +331,34 @@ export function outLink(
   origin = "",
 ): { href: string; rel: string } {
   const query = source === "site" ? "" : `?bron=${source}`;
+  const { rel } = productLink(deal);
   return {
     href: `${origin}/api/uit/${deal.id}${query}`,
-    rel: productLink(deal).rel,
+    rel: source === "featured" ? sponsoredRel(rel) : rel,
   };
+}
+
+/** Een betaalde plaatsing is altijd rel="sponsored", ook zonder affiliate-link. */
+function sponsoredRel(rel: string) {
+  return rel.includes("sponsored") ? rel : `${rel} sponsored`;
+}
+
+/** Link naar de homepage van een uitgelichte webshop via /api/uit/webshop/[slug] (telt de klik). */
+export function shopOutLink(slug: string): { href: string; rel: string } {
+  return {
+    href: `/api/uit/webshop/${slug}?bron=featured`,
+    rel: "noopener nofollow sponsored",
+  };
+}
+
+/** Homepage van de webshop, met partnerparameters als die voor de hele shop gelden. */
+export function shopLink(shop: ShopInfo): string {
+  if (!shop.affiliate || shop.affiliate.categories) return shop.url;
+  const url = new URL(shop.url);
+  for (const [k, v] of Object.entries(shop.affiliate.params)) {
+    url.searchParams.set(k, v);
+  }
+  return url.toString();
 }
 
 /**
