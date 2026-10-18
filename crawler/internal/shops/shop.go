@@ -48,8 +48,15 @@ type HostPolicy interface {
 	MinDelay() time.Duration
 }
 
+// PercentDeals is voor shops waarvan de europrijs met een wisselkoers meebeweegt: een paar
+// procent koersverschil is bij een duur product al snel "€5 korting". Zo'n shop telt een
+// prijsdaling alleen als deal vanaf dit percentage, ongeacht het bedrag.
+type PercentDeals interface {
+	MinDealPercent() float64
+}
+
 func All() []Shop {
-	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}, &RCMotorsports{}, &Droneshop{}, &Tamico{}, &ChinaHobbyLine{}, &Hepf{}, &Bliek{}, &Aerobertics{}, &Heligear{}, &Area51{}}
+	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}, &RCMotorsports{}, &Droneshop{}, &Tamico{}, &ChinaHobbyLine{}, &Hepf{}, &Bliek{}, &Aerobertics{}, &Heligear{}, &Area51{}, &Banggood{}}
 }
 
 func BySlug(slugs []string) []Shop {

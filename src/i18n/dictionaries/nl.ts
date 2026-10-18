@@ -148,6 +148,8 @@ export const nl = {
       "Helikopterspecialist uit Breda met Mikado LOGO, Goblin, OMP en Tron, plus rotorbladen, elektronica en laders.",
     area51:
       "Spaanse helikopterspecialist met Align, SAB en BeastX, plus vliegtuigen, auto's, drones, accu's en Optifuel.",
+    banggood:
+      "Grote Chinese webwinkel met goedkope RC-auto's, werkvoertuigen, drones, helikopters, boten en vliegtuigen.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

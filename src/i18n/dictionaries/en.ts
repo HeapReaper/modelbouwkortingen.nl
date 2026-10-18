@@ -145,6 +145,8 @@ export const en: Dictionary = {
       "Helicopter specialist from Breda (NL) with Mikado LOGO, Goblin, OMP and Tron, plus rotor blades, electronics and chargers.",
     area51:
       "Spanish helicopter specialist with Align, SAB and BeastX, plus planes, cars, drones, batteries and Optifuel.",
+    banggood:
+      "Large Chinese web store with low-cost RC cars, construction vehicles, drones, helicopters, boats and planes.",
   },
   deals: {
     outOfStock: "Out of stock",

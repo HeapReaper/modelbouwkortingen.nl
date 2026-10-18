@@ -227,6 +227,7 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | Aerobertics (BE) | eigen systeem (ASP.NET) | geen sitemap: menu op `/nl/homepage` | onderste categorieën, `?Page=N` |
 | Heligear | CCV Shop | `/ExportBestanden/SiteMap.php` (~1.000 producten) | geen: alle productpagina's (JSON-LD) |
 | Area51 RC (ES) | PrestaShop 1.4 | geen: XML-sitemap is dubbel EN/ES | alle ~1.250 categorieën uit de boom (PrestaShop 1.4 toont alleen direct gekoppelde producten), `?n=50&p=N` |
+| Banggood (CN) | eigen systeem (USD) | `products-Toys-Hobbies-and-Robot-N.xml.gz` met voorselectie op de URL, plus pagina 1 van de RC-categorieën (paginering is verboden) | geen: prijzen komen via JavaScript van `/index.php` (verboden). De dollarprijs staat in het `tikTokPixel`-object op de productpagina en wordt omgerekend met `currency_huilv.js`. Alleen RC-auto's (met werkvoertuigen), helikopters, boten, drones en vliegtuigen; een deal telt pas vanaf 8% omdat de europrijs met de koers meebeweegt |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

@@ -3,9 +3,11 @@ package sitemap
 
 import (
 	"bytes"
+	"compress/gzip"
 	"context"
 	"encoding/xml"
 	"errors"
+	"io"
 	"strings"
 	"time"
 
@@ -82,8 +84,12 @@ func fetchDoc(ctx context.Context, f *fetch.Fetcher, u string) (urlset, error) {
 		if err != nil {
 			return doc, err
 		}
+		body, err := gunzipRaw(resp.Body)
+		if err != nil {
+			return doc, err
+		}
 		doc = urlset{}
-		dec := xml.NewDecoder(bytes.NewReader(resp.Body))
+		dec := xml.NewDecoder(bytes.NewReader(body))
 		dec.Strict = false
 		err = dec.Decode(&doc)
 		var syntaxErr *xml.SyntaxError
@@ -97,6 +103,23 @@ func fetchDoc(ctx context.Context, f *fetch.Fetcher, u string) (urlset, error) {
 		}
 	}
 }
+
+// gunzipRaw pakt een .xml.gz uit die als gewoon bestand komt (zonder Content-Encoding, zoals
+// bij Banggood); de fetcher doet alleen Content-Encoding: gzip.
+func gunzipRaw(body []byte) ([]byte, error) {
+	if len(body) < 2 || body[0] != 0x1f || body[1] != 0x8b {
+		return body, nil
+	}
+	gz, err := gzip.NewReader(bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+	defer gz.Close()
+	return io.ReadAll(io.LimitReader(gz, maxUnzipped))
+}
+
+// maxUnzipped begrenst een uitgepakte sitemap (het protocol staat 50 MB toe).
+const maxUnzipped = 100 << 20
 
 func parseTime(s string) time.Time {
 	s = strings.TrimSpace(s)

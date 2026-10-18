@@ -1,6 +1,7 @@
 import type { StaticImageData } from "next/image";
 import aeroberticsLogo from "@/assets/shops/aerobertics.png";
 import area51Logo from "@/assets/shops/area51.png";
+import banggoodLogo from "@/assets/shops/banggood.png";
 import berlinskiLogo from "@/assets/shops/berlinski.svg";
 import bliekLogo from "@/assets/shops/bliek.png";
 import chinahobbylineLogo from "@/assets/shops/chinahobbyline.png";
@@ -204,6 +205,18 @@ export const SHOPS: ShopInfo[] = [
     logo: area51Logo,
     logoBg: "bg-[#212121]",
     country: "ES",
+  },
+  {
+    slug: "banggood",
+    name: "Banggood",
+    url: "https://nl.banggood.com",
+    domain: "banggood.com",
+    logo: banggoodLogo,
+    logoBg: "bg-[#1e1e1e]",
+    // De prijzen zijn die van het Chinese magazijn (standaard op de productpagina).
+    country: "CN",
+    // Partnerlink zodra het affiliate-account er is: Banggood gebruikt ?p=<partnercode>.
+    // affiliate: { params: { p: "..." } },
   },
 ];
 

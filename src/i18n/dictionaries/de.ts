@@ -152,6 +152,8 @@ export const de: Dictionary = {
       "Hubschrauberspezialist aus Breda (NL) mit Mikado LOGO, Goblin, OMP und Tron sowie Rotorblättern, Elektronik und Ladegeräten.",
     area51:
       "Spanischer Hubschrauberspezialist mit Align, SAB und BeastX sowie Flugzeugen, Autos, Drohnen, Akkus und Optifuel.",
+    banggood:
+      "Großer chinesischer Onlineshop mit günstigen RC-Autos, Baufahrzeugen, Drohnen, Hubschraubern, Booten und Flugzeugen.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

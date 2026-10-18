@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"math"
 	"net/url"
 	"regexp"
 	"sort"
@@ -353,8 +354,11 @@ func (r *Runner) save(ctx context.Context, sr *shopRun, p parse.Product, fromPro
 		sr.log.Info("product", "prijs", p.Price, "van", p.OldPrice, "categorie", category, "naam", p.Name)
 		return
 	}
-	res, err := r.store.UpsertProduct(ctx, sr.shopID, p, category, fromProductPage,
-		store.DealRules{MinEUR: r.cfg.MinDiscountEUR, MinPercent: r.cfg.MinDiscountPercent})
+	rules := store.DealRules{MinEUR: r.cfg.MinDiscountEUR, MinPercent: r.cfg.MinDiscountPercent}
+	if pd, ok := sr.shop.(shops.PercentDeals); ok {
+		rules = store.DealRules{MinEUR: math.Inf(1), MinPercent: max(rules.MinPercent, pd.MinDealPercent())}
+	}
+	res, err := r.store.UpsertProduct(ctx, sr.shopID, p, category, fromProductPage, rules)
 	if err != nil {
 		if ctx.Err() == nil {
 			sr.errs.Add(1)
