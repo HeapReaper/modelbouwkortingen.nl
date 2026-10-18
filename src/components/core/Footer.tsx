@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { FooterSocials } from "@/components/core/ContactBar";
+import { CookieSettingsButton } from "@/components/core/CookieSettingsButton";
 import { CurrentYear } from "@/components/core/CurrentYear";
 import { Logo } from "@/components/core/Logo";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { getI18n } from "@/i18n/server";
+import { adsEnabled } from "@/lib/ads";
 import { CATEGORIES } from "@/lib/categories";
 
 export default async function Footer() {
@@ -58,9 +60,22 @@ export default async function Footer() {
       </div>
       <div className="border-t">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:justify-between">
-          <p>
-            © <CurrentYear /> Modelbouwkortingen.nl — {f.rights}
-          </p>
+          <div className="flex flex-col gap-2">
+            <p>
+              © <CurrentYear /> Modelbouwkortingen.nl — {f.rights}
+            </p>
+            <p className="flex flex-wrap gap-x-4 gap-y-1">
+              <Link
+                href={href("/privacy")}
+                className="hover:text-foreground hover:underline"
+              >
+                {f.privacy}
+              </Link>
+              {adsEnabled ? (
+                <CookieSettingsButton label={f.cookieSettings} />
+              ) : null}
+            </p>
+          </div>
           <p>{f.disclaimer}</p>
         </div>
       </div>

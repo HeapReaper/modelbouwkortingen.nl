@@ -65,6 +65,8 @@ export const nl = {
     watchlist: "Volglijst",
     rss: "RSS-feed",
     followUs: "Volg ons",
+    privacy: "Privacybeleid",
+    cookieSettings: "Cookie-instellingen",
   },
   breadcrumb: { label: "Kruimelpad", home: "Home" },
   categories: {
@@ -709,6 +711,107 @@ export const nl = {
       "Alle merken die nu in de aanbieding zijn. Kies een merk om al zijn deals te zien.",
     popular: "Populaire merken",
     all: "Alle merken van A tot Z",
+  },
+  privacy: {
+    title: "Privacybeleid",
+    metaDescription:
+      "Welke gegevens Modelbouwkortingen.nl verwerkt, welke cookies we gebruiken en wat je rechten zijn.",
+    description:
+      "Welke gegevens we verwerken, waarom, hoe lang, en welke cookies er op deze site staan.",
+    updated: "Laatst bijgewerkt: 18 oktober 2026",
+    cookieSettings: "Cookie-instellingen wijzigen",
+    contactText:
+      "Vragen over je gegevens, of wil je inzage, correctie of verwijdering? Stuur ons een bericht via het {contact}.",
+    contactLink: "contactformulier",
+    sections: [
+      {
+        title: "Wie zijn wij",
+        body: [
+          "Modelbouwkortingen.nl verzamelt automatisch aanbiedingen van RC- en modelbouw-webshops. Wij zijn verantwoordelijk voor de verwerking van persoonsgegevens op deze website.",
+        ],
+      },
+      {
+        title: "Gewoon de site bekijken",
+        body: [
+          "Je kunt de site zonder account gebruiken. Om pagina's te tonen en misbruik te voorkomen (bijvoorbeeld een limiet op het contactformulier) verwerkt onze server technisch noodzakelijke gegevens zoals je IP-adres. We gebruiken die niet voor statistieken en koppelen ze niet aan jou.",
+          "Je volglijst en je keuze voor een licht of donker thema staan alleen in de opslag van je eigen browser. Op de volglijstpagina worden de product-id's meegestuurd om de producten te tonen; we bewaren ze niet.",
+        ],
+      },
+      {
+        title: "Kortingsmail en prijsalarm",
+        body: [
+          "Meld je je aan voor de dagelijkse kortingsmail of een prijsalarm, dan bewaren we je e-mailadres, de taal waarin je je aanmeldde, je voorkeuren (categorieën, webshops, minimale korting) of het product en de doelprijs van je alarm, en wanneer je je aanmeldde en bevestigde.",
+          "We gebruiken dit alleen om je de gevraagde mails te sturen. De grondslag is je toestemming: je bevestigt je aanmelding via een link in je mailbox (double opt-in). In elke mail staat een link om je af te melden of je alarm te stoppen.",
+        ],
+      },
+      {
+        title: "Deals in Discord",
+        body: [
+          "Koppel je een Discord-webhook, dan bewaren we de webhook-URL, de naam die Discord bij de webhook teruggeeft, je taal en je voorkeuren, om nieuwe deals in jouw kanaal te plaatsen. Via de afmeldlink in het welkomstbericht stop je dat.",
+        ],
+      },
+      {
+        title: "Contactformulier",
+        body: [
+          "Stuur je ons een bericht, dan bewaren we je naam, e-mailadres, onderwerp en bericht om je vraag te beantwoorden.",
+        ],
+      },
+      {
+        title: "Kliks naar webshops",
+        body: [
+          "Klik je door naar een webshop, dan tellen we die klik per product, webshop en bron (site, mail, Discord, …), zonder IP-adres of andere gegevens over jou. Sommige links bevatten een partnercode van de webshop. Bij de webshop geldt het privacybeleid van die webshop.",
+        ],
+      },
+      {
+        id: "cookies",
+        title: "Cookies",
+        body: [
+          "Functionele cookies en opslag, waarvoor geen toestemming nodig is: de cookie NEXT_LOCALE onthoudt je taalkeuze (1 jaar); je volglijst en thema staan in de opslag van je browser.",
+          "Advertenties: we tonen advertenties via Google AdSense. Google en zijn partners kunnen daarvoor cookies plaatsen en gegevens over je bezoek gebruiken, bijvoorbeeld om advertenties af te stemmen op je interesses. In de Europese Economische Ruimte gebeurt dat alleen met je toestemming, die je geeft of weigert in de cookiemelding van Google. Je kunt je keuze altijd wijzigen met de knop hieronder of via 'Cookie-instellingen' onderaan elke pagina.",
+        ],
+        links: [
+          {
+            href: "https://policies.google.com/technologies/partner-sites?hl=nl",
+            label:
+              "Hoe Google gegevens gebruikt van sites die zijn diensten gebruiken",
+          },
+          {
+            href: "https://myadcenter.google.com/?hl=nl",
+            label: "Je advertentie-instellingen bij Google",
+          },
+        ],
+      },
+      {
+        title: "Met wie we gegevens delen",
+        body: [
+          "We verkopen je gegevens nooit. Voor het versturen van mail gebruiken we een e-mailprovider, berichten in Discord gaan via Discord, en advertenties via Google. Zij verwerken gegevens alleen voor die taak. Productnamen van Duitse webshops laten we vertalen door Amazon Translate; daarbij gaan geen persoonsgegevens mee.",
+        ],
+      },
+      {
+        title: "Hoe lang we gegevens bewaren",
+        body: [
+          "Je e-mailadres, webhook of contactbericht bewaren we zolang je de dienst gebruikt. Meld je je af of stop je een alarm, dan markeren we dat en sturen we niets meer. Wil je dat we je gegevens helemaal verwijderen, laat het ons weten, dan doen we dat.",
+        ],
+      },
+      {
+        title: "Je rechten",
+        body: [
+          "Je hebt het recht op inzage, correctie en verwijdering van je gegevens, en je kunt bezwaar maken of je toestemming intrekken. Ben je niet tevreden over hoe we met je gegevens omgaan, dan kun je een klacht indienen bij de Autoriteit Persoonsgegevens.",
+        ],
+        links: [
+          {
+            href: "https://autoriteitpersoonsgegevens.nl",
+            label: "Autoriteit Persoonsgegevens",
+          },
+        ],
+      },
+      {
+        title: "Wijzigingen",
+        body: [
+          "Verandert er iets aan hoe we met gegevens omgaan, dan passen we dit beleid aan. Bovenaan staat wanneer dat voor het laatst gebeurde.",
+        ],
+      },
+    ],
   },
   feed: {
     title: "Nieuwe RC-aanbiedingen",

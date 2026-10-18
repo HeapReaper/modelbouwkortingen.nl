@@ -63,6 +63,8 @@ export const de: Dictionary = {
     watchlist: "Merkliste",
     rss: "RSS-Feed",
     followUs: "Folgen Sie uns",
+    privacy: "Datenschutz",
+    cookieSettings: "Cookie-Einstellungen",
   },
   breadcrumb: { label: "Brotkrümelnavigation", home: "Start" },
   categories: {
@@ -726,6 +728,107 @@ export const de: Dictionary = {
       "Alle Marken, die gerade im Angebot sind. Wähle eine Marke, um alle ihre Angebote zu sehen.",
     popular: "Beliebte Marken",
     all: "Alle Marken von A bis Z",
+  },
+  privacy: {
+    title: "Datenschutzerklärung",
+    metaDescription:
+      "Welche Daten Modelbouwkortingen.nl verarbeitet, welche Cookies wir verwenden und welche Rechte du hast.",
+    description:
+      "Welche Daten wir verarbeiten, warum, wie lange, und welche Cookies diese Seite verwendet.",
+    updated: "Zuletzt aktualisiert: 18. Oktober 2026",
+    cookieSettings: "Cookie-Einstellungen ändern",
+    contactText:
+      "Fragen zu deinen Daten, oder möchtest du Auskunft, Berichtigung oder Löschung? Schreib uns über das {contact}.",
+    contactLink: "Kontaktformular",
+    sections: [
+      {
+        title: "Wer wir sind",
+        body: [
+          "Modelbouwkortingen.nl sammelt automatisch Angebote von RC- und Modellbau-Webshops. Wir sind für die Verarbeitung personenbezogener Daten auf dieser Website verantwortlich.",
+        ],
+      },
+      {
+        title: "Einfach nur stöbern",
+        body: [
+          "Du kannst die Seite ohne Konto nutzen. Um Seiten anzuzeigen und Missbrauch zu verhindern (zum Beispiel ein Limit für das Kontaktformular), verarbeitet unser Server technisch notwendige Daten wie deine IP-Adresse. Wir nutzen sie nicht für Statistiken und verknüpfen sie nicht mit dir.",
+          "Deine Merkliste und deine Wahl zwischen hellem und dunklem Design werden nur im Speicher deines eigenen Browsers abgelegt. Auf der Merklisten-Seite werden die Produkt-IDs mitgeschickt, um die Produkte anzuzeigen; wir speichern sie nicht.",
+        ],
+      },
+      {
+        title: "Angebots-Mail und Preisalarm",
+        body: [
+          "Wenn du dich für die tägliche Angebots-Mail oder einen Preisalarm anmeldest, speichern wir deine E-Mail-Adresse, die Sprache deiner Anmeldung, deine Einstellungen (Kategorien, Shops, Mindestrabatt) bzw. das Produkt und den Zielpreis deines Alarms sowie wann du dich angemeldet und bestätigt hast.",
+          "Wir nutzen das nur, um dir die gewünschten Mails zu schicken. Rechtsgrundlage ist deine Einwilligung: Du bestätigst deine Anmeldung über einen Link in deinem Postfach (Double-Opt-in). In jeder Mail steht ein Link zum Abmelden oder zum Beenden deines Alarms.",
+        ],
+      },
+      {
+        title: "Angebote in Discord",
+        body: [
+          "Wenn du einen Discord-Webhook verbindest, speichern wir die Webhook-URL, den Namen, den Discord für den Webhook zurückgibt, deine Sprache und deine Einstellungen, um neue Angebote in deinem Kanal zu posten. Über den Abmeldelink in der Willkommensnachricht beendest du das.",
+        ],
+      },
+      {
+        title: "Kontaktformular",
+        body: [
+          "Wenn du uns eine Nachricht schickst, speichern wir deinen Namen, deine E-Mail-Adresse, den Betreff und die Nachricht, um deine Frage zu beantworten.",
+        ],
+      },
+      {
+        title: "Klicks zu Shops",
+        body: [
+          "Wenn du zu einem Shop weiterklickst, zählen wir diesen Klick pro Produkt, Shop und Quelle (Seite, Mail, Discord, …), ohne IP-Adresse oder andere Daten über dich. Manche Links enthalten einen Partnercode des Shops. Im Shop gilt dessen Datenschutzerklärung.",
+        ],
+      },
+      {
+        id: "cookies",
+        title: "Cookies",
+        body: [
+          "Funktionale Cookies und Speicher, für die keine Einwilligung nötig ist: Das Cookie NEXT_LOCALE merkt sich deine Sprache (1 Jahr); deine Merkliste und dein Design liegen im Speicher deines Browsers.",
+          "Werbung: Wir zeigen Anzeigen über Google AdSense. Google und seine Partner können dafür Cookies setzen und Daten über deinen Besuch verwenden, zum Beispiel um Anzeigen auf deine Interessen abzustimmen. Im Europäischen Wirtschaftsraum geschieht das nur mit deiner Einwilligung, die du im Cookie-Hinweis von Google erteilst oder verweigerst. Du kannst deine Wahl jederzeit über die Schaltfläche unten oder über „Cookie-Einstellungen“ unten auf jeder Seite ändern.",
+        ],
+        links: [
+          {
+            href: "https://policies.google.com/technologies/partner-sites?hl=de",
+            label:
+              "Wie Google Daten von Websites verwendet, die seine Dienste nutzen",
+          },
+          {
+            href: "https://myadcenter.google.com/?hl=de",
+            label: "Deine Werbeeinstellungen bei Google",
+          },
+        ],
+      },
+      {
+        title: "Mit wem wir Daten teilen",
+        body: [
+          "Wir verkaufen deine Daten nie. Für den Versand von Mails nutzen wir einen E-Mail-Anbieter, Nachrichten in Discord laufen über Discord und Anzeigen über Google. Sie verarbeiten Daten nur für diese Aufgabe. Produktnamen deutscher Shops lassen wir von Amazon Translate übersetzen; dabei werden keine personenbezogenen Daten übermittelt.",
+        ],
+      },
+      {
+        title: "Wie lange wir Daten speichern",
+        body: [
+          "Deine E-Mail-Adresse, deinen Webhook oder deine Kontaktnachricht speichern wir, solange du den Dienst nutzt. Wenn du dich abmeldest oder einen Alarm beendest, vermerken wir das und schicken nichts mehr. Möchtest du, dass wir deine Daten vollständig löschen, sag uns Bescheid, dann tun wir das.",
+        ],
+      },
+      {
+        title: "Deine Rechte",
+        body: [
+          "Du hast das Recht auf Auskunft, Berichtigung und Löschung deiner Daten und kannst widersprechen oder deine Einwilligung widerrufen. Bist du mit unserem Umgang mit deinen Daten nicht zufrieden, kannst du dich bei der niederländischen Datenschutzbehörde (Autoriteit Persoonsgegevens) oder der Behörde in deinem Land beschweren.",
+        ],
+        links: [
+          {
+            href: "https://autoriteitpersoonsgegevens.nl/en",
+            label: "Autoriteit Persoonsgegevens",
+          },
+        ],
+      },
+      {
+        title: "Änderungen",
+        body: [
+          "Wenn sich etwas an unserem Umgang mit Daten ändert, passen wir diese Erklärung an. Oben steht, wann das zuletzt geschah.",
+        ],
+      },
+    ],
   },
   feed: {
     title: "Neue RC-Angebote",

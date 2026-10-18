@@ -62,6 +62,8 @@ export const en: Dictionary = {
     watchlist: "Watchlist",
     rss: "RSS feed",
     followUs: "Follow us",
+    privacy: "Privacy policy",
+    cookieSettings: "Cookie settings",
   },
   breadcrumb: { label: "Breadcrumb", home: "Home" },
   categories: {
@@ -707,6 +709,107 @@ export const en: Dictionary = {
       "All brands that are on sale right now. Pick a brand to see all its deals.",
     popular: "Popular brands",
     all: "All brands from A to Z",
+  },
+  privacy: {
+    title: "Privacy policy",
+    metaDescription:
+      "What data Modelbouwkortingen.nl processes, which cookies we use and what your rights are.",
+    description:
+      "What data we process, why, for how long, and which cookies this site uses.",
+    updated: "Last updated: 18 October 2026",
+    cookieSettings: "Change cookie settings",
+    contactText:
+      "Questions about your data, or want access, correction or deletion? Send us a message using the {contact}.",
+    contactLink: "contact form",
+    sections: [
+      {
+        title: "Who we are",
+        body: [
+          "Modelbouwkortingen.nl automatically collects deals from RC and scale model web shops. We are responsible for processing personal data on this website.",
+        ],
+      },
+      {
+        title: "Just browsing",
+        body: [
+          "You can use the site without an account. To show pages and prevent abuse (for example a limit on the contact form), our server processes technically necessary data such as your IP address. We do not use it for statistics and do not link it to you.",
+          "Your watchlist and your choice of a light or dark theme are stored only in your own browser. On the watchlist page the product IDs are sent along to show the products; we do not store them.",
+        ],
+      },
+      {
+        title: "Deal emails and price alerts",
+        body: [
+          "If you sign up for the daily deal email or a price alert, we store your email address, the language you signed up in, your preferences (categories, shops, minimum discount) or the product and target price of your alert, and when you signed up and confirmed.",
+          "We only use this to send you the emails you asked for. The legal basis is your consent: you confirm your sign-up via a link in your inbox (double opt-in). Every email contains a link to unsubscribe or stop your alert.",
+        ],
+      },
+      {
+        title: "Deals in Discord",
+        body: [
+          "If you connect a Discord webhook, we store the webhook URL, the name Discord returns for the webhook, your language and your preferences, to post new deals in your channel. You can stop this via the unsubscribe link in the welcome message.",
+        ],
+      },
+      {
+        title: "Contact form",
+        body: [
+          "If you send us a message, we store your name, email address, subject and message to answer your question.",
+        ],
+      },
+      {
+        title: "Clicks to shops",
+        body: [
+          "When you click through to a shop, we count that click per product, shop and source (site, email, Discord, …), without your IP address or any other data about you. Some links contain a partner code from the shop. At the shop, that shop's privacy policy applies.",
+        ],
+      },
+      {
+        id: "cookies",
+        title: "Cookies",
+        body: [
+          "Functional cookies and storage, which need no consent: the NEXT_LOCALE cookie remembers your language (1 year); your watchlist and theme are stored in your browser.",
+          "Advertising: we show ads through Google AdSense. Google and its partners may set cookies and use data about your visit for this, for example to tailor ads to your interests. In the European Economic Area this only happens with your consent, which you give or refuse in Google's cookie notice. You can change your choice at any time with the button below or via 'Cookie settings' at the bottom of every page.",
+        ],
+        links: [
+          {
+            href: "https://policies.google.com/technologies/partner-sites?hl=en",
+            label:
+              "How Google uses information from sites that use its services",
+          },
+          {
+            href: "https://myadcenter.google.com/?hl=en",
+            label: "Your ad settings at Google",
+          },
+        ],
+      },
+      {
+        title: "Who we share data with",
+        body: [
+          "We never sell your data. We use an email provider to send email, Discord messages go through Discord, and ads through Google. They only process data for that task. We have product names from German shops translated by Amazon Translate; no personal data is included.",
+        ],
+      },
+      {
+        title: "How long we keep data",
+        body: [
+          "We keep your email address, webhook or contact message for as long as you use the service. If you unsubscribe or stop an alert, we mark that and send nothing more. If you want us to delete your data completely, let us know and we will.",
+        ],
+      },
+      {
+        title: "Your rights",
+        body: [
+          "You have the right to access, correct and delete your data, and you can object or withdraw your consent. If you are not happy with how we handle your data, you can file a complaint with the Dutch Data Protection Authority (Autoriteit Persoonsgegevens) or the authority in your own country.",
+        ],
+        links: [
+          {
+            href: "https://autoriteitpersoonsgegevens.nl/en",
+            label: "Autoriteit Persoonsgegevens",
+          },
+        ],
+      },
+      {
+        title: "Changes",
+        body: [
+          "If anything changes in how we handle data, we will update this policy. The date at the top shows when that last happened.",
+        ],
+      },
+    ],
   },
   feed: {
     title: "New RC deals",

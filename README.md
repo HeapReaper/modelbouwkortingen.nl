@@ -48,6 +48,9 @@ komt het op de website (Next.js 16 + shadcn/ui).
 - Licht/donker thema, demo-modus zonder database, Docker/Coolify-deploy.
 - Google AdSense (alleen in productie): script en `google-adsense-account`-meta in
   `src/app/[lang]/layout.tsx`, publisher-ID in `src/lib/ads.ts`, en `public/ads.txt`.
+- Privacybeleid (`/privacy`, NL/EN/DE). De cookiemelding is die van Google (AdSense →
+  Privacy en berichten, een door Google gecertificeerde CMP); "Cookie-instellingen" in de footer
+  opent hem opnieuw.
 
 ```
 ├── src/              Next.js website (App Router, Cache Components, shadcn base-nova)
@@ -95,6 +98,7 @@ koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coo
 | `/prijsalarm/bevestigen`, `/prijsalarm/afmelden` | Prijsalarm bevestigen (double opt-in) en stoppen |
 | `/api/prijsalarm/controleren` | Verstuurt alarmen waarvan de doelprijs bereikt is (zelfde beveiliging als `/api/nieuwsbrief/verzenden`) |
 | `/contact` | Contactformulier (Server Action, honeypot + rate limit, opgeslagen in Postgres) |
+| `/privacy` | Privacybeleid met cookie-uitleg en knop om de cookiekeuze te wijzigen |
 | `/over` | Uitleg + informatie voor webshops over de crawler |
 | `/nieuwsbrief` | Aanmelden voor de dagelijkse kortingsmail (ook op de homepage en in de footer) |
 | `/nieuwsbrief/voorkeuren`, `/discord/voorkeuren` | Categorieën, webshops en minimale korting kiezen (link in elke mail en elk welkomstbericht) |

@@ -26,6 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       "/nieuwsbrief",
       "/discord",
     ].map((path) => ({ path, priority: 0.8 })),
+    { path: "/privacy", priority: 0.3 },
     ...CATEGORIES.map((c) => ({ path: `/categorie/${c.slug}`, priority: 0.7 })),
     ...SHOPS.map((s) => ({ path: `/webshops/${s.slug}`, priority: 0.6 })),
     ...brands
