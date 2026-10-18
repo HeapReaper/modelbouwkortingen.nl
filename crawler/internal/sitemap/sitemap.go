@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/xml"
+	"errors"
 	"strings"
 	"time"
 
@@ -41,14 +42,8 @@ func Fetch(ctx context.Context, f *fetch.Fetcher, sitemapURL string, follow func
 			return nil
 		}
 		seen[u] = true
-		resp, err := f.Get(ctx, u)
+		doc, err := fetchDoc(ctx, f, u)
 		if err != nil {
-			return err
-		}
-		var doc urlset
-		dec := xml.NewDecoder(bytes.NewReader(resp.Body))
-		dec.Strict = false
-		if err := dec.Decode(&doc); err != nil {
 			return err
 		}
 		for _, s := range doc.Sitemaps {
@@ -72,6 +67,35 @@ func Fetch(ctx context.Context, f *fetch.Fetcher, sitemapURL string, follow func
 	}
 	err := walk(sitemapURL, 0)
 	return out, err
+}
+
+// retryWait is hoe lang we wachten voordat we een kapotte sitemap opnieuw ophalen.
+var retryWait = 30 * time.Second
+
+// fetchDoc haalt één sitemap op en leest hem in. Is de XML kapot, dan nog één poging na
+// retryWait: sommige shops (Berlinski, ~45 MB) leveren af en toe een half bestand, vermoedelijk
+// terwijl de sitemap opnieuw gegenereerd wordt.
+func fetchDoc(ctx context.Context, f *fetch.Fetcher, u string) (urlset, error) {
+	var doc urlset
+	for attempt := 0; ; attempt++ {
+		resp, err := f.Get(ctx, u)
+		if err != nil {
+			return doc, err
+		}
+		doc = urlset{}
+		dec := xml.NewDecoder(bytes.NewReader(resp.Body))
+		dec.Strict = false
+		err = dec.Decode(&doc)
+		var syntaxErr *xml.SyntaxError
+		if err == nil || attempt > 0 || !errors.As(err, &syntaxErr) {
+			return doc, err
+		}
+		select {
+		case <-ctx.Done():
+			return doc, ctx.Err()
+		case <-time.After(retryWait):
+		}
+	}
 }
 
 func parseTime(s string) time.Time {
