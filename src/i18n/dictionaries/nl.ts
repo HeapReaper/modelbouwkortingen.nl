@@ -150,6 +150,18 @@ export const nl = {
       "Spaanse helikopterspecialist met Align, SAB en BeastX, plus vliegtuigen, auto's, drones, accu's en Optifuel.",
     banggood:
       "Grote Chinese webwinkel met goedkope RC-auto's, werkvoertuigen, drones, helikopters, boten en vliegtuigen.",
+    voltmaster:
+      "Duitse RC-shop met vliegtuigen, zwevers, auto's en boten, plus veel accu's, laders, motoren, regelaars en servo's.",
+    nfactory:
+      "Duitse FPV-specialist met drones, frames, motoren, flight controllers, videobrillen, lipo's en propellers.",
+    lindinger:
+      "Grote Oostenrijkse modelbouwzaak met vliegtuigen, heli's, drones, auto's en boten, plus elektronica, accu's en onderdelen.",
+    rccaronline:
+      "Duitse specialist in grote 1:5- en 1:6-auto's van FG, Mecatech, Losi en HPI, met onderdelen, tuning en motoren.",
+    premiummodellbau:
+      "Duitse dronespecialist met multicopters, flight controllers, GPS, motoren, gimbals en videoverbindingen, plus robotica.",
+    copterfarm:
+      "Duitse FPV-shop met frames, motoren, regelaars, flight controllers, videobrillen, accu's en propellers.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

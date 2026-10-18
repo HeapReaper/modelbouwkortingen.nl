@@ -5,17 +5,23 @@ import banggoodLogo from "@/assets/shops/banggood.png";
 import berlinskiLogo from "@/assets/shops/berlinski.svg";
 import bliekLogo from "@/assets/shops/bliek.png";
 import chinahobbylineLogo from "@/assets/shops/chinahobbyline.png";
+import copterfarmLogo from "@/assets/shops/copterfarm.png";
 import droneshopLogo from "@/assets/shops/droneshop.png";
 import hackerLogo from "@/assets/shops/hacker.png";
 import heligearLogo from "@/assets/shops/heligear.png";
 import hepfLogo from "@/assets/shops/hepf.svg";
 import hoelleinLogo from "@/assets/shops/hoellein.png";
+import lindingerLogo from "@/assets/shops/lindinger.svg";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
+import nfactoryLogo from "@/assets/shops/nfactory.png";
+import premiummodellbauLogo from "@/assets/shops/premiummodellbau.png";
+import rccaronlineLogo from "@/assets/shops/rccaronline.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
 import tamicoLogo from "@/assets/shops/tamico.png";
 import toemenLogo from "@/assets/shops/toemen.png";
 import toprcLogo from "@/assets/shops/toprc.svg";
+import voltmasterLogo from "@/assets/shops/voltmaster.svg";
 import wetronicLogo from "@/assets/shops/wetronic.png";
 
 /** De omschrijving staat per taal in de woordenboeken (dict.shops[slug]). */
@@ -217,6 +223,66 @@ export const SHOPS: ShopInfo[] = [
     country: "CN",
     // Partnerlink: Banggood gebruikt ?p=<referral code> (account BG104716091).
     affiliate: { params: { p: "IM180966903162202610" } },
+  },
+  {
+    slug: "voltmaster",
+    name: "Voltmaster",
+    url: "https://www.voltmaster.de",
+    domain: "voltmaster.de",
+    logo: voltmasterLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+    language: "de",
+  },
+  {
+    slug: "nfactory",
+    name: "N-Factory",
+    url: "https://n-factory.de",
+    domain: "n-factory.de",
+    logo: nfactoryLogo,
+    logoBg: "bg-[#1e1e1e]",
+    country: "DE",
+    language: "de",
+  },
+  {
+    slug: "lindinger",
+    name: "Lindinger",
+    url: "https://www.lindinger.at",
+    domain: "lindinger.at",
+    logo: lindingerLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "AT",
+    language: "de",
+  },
+  {
+    slug: "rccaronline",
+    name: "RC-Car-Online",
+    url: "https://rc-car-online.de",
+    domain: "rc-car-online.de",
+    logo: rccaronlineLogo,
+    logoBg: "bg-[#ffff00]",
+    country: "DE",
+    language: "de",
+  },
+  {
+    slug: "premiummodellbau",
+    name: "Premium-Modellbau",
+    url: "https://www.premium-modellbau.de",
+    domain: "premium-modellbau.de",
+    logo: premiummodellbauLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+    language: "de",
+  },
+  {
+    slug: "copterfarm",
+    name: "CopterFarm",
+    url: "https://www.copterfarm.de",
+    domain: "copterfarm.de",
+    logo: copterfarmLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+    language: "de",
   },
 ];
 

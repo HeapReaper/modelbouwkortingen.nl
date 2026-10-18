@@ -236,6 +236,12 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | Heligear | CCV Shop | `/ExportBestanden/SiteMap.php` (~1.000 producten) | geen: alle productpagina's (JSON-LD) |
 | Area51 RC (ES) | PrestaShop 1.4 | geen: XML-sitemap is dubbel EN/ES | alle ~1.250 categorieën uit de boom (PrestaShop 1.4 toont alleen direct gekoppelde producten), `?n=50&p=N` |
 | Banggood (CN) | eigen systeem (USD) | `products-Toys-Hobbies-and-Robot-N.xml.gz` met voorselectie op de URL, plus pagina 1 van de RC-categorieën (paginering is verboden) | geen: prijzen komen via JavaScript van `/index.php` (verboden). De dollarprijs staat in het `tikTokPixel`-object op de productpagina en wordt omgerekend met `currency_huilv.js`. Alleen RC-auto's (met werkvoertuigen), helikopters, boten, drones en vliegtuigen; een deal telt pas vanaf 8% omdat de europrijs met de koers meebeweegt |
+| Voltmaster (DE) | JTL-Shop 5 | geen: alleen listings | subcategorieën uit `/Sitemap` (zonder de merkenlijsten), `?af=50`, `_sN` |
+| N-Factory (DE) | JTL-Shop 5 (Snackys) | geen: alleen listings | categorieën uit het menu (`#cat-w`; de HTML-sitemap is onvolledig), `?af=50`, `_sN`. Gebruikte "Rückläufer" worden overgeslagen |
+| Lindinger (AT) | Shopware 6 (Acris) | geen: alleen listings (~137.000 producten in `/de/sitemap.xml`, productpagina's ~770 KB) | categorieën op het tweede niveau van de RC-bomen, `?limit=100&p=N` (~11 MB HTML per pagina, 2 s tussen requests); van de grootste onderdelencategorieën alleen de eerste 5.000 producten. `.list-price` |
+| RC-Car-Online (DE) | Shopware 6 | `/sitemap.xml` (alleen de sitemap zonder www), `/<naam>/<artikelnummer>` | geen: robots.txt verbiedt alle URL's met `?`, dus ook de paginering; productpagina's met microdata |
+| Premium-Modellbau (DE) | Shopware 5 | geen: alleen listings | onderste categorieën uit de sitemap, `?n=48&p=N` (Crawl-delay 5s; `/listing` is verboden), `.price--discount` |
+| CopterFarm (DE) | Shopware 5 | geen: alleen listings | onderste categorieën uit de sitemap (zonder merken), `?n=48&p=N`, `.price--discount` |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

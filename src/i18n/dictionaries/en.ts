@@ -147,6 +147,18 @@ export const en: Dictionary = {
       "Spanish helicopter specialist with Align, SAB and BeastX, plus planes, cars, drones, batteries and Optifuel.",
     banggood:
       "Large Chinese web store with low-cost RC cars, construction vehicles, drones, helicopters, boats and planes.",
+    voltmaster:
+      "German RC store with planes, gliders, cars and boats, plus lots of batteries, chargers, motors, ESCs and servos.",
+    nfactory:
+      "German FPV specialist with drones, frames, motors, flight controllers, goggles, LiPos and propellers.",
+    lindinger:
+      "Large Austrian hobby store with planes, helis, drones, cars and boats, plus electronics, batteries and parts.",
+    rccaronline:
+      "German specialist in large 1:5 and 1:6 scale cars from FG, Mecatech, Losi and HPI, with parts, tuning and engines.",
+    premiummodellbau:
+      "German drone specialist with multicopters, flight controllers, GPS, motors, gimbals and video links, plus robotics.",
+    copterfarm:
+      "German FPV store with frames, motors, ESCs, flight controllers, goggles, batteries and propellers.",
   },
   deals: {
     outOfStock: "Out of stock",

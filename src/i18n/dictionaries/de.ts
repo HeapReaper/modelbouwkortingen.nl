@@ -154,6 +154,18 @@ export const de: Dictionary = {
       "Spanischer Hubschrauberspezialist mit Align, SAB und BeastX sowie Flugzeugen, Autos, Drohnen, Akkus und Optifuel.",
     banggood:
       "Großer chinesischer Onlineshop mit günstigen RC-Autos, Baufahrzeugen, Drohnen, Hubschraubern, Booten und Flugzeugen.",
+    voltmaster:
+      "Deutscher RC-Shop mit Flugzeugen, Seglern, Autos und Booten sowie vielen Akkus, Ladegeräten, Motoren, Reglern und Servos.",
+    nfactory:
+      "Deutscher FPV-Spezialist mit Drohnen, Frames, Motoren, Flight Controllern, Videobrillen, LiPos und Propellern.",
+    lindinger:
+      "Großer österreichischer Modellbauhändler mit Flugzeugen, Hubschraubern, Drohnen, Autos und Booten sowie Elektronik, Akkus und Ersatzteilen.",
+    rccaronline:
+      "Deutscher Spezialist für große 1:5- und 1:6-Autos von FG, Mecatech, Losi und HPI, mit Ersatzteilen, Tuning und Motoren.",
+    premiummodellbau:
+      "Deutscher Drohnenspezialist mit Multicoptern, Flight Controllern, GPS, Motoren, Gimbals und Videoübertragung sowie Robotik.",
+    copterfarm:
+      "Deutscher FPV-Shop mit Frames, Motoren, Reglern, Flight Controllern, Videobrillen, Akkus und Propellern.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
