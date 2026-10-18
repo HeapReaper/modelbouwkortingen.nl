@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/parse"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
 )
 
 // Integratietest: draait alleen met TEST_DATABASE_URL (een gemigreerde, wegwerpbare database).

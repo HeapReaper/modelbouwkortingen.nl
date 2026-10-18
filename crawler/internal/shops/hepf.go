@@ -7,9 +7,9 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/fetch"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/parse"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/sitemap"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/fetch"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/sitemap"
 )
 
 // Hepf (Oostenrijk) draait op JTL-Shop 5 (NOVA-thema, zie jtl.go).

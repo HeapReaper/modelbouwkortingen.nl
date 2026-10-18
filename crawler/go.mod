@@ -1,4 +1,4 @@
-module github.com/heapreaper/modelbouwkortingen/crawler
+module codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler
 
 go 1.27
 

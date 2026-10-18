@@ -16,14 +16,14 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/categorize"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/config"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/fetch"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/parse"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/shops"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/sitemap"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/stats"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/store"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/categorize"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/config"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/fetch"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/shops"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/sitemap"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/stats"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/store"
 )
 
 const maxListingPagesPerSeed = 50

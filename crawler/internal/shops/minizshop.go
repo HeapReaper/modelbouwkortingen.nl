@@ -9,9 +9,9 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/fetch"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/parse"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/sitemap"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/fetch"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/sitemap"
 )
 
 // MiniZShop draait op WordPress + WooCommerce met een eigen thema.

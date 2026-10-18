@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/categorize"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/parse"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/shops"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/categorize"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/shops"
 )
 
 func main() {

@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/parse"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
 )
 
 // Gedeelde helpers voor shops op Shopify.

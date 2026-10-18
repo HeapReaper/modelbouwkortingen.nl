@@ -3,7 +3,7 @@ package crawl
 import (
 	"testing"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/parse"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
 )
 
 func TestIsUsed(t *testing.T) {

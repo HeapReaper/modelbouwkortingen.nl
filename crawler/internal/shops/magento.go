@@ -3,7 +3,7 @@ package shops
 import (
 	"github.com/PuerkitoBio/goquery"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/parse"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
 )
 
 // magentoListing leest de productkaarten (li.product-item) van een Magento 2-categoriepagina,

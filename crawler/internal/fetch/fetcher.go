@@ -21,7 +21,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/stats"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/stats"
 )
 
 var (

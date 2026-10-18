@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/fetch"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/fetch"
 )
 
 type URL struct {

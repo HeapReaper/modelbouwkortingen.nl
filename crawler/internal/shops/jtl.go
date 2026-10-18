@@ -8,8 +8,8 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/fetch"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/parse"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/fetch"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
 )
 
 // Gedeelde helpers voor shops op JTL-Shop 5 (NOVA-thema), zoals Tamico en Hepf.

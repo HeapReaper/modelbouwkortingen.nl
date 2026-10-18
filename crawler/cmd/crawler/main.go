@@ -12,13 +12,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/config"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/crawl"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/fetch"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/logbuf"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/shops"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/stats"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/store"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/config"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/crawl"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/fetch"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/logbuf"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/shops"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/stats"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/store"
 )
 
 func main() {

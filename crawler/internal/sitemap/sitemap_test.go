@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/fetch"
-	"github.com/heapreaper/modelbouwkortingen/crawler/internal/stats"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/fetch"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/stats"
 )
 
 const fullSitemap = `<?xml version="1.0" encoding="UTF-8"?>
