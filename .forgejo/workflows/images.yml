@@ -9,9 +9,6 @@
 #
 # De Next- en Go-builds draaien direct in de job, niet in Buildah: Buildah gebruikt hier vfs,
 # dat elke laag volledig kopieert, en schrijfacties tellen mee voor het RAM-budget van de runner.
-#
-# Alpine 3.23 (Buildah 1.42) en niet de nieuwste: Buildah 1.44 (Alpine 3.24) mount een overlay
-# over de build-context, en dat mag niet op de runners ("mount overlay: invalid argument").
 name: images
 
 on:
@@ -36,9 +33,9 @@ jobs:
   web:
     runs-on: codeberg-medium
     container:
-      image: node:22-alpine3.23
+      image: node:22-alpine
     steps:
-      - run: apk add --no-cache git buildah netavark
+      - run: apk add --no-cache git buildah
       - uses: actions/checkout@v4
       - run: npm ci --no-audit --no-fund
       - run: npm run build
@@ -57,19 +54,19 @@ jobs:
   migrate:
     runs-on: codeberg-small
     container:
-      image: node:22-alpine3.23
+      image: node:22-alpine
     steps:
-      - run: apk add --no-cache git buildah netavark
+      - run: apk add --no-cache git buildah
       - uses: actions/checkout@v4
       - run: .forgejo/buildah.sh migrate . --target migrate
 
   crawler:
     runs-on: codeberg-small
     container:
-      image: golang:1.27-alpine3.23
+      image: golang:1.27-alpine
     steps:
       # nodejs voor actions/checkout.
-      - run: apk add --no-cache git nodejs buildah netavark
+      - run: apk add --no-cache git nodejs buildah
       - uses: actions/checkout@v4
       - run: go -C crawler test ./...
       - run: CGO_ENABLED=0 go -C crawler build -trimpath -ldflags="-s -w" -o dist/crawler ./cmd/crawler
