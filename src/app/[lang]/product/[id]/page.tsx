@@ -37,14 +37,16 @@ import {
 } from "@/lib/deals";
 import { SITE_URL } from "@/lib/newsletter-mail";
 import { getShop, outLink, shippingCost } from "@/lib/shops";
+import { localizeDeals } from "@/lib/translate";
 import { cn } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
 }: PageProps<"/[lang]/product/[id]">): Promise<Metadata> {
   const { lang, dict, fmt } = await getI18n();
-  const deal = await getDeal(Number((await params).id));
-  if (!deal) return { title: dict.product.notFound };
+  const found = await getDeal(Number((await params).id));
+  if (!found) return { title: dict.product.notFound };
+  const [deal] = await localizeDeals([found], lang);
   const p = dict.product;
   return {
     title: deal.isDeal
@@ -65,9 +67,14 @@ export async function generateMetadata({
     alternates: alternates(lang, `/product/${deal.id}`),
     // Gegenereerde deelafbeelding met foto, prijs en korting (src/app/api/og/[id]).
     openGraph: {
-      images: [{ url: `/api/og/${deal.id}`, width: 1200, height: 630 }],
+      images: [
+        { url: `/api/og/${deal.id}?lang=${lang}`, width: 1200, height: 630 },
+      ],
     },
-    twitter: { card: "summary_large_image", images: [`/api/og/${deal.id}`] },
+    twitter: {
+      card: "summary_large_image",
+      images: [`/api/og/${deal.id}?lang=${lang}`],
+    },
   };
 }
 
@@ -86,9 +93,10 @@ async function ProductDetail({
 }: {
   params: PageProps<"/[lang]/product/[id]">["params"];
 }) {
-  const deal = await getDeal(Number((await params).id));
-  if (!deal) notFound();
+  const found = await getDeal(Number((await params).id));
+  if (!found) notFound();
   const { lang, dict, href, fmt } = await getI18n();
+  const [deal] = await localizeDeals([found], lang);
   const p = dict.product;
   const categoryName = dict.categories[deal.categorySlug]?.name;
   const reference = deal.isDeal ? deal.referencePrice : null;
@@ -157,6 +165,11 @@ async function ProductDetail({
             <h1 className="text-3xl leading-tight font-black tracking-tight sm:text-4xl">
               {deal.name}
             </h1>
+            {deal.originalName ? (
+              <p lang="de" className="-mt-3 text-sm text-muted-foreground">
+                {t(p.originalName, { name: deal.originalName })}
+              </p>
+            ) : null}
             {deal.brand && brandSlug(deal.brand) ? (
               <p className="text-lg text-muted-foreground">
                 {rich(p.brand, {
@@ -325,9 +338,9 @@ async function ProductDetail({
 
 /** Hetzelfde artikelnummer bij andere webshops (zie getAlternatives()). */
 async function Alternatives({ deal }: { deal: Deal }) {
-  const others = await getAlternatives(deal);
+  const { lang, dict, href, fmt } = await getI18n();
+  const others = await localizeDeals(await getAlternatives(deal), lang);
   if (others.length === 0) return null;
-  const { dict, href, fmt } = await getI18n();
   const p = dict.product;
   const c = dict.comparePage;
   const all = [deal, ...others].sort((a, b) => a.price - b.price);
@@ -463,9 +476,9 @@ async function History({ id }: { id: number }) {
 }
 
 async function Related({ deal }: { deal: Deal }) {
-  const related = await getRelatedDeals(deal);
+  const { lang, dict } = await getI18n();
+  const related = await localizeDeals(await getRelatedDeals(deal), lang);
   if (related.length === 0) return null;
-  const { dict } = await getI18n();
   return (
     <DealRow
       title={t(dict.product.related, {

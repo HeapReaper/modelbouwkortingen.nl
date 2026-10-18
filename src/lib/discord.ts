@@ -10,6 +10,7 @@ import { formatters } from "@/lib/format";
 import { SITE_URL, siteUrl } from "@/lib/newsletter-mail";
 import type { DealPreferences } from "@/lib/preferences";
 import { outLink } from "@/lib/shops";
+import { BACKGROUND, localizeDeals } from "@/lib/translate";
 
 /**
  * Discord-meldingen: abonnees geven een webhook-URL op en krijgen elke nieuwe deal als embed.
@@ -269,11 +270,16 @@ export async function postNewDeals(): Promise<DiscordRunResult> {
     let disabled = 0;
     for (const sub of subs) {
       const lang = hasLocale(sub.locale) ? sub.locale : DEFAULT_LOCALE;
-      const deals = await getDealsAfter(
-        sub.cursorAt,
-        sub.cursorProductId,
-        DEALS_PER_RUN,
-        sub,
+      // In de taal van de site op het moment van koppelen.
+      const deals = await localizeDeals(
+        await getDealsAfter(
+          sub.cursorAt,
+          sub.cursorProductId,
+          DEALS_PER_RUN,
+          sub,
+        ),
+        lang,
+        BACKGROUND,
       );
       for (let i = 0; i < deals.length; i += EMBEDS_PER_MESSAGE) {
         const batch = deals.slice(i, i + EMBEDS_PER_MESSAGE);

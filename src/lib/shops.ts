@@ -34,6 +34,8 @@ export type ShopInfo = {
   affiliate?: { params: Record<string, string>; categories?: string[] };
   /** Land van de webshop (ISO 3166-1 alpha-2); leeg als dat niet eenduidig is. */
   country?: string;
+  /** Taal van de productnamen op de site; "de" = namen worden vertaald (zie src/lib/translate.ts). */
+  language?: "de";
   /**
    * Verzendkosten van een gewoon pakket naar Nederland, en vanaf welk orderbedrag verzending
    * gratis is. Alleen invullen als het op de site van de webshop zelf staat; zonder dit veld
@@ -88,6 +90,7 @@ export const SHOPS: ShopInfo[] = [
     logo: berlinskiLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "hoellein",
@@ -97,6 +100,7 @@ export const SHOPS: ShopInfo[] = [
     logo: hoelleinLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "mgmodellbau",
@@ -106,6 +110,7 @@ export const SHOPS: ShopInfo[] = [
     logo: mgmodellbauLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "hacker",
@@ -115,6 +120,7 @@ export const SHOPS: ShopInfo[] = [
     logo: hackerLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "rcmotorsports",
@@ -142,6 +148,7 @@ export const SHOPS: ShopInfo[] = [
     logo: tamicoLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "chinahobbyline",
@@ -160,6 +167,7 @@ export const SHOPS: ShopInfo[] = [
     logo: hepfLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "AT",
+    language: "de",
   },
   {
     slug: "bliek",
@@ -204,6 +212,11 @@ const bySlug = new Map(SHOPS.map((s) => [s.slug, s]));
 export function getShop(slug: string | null | undefined): ShopInfo | undefined {
   return slug ? bySlug.get(slug) : undefined;
 }
+
+/** Webshops met Duitse productnamen. */
+export const GERMAN_SHOPS = SHOPS.filter((s) => s.language === "de").map(
+  (s) => s.slug,
+);
 
 /** Shops uit dit land tellen als "binnenland": geen douane, meestal snelle levering. */
 export const HOME_COUNTRIES = ["NL", "BE"];

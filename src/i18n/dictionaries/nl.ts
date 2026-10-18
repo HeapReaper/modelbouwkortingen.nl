@@ -332,6 +332,7 @@ export const nl = {
     stockUnknown: "Voorraad: kijk bij de webshop",
     dealSince: "In de aanbieding sinds {date} ({ago})",
     shopCategory: "Categorie bij webshop: {category}",
+    originalName: "Originele naam: {name}",
     disclaimer:
       "Prijzen worden automatisch verzameld en kunnen inmiddels gewijzigd zijn. De prijs op de website van {shop} is altijd leidend.",
     history: "Prijsverloop",

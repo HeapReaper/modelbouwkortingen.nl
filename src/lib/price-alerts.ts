@@ -6,6 +6,7 @@ import { getPrisma, num } from "@/lib/db";
 import { type Deal, getDeal } from "@/lib/deals";
 import { isMailConfigured, sendMail } from "@/lib/mail";
 import { alertConfirmMail, alertTriggeredMail } from "@/lib/newsletter-mail";
+import { BACKGROUND, localizeDeals } from "@/lib/translate";
 
 /**
  * Prijsalarm: een bezoeker kiest een doelprijs voor één product en krijgt één mail zodra de
@@ -84,7 +85,8 @@ async function sendConfirmation(
   targetPrice: number,
   lang: Locale,
 ) {
-  const mail = alertConfirmMail(email, token, deal, targetPrice, lang);
+  const [named] = await localizeDeals([deal], lang, BACKGROUND);
+  const mail = alertConfirmMail(email, token, named, targetPrice, lang);
   if (!isMailConfigured()) {
     console.info(
       "[prijsalarm] SMTP niet ingesteld; bevestigingslink:",
@@ -162,9 +164,11 @@ export async function sendDueAlerts(): Promise<AlertRunResult> {
         where: { id: row.id },
       });
       try {
-        const deal = await getDeal(num(alert.productId));
-        if (!deal) continue;
+        const found = await getDeal(num(alert.productId));
+        if (!found) continue;
+        // In de taal van de site op het moment dat het alarm werd ingesteld.
         const lang = hasLocale(alert.locale) ? alert.locale : DEFAULT_LOCALE;
+        const [deal] = await localizeDeals([found], lang, BACKGROUND);
         await sendMail(
           alertTriggeredMail(alert.email, deal, num(alert.targetPrice), lang),
         );

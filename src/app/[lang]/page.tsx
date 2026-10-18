@@ -9,6 +9,7 @@ import { ShopCards } from "@/components/home/ShopCards";
 import { NewsletterSignup } from "@/components/newsletter/NewsletterSignup";
 import { getI18n } from "@/i18n/server";
 import { getNewestDeals, getTopDeals } from "@/lib/deals";
+import { localizeDeals } from "@/lib/translate";
 
 export default function Home() {
   return (
@@ -33,8 +34,8 @@ export default function Home() {
 }
 
 async function TopDealsRow() {
-  const { dict } = await getI18n();
-  const deals = await getTopDeals(12);
+  const { lang, dict } = await getI18n();
+  const deals = await localizeDeals(await getTopDeals(12), lang);
   return (
     <DealRow
       title={dict.home.topTitle}
@@ -47,8 +48,8 @@ async function TopDealsRow() {
 }
 
 async function NewestDealsRow() {
-  const { dict } = await getI18n();
-  const deals = await getNewestDeals(12);
+  const { lang, dict } = await getI18n();
+  const deals = await localizeDeals(await getNewestDeals(12), lang);
   return (
     <DealRow
       title={dict.home.newTitle}

@@ -9,6 +9,7 @@ import { ShopBadge } from "@/components/deals/ShopBadge";
 import { getI18n } from "@/i18n/server";
 import { t } from "@/i18n/translate";
 import { getSiteStats, getTopDeals } from "@/lib/deals";
+import { localizeDeals } from "@/lib/translate";
 
 const QUICK_SEARCHES = [
   "Arrma",
@@ -144,8 +145,8 @@ async function HeroStats() {
 }
 
 async function FeaturedDeal() {
-  const { dict, href, fmt } = await getI18n();
-  const [deal] = await getTopDeals(1);
+  const { lang, dict, href, fmt } = await getI18n();
+  const [deal] = await localizeDeals(await getTopDeals(1), lang);
   if (!deal) return null;
   return (
     <Link

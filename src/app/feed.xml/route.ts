@@ -7,6 +7,7 @@ import { getBrand, getDeals } from "@/lib/deals";
 import { formatters } from "@/lib/format";
 import { SITE_URL, siteUrl } from "@/lib/newsletter-mail";
 import { getShop, outLink } from "@/lib/shops";
+import { localizeDeals } from "@/lib/translate";
 
 /**
  * RSS 2.0-feed met de nieuwste deals, voor feedlezers en koppelingen (Telegram-bots, ntfy,
@@ -36,7 +37,7 @@ export async function GET(request: Request) {
   const category = getCategory(sp.get("categorie") ?? "")?.slug;
   const shop = getShop(sp.get("shop"));
   const brand = sp.get("merk") ? await getBrand(sp.get("merk") ?? "") : null;
-  const { deals } = await getDeals(
+  const { deals: found } = await getDeals(
     {
       category,
       shop: shop?.slug,
@@ -45,6 +46,7 @@ export async function GET(request: Request) {
     },
     ITEMS,
   );
+  const deals = await localizeDeals(found, lang);
 
   const subject = [
     category ? dict.categories[category]?.name : null,

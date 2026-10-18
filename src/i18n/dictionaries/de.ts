@@ -337,6 +337,7 @@ export const de: Dictionary = {
     stockUnknown: "Verfügbarkeit: siehe Shop",
     dealSince: "Im Angebot seit {date} ({ago})",
     shopCategory: "Kategorie im Shop: {category}",
+    originalName: "Originalname: {name}",
     disclaimer:
       "Preise werden automatisch erfasst und können sich inzwischen geändert haben. Es gilt immer der Preis auf der Website von {shop}.",
     history: "Preisverlauf",

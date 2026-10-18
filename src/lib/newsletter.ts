@@ -4,10 +4,11 @@ import { randomBytes } from "node:crypto";
 import { Prisma } from "@/generated/prisma/client";
 import { DEFAULT_LOCALE, hasLocale, type Locale } from "@/i18n/config";
 import { getPrisma } from "@/lib/db";
-import { getDealsSince, pickDigest } from "@/lib/deals";
+import { type Deal, getDealsSince, pickDigest } from "@/lib/deals";
 import { isMailConfigured, sendMail } from "@/lib/mail";
 import { confirmationMail, digestMail } from "@/lib/newsletter-mail";
 import type { DealPreferences } from "@/lib/preferences";
+import { BACKGROUND, localizeDeals } from "@/lib/translate";
 
 const TIME_ZONE = "Europe/Amsterdam";
 const DIGEST_SIZE = 12;
@@ -190,6 +191,17 @@ export async function sendDailyDigest(
     return { status: "skipped", reason: "geen nieuwe deals" };
   }
 
+  // Kandidaten per taal (Duitse productnamen vertaald), pas opgehaald als een abonnee die taal heeft.
+  const localized = new Map<Locale, Deal[]>();
+  const candidatesIn = async (lang: Locale) => {
+    let list = localized.get(lang);
+    if (!list) {
+      list = await localizeDeals(candidates, lang, BACKGROUND);
+      localized.set(lang, list);
+    }
+    return list;
+  };
+
   let recipients = 0;
   let errors = 0;
   let lastError: string | undefined;
@@ -213,11 +225,12 @@ export async function sendDailyDigest(
     if (batch.length === 0) break;
     const sent: bigint[] = [];
     for (const s of batch) {
-      const own = pickDigest(candidates, s, DIGEST_SIZE);
+      // In de taal van de site op het moment van aanmelden.
+      const lang = hasLocale(s.locale) ? s.locale : DEFAULT_LOCALE;
+      const own = pickDigest(await candidatesIn(lang), s, DIGEST_SIZE);
       // Niets nieuws binnen de voorkeuren: dan ook geen mail.
       if (own.length === 0) continue;
       try {
-        const lang = hasLocale(s.locale) ? s.locale : DEFAULT_LOCALE;
         await sendMail(digestMail(s.email, s.token, own, lang));
         sent.push(s.id);
       } catch (err) {

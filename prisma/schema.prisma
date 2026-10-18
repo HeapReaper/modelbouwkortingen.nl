@@ -75,6 +75,7 @@ model Product {
   priceHistory    PriceHistory[]
   priceAlerts     PriceAlert[]
   clicks          OutboundClick[]
+  translations    ProductTranslation[]
 
   @@unique([shopId, externalId])
   @@index([isDeal, discountPercent(sort: Desc)], map: "products_deals_idx", where: raw("is_deal"))
@@ -232,6 +233,23 @@ model PriceAlert {
   @@index([email], map: "price_alerts_email_idx")
   @@index([confirmedAt], map: "price_alerts_active_idx", where: raw("triggered_at IS NULL AND cancelled_at IS NULL"))
   @@map("price_alerts")
+}
+
+/// Vertaalde productnaam voor producten van Duitstalige webshops (zie src/lib/translate.ts).
+model ProductTranslation {
+  productId  BigInt   @map("product_id")
+  /// Doeltaal (nl, en).
+  locale     String
+  name       String
+  /// De originele naam die vertaald is; wijzigt de naam bij de webshop, dan vertalen we opnieuw.
+  sourceName String   @map("source_name")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([productId, locale])
+  /// Zoeken op de vertaalde naam (zoekbalk in de eigen taal).
+  @@index([name(ops: raw("gin_trgm_ops"))], map: "product_translations_name_trgm_idx", type: Gin)
+  @@map("product_translations")
 }
 
 /// Eén klik op "naar de webshop" (via /api/uit/[id]).

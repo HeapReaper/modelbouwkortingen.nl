@@ -22,6 +22,7 @@ import {
   parseFilters,
 } from "@/lib/filters";
 import { withParams } from "@/lib/format";
+import { localizeDeals } from "@/lib/translate";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -38,10 +39,11 @@ export async function DealsBrowser({
   basePath: string;
   fixed?: Pick<DealFilters, "category" | "shop" | "brands">;
 }) {
-  const { dict, href, fmt } = await getI18n();
+  const { lang, dict, href, fmt } = await getI18n();
   const localBase = href(basePath);
   const filters = { ...parseFilters(await searchParams), ...fixed };
-  const { deals, total } = await getDeals(filters);
+  const { deals: found, total } = await getDeals(filters);
+  const deals = await localizeDeals(found, lang);
   const page = filters.page ?? 1;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const urlFilters = {

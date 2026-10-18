@@ -2,9 +2,11 @@ import "server-only";
 
 import { connection } from "next/server";
 import type { Prisma } from "@/generated/prisma/client";
+import type { Locale } from "@/i18n/config";
 import { getPrisma, isDbConfigured, num } from "@/lib/db";
 import { searchTerms } from "@/lib/deals";
 import { demoDeals } from "@/lib/demo-data";
+import { localizeDeals } from "@/lib/translate";
 
 /**
  * Prijsvergelijker: zoekt in álle producten (niet alleen deals) en groepeert hetzelfde product
@@ -88,7 +90,7 @@ function toOffer(r: Row): Offer {
 
 export async function comparePrices(
   q: string | undefined,
-  opts: { inStock?: boolean; sort?: CompareSort } = {},
+  opts: { inStock?: boolean; sort?: CompareSort; lang?: Locale } = {},
 ): Promise<{ groups: CompareGroup[]; truncated: boolean }> {
   await connection();
   const terms = searchTerms(q);
@@ -134,7 +136,12 @@ export async function comparePrices(
           ...terms.map((term) => {
             const contains = { contains: term, mode: "insensitive" } as const;
             return {
-              OR: [{ name: contains }, { brand: contains }, { sku: contains }],
+              OR: [
+                { name: contains },
+                { brand: contains },
+                { sku: contains },
+                { translations: { some: { name: contains } } },
+              ],
             };
           }),
         ],
@@ -172,6 +179,13 @@ export async function comparePrices(
       sku: r.sku,
       offer: toOffer(r),
     }));
+  }
+  if (opts.lang) {
+    const offers = await localizeDeals(
+      rows.map((r) => r.offer),
+      opts.lang,
+    );
+    rows = rows.map((r, i) => ({ ...r, offer: offers[i] }));
   }
 
   const groups = new Map<string, CompareGroup>();

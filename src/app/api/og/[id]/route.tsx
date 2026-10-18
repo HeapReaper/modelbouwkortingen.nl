@@ -3,13 +3,16 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { connection } from "next/server";
 import sharp from "sharp";
+import { DEFAULT_LOCALE, hasLocale } from "@/i18n/config";
 import { getDeal } from "@/lib/deals";
 import { formatEuro } from "@/lib/format";
+import { localizeDeals } from "@/lib/translate";
 
 /**
  * Deelafbeelding (Open Graph, 1200×630) voor een product: foto, naam, prijs, was-prijs en
  * korting. Gekoppeld in generateMetadata() van /product/[id]. Een route handler en geen
  * opengraph-image.tsx in [lang]/product/[id], zodat de URL taalloos is (geen /nl-redirect).
+ * ?lang= bepaalt de taal van de productnaam (vertaalde namen van Duitstalige webshops).
  */
 
 const SIZE = { width: 1200, height: 630 };
@@ -90,13 +93,15 @@ async function fetchPng(url: string): Promise<string | null> {
 const truncate = (s: string, n: number) =>
   s.length > n ? `${s.slice(0, n - 1)}…` : s;
 
-export async function GET(
-  _request: Request,
-  ctx: RouteContext<"/api/og/[id]">,
-) {
+export async function GET(request: Request, ctx: RouteContext<"/api/og/[id]">) {
   await connection();
-  const deal = await getDeal(Number((await ctx.params).id));
-  if (!deal) return new Response("Not found", { status: 404 });
+  const found = await getDeal(Number((await ctx.params).id));
+  if (!found) return new Response("Not found", { status: 404 });
+  const langParam = new URL(request.url).searchParams.get("lang");
+  const [deal] = await localizeDeals(
+    [found],
+    hasLocale(langParam) ? langParam : DEFAULT_LOCALE,
+  );
   const image = await loadImage(deal.imageUrl);
   const showDeal = deal.isDeal && deal.discountPercent > 0;
 

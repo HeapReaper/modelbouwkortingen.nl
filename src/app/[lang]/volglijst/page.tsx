@@ -8,6 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { WatchlistSync } from "@/components/watchlist/WatchlistSync";
 import { getI18n } from "@/i18n/server";
 import { getDealsByIds } from "@/lib/deals";
+import { localizeDeals } from "@/lib/translate";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { dict } = await getI18n();
@@ -41,7 +42,7 @@ async function Watchlist({
 }: {
   searchParams: PageProps<"/[lang]/volglijst">["searchParams"];
 }) {
-  const { dict, href } = await getI18n();
+  const { lang, dict, href } = await getI18n();
   const w = dict.watchlist;
   const raw = (await searchParams).ids;
   const current = (Array.isArray(raw) ? raw[0] : raw) ?? "";
@@ -49,7 +50,7 @@ async function Watchlist({
     .split(",")
     .map(Number)
     .filter((n) => Number.isSafeInteger(n) && n > 0);
-  const deals = await getDealsByIds(ids);
+  const deals = await localizeDeals(await getDealsByIds(ids), lang);
 
   return (
     <div className="flex flex-col gap-6">

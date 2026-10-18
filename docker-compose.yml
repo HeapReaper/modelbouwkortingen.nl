@@ -95,6 +95,7 @@ services:
       - NEWSLETTER_SEND_HOUR=${NEWSLETTER_SEND_HOUR:-8}
       - NEWSLETTER_SCHEDULER=${NEWSLETTER_SCHEDULER:-}
       - NEWSLETTER_CRON_TOKEN=${NEWSLETTER_CRON_TOKEN:-}
+      - DEEPL_API_KEY=${DEEPL_API_KEY:-}
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
       interval: 30s

@@ -5,7 +5,9 @@
  *   - /api/discord/verzenden: nieuwe deals naar de Discord-webhooks (eigen cursor per abonnee);
  *   - /api/prijsalarm/controleren: prijsalarmen waarvan de doelprijs bereikt is (claim per alarm);
  *   - /api/crawler/controleren: crawl-rondes die opvallend weinig producten zagen (één melding
- *     per ronde, primary key op run_id).
+ *     per ronde, primary key op run_id);
+ *   - /api/vertalen/bijwerken: namen van nieuwe deals van Duitstalige webshops vertalen (een
+ *     dubbele vertaling overschrijft alleen dezelfde rij).
  * Meerdere servers of herstarts zijn dus geen probleem.
  *
  * Bewust een HTTP-aanroep en geen directe import: deze code draait buiten de
@@ -41,6 +43,7 @@ export async function register() {
       call("/api/discord/verzenden"),
       call("/api/prijsalarm/controleren"),
       call("/api/crawler/controleren"),
+      call("/api/vertalen/bijwerken"),
     ]);
   setTimeout(tick, 60_000).unref();
   setInterval(tick, 5 * 60_000).unref();

@@ -32,6 +32,8 @@ export type Deal = {
   shopCategory: string | null;
   shopSlug: string;
   shopName: string;
+  /** De Duitse naam als `name` vertaald is (zie localizeDeals() in src/lib/translate.ts). */
+  originalName?: string;
   sku: string | null;
   /** false = het product is (nu) geen deal meer, bv. op de volglijst of bij een prijsalarm. */
   isDeal: boolean;
@@ -187,7 +189,13 @@ export async function getDeals(
   for (const term of searchTerms(filters.q)) {
     const contains = { contains: term, mode: "insensitive" } as const;
     and.push({
-      OR: [{ name: contains }, { brand: contains }, { sku: contains }],
+      OR: [
+        { name: contains },
+        { brand: contains },
+        { sku: contains },
+        // Ook op de vertaalde naam van producten van Duitstalige webshops.
+        { translations: { some: { name: contains } } },
+      ],
     });
   }
   const where: Prisma.ProductWhereInput = { AND: and };

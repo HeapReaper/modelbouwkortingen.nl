@@ -133,7 +133,7 @@ async function CompareForm({ searchParams }: { searchParams: SearchParams }) {
 }
 
 async function Results({ searchParams }: { searchParams: SearchParams }) {
-  const { dict } = await getI18n();
+  const { lang, dict } = await getI18n();
   const c = dict.comparePage;
   const { q, inStock, sort } = await readParams(searchParams);
   if (!q) {
@@ -143,7 +143,11 @@ async function Results({ searchParams }: { searchParams: SearchParams }) {
       </p>
     );
   }
-  const { groups, truncated } = await comparePrices(q, { inStock, sort });
+  const { groups, truncated } = await comparePrices(q, {
+    inStock,
+    sort,
+    lang,
+  });
   const query = `“${q}”`;
   if (groups.length === 0) {
     return (
