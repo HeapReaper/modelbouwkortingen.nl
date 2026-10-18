@@ -408,3 +408,72 @@ export async function getCrawlerLive(): Promise<CrawlerLive> {
     };
   }
 }
+
+/** Eén logregel van de crawler (zie crawler/internal/logbuf). */
+export type CrawlerLogEntry = {
+  seq: number;
+  time: string;
+  level: "DEBUG" | "INFO" | "WARN" | "ERROR";
+  msg: string;
+  shop?: string;
+  attrs?: Record<string, string>;
+};
+
+export type CrawlerLogFilter = {
+  level: "DEBUG" | "INFO" | "WARN" | "ERROR";
+  shop: string;
+  q: string;
+  products: boolean;
+  after: number;
+};
+
+export type CrawlerLogs =
+  | { ok: true; entries: CrawlerLogEntry[]; latest: number }
+  | { ok: false; error: string };
+
+/**
+ * De laatste logregels van de crawler, via GET /logs op dezelfde server als /stats
+ * (CRAWLER_STATS_URL met /logs in plaats van /stats).
+ */
+export async function getCrawlerLogs(
+  filter: CrawlerLogFilter,
+): Promise<CrawlerLogs> {
+  const statsUrl = process.env.CRAWLER_STATS_URL;
+  if (!statsUrl)
+    return { ok: false, error: "CRAWLER_STATS_URL is niet ingesteld" };
+  const url = new URL("logs", statsUrl);
+  url.searchParams.set("level", filter.level);
+  if (filter.shop) url.searchParams.set("shop", filter.shop);
+  if (filter.q) url.searchParams.set("q", filter.q);
+  if (!filter.products) url.searchParams.set("products", "0");
+  if (filter.after > 0) url.searchParams.set("after", String(filter.after));
+  url.searchParams.set("limit", "500");
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+      headers: process.env.CRAWLER_STATS_TOKEN
+        ? { Authorization: `Bearer ${process.env.CRAWLER_STATS_TOKEN}` }
+        : undefined,
+    });
+    // Een crawler van vóór deze functie kent /logs nog niet.
+    if (res.status === 404)
+      return {
+        ok: false,
+        error:
+          "Deze crawler-versie heeft nog geen /logs; deploy de crawler opnieuw",
+      };
+    if (!res.ok)
+      return { ok: false, error: `Crawler antwoordde met HTTP ${res.status}` };
+    const data = (await res.json()) as {
+      entries: CrawlerLogEntry[] | null;
+      latest: number;
+    };
+    return { ok: true, entries: data.entries ?? [], latest: data.latest };
+  } catch (err) {
+    return {
+      ok: false,
+      error: `Crawler niet bereikbaar: ${err instanceof Error ? err.message : String(err)}`,
+    };
+  }
+}

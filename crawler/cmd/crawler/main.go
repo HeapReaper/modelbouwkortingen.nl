@@ -15,6 +15,7 @@ import (
 	"github.com/heapreaper/modelbouwkortingen/crawler/internal/config"
 	"github.com/heapreaper/modelbouwkortingen/crawler/internal/crawl"
 	"github.com/heapreaper/modelbouwkortingen/crawler/internal/fetch"
+	"github.com/heapreaper/modelbouwkortingen/crawler/internal/logbuf"
 	"github.com/heapreaper/modelbouwkortingen/crawler/internal/shops"
 	"github.com/heapreaper/modelbouwkortingen/crawler/internal/stats"
 	"github.com/heapreaper/modelbouwkortingen/crawler/internal/store"
@@ -29,7 +30,9 @@ func main() {
 	if os.Getenv("LOG_FORMAT") == "json" {
 		handler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level})
 	}
-	log := slog.New(handler)
+	// De laatste regels ook in het geheugen, voor het admin panel (GET /logs).
+	logs := logbuf.New(5000, 1000)
+	log := slog.New(logs.Handler(handler))
 
 	cfg, err := config.Load()
 	if err != nil {
@@ -42,7 +45,7 @@ func main() {
 
 	reg := stats.New()
 	if cfg.HTTPAddr != "" {
-		srv := &http.Server{Addr: cfg.HTTPAddr, Handler: reg.Handler(cfg.StatsToken), ReadHeaderTimeout: 5 * time.Second}
+		srv := &http.Server{Addr: cfg.HTTPAddr, Handler: reg.Handler(cfg.StatsToken, logs), ReadHeaderTimeout: 5 * time.Second}
 		go func() {
 			log.Info("stats server luistert", "addr", cfg.HTTPAddr)
 			if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {

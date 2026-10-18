@@ -38,7 +38,7 @@ komt het op de website (Next.js 16 + shadcn/ui).
 
 **Beheer**
 - Adminpanel: status van de diensten (database, SMTP, Amazon Translate, crawler, planner) met
-  een knop voor een testmail, live crawlerstatus, HTTP 429's, crawl-rondes, statistieken van de afgelopen 14
+  een knop voor een testmail, live crawlerstatus en crawler-logs, HTTP 429's, crawl-rondes, statistieken van de afgelopen 14
   dagen, kliks naar webshops, contactberichten, webshops aan/uit, telefoonnummers en
   social-medialinks.
 - Bewaking van de crawler: een ronde met opvallend weinig producten (parser kapot?) komt in
@@ -255,6 +255,8 @@ overgeslagen (hun "van"-prijs is de nieuwprijs), net als kortingen boven 90% (vr
   na een reeks succesvolle requests weer langzaam omhoog. (TopRC is hier gevoelig voor.)
 
 Live stats: `http://<crawler>:8080/stats` (JSON) en `/healthz`. De website toont ze op `/admin` via `CRAWLER_STATS_URL`.
+De laatste 5.000 logregels (en apart de laatste 1.000 waarschuwingen en fouten) staan op `/logs`
+(`?level=WARN&shop=toprc&q=429&products=0&after=<seq>`, zelfde token als `/stats`); `/admin` toont ze live.
 
 Productpagina's waarop geen product gevonden wordt (bv. uit het assortiment gehaald) staan met
 `LOG_LEVEL=debug` in de log.

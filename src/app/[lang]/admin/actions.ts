@@ -2,6 +2,11 @@
 
 import { refresh } from "next/cache";
 import { headers } from "next/headers";
+import {
+  type CrawlerLogFilter,
+  type CrawlerLogs,
+  getCrawlerLogs,
+} from "@/lib/admin";
 import { isAuthorized } from "@/lib/admin-auth";
 import { getPrisma, isDbConfigured } from "@/lib/db";
 import { sendMail } from "@/lib/mail";
@@ -27,6 +32,14 @@ export async function recheckServices() {
   await assertLoggedIn();
   forgetServiceStatus();
   refresh();
+}
+
+/** Voor het logvenster in het admin panel (pollt elke paar seconden). */
+export async function fetchCrawlerLogs(
+  filter: CrawlerLogFilter,
+): Promise<CrawlerLogs> {
+  await assertLoggedIn();
+  return getCrawlerLogs(filter);
 }
 
 export type TestMailState = { error?: string; sentTo?: string; at?: number };

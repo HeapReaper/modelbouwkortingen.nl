@@ -155,15 +155,27 @@ func (r *Registry) Snapshot() Snapshot {
 	return s
 }
 
-// Handler serveert /healthz en /stats. Als token niet leeg is, vereist /stats
-// een "Authorization: Bearer <token>" header.
-func (r *Registry) Handler(token string) http.Handler {
+// Handler serveert /healthz, /stats en (als logs niet nil is) /logs. Als token niet leeg is,
+// vereisen /stats en /logs een "Authorization: Bearer <token>" header.
+func (r *Registry) Handler(token string, logs http.Handler) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"status":"ok"}`))
 	})
-	mux.HandleFunc("GET /stats", func(w http.ResponseWriter, req *http.Request) {
+	mux.Handle("GET /stats", requireToken(token, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Cache-Control", "no-store")
+		_ = json.NewEncoder(w).Encode(r.Snapshot())
+	})))
+	if logs != nil {
+		mux.Handle("GET /logs", requireToken(token, logs))
+	}
+	return mux
+}
+
+func requireToken(token string, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		if token != "" {
 			got := req.Header.Get("Authorization")
 			if subtle.ConstantTimeCompare([]byte(got), []byte("Bearer "+token)) != 1 {
@@ -171,9 +183,6 @@ func (r *Registry) Handler(token string) http.Handler {
 				return
 			}
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Cache-Control", "no-store")
-		_ = json.NewEncoder(w).Encode(r.Snapshot())
+		next.ServeHTTP(w, req)
 	})
-	return mux
 }

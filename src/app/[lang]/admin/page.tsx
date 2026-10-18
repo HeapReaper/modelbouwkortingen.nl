@@ -9,6 +9,7 @@ import {
   Package,
   Phone,
   PlugZap,
+  ScrollText,
   Share2,
   Tag,
 } from "lucide-react";
@@ -23,6 +24,7 @@ import {
   PhoneNumbersAdmin,
   SocialLinksAdmin,
 } from "@/components/admin/ContactAdmin";
+import { CrawlerLogs } from "@/components/admin/CrawlerLogs";
 import { DailyChart } from "@/components/admin/DailyChart";
 import { RecheckButton, TestMailForm } from "@/components/admin/ServiceAdmin";
 import { Badge } from "@/components/ui/badge";
@@ -156,6 +158,12 @@ async function AdminContent() {
 
       <ServicesSection status={status} live={live} />
       <CrawlerSection live={live} />
+      <Section
+        title="Crawler-logs (live)"
+        icon={<ScrollText className="size-5 text-primary" />}
+      >
+        <CrawlerLogs shops={data.shops.map((s) => s.slug).sort()} />
+      </Section>
       <ShopsSection data={data} />
 
       {contact ? (
