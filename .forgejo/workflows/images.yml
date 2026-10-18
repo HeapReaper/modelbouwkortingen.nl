@@ -1,0 +1,88 @@
+# Bouwt de images voor website, migraties en crawler en zet ze in het containerregister van
+# Codeberg (codeberg.org/heapreaper/modelbouwkortingen-{web,migrate,crawler}, tags `latest` en
+# `sha-<commit>`). Daarna start de deploy in Coolify, die de images alleen nog ophaalt.
+#
+# Instellen (Codeberg → repo → Instellingen → Actions → Geheimen):
+#   REGISTRY_TOKEN   access token met schrijfrecht op packages
+#   COOLIFY_WEBHOOK  optioneel: deploy-webhook van de resource in Coolify
+#   COOLIFY_TOKEN    optioneel: API-token van Coolify (voor die webhook)
+#
+# De Next- en Go-builds draaien direct in de job, niet in Buildah: Buildah gebruikt hier vfs,
+# dat elke laag volledig kopieert, en schrijfacties tellen mee voor het RAM-budget van de runner.
+name: images
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: images
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: sh
+
+env:
+  PUSH: "true"
+  REGISTRY_OWNER: ${{ github.repository_owner }}
+  REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+
+jobs:
+  web:
+    runs-on: codeberg-medium
+    container:
+      image: node:22-alpine
+    steps:
+      - run: apk add --no-cache git buildah
+      - uses: actions/checkout@v4
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+      - name: Build klaarzetten in dist/web
+        run: |
+          mkdir -p dist/web/.next
+          cp -a .next/standalone/. dist/web/
+          cp -a .next/static dist/web/.next/static
+          cp -a public dist/web/public
+          # Ruimte vrijmaken voor Buildah.
+          rm -rf node_modules .next
+      - run: .forgejo/buildah.sh web . --target runner-prebuilt
+
+  migrate:
+    runs-on: codeberg-small
+    container:
+      image: node:22-alpine
+    steps:
+      - run: apk add --no-cache git buildah
+      - uses: actions/checkout@v4
+      - run: .forgejo/buildah.sh migrate . --target migrate
+
+  crawler:
+    runs-on: codeberg-small
+    container:
+      image: golang:1.27-alpine
+    steps:
+      # nodejs voor actions/checkout.
+      - run: apk add --no-cache git nodejs buildah
+      - uses: actions/checkout@v4
+      - run: go -C crawler test ./...
+      - run: CGO_ENABLED=0 go -C crawler build -trimpath -ldflags="-s -w" -o dist/crawler ./cmd/crawler
+      - run: .forgejo/buildah.sh crawler crawler --target prebuilt
+
+  deploy:
+    needs: [web, migrate, crawler]
+    runs-on: codeberg-tiny
+    steps:
+      - name: Coolify-deploy starten
+        env:
+          COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+        run: |
+          if [ -z "$COOLIFY_WEBHOOK" ]; then
+            echo "COOLIFY_WEBHOOK is niet ingesteld; deploy handmatig in Coolify."
+            exit 0
+          fi
+          curl -fsS -H "Authorization: Bearer $COOLIFY_TOKEN" "$COOLIFY_WEBHOOK"
