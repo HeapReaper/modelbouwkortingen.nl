@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import { FooterSocials } from "@/components/core/ContactBar";
 import { CurrentYear } from "@/components/core/CurrentYear";
 import { Logo } from "@/components/core/Logo";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
@@ -24,6 +26,9 @@ export default async function Footer() {
         <div className="flex flex-col gap-3">
           <Logo />
           <p className="text-muted-foreground">{f.about}</p>
+          <Suspense fallback={null}>
+            <FooterSocials />
+          </Suspense>
         </div>
         <FooterList
           title={f.categories}

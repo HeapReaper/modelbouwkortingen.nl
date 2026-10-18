@@ -14,6 +14,7 @@ export const nl = {
     bannerBefore: "Alleen échte kortingen: minimaal",
     bannerHighlight: "€5 of 5%",
     bannerAfter: "goedkoper — dagelijks bijgewerkt",
+    call: "Bel",
   },
   nav: {
     homeLabel: "Modelbouwkortingen.nl home",
@@ -63,6 +64,7 @@ export const nl = {
     brands: "Merken",
     watchlist: "Volglijst",
     rss: "RSS-feed",
+    followUs: "Volg ons",
   },
   breadcrumb: { label: "Kruimelpad", home: "Home" },
   categories: {

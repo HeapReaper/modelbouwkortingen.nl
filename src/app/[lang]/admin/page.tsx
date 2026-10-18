@@ -7,6 +7,8 @@ import {
   Mail,
   MousePointerClick,
   Package,
+  Phone,
+  Share2,
   Tag,
 } from "lucide-react";
 import type { Metadata } from "next";
@@ -16,6 +18,10 @@ import {
   ShopEnabledSwitch,
 } from "@/components/admin/AdminButtons";
 import { AutoRefresh } from "@/components/admin/AutoRefresh";
+import {
+  PhoneNumbersAdmin,
+  SocialLinksAdmin,
+} from "@/components/admin/ContactAdmin";
 import { DailyChart } from "@/components/admin/DailyChart";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -35,6 +41,7 @@ import {
   getCrawlerLive,
 } from "@/lib/admin";
 import { formatDateTime, formatNumber, timeAgo } from "@/lib/format";
+import { getSiteContact } from "@/lib/site-contact";
 import { cn } from "@/lib/utils";
 
 const DAY_MS = 24 * 60 * 60_000;
@@ -66,9 +73,10 @@ export default function AdminPage() {
 }
 
 async function AdminContent() {
-  const [data, live] = await Promise.all([
+  const [data, live, contact] = await Promise.all([
     getAdminOverview(),
     getCrawlerLive(),
+    getSiteContact(),
   ]);
   const totalDeals = data.shops.reduce((s, x) => s + x.deals, 0);
   const totalProducts = data.shops.reduce((s, x) => s + x.products, 0);
@@ -139,6 +147,17 @@ async function AdminContent() {
 
       <CrawlerSection live={live} />
       <ShopsSection data={data} />
+
+      {contact ? (
+        <div className="grid gap-8 lg:grid-cols-2">
+          <Section title="Telefoonnummers" icon={<Phone className="size-5" />}>
+            <PhoneNumbersAdmin phones={contact.phones} />
+          </Section>
+          <Section title="Social media" icon={<Share2 className="size-5" />}>
+            <SocialLinksAdmin socials={contact.socials} />
+          </Section>
+        </div>
+      ) : null}
 
       <Section title="Afgelopen 14 dagen">
         {data.daily.length > 0 ? (

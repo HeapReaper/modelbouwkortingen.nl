@@ -13,12 +13,7 @@ export function LogoMark({ className }: { className?: string }) {
         className="fill-primary"
       />
       <circle cx="11.5" cy="11.5" r="2.6" className="fill-background" />
-      <path
-        d="m15.5 27.5 11-11"
-        className="stroke-deal"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-      />
+      <path d="m15.5 27.5 11-11" className="stroke-deal" strokeWidth="2.6" strokeLinecap="round" />
       <circle cx="17.6" cy="18.6" r="2.4" className="fill-deal" />
       <circle cx="24.4" cy="25.4" r="2.4" className="fill-deal" />
     </svg>
@@ -27,15 +22,11 @@ export function LogoMark({ className }: { className?: string }) {
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <span
-      className={cn("flex min-w-0 items-center gap-1.5 sm:gap-2", className)}
-    >
+    <span className={cn("flex min-w-0 items-center gap-1.5 sm:gap-2", className)}>
       <LogoMark />
-      <span className="font-heading text-[0.95rem] leading-none font-black tracking-tight min-[400px]:text-base sm:text-xl">
+      <span className="font-heading text-[0.95rem] leading-none font-black tracking-tight min-[400px]:text-base sm:text-xl hidden lg:block">
         Modelbouw<span className="text-primary">kortingen</span>
-        <span className="hidden text-muted-foreground min-[380px]:inline">
-          .nl
-        </span>
+        <span className="hidden text-muted-foreground min-[380px]:inline">.nl</span>
       </span>
     </span>
   );

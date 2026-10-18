@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import { Suspense } from "react";
+import { TopBarPhones } from "@/components/core/ContactBar";
 import Footer from "@/components/core/Footer";
 import Navbar from "@/components/core/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -84,11 +86,18 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
               {dict.layout.skipToContent}
             </a>
             <div className="bg-primary text-primary-foreground">
-              <p className="mx-auto max-w-7xl px-4 py-1.5 text-center text-sm font-semibold">
-                {dict.layout.bannerBefore}{" "}
-                <span className="text-deal">{dict.layout.bannerHighlight}</span>{" "}
-                {dict.layout.bannerAfter}
-              </p>
+              <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-x-6 gap-y-1 px-4 py-1.5 text-sm font-semibold sm:flex-row">
+                <p className="text-center">
+                  {dict.layout.bannerBefore}{" "}
+                  <span className="text-deal">
+                    {dict.layout.bannerHighlight}
+                  </span>{" "}
+                  {dict.layout.bannerAfter}
+                </p>
+                <Suspense fallback={null}>
+                  <TopBarPhones />
+                </Suspense>
+              </div>
             </div>
             <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
               <Navbar />

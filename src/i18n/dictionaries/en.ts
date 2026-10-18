@@ -11,6 +11,7 @@ export const en: Dictionary = {
     bannerBefore: "Only real discounts: at least",
     bannerHighlight: "€5 or 5%",
     bannerAfter: "off — updated daily",
+    call: "Call",
   },
   nav: {
     homeLabel: "Modelbouwkortingen.nl home",
@@ -60,6 +61,7 @@ export const en: Dictionary = {
     brands: "Brands",
     watchlist: "Watchlist",
     rss: "RSS feed",
+    followUs: "Follow us",
   },
   breadcrumb: { label: "Breadcrumb", home: "Home" },
   categories: {

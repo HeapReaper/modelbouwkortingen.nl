@@ -70,3 +70,8 @@ export function cached<T>(
   }
   return value;
 }
+
+/** Gooit een cached() waarde weg, bv. na een wijziging in het adminpanel. */
+export function forget(key: string) {
+  memo.delete(key);
+}

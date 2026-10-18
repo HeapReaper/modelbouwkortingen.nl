@@ -28,11 +28,7 @@ export default function Navbar() {
   const { dict, href } = useI18n();
   return (
     <div className="mx-auto flex w-full max-w-7xl items-center gap-2 px-3 py-3 sm:px-4 lg:gap-6">
-      <Link
-        href={href("/")}
-        className="shrink-0"
-        aria-label={dict.nav.homeLabel}
-      >
+      <Link href={href("/")} className="shrink-0" aria-label={dict.nav.homeLabel}>
         <Logo />
       </Link>
 
@@ -41,17 +37,13 @@ export default function Navbar() {
           <NavigationMenuItem>
             <NavigationMenuLink
               className={cn(navigationMenuTriggerStyle(), "text-base")}
-              render={
-                <Link href={href("/aanbiedingen")}>{dict.nav.deals}</Link>
-              }
+              render={<Link href={href("/aanbiedingen")}>{dict.nav.deals}</Link>}
             />
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink
               className={cn(navigationMenuTriggerStyle(), "text-base")}
-              render={
-                <Link href={href("/prijsvergelijker")}>{dict.nav.compare}</Link>
-              }
+              render={<Link href={href("/prijsvergelijker")}>{dict.nav.compare}</Link>}
             />
           </NavigationMenuItem>
           <NavigationMenuItem>
@@ -70,9 +62,7 @@ export default function Navbar() {
                         >
                           <c.icon className="mt-0.5 size-5 text-primary" />
                           <span className="flex flex-col gap-0.5">
-                            <span className="font-semibold">
-                              {dict.categories[c.slug].name}
-                            </span>
+                            <span className="font-semibold">{dict.categories[c.slug].name}</span>
                             <span className="line-clamp-1 text-muted-foreground">
                               {dict.categories[c.slug].description}
                             </span>
@@ -86,19 +76,14 @@ export default function Navbar() {
             </NavigationMenuContent>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="text-base">
-              {dict.nav.shops}
-            </NavigationMenuTrigger>
+            <NavigationMenuTrigger className="text-base">{dict.nav.shops}</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[40rem] grid-cols-2 gap-1 p-2">
                 {SHOPS.map((s) => (
                   <li key={s.slug}>
                     <NavigationMenuLink
                       render={
-                        <Link
-                          href={href(`/webshops/${s.slug}`)}
-                          className="flex items-start gap-3"
-                        >
+                        <Link href={href(`/webshops/${s.slug}`)} className="flex items-start gap-3">
                           <ShopLogo shop={s} className="h-9 w-24" />
                           <span className="flex flex-col gap-0.5">
                             <span className="font-semibold">{s.name}</span>
@@ -114,10 +99,7 @@ export default function Navbar() {
                 <li>
                   <NavigationMenuLink
                     render={
-                      <Link
-                        href={href("/webshops")}
-                        className="font-semibold text-primary"
-                      >
+                      <Link href={href("/webshops")} className="font-semibold text-primary">
                         {dict.nav.allShops}
                       </Link>
                     }
@@ -126,10 +108,7 @@ export default function Navbar() {
                 <li>
                   <NavigationMenuLink
                     render={
-                      <Link
-                        href={href("/merken")}
-                        className="font-semibold text-primary"
-                      >
+                      <Link href={href("/merken")} className="font-semibold text-primary">
                         {dict.nav.allBrands}
                       </Link>
                     }
@@ -168,10 +147,7 @@ export default function Navbar() {
           href={href("/volglijst")}
           aria-label={dict.nav.watchlist}
           title={dict.nav.watchlist}
-          className={cn(
-            buttonVariants({ variant: "ghost", size: "icon-lg" }),
-            "relative",
-          )}
+          className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "relative")}
         >
           <Heart className="size-5" />
           <WatchlistCount />

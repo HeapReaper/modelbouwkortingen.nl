@@ -267,3 +267,28 @@ model CrawlAlert {
   @@index([createdAt(sort: Desc)], map: "crawl_alerts_created_idx")
   @@map("crawl_alerts")
 }
+
+/// Telefoonnummer in de rode balk bovenaan de site (beheerd in het adminpanel).
+model PhoneNumber {
+  id        Int      @id @default(autoincrement())
+  /// Optioneel, bv. "Klantenservice"; staat voor het nummer.
+  label     String   @default("")
+  /// Zoals getoond, bv. "+31 6 11103563".
+  number    String
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("phone_numbers")
+}
+
+/// Social-mediapagina in de footer (beheerd in het adminpanel).
+model SocialLink {
+  id        Int      @id @default(autoincrement())
+  /// Zie SOCIAL_PLATFORMS in src/lib/social-platforms.ts.
+  platform  String
+  url       String
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("social_links")
+}
