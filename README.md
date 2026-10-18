@@ -56,9 +56,11 @@ komt het op de website (Next.js 16 + shadcn/ui).
 ├── src/              Next.js website (App Router, Cache Components, shadcn base-nova)
 ├── crawler/          Go crawler (multi-threaded)
 ├── prisma/           schema.prisma + migraties (Prisma Migrate)
-├── Dockerfile        website-image
+├── Dockerfile        website- en migratie-image
 ├── crawler/Dockerfile crawler-image
-└── docker-compose.yml  Postgres + website + crawler
+├── docker-compose.yml  Postgres + website + crawler (images uit het register)
+├── docker-compose.build.yml  zelf bouwen i.p.v. ophalen
+└── .forgejo/         CI: images bouwen en pushen (Codeberg)
 ```
 
 ## Snel starten
@@ -81,6 +83,39 @@ Alles in Docker / Coolify: `docker-compose.yml` is geschikt voor de Docker Compo
 Coolify genereert de database-credentials en het crawler-token zelf (`SERVICE_*` variabelen) en
 koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coolify alleen nog
 `ADMIN_PASSWORD` (en optioneel `STATS_TOKEN`) in.
+
+### Images (Codeberg CI)
+
+De server bouwt niets: Forgejo Actions op Codeberg (`.forgejo/workflows/images.yml`) bouwt bij
+elke push naar `main` drie images en zet ze in het register van Codeberg:
+
+| Image | Wat |
+| --- | --- |
+| `codeberg.org/heapreaper/modelbouwkortingen-web` | website (Next.js standalone) |
+| `codeberg.org/heapreaper/modelbouwkortingen-migrate` | Prisma-migraties (eenmalig) |
+| `codeberg.org/heapreaper/modelbouwkortingen-crawler` | crawler |
+
+Elk image krijgt de tags `latest` en `sha-<commit>`. `docker-compose.yml` haalt `${IMAGE_TAG:-latest}`
+op (`pull_policy: always`); zet `IMAGE_TAG=sha-abc1234` in Coolify om terug te gaan naar een oudere versie.
+
+De runners van Codeberg hebben geen Docker daemon. Daarom bouwt Buildah de images
+(`.forgejo/buildah.sh`). De Next- en Go-build draaien vooraf in de job zelf, en Buildah kopieert
+alleen het resultaat (Dockerfile-targets `runner-prebuilt` en `prebuilt`). Lokaal bouwen
+met de gewone multi-stage Dockerfiles kan nog steeds:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
+```
+
+Eenmalig instellen:
+
+1. Codeberg → repo → Instellingen → Units: zet **Actions** aan. De runners van Codeberg werken alleen
+   voor publieke repo's met een vrije licentie.
+2. Codeberg → Instellingen (gebruiker) → Applicaties: maak een access token met **package: read and write**.
+   Zet het in de repo bij Instellingen → Actions → Geheimen als `REGISTRY_TOKEN`.
+3. Optioneel automatisch deployen: zet de deploy-webhook van de resource in Coolify (Webhooks) als
+   `COOLIFY_WEBHOOK` en een API-token van Coolify als `COOLIFY_TOKEN`. Zet dan in Coolify de
+   automatische deploy bij een git-push uit. Anders deployt Coolify voordat de nieuwe images klaar zijn.
 
 ## Website
 
@@ -290,3 +325,7 @@ Zie `.env.example` voor alle variabelen. De belangrijkste:
 | `CRAWLER_HOST_DELAY` | crawler | `500ms` |
 | `CRAWLER_MAX_PRODUCT_PAGES` | crawler | `4000` per shop per ronde |
 | `MIN_DISCOUNT_EUR` / `MIN_DISCOUNT_PERCENT` | crawler | `5` / `5` |
+
+## Licentie
+
+[MIT](LICENSE)
