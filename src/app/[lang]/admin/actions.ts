@@ -4,6 +4,8 @@ import { refresh } from "next/cache";
 import { headers } from "next/headers";
 import { isAuthorized } from "@/lib/admin-auth";
 import { getPrisma, isDbConfigured } from "@/lib/db";
+import { sendMail } from "@/lib/mail";
+import { forgetServiceStatus } from "@/lib/service-status";
 import {
   forgetSiteContact,
   normalizePhone,
@@ -11,10 +13,50 @@ import {
 } from "@/lib/site-contact";
 import { isSocialPlatform } from "@/lib/social-platforms";
 
-async function assertAdmin() {
+async function assertLoggedIn() {
   if (!isAuthorized((await headers()).get("authorization")))
     throw new Error("Niet ingelogd");
+}
+
+async function assertAdmin() {
+  await assertLoggedIn();
   if (!isDbConfigured()) throw new Error("Geen database");
+}
+
+export async function recheckServices() {
+  await assertLoggedIn();
+  forgetServiceStatus();
+  refresh();
+}
+
+export type TestMailState = { error?: string; sentTo?: string; at?: number };
+
+/** Verstuurt een testmail via dezelfde SMTP-instellingen als de kortingsmail. */
+export async function sendTestMail(
+  _prev: TestMailState,
+  form: FormData,
+): Promise<TestMailState> {
+  await assertLoggedIn();
+  const to = String(form.get("email") ?? "").trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+    return { error: "Vul een geldig e-mailadres in." };
+  }
+  const sentAt = new Date().toLocaleString("nl-NL", {
+    timeZone: "Europe/Amsterdam",
+  });
+  try {
+    await sendMail({
+      to,
+      subject: "Testmail van Modelbouwkortingen.nl",
+      text: `Deze testmail is verstuurd vanuit het adminpanel op ${sentAt}. De SMTP-instellingen werken.`,
+      html: `<p>Deze testmail is verstuurd vanuit het adminpanel op ${sentAt}.</p><p>De SMTP-instellingen werken.</p>`,
+    });
+  } catch (err) {
+    return {
+      error: `Versturen mislukt: ${err instanceof Error ? err.message : String(err)}`,
+    };
+  }
+  return { sentTo: to, at: Date.now() };
 }
 
 export async function toggleMessageHandled(id: number, handled: boolean) {

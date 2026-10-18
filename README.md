@@ -37,7 +37,8 @@ komt het op de website (Next.js 16 + shadcn/ui).
   talen, robots.txt.
 
 **Beheer**
-- Adminpanel: live crawlerstatus, HTTP 429's, crawl-rondes, statistieken van de afgelopen 14
+- Adminpanel: status van de diensten (database, SMTP, Amazon Translate, crawler, planner) met
+  een knop voor een testmail, live crawlerstatus, HTTP 429's, crawl-rondes, statistieken van de afgelopen 14
   dagen, kliks naar webshops, contactberichten, webshops aan/uit, telefoonnummers en
   social-medialinks.
 - Bewaking van de crawler: een ronde met opvallend weinig producten (parser kapot?) komt in
@@ -105,7 +106,7 @@ koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coo
 | `/api/uit/[id]` | Telt de klik (`outbound_clicks`, zonder bots) en stuurt door naar de webshop, met affiliate-parameters |
 | `/api/vertalen/bijwerken` | Vertaalt namen van nieuwe deals van Duitstalige webshops (zelfde beveiliging als `/api/nieuwsbrief/verzenden`) |
 | `/api/crawler/controleren` | Zoekt crawl-rondes met opvallend weinig producten en meldt ze (idem) |
-| `/admin` | Admin panel: live crawlerstatus, 429's, crawl-rondes, grafiek, kliks, berichten, webshops aan/uit, telefoonnummers en social media (Basic Auth) |
+| `/admin` | Admin panel: status van database/SMTP/Amazon Translate/crawler, testmail, live crawlerstatus, 429's, crawl-rondes, grafiek, kliks, berichten, webshops aan/uit, telefoonnummers en social media (Basic Auth) |
 | `/api/stats` | JSON met alle statistieken (Basic Auth of `Bearer STATS_TOKEN`) |
 | `/api/health` | Publieke health check |
 
@@ -182,7 +183,10 @@ De volglijst (hartje op elke deal) heeft geen account nodig: de product-id's sta
 Ziet een crawl-ronde minder dan de helft (`CRAWL_ALERT_RATIO`) van het mediaan van de vorige 5
 rondes van die shop, dan heeft de webshop waarschijnlijk zijn HTML veranderd. Zo'n ronde komt in
 `crawl_alerts` (zichtbaar in `/admin`) en, als `ALERT_DISCORD_WEBHOOK` is ingesteld, in dat
-Discord-kanaal. Shops met minder dan 50 producten worden overgeslagen.
+Discord-kanaal. Shops met minder dan 50 producten worden overgeslagen. Een ronde die kort na de
+vorige start (bv. na een deploy) ziet vanzelf minder producten, omdat productpagina's die minder
+dan `CRAWLER_RECRAWL_AFTER` (20 uur) geleden bezocht zijn worden overgeslagen; daarom telt een
+ronde pas als ook het aantal producten per opgehaalde pagina sterk daalt.
 
 Het thema (rood + "prijskaartje"-geel, groen voor besparingen) staat in `src/app/globals.css`.
 Licht/donker volgt het systeem en kan in de navbar aangepast worden.

@@ -10,6 +10,11 @@ import { SITE_URL } from "@/lib/newsletter-mail";
  * die shop, dan heeft de webshop waarschijnlijk zijn HTML omgegooid en vindt de parser niets
  * meer. Zo'n ronde krijgt een rij in crawl_alerts (zichtbaar in /admin) en, als
  * ALERT_DISCORD_WEBHOOK is ingesteld, een bericht in dat Discord-kanaal.
+ *
+ * Minder producten is op zich normaal als een ronde kort na de vorige start (bv. na een
+ * deploy): productpagina's die de crawler minder dan CRAWLER_RECRAWL_AFTER geleden bezocht,
+ * slaat hij over. Daarom telt alleen een ronde die ook per opgehaalde pagina opvallend minder
+ * producten vond (of niets kon ophalen).
  */
 
 /** Melden als een ronde minder dan dit deel van het mediaan van de vorige rondes zag. */
@@ -42,7 +47,13 @@ export async function checkCrawlRuns(): Promise<CrawlCheckResult> {
       startedAt: { gte: new Date(Date.now() - LOOKBACK_MS) },
       alert: null,
     },
-    select: { id: true, shopId: true, startedAt: true, productsSeen: true },
+    select: {
+      id: true,
+      shopId: true,
+      startedAt: true,
+      productsSeen: true,
+      pagesFetched: true,
+    },
     orderBy: { startedAt: "asc" },
   });
 
@@ -55,13 +66,18 @@ export async function checkCrawlRuns(): Promise<CrawlCheckResult> {
         productsSeen: { gt: 0 },
         startedAt: { lt: run.startedAt },
       },
-      select: { productsSeen: true },
+      select: { productsSeen: true, pagesFetched: true },
       orderBy: { startedAt: "desc" },
       take: BASELINE_RUNS,
     });
     if (previous.length < 2) continue;
     const baseline = Math.round(median(previous.map((r) => r.productsSeen)));
     if (baseline < MIN_BASELINE || run.productsSeen >= baseline * DROP_RATIO)
+      continue;
+    const perPage = (r: { productsSeen: number; pagesFetched: number }) =>
+      r.productsSeen / Math.max(r.pagesFetched, 1);
+    const baselinePerPage = median(previous.map(perPage));
+    if (run.pagesFetched > 0 && perPage(run) >= baselinePerPage * DROP_RATIO)
       continue;
     try {
       await prisma.crawlAlert.create({

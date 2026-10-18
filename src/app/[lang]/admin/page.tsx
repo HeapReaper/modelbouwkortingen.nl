@@ -8,6 +8,7 @@ import {
   MousePointerClick,
   Package,
   Phone,
+  PlugZap,
   Share2,
   Tag,
 } from "lucide-react";
@@ -23,6 +24,7 @@ import {
   SocialLinksAdmin,
 } from "@/components/admin/ContactAdmin";
 import { DailyChart } from "@/components/admin/DailyChart";
+import { RecheckButton, TestMailForm } from "@/components/admin/ServiceAdmin";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -41,6 +43,12 @@ import {
   getCrawlerLive,
 } from "@/lib/admin";
 import { formatDateTime, formatNumber, timeAgo } from "@/lib/format";
+import {
+  getServiceStatus,
+  type ServiceCheck,
+  type ServiceState,
+  type ServiceStatus,
+} from "@/lib/service-status";
 import { getSiteContact } from "@/lib/site-contact";
 import { cn } from "@/lib/utils";
 
@@ -73,10 +81,11 @@ export default function AdminPage() {
 }
 
 async function AdminContent() {
-  const [data, live, contact] = await Promise.all([
+  const [data, live, contact, status] = await Promise.all([
     getAdminOverview(),
     getCrawlerLive(),
     getSiteContact(),
+    getServiceStatus(),
   ]);
   const totalDeals = data.shops.reduce((s, x) => s + x.deals, 0);
   const totalProducts = data.shops.reduce((s, x) => s + x.products, 0);
@@ -145,6 +154,7 @@ async function AdminContent() {
         />
       </div>
 
+      <ServicesSection status={status} live={live} />
       <CrawlerSection live={live} />
       <ShopsSection data={data} />
 
@@ -200,6 +210,98 @@ async function AdminContent() {
         <MessagesSection data={data} />
       </div>
     </>
+  );
+}
+
+const SERVICE_BADGE: Record<
+  ServiceState,
+  { label: string; variant: "secondary" | "destructive" | "outline" }
+> = {
+  ok: { label: "werkt", variant: "secondary" },
+  down: { label: "storing", variant: "destructive" },
+  off: { label: "uit", variant: "outline" },
+};
+
+const SERVICE_DOT: Record<ServiceState, string> = {
+  ok: "bg-savings",
+  down: "bg-destructive",
+  off: "bg-muted-foreground/40",
+};
+
+function ServicesSection({
+  status,
+  live,
+}: {
+  status: ServiceStatus;
+  live: CrawlerLive;
+}) {
+  // De crawler wordt bij elke verversing opnieuw bevraagd (zie getCrawlerLive()).
+  const crawler: ServiceCheck = live.ok
+    ? {
+        key: "crawler",
+        name: "Crawler",
+        state: "ok",
+        detail: `Online, uptime ${live.uptime}`,
+      }
+    : process.env.CRAWLER_STATS_URL
+      ? {
+          key: "crawler",
+          name: "Crawler",
+          state: "down",
+          detail: live.error ?? "Niet bereikbaar",
+        }
+      : {
+          key: "crawler",
+          name: "Crawler",
+          state: "off",
+          detail: live.error ?? "Niet ingesteld",
+        };
+  const services = [...status.services, crawler];
+  const smtp = services.find((s) => s.key === "smtp");
+  return (
+    <Section
+      title="Diensten"
+      icon={<PlugZap className="size-5 text-primary" />}
+    >
+      <div className="flex flex-col gap-6">
+        <ul className="divide-y rounded-xl border">
+          {services.map((s) => (
+            <li
+              key={s.key}
+              className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3"
+            >
+              <span
+                className={cn(
+                  "size-2.5 shrink-0 rounded-full",
+                  SERVICE_DOT[s.state],
+                )}
+                aria-hidden
+              />
+              <span className="min-w-48 font-semibold">{s.name}</span>
+              <span className="min-w-0 flex-1 basis-60 text-sm break-words text-muted-foreground">
+                {s.detail}
+              </span>
+              {s.ms !== undefined ? (
+                <span className="text-sm text-muted-foreground tabular-nums">
+                  {formatNumber(s.ms)} ms
+                </span>
+              ) : null}
+              <Badge variant={SERVICE_BADGE[s.state].variant}>
+                {SERVICE_BADGE[s.state].label}
+              </Badge>
+            </li>
+          ))}
+        </ul>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            Gecontroleerd {timeAgo(status.checkedAt)} (
+            {formatDateTime(status.checkedAt)}); wordt 5 minuten onthouden.
+          </p>
+          <RecheckButton />
+        </div>
+        <TestMailForm disabled={smtp?.state === "off"} />
+      </div>
+    </Section>
   );
 }
 

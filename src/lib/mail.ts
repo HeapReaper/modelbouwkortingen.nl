@@ -45,3 +45,11 @@ export async function sendMail(mail: Mail): Promise<void> {
   }
   await getTransport().sendMail({ from: process.env.MAIL_FROM, ...mail });
 }
+
+/** Maakt verbinding met de SMTP-server en logt in, zonder iets te versturen. */
+export async function verifyMail(): Promise<void> {
+  if (!isMailConfigured()) {
+    throw new Error("SMTP_HOST en MAIL_FROM zijn niet ingesteld");
+  }
+  await getTransport().verify();
+}

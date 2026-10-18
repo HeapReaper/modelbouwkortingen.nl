@@ -69,6 +69,11 @@ async function translateOne(text: string, target: Target): Promise<string> {
   return res.TranslatedText?.trim() ?? "";
 }
 
+/** Voor het adminpanel: vertaalt één woord om te zien of de sleutels en de dienst werken. */
+export async function checkTranslator(): Promise<string> {
+  return translateOne("Test", "nl");
+}
+
 /** Vertaalt alle teksten, of gooit bij de eerste fout (bv. ThrottlingException). */
 async function awsTranslate(
   texts: string[],
