@@ -4,7 +4,9 @@ import {
   TranslateClient,
   TranslateTextCommand,
 } from "@aws-sdk/client-translate";
+import { headers } from "next/headers";
 import type { Locale } from "@/i18n/config";
+import { isBot } from "@/lib/bots";
 import { getPrisma, isDbConfigured, num } from "@/lib/db";
 import { GERMAN_SHOPS } from "@/lib/shops";
 
@@ -15,6 +17,13 @@ import { GERMAN_SHOPS } from "@/lib/shops";
  * en staan in product_translations: elke naam wordt één keer per taal vertaald. De planner
  * vertaalt nieuwe deals vooraf (translatePendingDeals), de rest (volglijst, prijsvergelijker,
  * ...) wordt bij het eerste bekijken vertaald.
+ *
+ * Vertalen kost geld, dus:
+ *   - bots (zoekmachines, linkvoorbeelden, scrapers; zie src/lib/bots.ts) krijgen alleen
+ *     bewaarde vertalingen en anders de Duitse naam; ze laten nooit iets nieuws vertalen;
+ *   - per dag (Nederlandse tijd) vertalen we hooguit TRANSLATE_DAILY_CHAR_LIMIT tekens, voor
+ *     alles samen (pagina's, planner, mail). Dat vangt ook bots die zich als browser voordoen.
+ *     Is de limiet op, dan tonen pagina's de Duitse naam tot de volgende dag.
  */
 
 /** Doeltalen met hun Amazon Translate-code; Duitse bezoekers zien gewoon de originele naam. */
@@ -30,6 +39,12 @@ const DEFAULT_REGION = "eu-central-1";
 /** Zo lang wacht een pagina hooguit op een nieuwe vertaling; daarna de originele naam. */
 const PAGE_WAIT_MS = 2_000;
 const REQUEST_TIMEOUT_MS = 30_000;
+/** Tekens per dag; Amazon Translate rekent per teken. 10.000 ≈ $0,15 per dag. */
+const DAILY_CHAR_LIMIT = Number(
+  process.env.TRANSLATE_DAILY_CHAR_LIMIT ?? 10_000,
+);
+/** Zo vaak het verbruik van vandaag opnieuw uit de database lezen (meerdere servers). */
+const BUDGET_REFRESH_MS = 60_000;
 
 type Localizable = {
   id: number;
@@ -93,6 +108,48 @@ async function awsTranslate(
   return out;
 }
 
+/** Begin van vandaag in Nederlandse tijd, als "YYYY-MM-DD". */
+function today() {
+  return new Date().toLocaleDateString("sv-SE", {
+    timeZone: "Europe/Amsterdam",
+  });
+}
+
+/**
+ * Verbruik van vandaag: elke vertaling staat met created_at in product_translations, dus de
+ * som van de vertaalde tekens van vandaag is het verbruik. Tussen twee keer lezen tellen we
+ * zelf bij.
+ */
+const budget = { day: "", used: 0, readAt: 0 };
+
+async function charsUsedToday(): Promise<number> {
+  const day = today();
+  if (budget.day !== day || Date.now() - budget.readAt > BUDGET_REFRESH_MS) {
+    const [row] = await getPrisma().$queryRaw<{ used: bigint | null }[]>`
+      SELECT SUM(length(source_name))::bigint AS used
+      FROM product_translations
+      WHERE created_at >= (${day}::date::timestamp AT TIME ZONE 'Europe/Amsterdam')`;
+    budget.day = day;
+    budget.used = Number(row?.used ?? 0);
+    budget.readAt = Date.now();
+  }
+  return budget.used;
+}
+
+/** Voor het adminpanel: tekens vertaald vandaag en de daglimiet. */
+export async function translationBudget() {
+  return { used: await charsUsedToday(), limit: DAILY_CHAR_LIMIT };
+}
+
+let lastLimitLog = "";
+function logLimitReached() {
+  if (lastLimitLog === today()) return;
+  lastLimitLog = today();
+  console.warn(
+    `[vertalen] daglimiet van ${DAILY_CHAR_LIMIT} tekens bereikt; tot morgen alleen bewaarde vertalingen`,
+  );
+}
+
 /** Hooguit één foutmelding per minuut in de log (bv. bij een verkeerde sleutel). */
 let lastErrorLog = 0;
 function logError(err: unknown) {
@@ -109,8 +166,22 @@ async function translateAndStore(
   const out = new Map<number, string>();
   const prisma = getPrisma();
   for (let i = 0; i < items.length; i += BATCH) {
-    const chunk = items.slice(i, i + BATCH);
+    let chunk = items.slice(i, i + BATCH);
     try {
+      // Alleen wat nog binnen de daglimiet past.
+      await charsUsedToday();
+      // Na de await opnieuw lezen: gelijktijdige vertalingen tellen ook mee.
+      let left = DAILY_CHAR_LIMIT - budget.used;
+      chunk = chunk.filter((c) => {
+        if (c.name.length > left) return false;
+        left -= c.name.length;
+        return true;
+      });
+      if (chunk.length === 0) {
+        logLimitReached();
+        break;
+      }
+      budget.used += chunk.reduce((sum, c) => sum + c.name.length, 0);
       const names = await awsTranslate(
         chunk.map((c) => c.name),
         target,
@@ -187,7 +258,7 @@ function translate(
 export async function localizeDeals<T extends Localizable>(
   items: T[],
   lang: Locale,
-  opts: { waitMs?: number } = {},
+  opts: { waitMs?: number; background?: boolean } = {},
 ): Promise<T[]> {
   if (!isTarget(lang) || !isDbConfigured()) return items;
   const german = items.filter((i) => GERMAN_SHOPS.includes(i.shopSlug));
@@ -209,7 +280,11 @@ export async function localizeDeals<T extends Localizable>(
     else missing.set(item.id, { id: item.id, name: item.name });
   }
 
-  if (missing.size > 0 && isTranslatorConfigured()) {
+  if (
+    missing.size > 0 &&
+    isTranslatorConfigured() &&
+    (opts.background || !(await fromBot()))
+  ) {
     const fresh = await Promise.race([
       translate([...missing.values()], lang),
       new Promise<Map<number, string>>((resolve) =>
@@ -227,8 +302,26 @@ export async function localizeDeals<T extends Localizable>(
   });
 }
 
-/** Voor mail en Discord: geen haast, liever vertaald dan snel. */
-export const BACKGROUND = { waitMs: REQUEST_TIMEOUT_MS } as const;
+/**
+ * Komt dit verzoek van een bot? Buiten een verzoek (geen headers) gaan we daarvan uit; mail,
+ * Discord en de planner geven daarom `background` mee.
+ */
+async function fromBot() {
+  try {
+    return isBot((await headers()).get("user-agent"));
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Voor mail, Discord en prijsalarmen: geen haast, liever vertaald dan snel. Draait vanuit de
+ * planner (user-agent "node"), dus niet als bot behandelen.
+ */
+export const BACKGROUND = {
+  waitMs: REQUEST_TIMEOUT_MS,
+  background: true,
+} as const;
 
 /**
  * Vertaalt lopende deals van Duitstalige webshops die nog geen (actuele) vertaling hebben,

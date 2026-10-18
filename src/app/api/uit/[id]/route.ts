@@ -1,12 +1,9 @@
 import { after, connection } from "next/server";
+import { isBot } from "@/lib/bots";
 import { getPrisma, isDbConfigured } from "@/lib/db";
 import { getDeal } from "@/lib/deals";
 import { SITE_URL } from "@/lib/newsletter-mail";
 import { CLICK_SOURCES, type ClickSource, productLink } from "@/lib/shops";
-
-/** Linkvoorbeelden, mailscanners en zoekmachines tellen niet als klik. */
-const BOT_RE =
-  /bot|crawl|spider|slurp|preview|scanner|monitor|curl|wget|python|headless|facebookexternalhit|embedly/i;
 
 /**
  * "Naar de webshop": telt de klik (tabel outbound_clicks) en stuurt door naar het product,
@@ -25,7 +22,8 @@ export async function GET(
     ? (bron as ClickSource)
     : "site";
   const ua = request.headers.get("user-agent") ?? "";
-  if (request.method === "GET" && isDbConfigured() && ua && !BOT_RE.test(ua)) {
+  // Linkvoorbeelden, mailscanners en zoekmachines tellen niet als klik.
+  if (request.method === "GET" && isDbConfigured() && !isBot(ua)) {
     after(async () => {
       try {
         await getPrisma().outboundClick.create({

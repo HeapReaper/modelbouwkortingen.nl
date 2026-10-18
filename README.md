@@ -165,6 +165,13 @@ hij opnieuw vertaald. De planner vertaalt elke 5 minuten de nieuwe deals vooraf
 langer dan 2 seconden, dan toont de pagina die keer de Duitse naam. Op de productpagina staat de
 originele naam onder de vertaalde.
 
+**Kosten in de hand:** bots (zoekmachines, linkvoorbeelden, scrapers; herkend aan de
+user-agent in `src/lib/bots.ts`) laten nooit iets nieuws vertalen: zij zien bewaarde vertalingen
+of de Duitse naam. Daarnaast vertaalt de site per dag (Nederlandse tijd) hooguit
+`TRANSLATE_DAILY_CHAR_LIMIT` tekens (standaard 10.000, ≈ $0,15), voor pagina's, planner en mail
+samen; daarna tot middernacht alleen bewaarde vertalingen. Het verbruik van vandaag staat in
+`/admin` bij Diensten.
+
 Zet `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` en `AWS_REGION` (bv. `eu-central-1`), van een
 IAM-gebruiker die alleen `translate:TranslateText` mag. Zonder sleutels worden alleen al bewaarde
 vertalingen getoond.
@@ -268,6 +275,7 @@ Zie `.env.example` voor alle variabelen. De belangrijkste:
 | `NEWSLETTER_SEND_HOUR` | website | `8` |
 | `NEWSLETTER_SCHEDULER` / `NEWSLETTER_CRON_TOKEN` | website | planner aan / — |
 | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_REGION` | website | — / — / `eu-central-1` (zonder: geen nieuwe vertalingen) |
+| `TRANSLATE_DAILY_CHAR_LIMIT` | website | `10000` tekens per dag |
 | `ALERT_DISCORD_WEBHOOK` / `CRAWL_ALERT_RATIO` | website | — / `0.5` |
 | `CRAWLER_INTERVAL` | crawler | `6h` |
 | `CRAWLER_WORKERS_PER_SHOP` | crawler | `4` |

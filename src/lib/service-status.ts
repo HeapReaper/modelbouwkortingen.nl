@@ -3,7 +3,11 @@ import "server-only";
 import { connection } from "next/server";
 import { getPrisma, isDbConfigured } from "@/lib/db";
 import { isMailConfigured, verifyMail } from "@/lib/mail";
-import { checkTranslator, isTranslatorConfigured } from "@/lib/translate";
+import {
+  checkTranslator,
+  isTranslatorConfigured,
+  translationBudget,
+} from "@/lib/translate";
 
 /**
  * Status van de externe diensten voor het adminpanel: database, SMTP en Amazon Translate
@@ -93,8 +97,12 @@ async function checkAll(): Promise<ServiceStatus> {
         ),
     isTranslatorConfigured()
       ? probe("translate", "Amazon Translate", async () => {
-          const text = await checkTranslator();
-          return `"Test" → "${text}" (${process.env.AWS_REGION || "eu-central-1"})`;
+          const [text, { used, limit }] = await Promise.all([
+            checkTranslator(),
+            translationBudget(),
+          ]);
+          const fmt = (n: number) => n.toLocaleString("nl-NL");
+          return `"Test" → "${text}" (${process.env.AWS_REGION || "eu-central-1"}) · vandaag ${fmt(used)} van ${fmt(limit)} tekens`;
         })
       : off(
           "translate",
