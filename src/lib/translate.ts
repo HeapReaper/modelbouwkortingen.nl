@@ -1,5 +1,9 @@
 import "server-only";
 
+import {
+  TranslateClient,
+  TranslateTextCommand,
+} from "@aws-sdk/client-translate";
 import type { Locale } from "@/i18n/config";
 import { getPrisma, isDbConfigured, num } from "@/lib/db";
 import { GERMAN_SHOPS } from "@/lib/shops";
@@ -7,20 +11,22 @@ import { GERMAN_SHOPS } from "@/lib/shops";
 /**
  * Vertaalt de productnamen van Duitstalige webshops (zie `language` in src/lib/shops.ts) naar
  * de taal van de bezoeker, of bij mail en Discord naar de taal waarin de abonnee zich aanmeldde.
- * Vertalingen komen van DeepL (DEEPL_API_KEY) en staan in product_translations: elke naam wordt
- * één keer per taal vertaald. De planner vertaalt nieuwe deals vooraf (translatePendingDeals),
- * de rest (volglijst, prijsvergelijker, ...) wordt bij het eerste bekijken vertaald.
+ * Vertalingen komen van Amazon Translate (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION)
+ * en staan in product_translations: elke naam wordt één keer per taal vertaald. De planner
+ * vertaalt nieuwe deals vooraf (translatePendingDeals), de rest (volglijst, prijsvergelijker,
+ * ...) wordt bij het eerste bekijken vertaald.
  */
 
-/** Doeltalen met hun DeepL-code; Duitse bezoekers zien gewoon de originele naam. */
-const TARGETS = { nl: "NL", en: "EN-GB" } as const;
+/** Doeltalen met hun Amazon Translate-code; Duitse bezoekers zien gewoon de originele naam. */
+const TARGETS = { nl: "nl", en: "en" } as const;
 type Target = keyof typeof TARGETS;
 
-/** DeepL accepteert maximaal 50 teksten per verzoek. */
+/** Zoveel namen per keer opslaan; Amazon Translate vertaalt per tekst. */
 const BATCH = 50;
-/** Wordt niet vertaald of gerekend; helpt DeepL merknamen en typenummers te laten staan. */
-const CONTEXT =
-  "Product names from a German RC and scale model web shop (cars, planes, helicopters, drones, boats, spare parts, batteries). Keep brand names, model numbers and sizes unchanged.";
+/** Zoveel vertaalverzoeken tegelijk, ruim onder de standaardlimiet van AWS. */
+const CONCURRENCY = 5;
+/** Amazon Translate is niet in elke regio beschikbaar; Frankfurt wel. */
+const DEFAULT_REGION = "eu-central-1";
 /** Zo lang wacht een pagina hooguit op een nieuwe vertaling; daarna de originele naam. */
 const PAGE_WAIT_MS = 2_000;
 const REQUEST_TIMEOUT_MS = 30_000;
@@ -33,58 +39,61 @@ type Localizable = {
 };
 
 export function isTranslatorConfigured() {
-  return Boolean(process.env.DEEPL_API_KEY);
+  return Boolean(
+    process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY,
+  );
 }
 
 function isTarget(lang: Locale): lang is Target {
   return lang in TARGETS;
 }
 
-/** Gratis DeepL-sleutels eindigen op ":fx" en horen bij een eigen API-host. */
-function apiOrigin(key: string) {
-  return (
-    process.env.DEEPL_API_URL ||
-    (key.endsWith(":fx")
-      ? "https://api-free.deepl.com"
-      : "https://api.deepl.com")
-  );
+/** De SDK leest de sleutels zelf uit AWS_ACCESS_KEY_ID en AWS_SECRET_ACCESS_KEY. */
+let client: TranslateClient | null = null;
+function getClient() {
+  client ??= new TranslateClient({
+    region: process.env.AWS_REGION || DEFAULT_REGION,
+  });
+  return client;
 }
 
-async function deepl(texts: string[], target: Target): Promise<string[]> {
-  const key = process.env.DEEPL_API_KEY ?? "";
-  const res = await fetch(`${apiOrigin(key)}/v2/translate`, {
-    method: "POST",
-    headers: {
-      authorization: `DeepL-Auth-Key ${key}`,
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      text: texts,
-      source_lang: "DE",
-      target_lang: TARGETS[target],
-      context: CONTEXT,
-      // Een productnaam is één segment.
-      split_sentences: "0",
-      preserve_formatting: true,
+async function translateOne(text: string, target: Target): Promise<string> {
+  const res = await getClient().send(
+    new TranslateTextCommand({
+      Text: text,
+      SourceLanguageCode: "de",
+      TargetLanguageCode: TARGETS[target],
     }),
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-  });
-  // 456 = tekenquotum op, 429 = te veel verzoeken.
-  if (!res.ok) throw new Error(`DeepL gaf HTTP ${res.status}`);
-  const data = (await res.json()) as { translations?: { text: string }[] };
-  const out = data.translations?.map((t) => t.text.trim()) ?? [];
-  if (out.length !== texts.length) {
-    throw new Error("DeepL gaf een onverwacht antwoord");
-  }
+    { abortSignal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) },
+  );
+  return res.TranslatedText?.trim() ?? "";
+}
+
+/** Vertaalt alle teksten, of gooit bij de eerste fout (bv. ThrottlingException). */
+async function awsTranslate(
+  texts: string[],
+  target: Target,
+): Promise<string[]> {
+  const out: string[] = new Array(texts.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < texts.length) {
+      const i = next++;
+      out[i] = await translateOne(texts[i], target);
+    }
+  };
+  await Promise.all(
+    Array.from({ length: Math.min(CONCURRENCY, texts.length) }, worker),
+  );
   return out;
 }
 
-/** Hooguit één foutmelding per minuut in de log (bv. als het quotum op is). */
+/** Hooguit één foutmelding per minuut in de log (bv. bij een verkeerde sleutel). */
 let lastErrorLog = 0;
 function logError(err: unknown) {
   if (Date.now() - lastErrorLog < 60_000) return;
   lastErrorLog = Date.now();
-  console.error("[vertalen] DeepL mislukt", err);
+  console.error("[vertalen] Amazon Translate mislukt", err);
 }
 
 /** Vertaalt en bewaart; geeft id → vertaalde naam van wat gelukt is. */
@@ -97,7 +106,7 @@ async function translateAndStore(
   for (let i = 0; i < items.length; i += BATCH) {
     const chunk = items.slice(i, i + BATCH);
     try {
-      const names = await deepl(
+      const names = await awsTranslate(
         chunk.map((c) => c.name),
         target,
       );
@@ -126,7 +135,7 @@ async function translateAndStore(
 
 /**
  * Lopende vertalingen, zodat gelijktijdige pagina's dezelfde naam niet allemaal apart naar
- * DeepL sturen.
+ * Amazon Translate sturen.
  */
 const inflight = new Map<string, Promise<string | null>>();
 
@@ -168,7 +177,7 @@ function translate(
  * Zet de namen van producten van Duitstalige webshops in de gevraagde taal (`originalName` =
  * de Duitse naam). Ontbrekende vertalingen worden direct opgehaald; duurt dat langer dan
  * `waitMs`, dan blijft deze keer de originele naam staan en wordt de vertaling op de
- * achtergrond bewaard voor de volgende keer. Zonder DEEPL_API_KEY: alleen bewaarde vertalingen.
+ * achtergrond bewaard voor de volgende keer. Zonder AWS-sleutels: alleen bewaarde vertalingen.
  */
 export async function localizeDeals<T extends Localizable>(
   items: T[],

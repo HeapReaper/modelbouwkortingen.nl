@@ -95,7 +95,9 @@ services:
       - NEWSLETTER_SEND_HOUR=${NEWSLETTER_SEND_HOUR:-8}
       - NEWSLETTER_SCHEDULER=${NEWSLETTER_SCHEDULER:-}
       - NEWSLETTER_CRON_TOKEN=${NEWSLETTER_CRON_TOKEN:-}
-      - DEEPL_API_KEY=${DEEPL_API_KEY:-}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_REGION=${AWS_REGION:-eu-central-1}
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
       interval: 30s
