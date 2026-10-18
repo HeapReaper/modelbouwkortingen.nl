@@ -27,6 +27,7 @@ buildah build \
   --tag "$image:latest" \
   --label "org.opencontainers.image.source=https://codeberg.org/HeapReaper/modelbouwkortingen.nl" \
   --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+  --network host \
   "$@" "$context"
 
 if [ "${PUSH:-false}" = true ]; then
