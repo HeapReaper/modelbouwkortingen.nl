@@ -11,6 +11,7 @@ import { I18nProvider } from "@/i18n/client";
 import { LOCALES, OG_LOCALES } from "@/i18n/config";
 import { alternates, feedLink } from "@/i18n/metadata";
 import { getI18n } from "@/i18n/server";
+import { ADSENSE_CLIENT, adsEnabled } from "@/lib/ads";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,6 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: OG_LOCALES[lang],
       siteName: "Modelbouwkortingen.nl",
     },
+    other: { "google-adsense-account": ADSENSE_CLIENT },
   };
 }
 
@@ -72,6 +74,15 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
       className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} h-full antialiased`}
     >
       <body className="flex min-h-screen flex-col bg-background text-foreground">
+        {adsEnabled ? (
+          // Gewone async-script en geen next/script: React zet hem zo in de <head> van de
+          // server-HTML, waar Google hem bij de controle van de site verwacht.
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+            crossOrigin="anonymous"
+          />
+        ) : null}
         <I18nProvider lang={lang} dict={dict}>
           <ThemeProvider
             attribute="class"

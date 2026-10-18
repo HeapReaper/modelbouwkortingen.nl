@@ -46,6 +46,8 @@ komt het op de website (Next.js 16 + shadcn/ui).
 - Klikteller voor uitgaande links (`/api/uit/[id]`) en affiliate-parameters per webshop.
 - Contactformulier met honeypot en rate limit.
 - Licht/donker thema, demo-modus zonder database, Docker/Coolify-deploy.
+- Google AdSense (alleen in productie): script en `google-adsense-account`-meta in
+  `src/app/[lang]/layout.tsx`, publisher-ID in `src/lib/ads.ts`, en `public/ads.txt`.
 
 ```
 ├── src/              Next.js website (App Router, Cache Components, shadcn base-nova)
