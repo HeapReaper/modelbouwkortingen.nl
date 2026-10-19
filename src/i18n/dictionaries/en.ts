@@ -159,6 +159,8 @@ export const en: Dictionary = {
       "German drone specialist with multicopters, flight controllers, GPS, motors, gimbals and video links, plus robotics.",
     copterfarm:
       "German FPV store with frames, motors, ESCs, flight controllers, goggles, batteries and propellers.",
+    shopzinnig:
+      "Dutch hobby store with lots of parts for Blade, E-sky and Nine Eagles helis, plus drones, cars, planes and electronics.",
   },
   deals: {
     outOfStock: "Out of stock",

@@ -270,6 +270,7 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | RC-Car-Online (DE) | Shopware 6 | `/sitemap.xml` (alleen de sitemap zonder www), `/<naam>/<artikelnummer>` | geen: robots.txt verbiedt alle URL's met `?`, dus ook de paginering; productpagina's met microdata |
 | Premium-Modellbau (DE) | Shopware 5 | geen: alleen listings | onderste categorieën uit de sitemap, `?n=48&p=N` (Crawl-delay 5s; `/listing` is verboden), `.price--discount` |
 | CopterFarm (DE) | Shopware 5 | geen: alleen listings | onderste categorieën uit de sitemap (zonder merken), `?n=48&p=N`, `.price--discount` |
+| Shopzinnig | LogiVert | geen: alleen listings (Crawl-delay 30s) | alle ~290 groepen uit de sitemap (bovenliggende groepen tonen geen producten), `&page=N` via `a.listforward`, van-prijs in `.articlePricerecommended` |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

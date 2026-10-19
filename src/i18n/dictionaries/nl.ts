@@ -162,6 +162,8 @@ export const nl = {
       "Duitse dronespecialist met multicopters, flight controllers, GPS, motoren, gimbals en videoverbindingen, plus robotica.",
     copterfarm:
       "Duitse FPV-shop met frames, motoren, regelaars, flight controllers, videobrillen, accu's en propellers.",
+    shopzinnig:
+      "Nederlandse modelbouwwinkel met veel onderdelen voor Blade-, E-sky- en Nine Eagles-heli's, plus drones, auto's, vliegtuigen en elektronica.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

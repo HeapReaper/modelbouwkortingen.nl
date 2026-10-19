@@ -166,6 +166,8 @@ export const de: Dictionary = {
       "Deutscher Drohnenspezialist mit Multicoptern, Flight Controllern, GPS, Motoren, Gimbals und Videoübertragung sowie Robotik.",
     copterfarm:
       "Deutscher FPV-Shop mit Frames, Motoren, Reglern, Flight Controllern, Videobrillen, Akkus und Propellern.",
+    shopzinnig:
+      "Niederländischer Modellbauladen mit vielen Ersatzteilen für Blade-, E-sky- und Nine-Eagles-Hubschrauber sowie Drohnen, Autos, Flugzeugen und Elektronik.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

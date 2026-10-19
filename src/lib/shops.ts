@@ -18,6 +18,7 @@ import nfactoryLogo from "@/assets/shops/nfactory.png";
 import premiummodellbauLogo from "@/assets/shops/premiummodellbau.png";
 import rccaronlineLogo from "@/assets/shops/rccaronline.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
+import shopzinnigLogo from "@/assets/shops/shopzinnig.png";
 import tamicoLogo from "@/assets/shops/tamico.png";
 import toemenLogo from "@/assets/shops/toemen.png";
 import toprcLogo from "@/assets/shops/toprc.svg";
@@ -283,6 +284,15 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
     language: "de",
+  },
+  {
+    slug: "shopzinnig",
+    name: "Shopzinnig",
+    url: "https://www.shopzinnig.nl",
+    domain: "shopzinnig.nl",
+    logo: shopzinnigLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "NL",
   },
 ];
 
