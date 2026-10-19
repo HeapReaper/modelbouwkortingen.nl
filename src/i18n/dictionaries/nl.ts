@@ -168,6 +168,7 @@ export const nl = {
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",
+    inStock: "Op voorraad",
     viewAt: "Bekijk {name} bij {shop}",
     toShop: "Naar de webshop",
     wasSr: "Was ",

@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { CheckCircle2, ExternalLink, XCircle } from "lucide-react";
 import Link from "next/link";
 import { DiscountBadge } from "@/components/deals/DiscountBadge";
 import { LowestBadge } from "@/components/deals/LowestBadge";
@@ -54,11 +54,6 @@ export async function DealCard({
           name={deal.name}
           className="absolute top-2 left-2 z-10"
         />
-        {deal.inStock === false ? (
-          <span className="absolute bottom-2 left-2 rounded-md bg-foreground/85 px-2 py-0.5 text-xs font-semibold text-background">
-            {dict.deals.outOfStock}
-          </span>
-        ) : null}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -69,6 +64,15 @@ export async function DealCard({
           />
           {sponsored ? <SponsoredBadge /> : null}
         </div>
+        {deal.inStock === false ? (
+          <span className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+            <XCircle className="size-4" /> {dict.deals.outOfStock}
+          </span>
+        ) : deal.inStock ? (
+          <span className="flex items-center gap-1.5 text-sm font-semibold text-savings">
+            <CheckCircle2 className="size-4" /> {dict.deals.inStock}
+          </span>
+        ) : null}
         <h3 className="line-clamp-2 font-sans text-base leading-snug font-semibold">
           <Link
             href={href(`/product/${deal.id}`)}
