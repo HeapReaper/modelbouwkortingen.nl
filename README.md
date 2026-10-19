@@ -125,7 +125,7 @@ koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coo
 | `/api/uit/[id]` | Telt de klik (`outbound_clicks`, zonder bots) en stuurt door naar de webshop, met affiliate-parameters |
 | `/api/vertalen/bijwerken` | Vertaalt namen van nieuwe deals van Duitstalige webshops (zelfde beveiliging als `/api/nieuwsbrief/verzenden`) |
 | `/api/crawler/controleren` | Zoekt crawl-rondes met opvallend weinig producten en meldt ze (idem) |
-| `/admin` | Admin panel: status van database/SMTP/Amazon Translate/crawler, testmail, live crawlerstatus, 429's, crawl-rondes, grafiek, bezoekers, kliks, berichten, webshops aan/uit, telefoonnummers en social media (Basic Auth) |
+| `/admin` | Admin panel: status van database/SMTP/Amazon Translate/crawler, testmail, live crawlerstatus, handmatig een shop crawlen, 429's, crawl-rondes, grafiek, bezoekers, kliks, berichten, webshops aan/uit, telefoonnummers en social media (Basic Auth) |
 | `/api/stats` | JSON met alle statistieken (Basic Auth of `Bearer STATS_TOKEN`) |
 | `/api/health` | Publieke health check |
 
@@ -298,6 +298,8 @@ overgeslagen (hun "van"-prijs is de nieuwprijs), net als kortingen boven 90% (vr
   na een reeks succesvolle requests weer langzaam omhoog. (TopRC is hier gevoelig voor.)
 
 Live stats: `http://<crawler>:8080/stats` (JSON) en `/healthz`. De website toont ze op `/admin` via `CRAWLER_STATS_URL`.
+`POST /run?shop=<slug>` (zelfde token) start meteen een ronde voor één shop; het adminpanel heeft
+hiervoor per shop een knop "Nu crawlen". Loopt er al een ronde voor die shop, dan geeft hij 409.
 De laatste 5.000 logregels (en apart de laatste 1.000 waarschuwingen en fouten) staan op `/logs`
 (`?level=WARN&shop=toprc&q=429&products=0&after=<seq>`, zelfde token als `/stats`); `/admin` toont ze live.
 

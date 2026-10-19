@@ -477,3 +477,34 @@ export async function getCrawlerLogs(
     };
   }
 }
+
+/**
+ * Start meteen een crawl-ronde voor één shop, via POST /run op dezelfde server als /stats.
+ * null = gestart, anders een foutmelding voor het admin panel.
+ */
+export async function startCrawl(shop: string): Promise<string | null> {
+  const statsUrl = process.env.CRAWLER_STATS_URL;
+  if (!statsUrl) return "CRAWLER_STATS_URL is niet ingesteld";
+  const url = new URL("run", statsUrl);
+  url.searchParams.set("shop", shop);
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+      headers: process.env.CRAWLER_STATS_TOKEN
+        ? { Authorization: `Bearer ${process.env.CRAWLER_STATS_TOKEN}` }
+        : undefined,
+    });
+    if (res.ok) return null;
+    if (res.status === 409) return "Er loopt al een ronde voor deze shop";
+    // Een crawler van vóór deze functie kent POST /run nog niet (405/404).
+    if (res.status === 405)
+      return "Deze crawler-versie kan nog niet handmatig starten; deploy de crawler opnieuw";
+    return (
+      (await res.text()).trim() || `Crawler antwoordde met HTTP ${res.status}`
+    );
+  } catch (err) {
+    return `Crawler niet bereikbaar: ${err instanceof Error ? err.message : String(err)}`;
+  }
+}

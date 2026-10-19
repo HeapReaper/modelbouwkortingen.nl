@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"slices"
+	"sync/atomic"
 	"syscall"
 	"time"
 
@@ -43,9 +45,18 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
+	list := shops.BySlug(cfg.Shops)
+	if len(list) == 0 {
+		log.Error("geen (geldige) shops geselecteerd", "shops", cfg.Shops)
+		os.Exit(1)
+	}
+
 	reg := stats.New()
+	// De server start al vóór de database (voor /healthz); de runner komt pas daarna.
+	var runner atomic.Pointer[crawl.Runner]
 	if cfg.HTTPAddr != "" {
-		srv := &http.Server{Addr: cfg.HTTPAddr, Handler: reg.Handler(cfg.StatsToken, logs), ReadHeaderTimeout: 5 * time.Second}
+		run := runHandler(ctx, list, &runner)
+		srv := &http.Server{Addr: cfg.HTTPAddr, Handler: reg.Handler(cfg.StatsToken, logs, run), ReadHeaderTimeout: 5 * time.Second}
 		go func() {
 			log.Info("stats server luistert", "addr", cfg.HTTPAddr)
 			if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
@@ -77,16 +88,11 @@ func main() {
 		MaxBackoff: cfg.MaxBackoff,
 	}, reg, log)
 
-	list := shops.BySlug(cfg.Shops)
-	if len(list) == 0 {
-		log.Error("geen (geldige) shops geselecteerd", "shops", cfg.Shops)
-		os.Exit(1)
-	}
-	runner := crawl.NewRunner(cfg, fetcher, st, reg, log)
+	runner.Store(crawl.NewRunner(cfg, fetcher, st, reg, log))
 
 	for {
 		started := time.Now()
-		runner.RunAll(ctx, list)
+		runner.Load().RunAll(ctx, list)
 		if cfg.RunOnce || ctx.Err() != nil {
 			break
 		}
@@ -104,6 +110,26 @@ func main() {
 		}
 	}
 	log.Info("crawler gestopt")
+}
+
+// runHandler: POST /run?shop=<slug> start meteen een ronde voor die shop (admin panel).
+// 202 = gestart, 409 = er loopt al een ronde, 404 = onbekende of niet geselecteerde shop.
+func runHandler(ctx context.Context, list []shops.Shop, runner *atomic.Pointer[crawl.Runner]) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		slug := req.URL.Query().Get("shop")
+		idx := slices.IndexFunc(list, func(s shops.Shop) bool { return s.Slug() == slug })
+		r := runner.Load()
+		switch {
+		case idx < 0:
+			http.Error(w, "onbekende shop", http.StatusNotFound)
+		case r == nil:
+			http.Error(w, "crawler start nog op", http.StatusServiceUnavailable)
+		case !r.Start(ctx, list[idx]):
+			http.Error(w, crawl.ErrBusy.Error(), http.StatusConflict)
+		default:
+			w.WriteHeader(http.StatusAccepted)
+		}
+	})
 }
 
 // openStore probeert een tijdje opnieuw, zodat de crawler kan starten voordat Postgres klaar is.

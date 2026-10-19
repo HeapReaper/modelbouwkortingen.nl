@@ -155,9 +155,10 @@ func (r *Registry) Snapshot() Snapshot {
 	return s
 }
 
-// Handler serveert /healthz, /stats en (als logs niet nil is) /logs. Als token niet leeg is,
-// vereisen /stats en /logs een "Authorization: Bearer <token>" header.
-func (r *Registry) Handler(token string, logs http.Handler) http.Handler {
+// Handler serveert /healthz, /stats, (als logs niet nil is) /logs en (als run niet nil is)
+// POST /run. Als token niet leeg is, vereisen alle behalve /healthz een
+// "Authorization: Bearer <token>" header.
+func (r *Registry) Handler(token string, logs, run http.Handler) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -170,6 +171,9 @@ func (r *Registry) Handler(token string, logs http.Handler) http.Handler {
 	})))
 	if logs != nil {
 		mux.Handle("GET /logs", requireToken(token, logs))
+	}
+	if run != nil {
+		mux.Handle("POST /run", requireToken(token, run))
 	}
 	return mux
 }

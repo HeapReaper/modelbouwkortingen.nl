@@ -19,6 +19,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import {
+  CrawlNowButton,
   MessageHandledButton,
   ResolveAlertButton,
   ShopEnabledSwitch,
@@ -432,6 +433,7 @@ function CrawlerSection({ live }: { live: CrawlerLive }) {
                         : "—"}
                     </dd>
                   </dl>
+                  <CrawlNowButton shop={s.shop} running={s.phase !== "idle"} />
                 </div>
               );
             })}
@@ -602,6 +604,11 @@ function RunsSection({ data }: { data: AdminOverview }) {
                     >
                       {r.status}
                     </Badge>
+                    {r.status === "failed" && r.message ? (
+                      <p className="mt-1 max-w-72 text-xs break-words text-destructive">
+                        {r.message}
+                      </p>
+                    ) : null}
                   </TableCell>
                   <TableCell className="whitespace-nowrap">
                     {formatDateTime(r.startedAt)}

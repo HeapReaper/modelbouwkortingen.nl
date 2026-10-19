@@ -36,10 +36,32 @@ type Runner struct {
 	store   *store.Store // nil in dry-run modus
 	stats   *stats.Registry
 	log     *slog.Logger
+
+	mu     sync.Mutex
+	active map[string]bool // shops waarvan nu een ronde loopt
 }
 
+// ErrBusy: er loopt al een ronde voor deze shop (gepland of handmatig gestart).
+var ErrBusy = errors.New("er loopt al een crawl-ronde voor deze shop")
+
 func NewRunner(cfg *config.Config, f *fetch.Fetcher, st *store.Store, reg *stats.Registry, log *slog.Logger) *Runner {
-	return &Runner{cfg: cfg, fetcher: f, store: st, stats: reg, log: log}
+	return &Runner{cfg: cfg, fetcher: f, store: st, stats: reg, log: log, active: map[string]bool{}}
+}
+
+func (r *Runner) claim(slug string) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.active[slug] {
+		return false
+	}
+	r.active[slug] = true
+	return true
+}
+
+func (r *Runner) release(slug string) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	delete(r.active, slug)
 }
 
 // RunAll crawlt alle shops tegelijk en wacht tot ze klaar zijn.
@@ -47,7 +69,11 @@ func (r *Runner) RunAll(ctx context.Context, list []shops.Shop) {
 	var wg sync.WaitGroup
 	for _, s := range list {
 		wg.Go(func() {
-			if err := r.RunShop(ctx, s); err != nil && ctx.Err() == nil {
+			err := r.RunShop(ctx, s)
+			switch {
+			case errors.Is(err, ErrBusy):
+				r.log.Info("overgeslagen: ronde loopt al (handmatig gestart?)", "shop", s.Slug())
+			case err != nil && ctx.Err() == nil:
 				r.log.Error("crawl mislukt", "shop", s.Slug(), "err", err)
 			}
 		})
@@ -76,7 +102,32 @@ func (sr *shopRun) result(status, msg string) store.RunResult {
 	}
 }
 
-func (r *Runner) RunShop(ctx context.Context, shop shops.Shop) (err error) {
+// RunShop crawlt één shop en wacht tot de ronde klaar is; ErrBusy als er al een loopt.
+func (r *Runner) RunShop(ctx context.Context, shop shops.Shop) error {
+	if !r.claim(shop.Slug()) {
+		return ErrBusy
+	}
+	defer r.release(shop.Slug())
+	return r.runShop(ctx, shop)
+}
+
+// Start begint op de achtergrond een ronde voor één shop (handmatig, vanuit het admin panel).
+// false als er al een ronde voor die shop loopt.
+func (r *Runner) Start(ctx context.Context, shop shops.Shop) bool {
+	if !r.claim(shop.Slug()) {
+		return false
+	}
+	r.log.Info("crawl-ronde handmatig gestart", "shop", shop.Slug())
+	go func() {
+		defer r.release(shop.Slug())
+		if err := r.runShop(ctx, shop); err != nil && ctx.Err() == nil {
+			r.log.Error("crawl mislukt", "shop", shop.Slug(), "err", err)
+		}
+	}()
+	return true
+}
+
+func (r *Runner) runShop(ctx context.Context, shop shops.Shop) (err error) {
 	start := time.Now()
 	sr := &shopRun{shop: shop, log: r.log.With("shop", shop.Slug()), reg: r.stats}
 	if u, e := url.Parse(shop.BaseURL()); e == nil {

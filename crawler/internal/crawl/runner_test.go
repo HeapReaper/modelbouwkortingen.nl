@@ -25,3 +25,20 @@ func TestIsUsed(t *testing.T) {
 		t.Error("occasion-breadcrumb niet herkend")
 	}
 }
+
+func TestClaimPerShop(t *testing.T) {
+	r := NewRunner(nil, nil, nil, nil, nil)
+	if !r.claim("toemen") {
+		t.Fatal("eerste claim moet lukken")
+	}
+	if r.claim("toemen") {
+		t.Fatal("tweede claim voor dezelfde shop moet mislukken")
+	}
+	if !r.claim("hepf") {
+		t.Fatal("andere shop moet gewoon kunnen")
+	}
+	r.release("toemen")
+	if !r.claim("toemen") {
+		t.Fatal("na release moet de shop weer vrij zijn")
+	}
+}

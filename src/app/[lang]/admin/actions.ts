@@ -6,6 +6,7 @@ import {
   type CrawlerLogFilter,
   type CrawlerLogs,
   getCrawlerLogs,
+  startCrawl,
 } from "@/lib/admin";
 import { isAuthorized } from "@/lib/admin-auth";
 import { getPrisma, isDbConfigured } from "@/lib/db";
@@ -41,6 +42,16 @@ export async function fetchCrawlerLogs(
 ): Promise<CrawlerLogs> {
   await assertLoggedIn();
   return getCrawlerLogs(filter);
+}
+
+/** Handmatig een crawl-ronde voor één shop starten. null = gestart, anders de fout. */
+export async function crawlShopNow(shop: string): Promise<string | null> {
+  await assertLoggedIn();
+  const error = await startCrawl(shop);
+  // Even wachten zodat de kaart bij het verversen al "sitemap" toont in plaats van "idle".
+  if (!error) await new Promise((r) => setTimeout(r, 500));
+  refresh();
+  return error;
 }
 
 export type TestMailState = { error?: string; sentTo?: string; at?: number };
