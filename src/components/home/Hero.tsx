@@ -11,29 +11,16 @@ import { t } from "@/i18n/translate";
 import { getSiteStats, getTopDeals } from "@/lib/deals";
 import { localizeDeals } from "@/lib/translate";
 
-const QUICK_SEARCHES = [
-  "Arrma",
-  "Traxxas",
-  "LiPo 4S",
-  "Crawler",
-  "DJI",
-  "Spektrum",
-];
+const QUICK_SEARCHES = ["Arrma", "Traxxas", "LiPo 4S", "Crawler", "DJI", "Spektrum"];
 
 export async function Hero() {
   const { dict, href } = await getI18n();
   const h = dict.home;
   return (
     <section className="relative overflow-hidden border-b bg-accent">
-      <div
-        className="bg-sale-stripes absolute inset-0 opacity-60"
-        aria-hidden="true"
-      />
+      <div className="bg-sale-stripes absolute inset-0 opacity-60" aria-hidden="true" />
       <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:py-14 lg:grid-cols-[1.25fr_1fr] lg:items-center lg:py-20">
         <div className="flex flex-col gap-6">
-          <span className="inline-flex w-fit -rotate-1 items-center gap-2 rounded-md bg-primary px-3 py-1.5 font-heading text-sm font-black tracking-wider text-primary-foreground uppercase shadow-md">
-            <BadgePercent className="size-4" /> {h.badge}
-          </span>
           <h1 className="text-4xl leading-[1.05] font-black tracking-tight text-balance sm:text-5xl lg:text-6xl">
             {h.titleStart}{" "}
             <span className="relative inline-block text-primary">
@@ -54,14 +41,10 @@ export async function Hero() {
               </svg>
             </span>
           </h1>
-          <p className="max-w-xl text-lg text-pretty text-foreground/80 sm:text-xl">
-            {h.intro}
-          </p>
+          <p className="max-w-xl text-lg text-pretty text-foreground/80 sm:text-xl">{h.intro}</p>
           <SearchForm size="lg" className="max-w-2xl" />
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-semibold text-muted-foreground">
-              {h.popular}
-            </span>
+            <span className="text-sm font-semibold text-muted-foreground">{h.popular}</span>
             {QUICK_SEARCHES.map((q) => (
               <Link
                 key={q}
@@ -77,9 +60,7 @@ export async function Hero() {
           </Suspense>
         </div>
         <Suspense
-          fallback={
-            <div className="hidden aspect-square rounded-3xl bg-background/60 lg:block" />
-          }
+          fallback={<div className="hidden aspect-square rounded-3xl bg-background/60 lg:block" />}
         >
           <FeaturedDeal />
         </Suspense>
@@ -96,9 +77,7 @@ async function HeroStats() {
     {
       icon: BadgePercent,
       label:
-        stats.deals === 1
-          ? h.statDealsOne
-          : t(h.statDeals, { count: fmt.number(stats.deals) }),
+        stats.deals === 1 ? h.statDealsOne : t(h.statDeals, { count: fmt.number(stats.deals) }),
     },
     {
       icon: PackageSearch,
@@ -109,10 +88,7 @@ async function HeroStats() {
     },
     {
       icon: Store,
-      label:
-        stats.shops === 1
-          ? h.statShopsOne
-          : t(h.statShops, { count: stats.shops }),
+      label: stats.shops === 1 ? h.statShopsOne : t(h.statShops, { count: stats.shops }),
     },
     ...(stats.maxDiscount > 0
       ? [
@@ -163,28 +139,16 @@ async function FeaturedDeal() {
         eager
         className="aspect-[4/3] w-full"
       />
-      <DiscountBadge
-        percent={deal.discountPercent}
-        size="lg"
-        className="absolute top-14 right-0"
-      />
+      <DiscountBadge percent={deal.discountPercent} size="lg" className="absolute top-14 right-0" />
       <div className="flex flex-col gap-2 p-5">
-        <ShopBadge
-          slug={deal.shopSlug}
-          name={deal.shopName}
-          className="text-muted-foreground"
-        />
-        <p className="line-clamp-2 text-lg font-bold group-hover:underline">
-          {deal.name}
-        </p>
+        <ShopBadge slug={deal.shopSlug} name={deal.shopName} className="text-muted-foreground" />
+        <p className="line-clamp-2 text-lg font-bold group-hover:underline">{deal.name}</p>
         <PriceBlock
           price={deal.price}
           referencePrice={deal.referencePrice}
           discountAmount={deal.discountAmount}
         />
-        <p className="sr-only">
-          {t(dict.home.saveSr, { amount: fmt.euro(deal.discountAmount) })}
-        </p>
+        <p className="sr-only">{t(dict.home.saveSr, { amount: fmt.euro(deal.discountAmount) })}</p>
       </div>
     </Link>
   );
