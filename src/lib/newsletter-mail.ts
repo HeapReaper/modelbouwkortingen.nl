@@ -277,3 +277,127 @@ ${m.alertHistory}: ${historyUrl}
 ${t(m.alertFooter, { site: "Modelbouwkortingen.nl" })}`,
   };
 }
+
+/** Mail met één knop (accountmails): kop, tekst, knop, de link als tekst, voettekst. */
+function linkMail(
+  email: string,
+  lang: Locale,
+  url: string,
+  c: {
+    subject: string;
+    preheader: string;
+    heading: string;
+    text: string;
+    button: string;
+    footer: string;
+  },
+): Mail {
+  const m = getDictionary(lang).mail;
+  return {
+    to: email,
+    subject: c.subject,
+    html: layout({
+      lang,
+      preheader: c.preheader,
+      body: `<h1 style="margin:0 0 12px;font-size:22px;">${esc(c.heading)}</h1>
+<p style="margin:0 0 20px;font-size:16px;line-height:1.5;">${esc(c.text)}</p>
+<p style="margin:0 0 20px;">${button(url, c.button)}</p>
+<p style="margin:0;font-size:14px;color:${MUTED};">${esc(m.confirmFallback)}<br><a href="${esc(url)}" style="color:${MUTED};word-break:break-all;">${esc(url)}</a></p>`,
+      footer: esc(c.footer),
+    }),
+    text: `${c.heading}
+
+${c.text}
+${url}
+
+${c.footer}`,
+  };
+}
+
+export function accountVerifyMail(
+  email: string,
+  token: string,
+  lang: Locale,
+): Mail {
+  const m = getDictionary(lang).mail;
+  const url = `${siteUrl(lang, "/account/bevestigen")}?token=${encodeURIComponent(token)}`;
+  return linkMail(email, lang, url, {
+    subject: m.accountVerifySubject,
+    preheader: m.accountVerifyPreheader,
+    heading: m.accountVerifyHeading,
+    text: m.accountVerifyText,
+    button: m.accountVerifyButton,
+    footer: m.accountVerifyFooter,
+  });
+}
+
+/** Iemand registreerde zich met een adres dat al een (bevestigd) account heeft. */
+export function accountExistsMail(
+  email: string,
+  token: string,
+  lang: Locale,
+): Mail {
+  const m = getDictionary(lang).mail;
+  const url = `${siteUrl(lang, "/account/wachtwoord-herstellen")}?token=${encodeURIComponent(token)}`;
+  return linkMail(email, lang, url, {
+    subject: m.accountExistsSubject,
+    preheader: m.accountExistsText,
+    heading: m.accountExistsHeading,
+    text: m.accountExistsText,
+    button: m.passwordResetButton,
+    footer: m.passwordResetFooter,
+  });
+}
+
+export function passwordResetMail(
+  email: string,
+  token: string,
+  lang: Locale,
+): Mail {
+  const m = getDictionary(lang).mail;
+  const url = `${siteUrl(lang, "/account/wachtwoord-herstellen")}?token=${encodeURIComponent(token)}`;
+  return linkMail(email, lang, url, {
+    subject: m.passwordResetSubject,
+    preheader: m.passwordResetText,
+    heading: m.passwordResetHeading,
+    text: m.passwordResetText,
+    button: m.passwordResetButton,
+    footer: m.passwordResetFooter,
+  });
+}
+
+/** Naar het nieuwe adres: pas na deze klik wordt het het adres van het account. */
+export function emailChangeMail(
+  email: string,
+  token: string,
+  lang: Locale,
+): Mail {
+  const m = getDictionary(lang).mail;
+  const url = `${siteUrl(lang, "/account/email-bevestigen")}?token=${encodeURIComponent(token)}`;
+  return linkMail(email, lang, url, {
+    subject: m.emailChangeSubject,
+    preheader: m.emailChangePreheader,
+    heading: m.emailChangeHeading,
+    text: m.emailChangeText,
+    button: m.emailChangeButton,
+    footer: m.emailChangeFooter,
+  });
+}
+
+/** Naar het oude adres, na de wijziging: voor als iemand anders dit deed. */
+export function emailChangedMail(
+  oldEmail: string,
+  newEmail: string,
+  lang: Locale,
+): Mail {
+  const m = getDictionary(lang).mail;
+  const text = t(m.emailChangedText, { email: newEmail });
+  return linkMail(oldEmail, lang, siteUrl(lang, "/contact"), {
+    subject: m.emailChangedSubject,
+    preheader: text,
+    heading: m.emailChangedHeading,
+    text,
+    button: m.emailChangedButton,
+    footer: m.emailChangedFooter,
+  });
+}

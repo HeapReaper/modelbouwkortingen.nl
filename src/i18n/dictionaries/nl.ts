@@ -17,6 +17,7 @@ export const nl = {
     call: "Bel",
   },
   nav: {
+    account: "Mijn account",
     homeLabel: "Modelbouwkortingen.nl home",
     deals: "Aanbiedingen",
     allDeals: "Alle aanbiedingen",
@@ -642,8 +643,46 @@ export const nl = {
     alertHistory: "Prijsverloop bekijken",
     alertFooter:
       "Dit was een eenmalig prijsalarm van {site}; over dit product krijg je geen mail meer. Prijzen en voorraad kunnen inmiddels gewijzigd zijn; de prijs in de webshop is leidend. Sommige links zijn affiliate-links.",
+    accountVerifySubject: "Bevestig je account bij Modelbouwkortingen.nl",
+    accountVerifyPreheader: "Nog één klik en je account is klaar.",
+    accountVerifyHeading: "Bevestig je e-mailadres",
+    accountVerifyText:
+      "Bedankt voor het aanmaken van een account. Bevestig je e-mailadres, dan ben je meteen ingelogd en kun je je volglijst, prijsalarmen en kortingsmail beheren.",
+    accountVerifyButton: "E-mailadres bevestigen",
+    accountVerifyFooter:
+      "Heb je geen account aangemaakt? Dan kun je deze mail negeren: zonder bevestiging wordt het account niet actief. De link werkt 48 uur.",
+    accountExistsSubject: "Je hebt al een account bij Modelbouwkortingen.nl",
+    accountExistsHeading: "Je hebt al een account",
+    accountExistsText:
+      "Er is geprobeerd een account aan te maken met dit e-mailadres, maar dat heb je al. Log in op de site, of stel hieronder een nieuw wachtwoord in als je het vergeten bent.",
+    passwordResetSubject: "Stel een nieuw wachtwoord in",
+    passwordResetHeading: "Nieuw wachtwoord instellen",
+    passwordResetText:
+      "Je hebt gevraagd om een nieuw wachtwoord voor je account. Kies via de knop een nieuw wachtwoord; daarna ben je overal uitgelogd behalve op dat apparaat.",
+    passwordResetButton: "Nieuw wachtwoord instellen",
+    passwordResetFooter:
+      "Heb je dit niet gevraagd? Dan kun je deze mail negeren; je wachtwoord blijft hetzelfde. De link werkt 1 uur.",
+    emailChangeSubject: "Bevestig je nieuwe e-mailadres",
+    emailChangePreheader: "Nog één klik en dit wordt het adres van je account.",
+    emailChangeHeading: "Bevestig je nieuwe e-mailadres",
+    emailChangeText:
+      "Je wilt het e-mailadres van je account bij Modelbouwkortingen.nl wijzigen naar dit adres. Bevestig het, dan gaan je prijsalarmen en de kortingsmail voortaan hierheen.",
+    emailChangeButton: "Nieuw adres bevestigen",
+    emailChangeFooter:
+      "Heb je dit niet gevraagd? Dan kun je deze mail negeren; er verandert niets. De link werkt 48 uur.",
+    emailChangedSubject: "Het e-mailadres van je account is gewijzigd",
+    emailChangedHeading: "Je e-mailadres is gewijzigd",
+    emailChangedText:
+      "Het e-mailadres van je account bij Modelbouwkortingen.nl is gewijzigd naar {email}. Mails over je account, prijsalarmen en de kortingsmail gaan voortaan naar dat adres.",
+    emailChangedButton: "Contact opnemen",
+    emailChangedFooter:
+      "Heb jij dit gedaan? Dan hoef je niets te doen. Zo niet, neem dan direct contact met ons op.",
   },
   priceAlert: {
+    createdAccount:
+      "Je prijsalarm staat aan. We mailen je zodra je doelprijs bereikt is; je alarmen beheer je in je account.",
+    privacyAccount:
+      "Je bent ingelogd: met je accountadres staat het alarm meteen aan, zonder bevestigingsmail.",
     title: "Prijsalarm",
     text: "Nu {price}. Kies je doelprijs, dan mailen we je één keer zodra die bereikt is.",
     targetLabel: "Doelprijs (€)",
@@ -711,7 +750,7 @@ export const nl = {
   watchlist: {
     title: "Volglijst",
     description:
-      "Producten die je met het hartje bewaart. De lijst staat alleen in deze browser; je hebt geen account nodig.",
+      "Producten die je met het hartje bewaart. Zonder account staat de lijst alleen in deze browser; met een account heb je hem op elk apparaat.",
     empty:
       "Je volglijst is nog leeg. Tik op het hartje bij een product om het hier te bewaren.",
     hint: "De prijzen zijn actueel. Wil je een mail als een prijs zakt? Stel dan een prijsalarm in op de productpagina.",
@@ -719,6 +758,127 @@ export const nl = {
     saved: "Gevolgd",
     addLabel: "{name} op je volglijst zetten",
     removeLabel: "{name} van je volglijst halen",
+  },
+  account: {
+    title: "Mijn account",
+    description:
+      "Je volglijst op elk apparaat, je prijsalarmen en de kortingsmail op één plek.",
+    unavailable: "Accounts zijn nu niet beschikbaar.",
+    failed: "Er ging iets mis. Probeer het later opnieuw.",
+    rateLimited: "Te veel pogingen. Probeer het over een paar minuten opnieuw.",
+    invalidEmail: "Vul een geldig e-mailadres in.",
+    email: "E-mailadres",
+    password: "Wachtwoord",
+    password2: "Herhaal je wachtwoord",
+    newPassword: "Nieuw wachtwoord",
+    currentPassword: "Huidig wachtwoord",
+    passwordHint:
+      "Minstens {min} tekens. Een zin van een paar woorden is sterk en makkelijk te onthouden.",
+    passwordTooShort: "Je wachtwoord moet minstens 10 tekens lang zijn.",
+    passwordTooLong: "Je wachtwoord is te lang.",
+    passwordMismatch: "De twee wachtwoorden zijn niet hetzelfde.",
+    currentPasswordWrong: "Je wachtwoord klopt niet.",
+    save: "Opslaan",
+    saving: "Opslaan…",
+    sending: "Versturen…",
+    loginTitle: "Inloggen",
+    login: "Inloggen",
+    loggingIn: "Inloggen…",
+    loginInvalid: "Dit e-mailadres en wachtwoord horen niet bij elkaar.",
+    loginUnverified:
+      "Je hebt je e-mailadres nog niet bevestigd. We hebben je (opnieuw) een bevestigingsmail gestuurd.",
+    forgotLink: "Wachtwoord vergeten?",
+    registerTitle: "Account aanmaken",
+    registerPitch:
+      "Gratis, en je hebt alleen een e-mailadres en wachtwoord nodig.",
+    registerBenefits: [
+      "Je volglijst op al je apparaten",
+      "Al je prijsalarmen in één overzicht",
+      "De kortingsmail aan- en uitzetten en je voorkeuren kiezen",
+    ],
+    registerCta: "Account aanmaken",
+    register: "Account aanmaken",
+    registering: "Aanmaken…",
+    registerPrivacy:
+      "Je krijgt een mail om je adres te bevestigen. We gebruiken je adres alleen voor je account; zie ons privacybeleid.",
+    registered:
+      "Check je inbox en klik op de link in de mail om je account te bevestigen. Heb je al een account met dit adres? Dan staat in de mail hoe je inlogt.",
+    haveAccount: "Heb je al een account?",
+    verifyTitle: "Account bevestigen",
+    verifyDescription: "Nog één klik en je account is klaar.",
+    verifyButton: "Ja, bevestig mijn account",
+    verifying: "Bevestigen…",
+    verifyInvalid:
+      "Deze link werkt niet (meer). Log in om een nieuwe bevestigingsmail te krijgen.",
+    linkIncomplete:
+      "Deze link is onvolledig. Open de link uit de mail opnieuw.",
+    forgotTitle: "Wachtwoord vergeten",
+    forgotDescription:
+      "Vul je e-mailadres in; we sturen je een link om een nieuw wachtwoord in te stellen.",
+    forgotSubmit: "Stuur herstellink",
+    resetSent:
+      "Als er een account is met dit adres, staat er nu een mail met een herstellink in je inbox. De link werkt 1 uur.",
+    resetTitle: "Nieuw wachtwoord",
+    resetDescription:
+      "Kies een nieuw wachtwoord. Daarna ben je op andere apparaten uitgelogd.",
+    resetSubmit: "Wachtwoord opslaan",
+    resetInvalid:
+      "Deze link werkt niet (meer). Vraag een nieuwe herstellink aan.",
+    welcome: "Je account is bevestigd en je bent ingelogd. Welkom!",
+    deleted: "Je account en alle bijbehorende gegevens zijn verwijderd.",
+    loggedInAs: "Ingelogd als",
+    logout: "Uitloggen",
+    watchlistTitle: "Volglijst",
+    watchlistEmpty:
+      "Je volglijst is nog leeg. Tik op het hartje bij een product om het te bewaren.",
+    watchlistOne: "Er staat 1 product op je volglijst.",
+    watchlistCount: "Er staan {count} producten op je volglijst.",
+    watchlistOpen: "Volglijst bekijken",
+    alertsTitle: "Prijsalarmen",
+    alertsHint:
+      "Alarmen stel je in op de productpagina. Hier pas je de doelprijs aan of annuleer je een alarm.",
+    alertsEmpty: "Je hebt nog geen prijsalarmen.",
+    alertNow: "nu {price}",
+    alertTarget: "Doelprijs (€)",
+    alertActive: "Actief",
+    alertPending: "Wacht op bevestiging (opslaan zet hem aan)",
+    alertTriggered: "Afgegaan: {price} op {date}",
+    alertCancelled: "Geannuleerd",
+    alertCancel: "Alarm voor {name} annuleren",
+    alertSaved: "Opgeslagen.",
+    alertInvalidPrice: "Vul een geldige doelprijs in.",
+    newsletterTitle: "Kortingsmail",
+    newsletterHint: "Elke ochtend de grootste nieuwe RC-kortingen in je inbox.",
+    newsletterSwitch: "Stuur mij de dagelijkse kortingsmail",
+    passwordTitle: "Wachtwoord wijzigen",
+    changePassword: "Wachtwoord wijzigen",
+    passwordChanged:
+      "Je wachtwoord is gewijzigd. Op andere apparaten ben je uitgelogd.",
+    emailTitle: "E-mailadres wijzigen",
+    emailHint:
+      "Je prijsalarmen en de kortingsmail verhuizen mee naar je nieuwe adres. Tot je het nieuwe adres bevestigt, blijft je huidige adres actief.",
+    newEmail: "Nieuw e-mailadres",
+    emailSubmit: "Bevestigingsmail sturen",
+    emailSent:
+      "We hebben een mail gestuurd naar {email}. Klik op de link in die mail om je nieuwe adres te bevestigen.",
+    emailSame: "Dit is al je huidige e-mailadres.",
+    emailConfirmTitle: "Nieuw e-mailadres bevestigen",
+    emailConfirmDescription:
+      "Nog één klik en dit wordt het e-mailadres van je account.",
+    emailConfirmButton: "Ja, dit is mijn nieuwe adres",
+    emailConfirming: "Bevestigen…",
+    emailChangeInvalid:
+      "Deze link werkt niet (meer). Vraag in je account een nieuwe bevestigingsmail aan.",
+    emailTaken:
+      "Er bestaat al een account met dit e-mailadres. Kies een ander adres of verwijder eerst dat account.",
+    emailChanged:
+      "Je e-mailadres is gewijzigd. Je prijsalarmen en de kortingsmail gaan voortaan naar het nieuwe adres.",
+    deleteTitle: "Account verwijderen",
+    deleteText:
+      "Hiermee verwijder je je account, je volglijst, je prijsalarmen en je aanmelding voor de kortingsmail. Dit kun je niet ongedaan maken.",
+    deleteConfirmPassword: "Vul je wachtwoord in om te bevestigen",
+    deleteSubmit: "Account definitief verwijderen",
+    deleting: "Verwijderen…",
   },
   brandPage: {
     notFound: "Merk niet gevonden",
@@ -745,7 +905,7 @@ export const nl = {
       "Welke gegevens Modelbouwkortingen.nl verwerkt, welke cookies we gebruiken en wat je rechten zijn.",
     description:
       "Welke gegevens we verwerken, waarom, hoe lang, en welke cookies er op deze site staan.",
-    updated: "Laatst bijgewerkt: 18 oktober 2026",
+    updated: "Laatst bijgewerkt: 19 oktober 2026",
     cookieSettings: "Cookie-instellingen wijzigen",
     contactText:
       "Vragen over je gegevens, of wil je inzage, correctie of verwijdering? Stuur ons een bericht via het {contact}.",
@@ -769,6 +929,13 @@ export const nl = {
         body: [
           "Meld je je aan voor de dagelijkse kortingsmail of een prijsalarm, dan bewaren we je e-mailadres, de taal waarin je je aanmeldde, je voorkeuren (categorieën, webshops, minimale korting) of het product en de doelprijs van je alarm, en wanneer je je aanmeldde en bevestigde.",
           "We gebruiken dit alleen om je de gevraagde mails te sturen. De grondslag is je toestemming: je bevestigt je aanmelding via een link in je mailbox (double opt-in). In elke mail staat een link om je af te melden of je alarm te stoppen.",
+        ],
+      },
+      {
+        title: "Account",
+        body: [
+          "Maak je een account aan, dan bewaren we je e-mailadres, een versleutelde vorm (hash) van je wachtwoord, de taal waarin je je registreerde, wanneer je je account aanmaakte, bevestigde en voor het laatst inlogde, en de producten op je volglijst. Je prijsalarmen en kortingsmail horen bij hetzelfde e-mailadres en zie je in je account.",
+          "We gebruiken dit alleen om je account te laten werken. De grondslag is de overeenkomst met jou: je kiest zelf voor een account. Je kunt je account op elk moment zelf verwijderen; dan wissen we het account, je volglijst, je prijsalarmen en je aanmelding voor de kortingsmail direct.",
         ],
       },
       {
@@ -799,7 +966,7 @@ export const nl = {
         id: "cookies",
         title: "Cookies",
         body: [
-          "Functionele cookies en opslag, waarvoor geen toestemming nodig is: de cookie NEXT_LOCALE onthoudt je taalkeuze (1 jaar); je volglijst en thema staan in de opslag van je browser.",
+          "Functionele cookies en opslag, waarvoor geen toestemming nodig is: de cookie NEXT_LOCALE onthoudt je taalkeuze (1 jaar); als je inlogt, houdt de cookie mbk_sessie je ingelogd (30 dagen); je volglijst en thema staan in de opslag van je browser.",
           "Advertenties: we tonen advertenties via Google AdSense. Google en zijn partners kunnen daarvoor cookies plaatsen en gegevens over je bezoek gebruiken, bijvoorbeeld om advertenties af te stemmen op je interesses. In de Europese Economische Ruimte gebeurt dat alleen met je toestemming, die je geeft of weigert in de cookiemelding van Google. Je kunt je keuze altijd wijzigen met de knop hieronder of via 'Cookie-instellingen' onderaan elke pagina.",
         ],
         links: [

@@ -1,13 +1,19 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { setWatchlistItem } from "@/app/[lang]/account/actions";
+import { getAccount } from "@/lib/account-client";
 
 /**
- * Volglijst zonder account: product-id's in localStorage van deze browser. Kan leeg terugkomen
- * (privévenster, geblokkeerde opslag); dan werkt alles gewoon met een lege lijst.
+ * Volglijst: product-id's in localStorage van deze browser. Kan leeg terugkomen (privévenster,
+ * geblokkeerde opslag); dan werkt alles gewoon met een lege lijst. Met een account is de lijst
+ * in de database leidend en is dit een kopie ervan (zie AccountBridge); elke wijziging gaat dan
+ * ook naar de server.
  */
 
 const KEY = "mbk-volglijst";
+/** Id van het account waarmee de lijst in deze browser gelijkgetrokken is. */
+const ACCOUNT_KEY = "mbk-volglijst-account";
 const MAX = 100;
 const EVENT = "mbk-volglijst";
 
@@ -54,6 +60,30 @@ export function readWatchlist(): number[] {
   return parse(read());
 }
 
+/** Vervangt de lijst in deze browser (met de lijst van het account). */
+export function replaceWatchlist(ids: number[]) {
+  if (ids.join(",") !== readWatchlist().join(",")) write(ids);
+}
+
+/** Met welk account de lijst in deze browser gelijkgetrokken is (null = geen). */
+export function syncedAccount(): number | null {
+  try {
+    const v = Number(localStorage.getItem(ACCOUNT_KEY));
+    return Number.isSafeInteger(v) && v > 0 ? v : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setSyncedAccount(id: number | null) {
+  try {
+    if (id === null) localStorage.removeItem(ACCOUNT_KEY);
+    else localStorage.setItem(ACCOUNT_KEY, String(id));
+  } catch {
+    // Opslag geblokkeerd: dan wordt er bij elke paginalading opnieuw samengevoegd.
+  }
+}
+
 /** De volglijst, nieuwste eerst. Op de server (en vóór hydratie) leeg. */
 export function useWatchlist() {
   const raw = useSyncExternalStore(subscribe, read, () => "[]");
@@ -63,11 +93,12 @@ export function useWatchlist() {
     has: (id: number) => ids.includes(id),
     toggle: (id: number) => {
       const current = parse(read());
-      write(
-        current.includes(id)
-          ? current.filter((x) => x !== id)
-          : [id, ...current],
-      );
+      const watched = !current.includes(id);
+      write(watched ? [id, ...current] : current.filter((x) => x !== id));
+      if (getAccount())
+        setWatchlistItem(id, watched).catch((err) =>
+          console.error("[volglijst] opslaan in account mislukt", err),
+        );
     },
   };
 }

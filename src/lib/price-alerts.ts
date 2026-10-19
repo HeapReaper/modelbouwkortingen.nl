@@ -28,11 +28,16 @@ export type CreateAlertResult =
   | { ok: true }
   | { ok: false; error: "notFound" | "targetTooHigh" | "tooMany" };
 
+/**
+ * `confirmed`: het adres is al bevestigd (ingelogd account met dit adres), dus geen
+ * bevestigingsmail en het alarm staat meteen aan.
+ */
 export async function createAlert(
   rawEmail: string,
   productId: number,
   targetPrice: number,
   lang: Locale,
+  { confirmed = false }: { confirmed?: boolean } = {},
 ): Promise<CreateAlertResult> {
   const email = rawEmail.trim().toLowerCase();
   const deal = await getDeal(productId);
@@ -48,9 +53,16 @@ export async function createAlert(
     // Zelfde product opnieuw: alleen de doelprijs bijwerken. Al bevestigd = klaar.
     await prisma.priceAlert.update({
       where: { id: existing.id },
-      data: { targetPrice, locale: lang },
+      data: {
+        targetPrice,
+        locale: lang,
+        ...(confirmed && !existing.confirmedAt
+          ? { confirmedAt: new Date() }
+          : {}),
+      },
     });
     if (
+      confirmed ||
       existing.confirmedAt ||
       Date.now() - existing.createdAt.getTime() < RESEND_AFTER_MS
     )
@@ -72,9 +84,10 @@ export async function createAlert(
       targetPrice,
       token,
       locale: lang,
+      confirmedAt: confirmed ? new Date() : null,
     },
   });
-  await sendConfirmation(email, token, deal, targetPrice, lang);
+  if (!confirmed) await sendConfirmation(email, token, deal, targetPrice, lang);
   return { ok: true };
 }
 

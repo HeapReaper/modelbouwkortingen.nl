@@ -14,6 +14,7 @@ export const en: Dictionary = {
     call: "Call",
   },
   nav: {
+    account: "My account",
     homeLabel: "Modelbouwkortingen.nl home",
     deals: "Deals",
     allDeals: "All deals",
@@ -641,8 +642,47 @@ export const en: Dictionary = {
     alertHistory: "View price history",
     alertFooter:
       "This was a one-time price alert from {site}; you won't receive any more emails about this product. Prices and stock may have changed since; the price in the shop applies. Some links are affiliate links.",
+    accountVerifySubject: "Confirm your Modelbouwkortingen.nl account",
+    accountVerifyPreheader: "One more click and your account is ready.",
+    accountVerifyHeading: "Confirm your email address",
+    accountVerifyText:
+      "Thanks for creating an account. Confirm your email address and you'll be logged in right away, ready to manage your watchlist, price alerts and deals email.",
+    accountVerifyButton: "Confirm email address",
+    accountVerifyFooter:
+      "Didn't create an account? Then you can ignore this email: without confirmation the account won't be activated. The link works for 48 hours.",
+    accountExistsSubject: "You already have a Modelbouwkortingen.nl account",
+    accountExistsHeading: "You already have an account",
+    accountExistsText:
+      "Someone tried to create an account with this email address, but you already have one. Log in on the site, or set a new password below if you've forgotten it.",
+    passwordResetSubject: "Set a new password",
+    passwordResetHeading: "Set a new password",
+    passwordResetText:
+      "You asked for a new password for your account. Use the button to choose one; after that you'll be logged out everywhere except on that device.",
+    passwordResetButton: "Set new password",
+    passwordResetFooter:
+      "Didn't ask for this? Then you can ignore this email; your password stays the same. The link works for 1 hour.",
+    emailChangeSubject: "Confirm your new email address",
+    emailChangePreheader:
+      "One more click and this becomes your account's address.",
+    emailChangeHeading: "Confirm your new email address",
+    emailChangeText:
+      "You want to change the email address of your Modelbouwkortingen.nl account to this address. Confirm it and your price alerts and the deals email will come here from now on.",
+    emailChangeButton: "Confirm new address",
+    emailChangeFooter:
+      "Didn't ask for this? Then you can ignore this email; nothing will change. The link works for 48 hours.",
+    emailChangedSubject: "Your account's email address has been changed",
+    emailChangedHeading: "Your email address has been changed",
+    emailChangedText:
+      "The email address of your Modelbouwkortingen.nl account has been changed to {email}. Emails about your account, price alerts and the deals email now go to that address.",
+    emailChangedButton: "Contact us",
+    emailChangedFooter:
+      "Did you do this? Then there's nothing you need to do. If not, please contact us right away.",
   },
   priceAlert: {
+    createdAccount:
+      "Your price alert is on. We'll email you as soon as your target price is reached; you can manage your alerts in your account.",
+    privacyAccount:
+      "You're logged in: with your account address the alert is on right away, without a confirmation email.",
     title: "Price alert",
     text: "Now {price}. Pick your target price and we'll email you once as soon as it's reached.",
     targetLabel: "Target price (€)",
@@ -709,7 +749,7 @@ export const en: Dictionary = {
   watchlist: {
     title: "Watchlist",
     description:
-      "Products you saved with the heart. The list is only stored in this browser; no account needed.",
+      "Products you saved with the heart. Without an account the list is only stored in this browser; with an account you have it on every device.",
     empty:
       "Your watchlist is still empty. Tap the heart on a product to save it here.",
     hint: "Prices are up to date. Want an email when a price drops? Set a price alert on the product page.",
@@ -717,6 +757,125 @@ export const en: Dictionary = {
     saved: "Watching",
     addLabel: "Add {name} to your watchlist",
     removeLabel: "Remove {name} from your watchlist",
+  },
+  account: {
+    title: "My account",
+    description:
+      "Your watchlist on every device, your price alerts and the deals email in one place.",
+    unavailable: "Accounts are not available right now.",
+    failed: "Something went wrong. Please try again later.",
+    rateLimited: "Too many attempts. Please try again in a few minutes.",
+    invalidEmail: "Please enter a valid email address.",
+    email: "Email address",
+    password: "Password",
+    password2: "Repeat your password",
+    newPassword: "New password",
+    currentPassword: "Current password",
+    passwordHint:
+      "At least {min} characters. A sentence of a few words is strong and easy to remember.",
+    passwordTooShort: "Your password must be at least 10 characters long.",
+    passwordTooLong: "Your password is too long.",
+    passwordMismatch: "The two passwords don't match.",
+    currentPasswordWrong: "Your password is incorrect.",
+    save: "Save",
+    saving: "Saving…",
+    sending: "Sending…",
+    loginTitle: "Log in",
+    login: "Log in",
+    loggingIn: "Logging in…",
+    loginInvalid: "This email address and password don't match.",
+    loginUnverified:
+      "You haven't confirmed your email address yet. We've sent you a confirmation email (again).",
+    forgotLink: "Forgot your password?",
+    registerTitle: "Create an account",
+    registerPitch: "Free, and all you need is an email address and a password.",
+    registerBenefits: [
+      "Your watchlist on all your devices",
+      "All your price alerts in one overview",
+      "Turn the deals email on or off and choose your preferences",
+    ],
+    registerCta: "Create an account",
+    register: "Create account",
+    registering: "Creating…",
+    registerPrivacy:
+      "You'll get an email to confirm your address. We only use your address for your account; see our privacy policy.",
+    registered:
+      "Check your inbox and click the link in the email to confirm your account. Already have an account with this address? The email explains how to log in.",
+    haveAccount: "Already have an account?",
+    verifyTitle: "Confirm account",
+    verifyDescription: "One more click and your account is ready.",
+    verifyButton: "Yes, confirm my account",
+    verifying: "Confirming…",
+    verifyInvalid:
+      "This link doesn't work (anymore). Log in to get a new confirmation email.",
+    linkIncomplete:
+      "This link is incomplete. Open the link from the email again.",
+    forgotTitle: "Forgot password",
+    forgotDescription:
+      "Enter your email address and we'll send you a link to set a new password.",
+    forgotSubmit: "Send reset link",
+    resetSent:
+      "If there's an account with this address, an email with a reset link is now in your inbox. The link works for 1 hour.",
+    resetTitle: "New password",
+    resetDescription:
+      "Choose a new password. You'll then be logged out on other devices.",
+    resetSubmit: "Save password",
+    resetInvalid: "This link doesn't work (anymore). Request a new reset link.",
+    welcome: "Your account is confirmed and you're logged in. Welcome!",
+    deleted: "Your account and all related data have been deleted.",
+    loggedInAs: "Logged in as",
+    logout: "Log out",
+    watchlistTitle: "Watchlist",
+    watchlistEmpty:
+      "Your watchlist is still empty. Tap the heart on a product to save it.",
+    watchlistOne: "There is 1 product on your watchlist.",
+    watchlistCount: "There are {count} products on your watchlist.",
+    watchlistOpen: "View watchlist",
+    alertsTitle: "Price alerts",
+    alertsHint:
+      "You set alerts on the product page. Here you can change the target price or cancel an alert.",
+    alertsEmpty: "You don't have any price alerts yet.",
+    alertNow: "now {price}",
+    alertTarget: "Target price (€)",
+    alertActive: "Active",
+    alertPending: "Awaiting confirmation (saving turns it on)",
+    alertTriggered: "Triggered: {price} on {date}",
+    alertCancelled: "Cancelled",
+    alertCancel: "Cancel alert for {name}",
+    alertSaved: "Saved.",
+    alertInvalidPrice: "Please enter a valid target price.",
+    newsletterTitle: "Deals email",
+    newsletterHint: "The biggest new RC discounts in your inbox every morning.",
+    newsletterSwitch: "Send me the daily deals email",
+    passwordTitle: "Change password",
+    changePassword: "Change password",
+    passwordChanged:
+      "Your password has been changed. You've been logged out on other devices.",
+    emailTitle: "Change email address",
+    emailHint:
+      "Your price alerts and the deals email move to your new address. Until you confirm the new address, your current one stays active.",
+    newEmail: "New email address",
+    emailSubmit: "Send confirmation email",
+    emailSent:
+      "We've sent an email to {email}. Click the link in it to confirm your new address.",
+    emailSame: "This is already your current email address.",
+    emailConfirmTitle: "Confirm new email address",
+    emailConfirmDescription:
+      "One more click and this becomes your account's email address.",
+    emailConfirmButton: "Yes, this is my new address",
+    emailConfirming: "Confirming…",
+    emailChangeInvalid:
+      "This link doesn't work (anymore). Request a new confirmation email in your account.",
+    emailTaken:
+      "There's already an account with this email address. Choose another address or delete that account first.",
+    emailChanged:
+      "Your email address has been changed. Your price alerts and the deals email now go to the new address.",
+    deleteTitle: "Delete account",
+    deleteText:
+      "This deletes your account, your watchlist, your price alerts and your deals email subscription. This can't be undone.",
+    deleteConfirmPassword: "Enter your password to confirm",
+    deleteSubmit: "Delete account permanently",
+    deleting: "Deleting…",
   },
   brandPage: {
     notFound: "Brand not found",
@@ -743,7 +902,7 @@ export const en: Dictionary = {
       "What data Modelbouwkortingen.nl processes, which cookies we use and what your rights are.",
     description:
       "What data we process, why, for how long, and which cookies this site uses.",
-    updated: "Last updated: 18 October 2026",
+    updated: "Last updated: 19 October 2026",
     cookieSettings: "Change cookie settings",
     contactText:
       "Questions about your data, or want access, correction or deletion? Send us a message using the {contact}.",
@@ -767,6 +926,13 @@ export const en: Dictionary = {
         body: [
           "If you sign up for the daily deal email or a price alert, we store your email address, the language you signed up in, your preferences (categories, shops, minimum discount) or the product and target price of your alert, and when you signed up and confirmed.",
           "We only use this to send you the emails you asked for. The legal basis is your consent: you confirm your sign-up via a link in your inbox (double opt-in). Every email contains a link to unsubscribe or stop your alert.",
+        ],
+      },
+      {
+        title: "Account",
+        body: [
+          "If you create an account, we store your email address, a hashed form of your password, the language you registered in, when you created, confirmed and last logged in to your account, and the products on your watchlist. Your price alerts and deals email belong to the same email address and are shown in your account.",
+          "We only use this to make your account work. The legal basis is our agreement with you: you choose to create an account. You can delete your account yourself at any time; we then immediately erase the account, your watchlist, your price alerts and your deals email subscription.",
         ],
       },
       {
@@ -797,7 +963,7 @@ export const en: Dictionary = {
         id: "cookies",
         title: "Cookies",
         body: [
-          "Functional cookies and storage, which need no consent: the NEXT_LOCALE cookie remembers your language (1 year); your watchlist and theme are stored in your browser.",
+          "Functional cookies and storage, which need no consent: the NEXT_LOCALE cookie remembers your language (1 year); when you log in, the mbk_sessie cookie keeps you logged in (30 days); your watchlist and theme are stored in your browser.",
           "Advertising: we show ads through Google AdSense. Google and its partners may set cookies and use data about your visit for this, for example to tailor ads to your interests. In the European Economic Area this only happens with your consent, which you give or refuse in Google's cookie notice. You can change your choice at any time with the button below or via 'Cookie settings' at the bottom of every page.",
         ],
         links: [

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useI18n } from "@/i18n/client";
 import { t } from "@/i18n/translate";
+import { useAccount } from "@/lib/account-client";
 import { cn } from "@/lib/utils";
 
 /** "Mail mij als de prijs onder € … komt" op de productpagina. */
@@ -23,6 +24,8 @@ export function PriceAlertForm({
   const id = useId();
   const { lang, dict, fmt } = useI18n();
   const a = dict.priceAlert;
+  // Ingelogd: adres alvast invullen; met dat adres is geen bevestigingsmail nodig.
+  const account = useAccount();
   const [state, action, pending] = useActionState<NewsletterState, FormData>(
     createPriceAlert,
     { ok: false },
@@ -82,7 +85,8 @@ export function PriceAlertForm({
                 autoComplete="email"
                 required
                 placeholder={dict.newsletter.emailPlaceholder}
-                defaultValue={state.email}
+                key={account?.email}
+                defaultValue={state.email ?? account?.email}
                 aria-invalid={Boolean(state.message)}
                 aria-describedby={state.message ? `${id}-error` : undefined}
                 className="h-11 bg-background text-base"
@@ -106,7 +110,9 @@ export function PriceAlertForm({
               {state.message}
             </p>
           ) : null}
-          <p className="text-sm text-muted-foreground">{a.privacy}</p>
+          <p className="text-sm text-muted-foreground">
+            {account ? a.privacyAccount : a.privacy}
+          </p>
           {/* Honeypot tegen spam, onzichtbaar voor mensen */}
           <div
             aria-hidden="true"

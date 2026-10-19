@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import type { NewsletterState } from "@/app/[lang]/nieuwsbrief/shared";
 import { DEFAULT_LOCALE, hasLocale, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+import { getCurrentUser } from "@/lib/auth";
 import { isDbConfigured } from "@/lib/db";
 import { cancelAlert, confirmAlert, createAlert } from "@/lib/price-alerts";
 
@@ -50,14 +51,19 @@ export async function createPriceAlert(
   if (!isDbConfigured()) {
     return { ok: false, message: a.unavailable, email };
   }
+  // Ingelogd met hetzelfde adres: dat is al bevestigd, dus geen bevestigingsmail.
+  const user = await getCurrentUser();
+  const confirmed = user?.email === email.toLowerCase();
   try {
-    const result = await createAlert(email, productId, target, lang);
+    const result = await createAlert(email, productId, target, lang, {
+      confirmed,
+    });
     if (!result.ok) return { ok: false, message: a[result.error], email };
   } catch (err) {
     console.error("[prijsalarm] aanmaken mislukt", err);
     return { ok: false, message: a.failed, email };
   }
-  return { ok: true, message: a.created };
+  return { ok: true, message: confirmed ? a.createdAccount : a.created };
 }
 
 export async function confirmPriceAlert(

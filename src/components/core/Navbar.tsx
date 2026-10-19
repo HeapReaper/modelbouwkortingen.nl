@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, Search } from "lucide-react";
+import { Heart, Search, UserRound } from "lucide-react";
 import Link from "next/link";
 import { LanguageSwitcher } from "@/components/core/LanguageSwitcher";
 import { Logo } from "@/components/core/Logo";
@@ -151,6 +151,14 @@ export default function Navbar() {
         >
           <Heart className="size-5" />
           <WatchlistCount />
+        </Link>
+        <Link
+          href={href("/account")}
+          aria-label={dict.nav.account}
+          title={dict.nav.account}
+          className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "hidden sm:inline-flex")}
+        >
+          <UserRound className="size-5" />
         </Link>
         <LanguageSwitcher />
         {/* Op smalle schermen staat de themakeuze in het menu, zodat alles past. */}

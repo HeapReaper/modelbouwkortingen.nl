@@ -79,6 +79,7 @@ model Product {
   clicks          OutboundClick[]
   translations    ProductTranslation[]
   promotions      Promotion[]
+  watchlistItems  WatchlistItem[]
 
   @@unique([shopId, externalId])
   @@index([isDeal, discountPercent(sort: Desc)], map: "products_deals_idx", where: raw("is_deal"))
@@ -379,4 +380,66 @@ model AnalyticsSalt {
   salt String
 
   @@map("analytics_salts")
+}
+
+/// Gebruikersaccount (e-mail + wachtwoord). Inloggen kan pas na het bevestigen van het
+/// e-mailadres; daarom horen prijsalarmen en de kortingsmail met hetzelfde adres bij het account.
+model User {
+  id              BigInt          @id @default(autoincrement())
+  /// Altijd in kleine letters opgeslagen.
+  email           String          @unique
+  /// scrypt, zie src/lib/auth.ts ("scrypt$<salt>$<hash>", base64url).
+  passwordHash    String          @map("password_hash")
+  /// NULL = nog niet bevestigd; zolang kan er niet worden ingelogd.
+  emailVerifiedAt DateTime?       @map("email_verified_at") @db.Timestamptz
+  /// Taal van de site bij het registreren; de accountmails gaan in deze taal.
+  locale          String          @default("nl")
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  lastLoginAt     DateTime?       @map("last_login_at") @db.Timestamptz
+  sessions        UserSession[]
+  tokens          UserToken[]
+  watchlist       WatchlistItem[]
+
+  @@map("users")
+}
+
+/// Inlogsessie. De cookie bevat een willekeurig token; hier staat alleen de SHA-256 ervan.
+model UserSession {
+  id        String   @id
+  userId    BigInt   @map("user_id")
+  expiresAt DateTime @map("expires_at") @db.Timestamptz
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "user_sessions_user_idx")
+  @@map("user_sessions")
+}
+
+/// Eenmalige link uit een mail: e-mailadres bevestigen, wachtwoord herstellen of een nieuw
+/// e-mailadres bevestigen. Net als bij sessies staat alleen de SHA-256 van het token in de database.
+model UserToken {
+  id        String   @id
+  userId    BigInt   @map("user_id")
+  /// verify | reset | email
+  purpose   String
+  /// Bij purpose = email: het nieuwe adres (kleine letters), dat pas na de klik actief wordt.
+  newEmail  String?  @map("new_email")
+  expiresAt DateTime @map("expires_at") @db.Timestamptz
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose], map: "user_tokens_user_idx")
+  @@map("user_tokens")
+}
+
+/// Volglijst van een account (zonder account staat die alleen in de browser).
+model WatchlistItem {
+  userId    BigInt   @map("user_id")
+  productId BigInt   @map("product_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([userId, productId])
+  @@map("watchlist_items")
 }

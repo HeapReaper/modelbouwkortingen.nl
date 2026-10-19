@@ -14,6 +14,7 @@ export const de: Dictionary = {
     call: "Anrufen:",
   },
   nav: {
+    account: "Mein Konto",
     homeLabel: "Modelbouwkortingen.nl Startseite",
     deals: "Angebote",
     allDeals: "Alle Angebote",
@@ -656,8 +657,47 @@ export const de: Dictionary = {
     alertHistory: "Preisverlauf ansehen",
     alertFooter:
       "Dies war ein einmaliger Preisalarm von {site}; zu diesem Produkt erhältst du keine E-Mails mehr. Preise und Verfügbarkeit können sich inzwischen geändert haben; es gilt der Preis im Shop. Einige Links sind Affiliate-Links.",
+    accountVerifySubject: "Bestätige dein Konto bei Modelbouwkortingen.nl",
+    accountVerifyPreheader: "Noch ein Klick und dein Konto ist fertig.",
+    accountVerifyHeading: "Bestätige deine E-Mail-Adresse",
+    accountVerifyText:
+      "Danke für dein neues Konto. Bestätige deine E-Mail-Adresse, dann bist du sofort angemeldet und kannst deine Merkliste, Preisalarme und Angebots-Mail verwalten.",
+    accountVerifyButton: "E-Mail-Adresse bestätigen",
+    accountVerifyFooter:
+      "Du hast kein Konto erstellt? Dann kannst du diese Mail ignorieren: Ohne Bestätigung wird das Konto nicht aktiviert. Der Link gilt 48 Stunden.",
+    accountExistsSubject: "Du hast bereits ein Konto bei Modelbouwkortingen.nl",
+    accountExistsHeading: "Du hast bereits ein Konto",
+    accountExistsText:
+      "Jemand hat versucht, mit dieser E-Mail-Adresse ein Konto zu erstellen, aber du hast schon eins. Melde dich auf der Website an oder lege unten ein neues Passwort fest, falls du es vergessen hast.",
+    passwordResetSubject: "Neues Passwort festlegen",
+    passwordResetHeading: "Neues Passwort festlegen",
+    passwordResetText:
+      "Du hast ein neues Passwort für dein Konto angefordert. Wähle über den Button ein neues Passwort; danach bist du überall abgemeldet außer auf diesem Gerät.",
+    passwordResetButton: "Neues Passwort festlegen",
+    passwordResetFooter:
+      "Du hast das nicht angefordert? Dann kannst du diese Mail ignorieren; dein Passwort bleibt gleich. Der Link gilt 1 Stunde.",
+    emailChangeSubject: "Bestätige deine neue E-Mail-Adresse",
+    emailChangePreheader:
+      "Noch ein Klick und das wird die Adresse deines Kontos.",
+    emailChangeHeading: "Bestätige deine neue E-Mail-Adresse",
+    emailChangeText:
+      "Du möchtest die E-Mail-Adresse deines Kontos bei Modelbouwkortingen.nl auf diese Adresse ändern. Bestätige sie, dann kommen deine Preisalarme und die Angebots-Mail ab jetzt hierher.",
+    emailChangeButton: "Neue Adresse bestätigen",
+    emailChangeFooter:
+      "Du hast das nicht angefordert? Dann kannst du diese Mail ignorieren; es ändert sich nichts. Der Link gilt 48 Stunden.",
+    emailChangedSubject: "Die E-Mail-Adresse deines Kontos wurde geändert",
+    emailChangedHeading: "Deine E-Mail-Adresse wurde geändert",
+    emailChangedText:
+      "Die E-Mail-Adresse deines Kontos bei Modelbouwkortingen.nl wurde auf {email} geändert. Mails zu deinem Konto, Preisalarme und die Angebots-Mail gehen ab jetzt an diese Adresse.",
+    emailChangedButton: "Kontakt aufnehmen",
+    emailChangedFooter:
+      "Warst du das? Dann musst du nichts tun. Wenn nicht, melde dich bitte sofort bei uns.",
   },
   priceAlert: {
+    createdAccount:
+      "Dein Preisalarm ist aktiv. Wir mailen dir, sobald dein Wunschpreis erreicht ist; deine Alarme verwaltest du in deinem Konto.",
+    privacyAccount:
+      "Du bist angemeldet: Mit deiner Konto-Adresse ist der Alarm sofort aktiv, ohne Bestätigungsmail.",
     title: "Preisalarm",
     text: "Jetzt {price}. Wähle deinen Wunschpreis, dann schreiben wir dir einmal, sobald er erreicht ist.",
     targetLabel: "Wunschpreis (€)",
@@ -728,7 +768,7 @@ export const de: Dictionary = {
   watchlist: {
     title: "Merkliste",
     description:
-      "Produkte, die du mit dem Herz gespeichert hast. Die Liste liegt nur in diesem Browser; du brauchst kein Konto.",
+      "Produkte, die du mit dem Herz gespeichert hast. Ohne Konto liegt die Liste nur in diesem Browser; mit Konto hast du sie auf jedem Gerät.",
     empty:
       "Deine Merkliste ist noch leer. Tippe bei einem Produkt auf das Herz, um es hier zu speichern.",
     hint: "Die Preise sind aktuell. Möchtest du eine E-Mail, wenn ein Preis sinkt? Setze einen Preisalarm auf der Produktseite.",
@@ -736,6 +776,128 @@ export const de: Dictionary = {
     saved: "Gemerkt",
     addLabel: "{name} auf deine Merkliste setzen",
     removeLabel: "{name} von deiner Merkliste entfernen",
+  },
+  account: {
+    title: "Mein Konto",
+    description:
+      "Deine Merkliste auf jedem Gerät, deine Preisalarme und die Angebots-Mail an einem Ort.",
+    unavailable: "Konten sind gerade nicht verfügbar.",
+    failed: "Etwas ist schiefgelaufen. Versuche es später erneut.",
+    rateLimited: "Zu viele Versuche. Versuche es in ein paar Minuten erneut.",
+    invalidEmail: "Gib eine gültige E-Mail-Adresse ein.",
+    email: "E-Mail-Adresse",
+    password: "Passwort",
+    password2: "Passwort wiederholen",
+    newPassword: "Neues Passwort",
+    currentPassword: "Aktuelles Passwort",
+    passwordHint:
+      "Mindestens {min} Zeichen. Ein Satz aus ein paar Wörtern ist sicher und leicht zu merken.",
+    passwordTooShort: "Dein Passwort muss mindestens 10 Zeichen lang sein.",
+    passwordTooLong: "Dein Passwort ist zu lang.",
+    passwordMismatch: "Die beiden Passwörter stimmen nicht überein.",
+    currentPasswordWrong: "Dein Passwort ist falsch.",
+    save: "Speichern",
+    saving: "Speichern…",
+    sending: "Senden…",
+    loginTitle: "Anmelden",
+    login: "Anmelden",
+    loggingIn: "Anmelden…",
+    loginInvalid: "E-Mail-Adresse und Passwort passen nicht zusammen.",
+    loginUnverified:
+      "Du hast deine E-Mail-Adresse noch nicht bestätigt. Wir haben dir (erneut) eine Bestätigungsmail geschickt.",
+    forgotLink: "Passwort vergessen?",
+    registerTitle: "Konto erstellen",
+    registerPitch:
+      "Kostenlos, und du brauchst nur eine E-Mail-Adresse und ein Passwort.",
+    registerBenefits: [
+      "Deine Merkliste auf all deinen Geräten",
+      "Alle Preisalarme in einer Übersicht",
+      "Die Angebots-Mail ein- und ausschalten und deine Vorlieben wählen",
+    ],
+    registerCta: "Konto erstellen",
+    register: "Konto erstellen",
+    registering: "Erstellen…",
+    registerPrivacy:
+      "Du bekommst eine Mail, um deine Adresse zu bestätigen. Wir nutzen deine Adresse nur für dein Konto; siehe unsere Datenschutzerklärung.",
+    registered:
+      "Schau in dein Postfach und klicke auf den Link in der Mail, um dein Konto zu bestätigen. Hast du mit dieser Adresse schon ein Konto? Dann steht in der Mail, wie du dich anmeldest.",
+    haveAccount: "Du hast schon ein Konto?",
+    verifyTitle: "Konto bestätigen",
+    verifyDescription: "Noch ein Klick und dein Konto ist fertig.",
+    verifyButton: "Ja, mein Konto bestätigen",
+    verifying: "Bestätigen…",
+    verifyInvalid:
+      "Dieser Link funktioniert nicht (mehr). Melde dich an, um eine neue Bestätigungsmail zu bekommen.",
+    linkIncomplete:
+      "Dieser Link ist unvollständig. Öffne den Link aus der Mail erneut.",
+    forgotTitle: "Passwort vergessen",
+    forgotDescription:
+      "Gib deine E-Mail-Adresse ein; wir schicken dir einen Link, um ein neues Passwort festzulegen.",
+    forgotSubmit: "Link senden",
+    resetSent:
+      "Wenn es ein Konto mit dieser Adresse gibt, liegt jetzt eine Mail mit einem Link in deinem Postfach. Der Link gilt 1 Stunde.",
+    resetTitle: "Neues Passwort",
+    resetDescription:
+      "Wähle ein neues Passwort. Danach bist du auf anderen Geräten abgemeldet.",
+    resetSubmit: "Passwort speichern",
+    resetInvalid:
+      "Dieser Link funktioniert nicht (mehr). Fordere einen neuen Link an.",
+    welcome: "Dein Konto ist bestätigt und du bist angemeldet. Willkommen!",
+    deleted: "Dein Konto und alle zugehörigen Daten wurden gelöscht.",
+    loggedInAs: "Angemeldet als",
+    logout: "Abmelden",
+    watchlistTitle: "Merkliste",
+    watchlistEmpty:
+      "Deine Merkliste ist noch leer. Tippe bei einem Produkt auf das Herz, um es zu speichern.",
+    watchlistOne: "Auf deiner Merkliste steht 1 Produkt.",
+    watchlistCount: "Auf deiner Merkliste stehen {count} Produkte.",
+    watchlistOpen: "Merkliste ansehen",
+    alertsTitle: "Preisalarme",
+    alertsHint:
+      "Alarme stellst du auf der Produktseite ein. Hier änderst du den Wunschpreis oder brichst einen Alarm ab.",
+    alertsEmpty: "Du hast noch keine Preisalarme.",
+    alertNow: "jetzt {price}",
+    alertTarget: "Wunschpreis (€)",
+    alertActive: "Aktiv",
+    alertPending: "Wartet auf Bestätigung (Speichern aktiviert ihn)",
+    alertTriggered: "Ausgelöst: {price} am {date}",
+    alertCancelled: "Abgebrochen",
+    alertCancel: "Alarm für {name} abbrechen",
+    alertSaved: "Gespeichert.",
+    alertInvalidPrice: "Gib einen gültigen Wunschpreis ein.",
+    newsletterTitle: "Angebots-Mail",
+    newsletterHint:
+      "Jeden Morgen die größten neuen RC-Rabatte in deinem Postfach.",
+    newsletterSwitch: "Schick mir die tägliche Angebots-Mail",
+    passwordTitle: "Passwort ändern",
+    changePassword: "Passwort ändern",
+    passwordChanged:
+      "Dein Passwort wurde geändert. Auf anderen Geräten bist du abgemeldet.",
+    emailTitle: "E-Mail-Adresse ändern",
+    emailHint:
+      "Deine Preisalarme und die Angebots-Mail ziehen mit an deine neue Adresse um. Bis du die neue Adresse bestätigst, bleibt deine aktuelle aktiv.",
+    newEmail: "Neue E-Mail-Adresse",
+    emailSubmit: "Bestätigungsmail senden",
+    emailSent:
+      "Wir haben eine Mail an {email} geschickt. Klicke auf den Link darin, um deine neue Adresse zu bestätigen.",
+    emailSame: "Das ist bereits deine aktuelle E-Mail-Adresse.",
+    emailConfirmTitle: "Neue E-Mail-Adresse bestätigen",
+    emailConfirmDescription:
+      "Noch ein Klick und das wird die E-Mail-Adresse deines Kontos.",
+    emailConfirmButton: "Ja, das ist meine neue Adresse",
+    emailConfirming: "Bestätigen…",
+    emailChangeInvalid:
+      "Dieser Link funktioniert nicht (mehr). Fordere in deinem Konto eine neue Bestätigungsmail an.",
+    emailTaken:
+      "Mit dieser E-Mail-Adresse gibt es bereits ein Konto. Wähle eine andere Adresse oder lösche zuerst dieses Konto.",
+    emailChanged:
+      "Deine E-Mail-Adresse wurde geändert. Deine Preisalarme und die Angebots-Mail gehen ab jetzt an die neue Adresse.",
+    deleteTitle: "Konto löschen",
+    deleteText:
+      "Damit löschst du dein Konto, deine Merkliste, deine Preisalarme und deine Anmeldung zur Angebots-Mail. Das lässt sich nicht rückgängig machen.",
+    deleteConfirmPassword: "Gib zur Bestätigung dein Passwort ein",
+    deleteSubmit: "Konto endgültig löschen",
+    deleting: "Löschen…",
   },
   brandPage: {
     notFound: "Marke nicht gefunden",
@@ -762,7 +924,7 @@ export const de: Dictionary = {
       "Welche Daten Modelbouwkortingen.nl verarbeitet, welche Cookies wir verwenden und welche Rechte du hast.",
     description:
       "Welche Daten wir verarbeiten, warum, wie lange, und welche Cookies diese Seite verwendet.",
-    updated: "Zuletzt aktualisiert: 18. Oktober 2026",
+    updated: "Zuletzt aktualisiert: 19. Oktober 2026",
     cookieSettings: "Cookie-Einstellungen ändern",
     contactText:
       "Fragen zu deinen Daten, oder möchtest du Auskunft, Berichtigung oder Löschung? Schreib uns über das {contact}.",
@@ -786,6 +948,13 @@ export const de: Dictionary = {
         body: [
           "Wenn du dich für die tägliche Angebots-Mail oder einen Preisalarm anmeldest, speichern wir deine E-Mail-Adresse, die Sprache deiner Anmeldung, deine Einstellungen (Kategorien, Shops, Mindestrabatt) bzw. das Produkt und den Zielpreis deines Alarms sowie wann du dich angemeldet und bestätigt hast.",
           "Wir nutzen das nur, um dir die gewünschten Mails zu schicken. Rechtsgrundlage ist deine Einwilligung: Du bestätigst deine Anmeldung über einen Link in deinem Postfach (Double-Opt-in). In jeder Mail steht ein Link zum Abmelden oder zum Beenden deines Alarms.",
+        ],
+      },
+      {
+        title: "Konto",
+        body: [
+          "Wenn du ein Konto erstellst, speichern wir deine E-Mail-Adresse, eine verschlüsselte Form (Hash) deines Passworts, die Sprache bei der Registrierung, wann du dein Konto erstellt, bestätigt und dich zuletzt angemeldet hast, sowie die Produkte auf deiner Merkliste. Deine Preisalarme und die Angebots-Mail gehören zur selben E-Mail-Adresse und erscheinen in deinem Konto.",
+          "Wir nutzen diese Daten nur, damit dein Konto funktioniert. Rechtsgrundlage ist der Vertrag mit dir: Du entscheidest dich selbst für ein Konto. Du kannst dein Konto jederzeit selbst löschen; dann löschen wir das Konto, deine Merkliste, deine Preisalarme und deine Anmeldung zur Angebots-Mail sofort.",
         ],
       },
       {
@@ -816,7 +985,7 @@ export const de: Dictionary = {
         id: "cookies",
         title: "Cookies",
         body: [
-          "Funktionale Cookies und Speicher, für die keine Einwilligung nötig ist: Das Cookie NEXT_LOCALE merkt sich deine Sprache (1 Jahr); deine Merkliste und dein Design liegen im Speicher deines Browsers.",
+          "Funktionale Cookies und Speicher, für die keine Einwilligung nötig ist: Das Cookie NEXT_LOCALE merkt sich deine Sprache (1 Jahr); wenn du dich anmeldest, hält dich das Cookie mbk_sessie angemeldet (30 Tage); deine Merkliste und dein Design liegen im Speicher deines Browsers.",
           "Werbung: Wir zeigen Anzeigen über Google AdSense. Google und seine Partner können dafür Cookies setzen und Daten über deinen Besuch verwenden, zum Beispiel um Anzeigen auf deine Interessen abzustimmen. Im Europäischen Wirtschaftsraum geschieht das nur mit deiner Einwilligung, die du im Cookie-Hinweis von Google erteilst oder verweigerst. Du kannst deine Wahl jederzeit über die Schaltfläche unten oder über „Cookie-Einstellungen“ unten auf jeder Seite ändern.",
         ],
         links: [
