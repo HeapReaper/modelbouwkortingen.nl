@@ -90,7 +90,12 @@ function toOffer(r: Row): Offer {
 
 export async function comparePrices(
   q: string | undefined,
-  opts: { inStock?: boolean; sort?: CompareSort; lang?: Locale } = {},
+  opts: {
+    inStock?: boolean;
+    category?: string;
+    sort?: CompareSort;
+    lang?: Locale;
+  } = {},
 ): Promise<{ groups: CompareGroup[]; truncated: boolean }> {
   await connection();
   const terms = searchTerms(q);
@@ -100,10 +105,12 @@ export async function comparePrices(
   let truncated = false;
   if (!isDbConfigured()) {
     rows = demoDeals()
-      .filter((d) =>
-        terms.every((t) =>
-          searchNorm(`${d.name} ${d.brand ?? ""}`).includes(searchNorm(t)),
-        ),
+      .filter(
+        (d) =>
+          (!opts.category || d.categorySlug === opts.category) &&
+          terms.every((t) =>
+            searchNorm(`${d.name} ${d.brand ?? ""}`).includes(searchNorm(t)),
+          ),
       )
       .map((d) => ({
         sku: null,
@@ -131,7 +138,11 @@ export async function comparePrices(
     const matches = await prisma.product.findMany({
       select: SELECT,
       where: {
-        AND: [base, ...terms.map(termWhere)],
+        AND: [
+          base,
+          ...(opts.category ? [{ categorySlug: opts.category }] : []),
+          ...terms.map(termWhere),
+        ],
       },
       orderBy: { price: "asc" },
       take: MAX_MATCHES + 1,
@@ -140,7 +151,8 @@ export async function comparePrices(
     const found = matches.slice(0, MAX_MATCHES);
 
     // Hetzelfde artikelnummer bij andere shops, ook als de naam daar niet op de zoekterm lijkt
-    // en de shop het nummer anders schrijft ("TRX-3655" / "TRX3655"): kolom sku_norm.
+    // en de shop het nummer anders schrijft ("TRX-3655" / "TRX3655"): kolom sku_norm. Bewust
+    // zonder categoriefilter: shops delen hetzelfde product soms anders in.
     const norms = [
       ...new Set(
         found

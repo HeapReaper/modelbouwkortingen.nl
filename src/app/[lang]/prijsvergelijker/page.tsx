@@ -17,6 +17,7 @@ import {
 import { alternates } from "@/i18n/metadata";
 import { getI18n } from "@/i18n/server";
 import { t } from "@/i18n/translate";
+import { CATEGORIES, getCategory } from "@/lib/categories";
 import { type CompareSort, comparePrices } from "@/lib/compare";
 import { SHOPS } from "@/lib/shops";
 
@@ -40,6 +41,7 @@ async function readParams(searchParams: SearchParams) {
   return {
     q: one("q")?.slice(0, 100),
     inStock: one("voorraad") === "1",
+    category: getCategory(one("categorie"))?.slug,
     sort: (one("sort") === "aanbod" ? "aanbod" : "prijs") as CompareSort,
   };
 }
@@ -74,12 +76,12 @@ export default async function PrijsvergelijkerPage({
 async function CompareForm({ searchParams }: { searchParams: SearchParams }) {
   const { dict, href } = await getI18n();
   const c = dict.comparePage;
-  const { q, inStock, sort } = await readParams(searchParams);
+  const { q, inStock, category, sort } = await readParams(searchParams);
   return (
     <Form
       action={href("/prijsvergelijker")}
       className="flex max-w-3xl flex-col gap-3"
-      key={`${q}-${inStock}-${sort}`}
+      key={`${q}-${inStock}-${category}-${sort}`}
     >
       <div className="flex gap-2">
         <InputGroup className="h-14 rounded-xl bg-background">
@@ -112,6 +114,26 @@ async function CompareForm({ searchParams }: { searchParams: SearchParams }) {
           {c.inStock}
         </label>
         <div className="flex items-center gap-2">
+          <label htmlFor="compare-category" className="text-base font-semibold">
+            {dict.filters.category}
+          </label>
+          <NativeSelect
+            id="compare-category"
+            name="categorie"
+            defaultValue={category ?? ""}
+            className="[&_select]:h-10 [&_select]:bg-background"
+          >
+            <NativeSelectOption value="">
+              {dict.filters.allCategories}
+            </NativeSelectOption>
+            {CATEGORIES.map((cat) => (
+              <NativeSelectOption key={cat.slug} value={cat.slug}>
+                {dict.categories[cat.slug].name}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+        </div>
+        <div className="flex items-center gap-2">
           <label htmlFor="compare-sort" className="text-base font-semibold">
             {c.sort}
           </label>
@@ -135,7 +157,7 @@ async function CompareForm({ searchParams }: { searchParams: SearchParams }) {
 async function Results({ searchParams }: { searchParams: SearchParams }) {
   const { lang, dict } = await getI18n();
   const c = dict.comparePage;
-  const { q, inStock, sort } = await readParams(searchParams);
+  const { q, inStock, category, sort } = await readParams(searchParams);
   if (!q) {
     return (
       <p className="rounded-2xl border border-dashed p-8 text-center text-lg text-muted-foreground">
@@ -145,6 +167,7 @@ async function Results({ searchParams }: { searchParams: SearchParams }) {
   }
   const { groups, truncated } = await comparePrices(q, {
     inStock,
+    category,
     sort,
     lang,
   });
