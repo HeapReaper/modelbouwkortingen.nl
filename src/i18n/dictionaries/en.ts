@@ -756,7 +756,7 @@ export const en: Dictionary = {
       {
         title: "Just browsing",
         body: [
-          "You can use the site without an account. To show pages and prevent abuse (for example a limit on the contact form), our server processes technically necessary data such as your IP address. We do not use it for statistics and do not link it to you.",
+          "You can use the site without an account. To show pages and prevent abuse (for example a limit on the contact form), our server processes technically necessary data such as your IP address. We do not store your IP address and do not link it to you.",
           "Your watchlist and your choice of a light or dark theme are stored only in your own browser. On the watchlist page the product IDs are sent along to show the products; we do not store them.",
         ],
       },
@@ -777,6 +777,12 @@ export const en: Dictionary = {
         title: "Contact form",
         body: [
           "If you send us a message, we store your name, email address, subject and message to answer your question.",
+        ],
+      },
+      {
+        title: "Visitor statistics",
+        body: [
+          "We count which pages are viewed, using our own statistics and without cookies. For each view we store the page, the language, the type of device (mobile, tablet or desktop) and, if you came from another site, the name of that site. To avoid counting a visitor twice on the same day, we turn your IP address and browser into a code using a key that is replaced every day and then deleted; we do not store your IP address itself, and after that day the code can no longer be traced back to you. We keep this data for just over a year and do not share it with anyone.",
         ],
       },
       {

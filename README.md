@@ -44,9 +44,15 @@ komt het op de website (Next.js 16 + shadcn/ui).
 **Beheer**
 - Adminpanel: status van de diensten (database, SMTP, Amazon Translate, crawler, planner) met
   een knop voor een testmail, live crawlerstatus en crawler-logs, HTTP 429's, crawl-rondes, statistieken van de afgelopen 14
-  dagen, kliks naar webshops, uitgelichte webshops en producten, contactberichten, webshops
+  dagen, bezoekersstatistieken, kliks naar webshops, uitgelichte webshops en producten, contactberichten, webshops
   aan/uit, telefoonnummers en
   social-medialinks.
+- Eigen bezoekersstatistieken zonder cookies of externe dienst: paginaweergaven en bezoekers per
+  dag, week en maand, meest bekeken pagina's, herkomst, taal en apparaat. Bots tellen niet mee
+  (geen JavaScript, bot-user-agent, `navigator.webdriver`, geen `Accept-Language`, te veel
+  weergaven per IP). Bezoekers zijn per dag uniek via een hash van IP + user-agent met een
+  dagelijks zout dat daarna gewist wordt; het IP-adres wordt niet bewaard. Weergaven worden na
+  400 dagen opgeruimd. Wie `/admin` opent, telt op dat apparaat zelf niet meer mee.
 - Bewaking van de crawler: een ronde met opvallend weinig producten (parser kapot?) komt in
   het adminpanel en optioneel in een Discord-kanaal.
 - Klikteller voor uitgaande links (`/api/uit/[id]`) en affiliate-parameters per webshop.
@@ -115,10 +121,11 @@ koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coo
 | `/api/nieuwsbrief/afmelden` | Afmelden met één klik vanuit de mailclient (`List-Unsubscribe-Post`, RFC 8058) |
 | `/feed.xml` | RSS-feed met de nieuwste 50 deals; `?categorie=`, `?shop=`, `?merk=`, `?lang=` |
 | `/api/og/[id]` | Deelafbeelding (1200×630) voor een product; `?lang=` voor de vertaalde naam |
+| `/api/bezoek` | Telt een paginaweergave (`page_views`): gestuurd door de tracker in het layout, zonder cookies; bots, geautomatiseerde browsers en het eigen admin-apparaat tellen niet mee |
 | `/api/uit/[id]` | Telt de klik (`outbound_clicks`, zonder bots) en stuurt door naar de webshop, met affiliate-parameters |
 | `/api/vertalen/bijwerken` | Vertaalt namen van nieuwe deals van Duitstalige webshops (zelfde beveiliging als `/api/nieuwsbrief/verzenden`) |
 | `/api/crawler/controleren` | Zoekt crawl-rondes met opvallend weinig producten en meldt ze (idem) |
-| `/admin` | Admin panel: status van database/SMTP/Amazon Translate/crawler, testmail, live crawlerstatus, 429's, crawl-rondes, grafiek, kliks, berichten, webshops aan/uit, telefoonnummers en social media (Basic Auth) |
+| `/admin` | Admin panel: status van database/SMTP/Amazon Translate/crawler, testmail, live crawlerstatus, 429's, crawl-rondes, grafiek, bezoekers, kliks, berichten, webshops aan/uit, telefoonnummers en social media (Basic Auth) |
 | `/api/stats` | JSON met alle statistieken (Basic Auth of `Bearer STATS_TOKEN`) |
 | `/api/health` | Publieke health check |
 

@@ -3,6 +3,7 @@ import {
   AlertTriangle,
   BellRing,
   Database,
+  Eye,
   Gauge,
   Mail,
   Megaphone,
@@ -15,12 +16,14 @@ import {
   Tag,
 } from "lucide-react";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import {
   MessageHandledButton,
   ResolveAlertButton,
   ShopEnabledSwitch,
 } from "@/components/admin/AdminButtons";
+import { AnalyticsChart } from "@/components/admin/AnalyticsChart";
 import { AutoRefresh } from "@/components/admin/AutoRefresh";
 import {
   PhoneNumbersAdmin,
@@ -30,6 +33,7 @@ import { CrawlerLogs } from "@/components/admin/CrawlerLogs";
 import { DailyChart } from "@/components/admin/DailyChart";
 import { PromotionsAdmin } from "@/components/admin/PromotionsAdmin";
 import { RecheckButton, TestMailForm } from "@/components/admin/ServiceAdmin";
+import { AnalyticsOptOut } from "@/components/analytics/AnalyticsOptOut";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -47,6 +51,7 @@ import {
   getAdminOverview,
   getCrawlerLive,
 } from "@/lib/admin";
+import { type Analytics, getAnalytics } from "@/lib/analytics";
 import { isDbConfigured } from "@/lib/db";
 import { formatDateTime, formatNumber, timeAgo } from "@/lib/format";
 import { listPromotions, todayNL } from "@/lib/promotions";
@@ -76,6 +81,7 @@ export default function AdminPage() {
         </div>
         <AutoRefresh />
       </div>
+      <AnalyticsOptOut />
       <Suspense
         fallback={<div className="h-96 animate-pulse rounded-2xl bg-muted" />}
       >
@@ -86,13 +92,15 @@ export default function AdminPage() {
 }
 
 async function AdminContent() {
-  const [data, live, contact, status, promotions] = await Promise.all([
-    getAdminOverview(),
-    getCrawlerLive(),
-    getSiteContact(),
-    getServiceStatus(),
-    loadPromotions(),
-  ]);
+  const [data, live, contact, status, promotions, analytics] =
+    await Promise.all([
+      getAdminOverview(),
+      getCrawlerLive(),
+      getSiteContact(),
+      getServiceStatus(),
+      loadPromotions(),
+      getAnalytics(),
+    ]);
   const totalDeals = data.shops.reduce((s, x) => s + x.deals, 0);
   const totalProducts = data.shops.reduce((s, x) => s + x.products, 0);
 
@@ -165,7 +173,19 @@ async function AdminContent() {
           value={formatNumber(data.priceAlerts.active)}
           sub={`${formatNumber(data.priceAlerts.unconfirmed)} onbevestigd · ${formatNumber(data.priceAlerts.sent30)} verstuurd (30d)`}
         />
+        <Kpi
+          icon={Eye}
+          label="Bezoekers vandaag"
+          value={analytics ? formatNumber(analytics.today.visitors) : "—"}
+          sub={
+            analytics
+              ? `${formatNumber(analytics.today.views)} paginaweergaven · ${formatNumber(analytics.activeNow)} nu actief`
+              : undefined
+          }
+        />
       </div>
+
+      {analytics ? <AnalyticsSection a={analytics} /> : null}
 
       <ServicesSection status={status} live={live} />
       <CrawlerSection live={live} />
@@ -248,6 +268,7 @@ async function AdminContent() {
 
 /** null zonder (bereikbare) database: dan valt er niets te beheren. */
 async function loadPromotions() {
+  await connection();
   if (!isDbConfigured()) return null;
   try {
     return await listPromotions();
@@ -609,6 +630,167 @@ function RunsSection({ data }: { data: AdminOverview }) {
           </Table>
         </div>
       )}
+    </Section>
+  );
+}
+
+const LANG_LABELS: Record<string, string> = {
+  nl: "Nederlands",
+  en: "Engels",
+  de: "Duits",
+};
+
+const DEVICE_LABELS: Record<string, string> = {
+  desktop: "Desktop",
+  mobile: "Mobiel",
+  tablet: "Tablet",
+};
+
+function AnalyticsSection({ a }: { a: Analytics }) {
+  const visits = a.referrers.reduce((n, r) => n + r.visits, 0);
+  const share = (n: number, total: number) =>
+    total > 0 ? `${Math.round((n / total) * 100)}%` : "—";
+  return (
+    <Section title="Bezoekers" icon={<Eye className="size-5 text-primary" />}>
+      <div className="flex flex-col gap-6">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+          {(
+            [
+              ["Vandaag", a.today],
+              ["Gisteren", a.yesterday],
+              ["7 dagen", a.last7],
+              ["30 dagen", a.last30],
+            ] as const
+          ).map(([label, t]) => (
+            <div key={label} className="rounded-xl border p-3">
+              <p className="text-sm font-semibold text-muted-foreground">
+                {label}
+              </p>
+              <p className="font-heading text-xl font-black tabular-nums">
+                {formatNumber(t.views)}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {formatNumber(t.visitors)} bezoekers
+              </p>
+            </div>
+          ))}
+          <div className="rounded-xl border p-3">
+            <p className="text-sm font-semibold text-muted-foreground">
+              Nu actief
+            </p>
+            <p className="font-heading text-xl font-black tabular-nums text-savings">
+              {formatNumber(a.activeNow)}
+            </p>
+            <p className="text-sm text-muted-foreground">laatste 5 minuten</p>
+          </div>
+        </div>
+
+        <AnalyticsChart daily={a.daily} weekly={a.weekly} monthly={a.monthly} />
+
+        {a.last30.views === 0 ? (
+          <Empty>Nog geen bezoeken in de afgelopen 30 dagen.</Empty>
+        ) : (
+          <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+            <div className="overflow-x-auto">
+              <h3 className="mb-2 font-bold">Meest bekeken pagina's</h3>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Pagina</TableHead>
+                    <TableHead className="text-right">Vandaag</TableHead>
+                    <TableHead className="text-right">7 dagen</TableHead>
+                    <TableHead className="text-right">30 dagen</TableHead>
+                    <TableHead className="text-right">Bezoekers</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {a.topPages.map((p) => (
+                    <TableRow key={p.path}>
+                      <TableCell className="max-w-80">
+                        <a
+                          href={p.path}
+                          className="line-clamp-1 font-semibold hover:underline"
+                          title={p.path}
+                        >
+                          {p.title ?? p.path}
+                        </a>
+                        {p.title ? (
+                          <span className="text-sm text-muted-foreground">
+                            {p.path}
+                          </span>
+                        ) : null}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {formatNumber(p.today)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {formatNumber(p.last7)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {formatNumber(p.last30)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {formatNumber(p.visitors)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            <div className="flex flex-col gap-6">
+              <div>
+                <h3 className="mb-2 font-bold">Herkomst (30 dagen)</h3>
+                <ul className="divide-y rounded-xl border">
+                  {a.referrers.map((r) => (
+                    <li
+                      key={r.referrer ?? ""}
+                      className="flex items-baseline justify-between gap-3 px-3 py-2"
+                    >
+                      <span className="min-w-0 truncate">
+                        {r.referrer ?? (
+                          <span className="text-muted-foreground">
+                            Direct / onbekend
+                          </span>
+                        )}
+                      </span>
+                      <span className="shrink-0 tabular-nums">
+                        {formatNumber(r.visits)}{" "}
+                        <span className="text-sm text-muted-foreground">
+                          {share(r.visits, visits)}
+                        </span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="mb-2 font-bold">Taal en apparaat (30 dagen)</h3>
+                <p className="flex flex-wrap gap-2 text-sm">
+                  {a.langs.map((l) => (
+                    <Badge key={l.lang} variant="secondary">
+                      {LANG_LABELS[l.lang] ?? l.lang}:{" "}
+                      {share(l.views, a.last30.views)}
+                    </Badge>
+                  ))}
+                </p>
+                <p className="mt-2 flex flex-wrap gap-2 text-sm">
+                  {a.devices.map((d) => (
+                    <Badge key={d.device} variant="outline">
+                      {DEVICE_LABELS[d.device] ?? d.device}:{" "}
+                      {share(d.views, a.last30.views)}
+                    </Badge>
+                  ))}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        <p className="text-sm text-muted-foreground">
+          Zonder bots en zonder cookies. Bezoekers zijn per dag uniek (week en
+          maand tellen de dagen op). Je eigen bezoeken vanaf dit apparaat tellen
+          niet mee sinds je het admin panel opende.
+        </p>
+      </div>
     </Section>
   );
 }

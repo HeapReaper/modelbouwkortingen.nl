@@ -758,7 +758,7 @@ export const nl = {
       {
         title: "Gewoon de site bekijken",
         body: [
-          "Je kunt de site zonder account gebruiken. Om pagina's te tonen en misbruik te voorkomen (bijvoorbeeld een limiet op het contactformulier) verwerkt onze server technisch noodzakelijke gegevens zoals je IP-adres. We gebruiken die niet voor statistieken en koppelen ze niet aan jou.",
+          "Je kunt de site zonder account gebruiken. Om pagina's te tonen en misbruik te voorkomen (bijvoorbeeld een limiet op het contactformulier) verwerkt onze server technisch noodzakelijke gegevens zoals je IP-adres. We slaan je IP-adres niet op en koppelen het niet aan jou.",
           "Je volglijst en je keuze voor een licht of donker thema staan alleen in de opslag van je eigen browser. Op de volglijstpagina worden de product-id's meegestuurd om de producten te tonen; we bewaren ze niet.",
         ],
       },
@@ -779,6 +779,12 @@ export const nl = {
         title: "Contactformulier",
         body: [
           "Stuur je ons een bericht, dan bewaren we je naam, e-mailadres, onderwerp en bericht om je vraag te beantwoorden.",
+        ],
+      },
+      {
+        title: "Bezoekersstatistieken",
+        body: [
+          "We tellen welke pagina's bekeken worden, met onze eigen statistieken en zonder cookies. Per weergave bewaren we de pagina, de taal, het type apparaat (mobiel, tablet of desktop) en, als je van een andere site komt, de naam van die site. Om bezoekers op één dag niet dubbel te tellen maken we van je IP-adres en browser een code met een sleutel die elke dag wordt vervangen en daarna gewist; je IP-adres zelf bewaren we niet en de code is na die dag niet meer naar jou te herleiden. Deze gegevens bewaren we ruim een jaar en delen we met niemand.",
         ],
       },
       {

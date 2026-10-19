@@ -775,7 +775,7 @@ export const de: Dictionary = {
       {
         title: "Einfach nur stöbern",
         body: [
-          "Du kannst die Seite ohne Konto nutzen. Um Seiten anzuzeigen und Missbrauch zu verhindern (zum Beispiel ein Limit für das Kontaktformular), verarbeitet unser Server technisch notwendige Daten wie deine IP-Adresse. Wir nutzen sie nicht für Statistiken und verknüpfen sie nicht mit dir.",
+          "Du kannst die Seite ohne Konto nutzen. Um Seiten anzuzeigen und Missbrauch zu verhindern (zum Beispiel ein Limit für das Kontaktformular), verarbeitet unser Server technisch notwendige Daten wie deine IP-Adresse. Wir speichern deine IP-Adresse nicht und verknüpfen sie nicht mit dir.",
           "Deine Merkliste und deine Wahl zwischen hellem und dunklem Design werden nur im Speicher deines eigenen Browsers abgelegt. Auf der Merklisten-Seite werden die Produkt-IDs mitgeschickt, um die Produkte anzuzeigen; wir speichern sie nicht.",
         ],
       },
@@ -796,6 +796,12 @@ export const de: Dictionary = {
         title: "Kontaktformular",
         body: [
           "Wenn du uns eine Nachricht schickst, speichern wir deinen Namen, deine E-Mail-Adresse, den Betreff und die Nachricht, um deine Frage zu beantworten.",
+        ],
+      },
+      {
+        title: "Besucherstatistik",
+        body: [
+          "Wir zählen, welche Seiten aufgerufen werden, mit unserer eigenen Statistik und ohne Cookies. Pro Aufruf speichern wir die Seite, die Sprache, den Gerätetyp (Handy, Tablet oder Desktop) und, wenn du von einer anderen Seite kommst, den Namen dieser Seite. Damit wir Besucher an einem Tag nicht doppelt zählen, bilden wir aus deiner IP-Adresse und deinem Browser einen Code mit einem Schlüssel, der jeden Tag ersetzt und danach gelöscht wird; deine IP-Adresse selbst speichern wir nicht, und nach diesem Tag lässt sich der Code nicht mehr auf dich zurückführen. Diese Daten bewahren wir gut ein Jahr auf und geben sie an niemanden weiter.",
         ],
       },
       {

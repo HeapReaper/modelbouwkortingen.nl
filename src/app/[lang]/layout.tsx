@@ -3,6 +3,7 @@ import { Archivo, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { Suspense } from "react";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { TopBarPhones } from "@/components/core/ContactBar";
 import Footer from "@/components/core/Footer";
 import Navbar from "@/components/core/Navbar";
@@ -119,6 +120,10 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
             </main>
 
             <Footer />
+            {/* usePathname() wacht met Cache Components soms op de request: niet de pagina ophouden. */}
+            <Suspense fallback={null}>
+              <PageViewTracker />
+            </Suspense>
           </ThemeProvider>
         </I18nProvider>
       </body>

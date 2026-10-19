@@ -349,3 +349,34 @@ model Promotion {
   @@index([startsOn, endsOn], map: "promotions_period_idx")
   @@map("promotions")
 }
+
+/// Paginaweergave van een mens (bots gefilterd, zie src/app/api/bezoek/route.ts). Zonder cookies
+/// en zonder IP-adres: visitor is een hash van IP + user-agent met het zout van die dag
+/// (analytics_salts), dus alleen binnen één dag herkenbaar. Wordt na 400 dagen opgeruimd.
+model PageView {
+  id        BigInt   @id @default(autoincrement())
+  /// Pad zonder taalprefix en zonder query, bv. "/product/123".
+  path      String
+  lang      String
+  /// Host van de verwijzende site (zonder www.) of utm_source/ref, NULL = direct of eigen site.
+  referrer  String?
+  /// Eerste weergave van een bezoek van buitenaf (nieuwe paginalading, niet vanaf onze eigen site).
+  entry     Boolean  @default(false)
+  visitor   String
+  /// mobile | tablet | desktop
+  device    String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([createdAt], map: "page_views_created_idx")
+  @@index([path, createdAt], map: "page_views_path_idx")
+  @@map("page_views")
+}
+
+/// Willekeurig zout per dag (Nederlandse datum) voor PageView.visitor. Oude zouten worden
+/// gewist, zodat hashes van eerdere dagen niet meer terug te rekenen zijn naar een IP-adres.
+model AnalyticsSalt {
+  day  String @id
+  salt String
+
+  @@map("analytics_salts")
+}
