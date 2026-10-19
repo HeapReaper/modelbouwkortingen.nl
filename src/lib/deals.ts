@@ -186,18 +186,7 @@ export async function getDeals(
   if (filters.minPrice) and.push({ price: { gte: filters.minPrice } });
   if (filters.maxPrice) and.push({ price: { lte: filters.maxPrice } });
   if (filters.inStock) and.push(NOT_OUT_OF_STOCK);
-  for (const term of searchTerms(filters.q)) {
-    const contains = { contains: term, mode: "insensitive" } as const;
-    and.push({
-      OR: [
-        { name: contains },
-        { brand: contains },
-        { sku: contains },
-        // Ook op de vertaalde naam van producten van Duitstalige webshops.
-        { translations: { some: { name: contains } } },
-      ],
-    });
-  }
+  for (const term of searchTerms(filters.q)) and.push(termWhere(term));
   const where: Prisma.ProductWhereInput = { AND: and };
   const prisma = getPrisma();
   const [rows, total] = await prisma.$transaction([
@@ -211,6 +200,27 @@ export async function getDeals(
     prisma.product.count({ where }),
   ]);
   return { deals: await withPriceInsights(rows.map(toDeal)), total };
+}
+
+/** Kleine letters, alleen a-z en 0-9. Houd gelijk met normalize_search() (kolom search_norm). */
+export function searchNorm(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+/** Eén zoekterm: los van spelling met streepjes/spaties ("eflite" vindt ook "E-flite"). */
+export function termWhere(term: string): Prisma.ProductWhereInput {
+  const contains = { contains: term, mode: "insensitive" } as const;
+  const norm = searchNorm(term);
+  return {
+    OR: [
+      { name: contains },
+      { brand: contains },
+      { sku: contains },
+      // Ook op de vertaalde naam van producten van Duitstalige webshops.
+      { translations: { some: { name: contains } } },
+      ...(norm ? [{ searchNorm: { contains: norm } }] : []),
+    ],
+  };
 }
 
 export function searchTerms(q?: string) {
@@ -587,7 +597,7 @@ function filterDemo(f: DealFilters, pageSize = PAGE_SIZE) {
       (!f.maxPrice || d.price <= f.maxPrice) &&
       (!f.inStock || d.inStock !== false) &&
       terms.every((t) =>
-        `${d.name} ${d.brand ?? ""}`.toLowerCase().includes(t),
+        searchNorm(`${d.name} ${d.brand ?? ""}`).includes(searchNorm(t)),
       ),
   );
   const sorters: Record<SortKey, (a: Deal, b: Deal) => number> = {

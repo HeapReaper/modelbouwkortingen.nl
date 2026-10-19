@@ -51,6 +51,9 @@ model Product {
   skuNorm         String?              @map("sku_norm")
   name            String
   brand           String?
+  /// Naam + merk in kleine letters, alleen a-z en 0-9 (zie searchNorm() in src/lib/deals.ts).
+  /// Door Postgres berekend via een trigger (migratie 20261019220000_search_norm): nooit zelf schrijven.
+  searchNorm      String?              @map("search_norm")
   imageUrl        String?              @map("image_url")
   categorySlug    String               @default("overig") @map("category_slug")
   shopCategory    String?              @map("shop_category")

@@ -4,7 +4,7 @@ import { connection } from "next/server";
 import type { Prisma } from "@/generated/prisma/client";
 import type { Locale } from "@/i18n/config";
 import { getPrisma, isDbConfigured, num } from "@/lib/db";
-import { searchTerms } from "@/lib/deals";
+import { searchNorm, searchTerms, termWhere } from "@/lib/deals";
 import { demoDeals } from "@/lib/demo-data";
 import { localizeDeals } from "@/lib/translate";
 
@@ -102,7 +102,7 @@ export async function comparePrices(
     rows = demoDeals()
       .filter((d) =>
         terms.every((t) =>
-          `${d.name} ${d.brand ?? ""}`.toLowerCase().includes(t),
+          searchNorm(`${d.name} ${d.brand ?? ""}`).includes(searchNorm(t)),
         ),
       )
       .map((d) => ({
@@ -131,20 +131,7 @@ export async function comparePrices(
     const matches = await prisma.product.findMany({
       select: SELECT,
       where: {
-        AND: [
-          base,
-          ...terms.map((term) => {
-            const contains = { contains: term, mode: "insensitive" } as const;
-            return {
-              OR: [
-                { name: contains },
-                { brand: contains },
-                { sku: contains },
-                { translations: { some: { name: contains } } },
-              ],
-            };
-          }),
-        ],
+        AND: [base, ...terms.map(termWhere)],
       },
       orderBy: { price: "asc" },
       take: MAX_MATCHES + 1,
