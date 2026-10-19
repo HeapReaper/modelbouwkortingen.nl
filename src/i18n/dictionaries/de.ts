@@ -173,6 +173,10 @@ export const de: Dictionary = {
       "Niederländischer Modellbauladen mit vielen Ersatzteilen für Blade-, E-sky- und Nine-Eagles-Hubschrauber sowie Drohnen, Autos, Flugzeugen und Elektronik.",
     hobbyking:
       "Großer internationaler RC-Shop mit Eigenmarken wie Turnigy, Durafly, H-King und Avios; wir verfolgen die Preise des EU-Lagers.",
+    speelgoedenmodelbouw:
+      "Niederländischer Spielwaren- und Modellbauladen mit viel Tamiya: RC-Autos, Panzer, Trucks und Ersatzteile, dazu Carson und Kyosho.",
+    theborder:
+      "RC-Laden in Mijdrecht mit großem Angebot an Autos und Ersatzteilen von Traxxas, Kyosho, Axial, XRAY und mehr, dazu Boote und Akkus.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

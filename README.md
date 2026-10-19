@@ -272,6 +272,8 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | CopterFarm (DE) | Shopware 5 | geen: alleen listings | onderste categorieën uit de sitemap (zonder merken), `?n=48&p=N`, `.price--discount` |
 | Shopzinnig | LogiVert | geen: alleen listings (Crawl-delay 30s) | alle ~290 groepen uit de sitemap (bovenliggende groepen tonen geen producten), `&page=N` via `a.listforward`, van-prijs in `.articlePricerecommended` |
 | HobbyKing (EU-magazijn) | Magento 2 + Next.js | geen: alleen listings (productpagina's zijn ~1,4 MB) | 33 vaste categorieën met `?page=N&rowsPerPage=100`; de producten staan als JSON in de Server Components-payload (`self.__next_f.push`), van-prijs = `regular_price`. Cookies `CURRENCY_CODE=EUR; COUNTRY_ID=NL` voor europrijzen, voorraad van het EU-magazijn (`stock_id` 7); een deal telt pas vanaf 8% omdat de europrijs met de dollarkoers meebeweegt |
+| SPEELGOEDenMODELBOUW | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?category=161&per_page=100` (alleen de categorie R/C, ~33 requests; LEGO en Playmobil vallen erbuiten), prijzen in centen, van-prijs = `regular_price`; statische Tamiya-bouwdozen worden overgeslagen |
+| The Border RC | WooCommerce | geen: alleen de Store API (Crawl-delay 5s) | `/wp-json/wc/store/v1/products?per_page=100` zonder Carrera (`category=2825&category_operator=not_in`), ~345 requests; een nieuwe startpagina per 50 pagina's op basis van `X-WP-TotalPages`. Slotcar-accessoires en die-cast worden overgeslagen |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

@@ -20,7 +20,9 @@ import premiummodellbauLogo from "@/assets/shops/premiummodellbau.png";
 import rccaronlineLogo from "@/assets/shops/rccaronline.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
 import shopzinnigLogo from "@/assets/shops/shopzinnig.png";
+import speelgoedenmodelbouwLogo from "@/assets/shops/speelgoedenmodelbouw.png";
 import tamicoLogo from "@/assets/shops/tamico.png";
+import theborderLogo from "@/assets/shops/theborder.png";
 import toemenLogo from "@/assets/shops/toemen.png";
 import toprcLogo from "@/assets/shops/toprc.svg";
 import voltmasterLogo from "@/assets/shops/voltmaster.svg";
@@ -304,6 +306,24 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-[#202020]",
     // De prijzen zijn die van het EU-magazijn in Frankrijk (stock_id 7, zie de crawler).
     country: "FR",
+  },
+  {
+    slug: "speelgoedenmodelbouw",
+    name: "SPEELGOEDenMODELBOUW",
+    url: "https://www.speelgoedenmodelbouw.com",
+    domain: "speelgoedenmodelbouw.com",
+    logo: speelgoedenmodelbouwLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "NL",
+  },
+  {
+    slug: "theborder",
+    name: "The Border RC",
+    url: "https://www.the-border.com",
+    domain: "the-border.com",
+    logo: theborderLogo,
+    logoBg: "bg-black",
+    country: "NL",
   },
 ];
 

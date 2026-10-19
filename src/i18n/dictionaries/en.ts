@@ -166,6 +166,10 @@ export const en: Dictionary = {
       "Dutch hobby store with lots of parts for Blade, E-sky and Nine Eagles helis, plus drones, cars, planes and electronics.",
     hobbyking:
       "Large international RC store with house brands like Turnigy, Durafly, H-King and Avios; we track the prices of its EU warehouse.",
+    speelgoedenmodelbouw:
+      "Dutch toy and hobby store with lots of Tamiya: RC cars, tanks, trucks and parts, plus Carson and Kyosho.",
+    theborder:
+      "RC store in Mijdrecht with a large range of cars and parts from Traxxas, Kyosho, Axial, XRAY and more, plus boats and batteries.",
   },
   deals: {
     outOfStock: "Out of stock",

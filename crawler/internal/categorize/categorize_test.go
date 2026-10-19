@@ -21,6 +21,15 @@ func TestClassify(t *testing.T) {
 		{nil, "Accessoires | RC | Remote controllers", "", "DJI RC 2", "zenders"},
 		{nil, "Onderdelen | Accu | Drones", "", "DJI Mini 4 Pro Intelligent Flight Battery", "accus-laders"},
 		{nil, "Drones | Camera | Luchtfotografie", "", "DJI Neo", "drones"},
+		{[]string{"R/C", "Tamiya", "Tamiya R/C Monster Trucks"}, "", "", "Tamiya Lunch Box Black Edition", "rc-autos"},
+		{[]string{"R/C", "Tamiya", "Tamiya R/C Buggy's"}, "", "", "Tamiya Subaru Brat", "rc-autos"},
+		{[]string{"R/C", "Tamiya", "Tamiya R/C Trucks"}, "", "", "Tamiya Scania R470", "werkvoertuigen"},
+		{[]string{"1/10 Touring Car Bodies"}, "", "", "BittyDesign Ahura 1/10 GT 190mm", "onderdelen"},
+		{[]string{"Motors & Speed Controllers", "Speed Controllers"}, "", "", "Hobbywing XR10 Pro", "elektronica"},
+		{[]string{"Opladers"}, "", "", "SkyRC G630", "accus-laders"},
+		{[]string{"Color Spray TS"}, "", "", "Tamiya TS-11 Maroon 100ml", "gereedschap"},
+		{[]string{"XRAY Hardware pin-screws-O-rings"}, "", "", "XRAY Pin 2x10", "onderdelen"},
+		{[]string{"Pinions 48DP"}, "", "", "Arrowmax 48DP 21T", "onderdelen"},
 		{nil, "", "", "Iets compleet onbekends", "overig"},
 	}
 	for _, c := range cases {

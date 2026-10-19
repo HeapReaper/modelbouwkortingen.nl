@@ -62,7 +62,7 @@ type PercentDeals interface {
 }
 
 func All() []Shop {
-	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}, &RCMotorsports{}, &Droneshop{}, &Tamico{}, &ChinaHobbyLine{}, &Hepf{}, &Bliek{}, &Aerobertics{}, &Heligear{}, &Area51{}, &Banggood{}, &Voltmaster{}, &NFactory{}, &Lindinger{}, &RCCarOnline{}, &PremiumModellbau{}, &CopterFarm{}, &Shopzinnig{}, &HobbyKing{}}
+	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}, &RCMotorsports{}, &Droneshop{}, &Tamico{}, &ChinaHobbyLine{}, &Hepf{}, &Bliek{}, &Aerobertics{}, &Heligear{}, &Area51{}, &Banggood{}, &Voltmaster{}, &NFactory{}, &Lindinger{}, &RCCarOnline{}, &PremiumModellbau{}, &CopterFarm{}, &Shopzinnig{}, &HobbyKing{}, &SpeelgoedenModelbouw{}, &TheBorder{}}
 }
 
 func BySlug(slugs []string) []Shop {

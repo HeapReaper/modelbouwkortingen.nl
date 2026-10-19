@@ -169,6 +169,10 @@ export const nl = {
       "Nederlandse modelbouwwinkel met veel onderdelen voor Blade-, E-sky- en Nine Eagles-heli's, plus drones, auto's, vliegtuigen en elektronica.",
     hobbyking:
       "Grote internationale RC-webshop met eigen merken als Turnigy, Durafly, H-King en Avios; wij volgen de prijzen van het EU-magazijn.",
+    speelgoedenmodelbouw:
+      "Nederlandse speelgoed- en modelbouwwinkel met veel Tamiya: RC-auto's, tanks, trucks en onderdelen, plus Carson en Kyosho.",
+    theborder:
+      "RC-winkel in Mijdrecht met een groot aanbod auto's en onderdelen van Traxxas, Kyosho, Axial, XRAY en meer, plus boten en accu's.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",
