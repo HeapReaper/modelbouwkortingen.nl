@@ -1,9 +1,10 @@
 "use client";
 
-import { Play } from "lucide-react";
+import { Play, Trash2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import {
   crawlShopNow,
+  deleteMessage,
   resolveCrawlAlerts,
   toggleMessageHandled,
   toggleShopEnabled,
@@ -27,6 +28,30 @@ export function MessageHandledButton({
       onClick={() => start(() => toggleMessageHandled(id, !handled))}
     >
       {handled ? "Markeer als open" : "Markeer als afgehandeld"}
+    </Button>
+  );
+}
+
+export function DeleteMessageButton({
+  id,
+  subject,
+}: {
+  id: number;
+  subject: string;
+}) {
+  const [pending, start] = useTransition();
+  return (
+    <Button
+      size="icon-sm"
+      variant="ghost"
+      disabled={pending}
+      aria-label={`Bericht "${subject}" verwijderen`}
+      onClick={() => {
+        if (confirm(`Bericht "${subject}" verwijderen?`))
+          start(() => deleteMessage(id));
+      }}
+    >
+      <Trash2 className="size-4" />
     </Button>
   );
 }

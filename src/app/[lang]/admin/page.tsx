@@ -20,6 +20,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import {
   CrawlNowButton,
+  DeleteMessageButton,
   MessageHandledButton,
   ResolveAlertButton,
   ShopEnabledSwitch,
@@ -915,7 +916,10 @@ function MessagesSection({ data }: { data: AdminOverview }) {
                     · {formatDateTime(m.createdAt)}
                   </p>
                 </div>
-                <MessageHandledButton id={m.id} handled={m.handled} />
+                <div className="flex items-center gap-1">
+                  <MessageHandledButton id={m.id} handled={m.handled} />
+                  <DeleteMessageButton id={m.id} subject={m.subject} />
+                </div>
               </div>
               <p className="mt-2 whitespace-pre-wrap">{m.message}</p>
             </li>

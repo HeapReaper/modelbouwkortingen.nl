@@ -93,6 +93,12 @@ export async function toggleMessageHandled(id: number, handled: boolean) {
   refresh();
 }
 
+export async function deleteMessage(id: number) {
+  await assertAdmin();
+  await getPrisma().contactMessage.deleteMany({ where: { id: BigInt(id) } });
+  refresh();
+}
+
 /** Crawlermelding afhandelen; zonder runId alle open meldingen. */
 export async function resolveCrawlAlerts(runId?: number) {
   await assertAdmin();
