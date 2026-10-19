@@ -166,6 +166,7 @@ export const en: Dictionary = {
   deals: {
     outOfStock: "Out of stock",
     inStock: "In stock",
+    stockUnknown: "Stock unknown",
     viewAt: "View {name} at {shop}",
     toShop: "Go to shop",
     wasSr: "Was ",

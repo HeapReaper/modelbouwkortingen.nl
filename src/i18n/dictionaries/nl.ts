@@ -169,6 +169,7 @@ export const nl = {
   deals: {
     outOfStock: "Niet op voorraad",
     inStock: "Op voorraad",
+    stockUnknown: "Voorraad onbekend",
     viewAt: "Bekijk {name} bij {shop}",
     toShop: "Naar de webshop",
     wasSr: "Was ",

@@ -1,4 +1,4 @@
-import { CheckCircle2, ExternalLink, XCircle } from "lucide-react";
+import { CheckCircle2, CircleHelp, ExternalLink, XCircle } from "lucide-react";
 import Link from "next/link";
 import { DiscountBadge } from "@/components/deals/DiscountBadge";
 import { LowestBadge } from "@/components/deals/LowestBadge";
@@ -72,7 +72,11 @@ export async function DealCard({
           <span className="flex items-center gap-1.5 text-sm font-semibold text-savings">
             <CheckCircle2 className="size-4" /> {dict.deals.inStock}
           </span>
-        ) : null}
+        ) : (
+          <span className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+            <CircleHelp className="size-4" /> {dict.deals.stockUnknown}
+          </span>
+        )}
         <h3 className="line-clamp-2 font-sans text-base leading-snug font-semibold">
           <Link
             href={href(`/product/${deal.id}`)}

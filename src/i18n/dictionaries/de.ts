@@ -173,6 +173,7 @@ export const de: Dictionary = {
   deals: {
     outOfStock: "Nicht auf Lager",
     inStock: "Auf Lager",
+    stockUnknown: "Verfügbarkeit unbekannt",
     viewAt: "{name} bei {shop} ansehen",
     toShop: "Zum Shop",
     wasSr: "Vorher ",
