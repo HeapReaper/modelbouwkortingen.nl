@@ -167,6 +167,8 @@ export const nl = {
       "Duitse FPV-shop met frames, motoren, regelaars, flight controllers, videobrillen, accu's en propellers.",
     shopzinnig:
       "Nederlandse modelbouwwinkel met veel onderdelen voor Blade-, E-sky- en Nine Eagles-heli's, plus drones, auto's, vliegtuigen en elektronica.",
+    hobbyking:
+      "Grote internationale RC-webshop met eigen merken als Turnigy, Durafly, H-King en Avios; wij volgen de prijzen van het EU-magazijn.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

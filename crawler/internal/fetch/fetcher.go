@@ -65,6 +65,7 @@ type host struct {
 	robots     *Robots
 	minDelay   time.Duration // Crawl-delay uit robots.txt of SetHostPolicy
 	userAgent  string        // afwijkende user-agent voor deze host ("" = standaard)
+	cookie     string        // vaste Cookie-header voor deze host ("" = geen)
 }
 
 type Response struct {
@@ -130,6 +131,15 @@ func (f *Fetcher) SetHostPolicy(hostName, userAgent string, minDelay time.Durati
 	defer hs.mu.Unlock()
 	hs.userAgent = userAgent
 	hs.minDelay = max(hs.minDelay, minDelay)
+}
+
+// SetHostCookie stuurt bij elk request naar deze host een vaste Cookie-header mee
+// (bv. de valuta-instelling van een webshop).
+func (f *Fetcher) SetHostCookie(hostName, cookie string) {
+	hs := f.host(hostName)
+	hs.mu.Lock()
+	defer hs.mu.Unlock()
+	hs.cookie = cookie
 }
 
 // Allowed controleert robots.txt voor de URL (robots.txt wordt één keer per host opgehaald).
@@ -300,7 +310,11 @@ func (f *Fetcher) do(ctx context.Context, hs *host, hostName, rawURL string) (*R
 	}
 	hs.mu.Lock()
 	ua := cmp.Or(hs.userAgent, f.opts.UserAgent)
+	cookie := hs.cookie
 	hs.mu.Unlock()
+	if cookie != "" {
+		req.Header.Set("Cookie", cookie)
+	}
 	req.Header.Set("User-Agent", ua)
 	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	req.Header.Set("Accept-Language", "nl-NL,nl;q=0.9,en;q=0.6")

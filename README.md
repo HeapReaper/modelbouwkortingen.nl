@@ -271,6 +271,7 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | Premium-Modellbau (DE) | Shopware 5 | geen: alleen listings | onderste categorieën uit de sitemap, `?n=48&p=N` (Crawl-delay 5s; `/listing` is verboden), `.price--discount` |
 | CopterFarm (DE) | Shopware 5 | geen: alleen listings | onderste categorieën uit de sitemap (zonder merken), `?n=48&p=N`, `.price--discount` |
 | Shopzinnig | LogiVert | geen: alleen listings (Crawl-delay 30s) | alle ~290 groepen uit de sitemap (bovenliggende groepen tonen geen producten), `&page=N` via `a.listforward`, van-prijs in `.articlePricerecommended` |
+| HobbyKing (EU-magazijn) | Magento 2 + Next.js | geen: alleen listings (productpagina's zijn ~1,4 MB) | 33 vaste categorieën met `?page=N&rowsPerPage=100`; de producten staan als JSON in de Server Components-payload (`self.__next_f.push`), van-prijs = `regular_price`. Cookies `CURRENCY_CODE=EUR; COUNTRY_ID=NL` voor europrijzen, voorraad van het EU-magazijn (`stock_id` 7); een deal telt pas vanaf 8% omdat de europrijs met de dollarkoers meebeweegt |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

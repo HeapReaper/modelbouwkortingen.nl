@@ -171,6 +171,8 @@ export const de: Dictionary = {
       "Deutscher FPV-Shop mit Frames, Motoren, Reglern, Flight Controllern, Videobrillen, Akkus und Propellern.",
     shopzinnig:
       "Niederländischer Modellbauladen mit vielen Ersatzteilen für Blade-, E-sky- und Nine-Eagles-Hubschrauber sowie Drohnen, Autos, Flugzeugen und Elektronik.",
+    hobbyking:
+      "Großer internationaler RC-Shop mit Eigenmarken wie Turnigy, Durafly, H-King und Avios; wir verfolgen die Preise des EU-Lagers.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

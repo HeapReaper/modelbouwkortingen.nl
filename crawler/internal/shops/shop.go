@@ -48,6 +48,12 @@ type HostPolicy interface {
 	MinDelay() time.Duration
 }
 
+// HostCookies is voor shops die een vaste cookie nodig hebben, bv. om prijzen in euro's te
+// krijgen in plaats van de standaardvaluta van de site.
+type HostCookies interface {
+	Cookie() string
+}
+
 // PercentDeals is voor shops waarvan de europrijs met een wisselkoers meebeweegt: een paar
 // procent koersverschil is bij een duur product al snel "€5 korting". Zo'n shop telt een
 // prijsdaling alleen als deal vanaf dit percentage, ongeacht het bedrag.
@@ -56,7 +62,7 @@ type PercentDeals interface {
 }
 
 func All() []Shop {
-	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}, &RCMotorsports{}, &Droneshop{}, &Tamico{}, &ChinaHobbyLine{}, &Hepf{}, &Bliek{}, &Aerobertics{}, &Heligear{}, &Area51{}, &Banggood{}, &Voltmaster{}, &NFactory{}, &Lindinger{}, &RCCarOnline{}, &PremiumModellbau{}, &CopterFarm{}, &Shopzinnig{}}
+	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}, &RCMotorsports{}, &Droneshop{}, &Tamico{}, &ChinaHobbyLine{}, &Hepf{}, &Bliek{}, &Aerobertics{}, &Heligear{}, &Area51{}, &Banggood{}, &Voltmaster{}, &NFactory{}, &Lindinger{}, &RCCarOnline{}, &PremiumModellbau{}, &CopterFarm{}, &Shopzinnig{}, &HobbyKing{}}
 }
 
 func BySlug(slugs []string) []Shop {

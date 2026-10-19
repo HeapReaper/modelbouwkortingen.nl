@@ -10,6 +10,7 @@ import droneshopLogo from "@/assets/shops/droneshop.png";
 import hackerLogo from "@/assets/shops/hacker.png";
 import heligearLogo from "@/assets/shops/heligear.png";
 import hepfLogo from "@/assets/shops/hepf.svg";
+import hobbykingLogo from "@/assets/shops/hobbyking.svg";
 import hoelleinLogo from "@/assets/shops/hoellein.png";
 import lindingerLogo from "@/assets/shops/lindinger.svg";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
@@ -293,6 +294,16 @@ export const SHOPS: ShopInfo[] = [
     logo: shopzinnigLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "NL",
+  },
+  {
+    slug: "hobbyking",
+    name: "HobbyKing",
+    url: "https://hobbyking.com/nl_nl/",
+    domain: "hobbyking.com",
+    logo: hobbykingLogo,
+    logoBg: "bg-[#202020]",
+    // De prijzen zijn die van het EU-magazijn in Frankrijk (stock_id 7, zie de crawler).
+    country: "FR",
   },
 ];
 

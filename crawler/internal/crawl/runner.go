@@ -136,6 +136,9 @@ func (r *Runner) runShop(ctx context.Context, shop shops.Shop) (err error) {
 		if hp, ok := shop.(shops.HostPolicy); ok {
 			r.fetcher.SetHostPolicy(sr.host, hp.UserAgent(), hp.MinDelay())
 		}
+		if hc, ok := shop.(shops.HostCookies); ok {
+			r.fetcher.SetHostCookie(sr.host, hc.Cookie())
+		}
 	}
 	r.stats.UpdateShop(shop.Slug(), func(s *stats.ShopStats) {
 		*s = stats.ShopStats{Shop: shop.Slug(), Phase: "sitemap", RunStartedAt: start, LastRunAt: s.LastRunAt, LastRunStatus: s.LastRunStatus}
