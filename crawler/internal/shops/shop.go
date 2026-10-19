@@ -131,9 +131,15 @@ func imgSrc(img *goquery.Selection) string {
 		}
 	}
 	if v := attr(img, "srcset"); v != "" {
-		return strings.Fields(v)[0]
+		return srcsetFirst(v)
 	}
 	return ""
+}
+
+// srcsetFirst geeft de eerste URL uit een srcset ("a.jpg, b.jpg 2x" → "a.jpg"). Zonder
+// breedte- of dichtheidsaanduiding staat de komma direct achter de URL.
+func srcsetFirst(srcset string) string {
+	return strings.TrimRight(strings.Fields(srcset)[0], ",")
 }
 
 var gtmFieldRe = func(field string) *regexp.Regexp {

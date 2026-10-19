@@ -32,7 +32,7 @@ func sw5ParseListing(pageURL string, doc *goquery.Document) ([]parse.Product, st
 		img := card.Find(".product--image img").First()
 		image := imgSrc(img)
 		if srcset := attr(img, "data-srcset"); image == "" && srcset != "" {
-			image = strings.Fields(srcset)[0]
+			image = srcsetFirst(srcset)
 		}
 		p := parse.Product{
 			ExternalID:   attr(card, "data-ordernumber"),
