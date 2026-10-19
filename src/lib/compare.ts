@@ -42,12 +42,25 @@ export type CompareGroup = {
 export type CompareSort = "prijs" | "aanbod";
 
 /** Producten die we zo lang niet meer zagen, zijn waarschijnlijk uit het assortiment. */
-const MAX_AGE_MS = 14 * 24 * 60 * 60_000;
+export const MAX_AGE_MS = 14 * 24 * 60 * 60_000;
 /** Zoveel treffers op de zoektermen; meer betekent: verfijn de zoekopdracht. */
 const MAX_MATCHES = 300;
 const MAX_GROUPS = 60;
+/**
+ * Complete modellen. Bij een brede zoekterm ("losi") zijn de goedkoopste treffers allemaal
+ * onderdelen; deze categorieën halen we apart op en gaan voor bij het afkappen.
+ */
+export const MODEL_CATEGORIES = [
+  "rc-autos",
+  "vliegtuigen",
+  "helicopters",
+  "drones",
+  "boten",
+  "werkvoertuigen",
+  "tanks",
+];
 
-const SELECT = {
+export const SELECT = {
   id: true,
   name: true,
   url: true,
@@ -61,7 +74,7 @@ const SELECT = {
   shop: { select: { slug: true, name: true } },
 } satisfies Prisma.ProductSelect;
 
-type Row = Prisma.ProductGetPayload<{ select: typeof SELECT }>;
+export type Row = Prisma.ProductGetPayload<{ select: typeof SELECT }>;
 
 /**
  * "TRX-3655 " → "TRX3655"; te korte of generieke nummers tellen niet als koppeling.
@@ -72,7 +85,7 @@ export function normalizeSku(sku: string | null | undefined): string | null {
   return s.length >= 4 && /\d/.test(s) ? s : null;
 }
 
-function toOffer(r: Row): Offer {
+export function toOffer(r: Row): Offer {
   return {
     id: num(r.id),
     name: r.name,
@@ -101,33 +114,10 @@ export async function comparePrices(
   const terms = searchTerms(q);
   if (terms.length === 0) return { groups: [], truncated: false };
 
-  let rows: { sku: string | null; offer: Offer }[];
+  let rows: OfferRow[];
   let truncated = false;
   if (!isDbConfigured()) {
-    rows = demoDeals()
-      .filter(
-        (d) =>
-          (!opts.category || d.categorySlug === opts.category) &&
-          terms.every((t) =>
-            searchNorm(`${d.name} ${d.brand ?? ""}`).includes(searchNorm(t)),
-          ),
-      )
-      .map((d) => ({
-        sku: null,
-        offer: {
-          id: d.id,
-          name: d.name,
-          url: d.url,
-          imageUrl: d.imageUrl,
-          price: d.price,
-          inStock: d.inStock,
-          isDeal: true,
-          discountPercent: d.discountPercent,
-          categorySlug: d.categorySlug,
-          shopSlug: d.shopSlug,
-          shopName: d.shopName,
-        },
-      }));
+    rows = demoRows(terms, opts.category);
   } else {
     const prisma = getPrisma();
     const base: Prisma.ProductWhereInput = {
@@ -135,45 +125,23 @@ export async function comparePrices(
       lastSeenAt: { gte: new Date(Date.now() - MAX_AGE_MS) },
       ...(opts.inStock ? { OR: [{ inStock: true }, { inStock: null }] } : {}),
     };
-    const matches = await prisma.product.findMany({
-      select: SELECT,
-      where: {
-        AND: [
-          base,
-          ...(opts.category ? [{ categorySlug: opts.category }] : []),
-          ...terms.map(termWhere),
-        ],
-      },
-      orderBy: { price: "asc" },
-      take: MAX_MATCHES + 1,
-    });
-    truncated = matches.length > MAX_MATCHES;
-    const found = matches.slice(0, MAX_MATCHES);
+    const search = (category: Prisma.ProductWhereInput) =>
+      prisma.product.findMany({
+        select: SELECT,
+        where: { AND: [base, category, ...terms.map(termWhere)] },
+        orderBy: { price: "asc" },
+        take: MAX_MATCHES + 1,
+      });
+    const buckets = opts.category
+      ? [await search({ categorySlug: opts.category })]
+      : await Promise.all([
+          search({ categorySlug: { in: MODEL_CATEGORIES } }),
+          search({ categorySlug: { notIn: MODEL_CATEGORIES } }),
+        ]);
+    truncated = buckets.some((b) => b.length > MAX_MATCHES);
+    const found = buckets.flatMap((b) => b.slice(0, MAX_MATCHES));
 
-    // Hetzelfde artikelnummer bij andere shops, ook als de naam daar niet op de zoekterm lijkt
-    // en de shop het nummer anders schrijft ("TRX-3655" / "TRX3655"): kolom sku_norm. Bewust
-    // zonder categoriefilter: shops delen hetzelfde product soms anders in.
-    const norms = [
-      ...new Set(
-        found
-          .map((r) => normalizeSku(r.sku))
-          .filter((s): s is string => s !== null),
-      ),
-    ].slice(0, 100);
-    const siblings =
-      norms.length === 0
-        ? []
-        : await prisma.product.findMany({
-            select: SELECT,
-            where: {
-              AND: [
-                base,
-                { id: { notIn: found.map((r) => r.id) } },
-                { skuNorm: { in: norms } },
-              ],
-            },
-            take: 300,
-          });
+    const siblings = await siblingRows(base, found, 100);
     rows = [...found, ...siblings].map((r) => ({
       sku: r.sku,
       offer: toOffer(r),
@@ -187,6 +155,85 @@ export async function comparePrices(
     rows = rows.map((r, i) => ({ ...r, offer: offers[i] }));
   }
 
+  const list = groupOffers(rows);
+  const order = (a: CompareGroup, b: CompareGroup) =>
+    opts.sort === "aanbod"
+      ? b.offers.length - a.offers.length ||
+        a.offers[0].price - b.offers[0].price
+      : a.offers[0].price - b.offers[0].price;
+  // Te veel treffers: eerst de modellen, aangevuld met de rest; daarna gewoon op volgorde.
+  const isModel = (g: CompareGroup) =>
+    MODEL_CATEGORIES.includes(g.categorySlug);
+  list.sort((a, b) => Number(isModel(b)) - Number(isModel(a)) || order(a, b));
+  return {
+    groups: list.slice(0, MAX_GROUPS).sort(order),
+    truncated: truncated || list.length > MAX_GROUPS,
+  };
+}
+
+/** Demo-modus (geen DATABASE_URL): de voorbeelddeals als zoekresultaat. */
+export function demoRows(terms: string[], category?: string): OfferRow[] {
+  return demoDeals()
+    .filter(
+      (d) =>
+        (!category || d.categorySlug === category) &&
+        terms.every((t) =>
+          searchNorm(`${d.name} ${d.brand ?? ""}`).includes(searchNorm(t)),
+        ),
+    )
+    .map((d) => ({
+      sku: null,
+      offer: {
+        id: d.id,
+        name: d.name,
+        url: d.url,
+        imageUrl: d.imageUrl,
+        price: d.price,
+        inStock: d.inStock,
+        isDeal: true,
+        discountPercent: d.discountPercent,
+        categorySlug: d.categorySlug,
+        shopSlug: d.shopSlug,
+        shopName: d.shopName,
+      },
+    }));
+}
+
+/**
+ * Hetzelfde artikelnummer bij andere shops, ook als de naam daar niet op de zoekterm lijkt
+ * en de shop het nummer anders schrijft ("TRX-3655" / "TRX3655"): kolom sku_norm. Bewust
+ * zonder categoriefilter: shops delen hetzelfde product soms anders in.
+ */
+export async function siblingRows(
+  base: Prisma.ProductWhereInput,
+  found: { id: bigint; sku: string | null }[],
+  maxSkus: number,
+): Promise<Row[]> {
+  const norms = [
+    ...new Set(
+      found
+        .map((r) => normalizeSku(r.sku))
+        .filter((s): s is string => s !== null),
+    ),
+  ].slice(0, maxSkus);
+  if (norms.length === 0) return [];
+  return getPrisma().product.findMany({
+    select: SELECT,
+    where: {
+      AND: [
+        base,
+        { id: { notIn: found.map((r) => r.id) } },
+        { skuNorm: { in: norms } },
+      ],
+    },
+    take: maxSkus * 3,
+  });
+}
+
+export type OfferRow = { sku: string | null; offer: Offer };
+
+/** Groepeert aanbiedingen op artikelnummer; per groep goedkoopste eerst. */
+export function groupOffers(rows: OfferRow[]): CompareGroup[] {
   const groups = new Map<string, CompareGroup>();
   for (const { sku, offer } of rows) {
     const norm = normalizeSku(sku);
@@ -217,14 +264,5 @@ export async function comparePrices(
     g.imageUrl = g.offers.find((o) => o.imageUrl)?.imageUrl ?? null;
     g.categorySlug = g.offers[0].categorySlug;
   }
-  list.sort((a, b) =>
-    opts.sort === "aanbod"
-      ? b.offers.length - a.offers.length ||
-        a.offers[0].price - b.offers[0].price
-      : a.offers[0].price - b.offers[0].price,
-  );
-  return {
-    groups: list.slice(0, MAX_GROUPS),
-    truncated: truncated || list.length > MAX_GROUPS,
-  };
+  return list;
 }

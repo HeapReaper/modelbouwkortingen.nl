@@ -19,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...[
       "/aanbiedingen",
       "/prijsvergelijker",
+      "/partfinder",
       "/webshops",
       "/merken",
       "/over",

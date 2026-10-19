@@ -19,6 +19,7 @@ export const en: Dictionary = {
     deals: "Deals",
     allDeals: "All deals",
     compare: "Price comparison",
+    partfinder: "Part finder",
     categories: "Categories",
     shops: "Shops",
     allShops: "View all shops →",
@@ -51,6 +52,7 @@ export const en: Dictionary = {
     site: "Modelbouwkortingen",
     allDeals: "All deals",
     compare: "Price comparison",
+    partfinder: "Part finder",
     newsletter: "Daily deals email",
     discord: "Deals in your Discord",
     howItWorks: "How does it work?",
@@ -305,6 +307,38 @@ export const en: Dictionary = {
   searchPage: {
     title: "Search",
     metaDescription: "Search all RC deals.",
+  },
+  partfinderPage: {
+    metaTitle: "Part finder: search every RC part and model",
+    metaDescription:
+      "Search all RC models, parts and part numbers from {count} shops and see where they're in stock or on sale.",
+    title: "Part finder",
+    description:
+      "Search everything: complete models, parts, upgrades or part numbers. For each product you see which shops carry it and whether it's on sale.",
+    placeholder: "E.g. Mini-T 2.0 gear, LOS212018 or Losi Nascar",
+    button: "Search",
+    searching: "Searching…",
+    shop: "Shop",
+    allShops: "All shops",
+    inStock: "In stock only",
+    dealsOnly: "Deals only",
+    sort: "Sort",
+    sorts: {
+      relevantie: "Most relevant",
+      "prijs-laag": "Lowest price",
+      "prijs-hoog": "Highest price",
+      korting: "Biggest discount",
+      aanbod: "Most shops",
+    },
+    intro:
+      "Type a model, part, brand or part number above. We search all {count} shops we track, including products that aren't on sale.",
+    resultsOne: "1 product found for {query}",
+    resultsOther: "{count} products found for {query}",
+    dealsCount: "{count} on sale",
+    foundAt: "Found at",
+    truncated:
+      "There are more matches than we search at once. Make your search more specific or pick a category.",
+    none: "Nothing found for {query}. Try a different spelling, fewer words or just the part number.",
   },
   comparePage: {
     metaTitle: "Price comparison for RC products",

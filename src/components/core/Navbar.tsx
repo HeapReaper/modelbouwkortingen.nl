@@ -47,6 +47,12 @@ export default function Navbar() {
             />
           </NavigationMenuItem>
           <NavigationMenuItem>
+            <NavigationMenuLink
+              className={cn(navigationMenuTriggerStyle(), "text-base")}
+              render={<Link href={href("/partfinder")}>{dict.nav.partfinder}</Link>}
+            />
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <NavigationMenuTrigger className="text-base">
               {dict.nav.categories}
             </NavigationMenuTrigger>

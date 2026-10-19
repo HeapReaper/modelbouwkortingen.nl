@@ -22,6 +22,7 @@ export const nl = {
     deals: "Aanbiedingen",
     allDeals: "Alle aanbiedingen",
     compare: "Prijsvergelijker",
+    partfinder: "Partfinder",
     categories: "Categorieën",
     shops: "Webshops",
     allShops: "Alle webshops bekijken →",
@@ -54,6 +55,7 @@ export const nl = {
     site: "Modelbouwkortingen",
     allDeals: "Alle aanbiedingen",
     compare: "Prijsvergelijker",
+    partfinder: "Partfinder",
     newsletter: "Dagelijkse kortingsmail",
     discord: "Deals in je Discord",
     howItWorks: "Hoe werkt het?",
@@ -309,6 +311,38 @@ export const nl = {
   searchPage: {
     title: "Zoeken",
     metaDescription: "Zoek tussen alle RC-aanbiedingen.",
+  },
+  partfinderPage: {
+    metaTitle: "Partfinder: zoek elk RC-onderdeel en model",
+    metaDescription:
+      "Doorzoek alle RC-modellen, onderdelen en artikelnummers van {count} webshops en zie waar het op voorraad of in de aanbieding is.",
+    title: "Partfinder",
+    description:
+      "Zoek alles: complete modellen, onderdelen, upgrades of artikelnummers. Je ziet per product welke webshops het hebben en of het in de aanbieding is.",
+    placeholder: "Bijv. Mini-T 2.0 tandwiel, LOS212018 of Losi Nascar",
+    button: "Zoeken",
+    searching: "Zoeken…",
+    shop: "Webshop",
+    allShops: "Alle webshops",
+    inStock: "Alleen op voorraad",
+    dealsOnly: "Alleen aanbiedingen",
+    sort: "Sorteren",
+    sorts: {
+      relevantie: "Meest relevant",
+      "prijs-laag": "Laagste prijs",
+      "prijs-hoog": "Hoogste prijs",
+      korting: "Hoogste korting",
+      aanbod: "Meeste webshops",
+    },
+    intro:
+      "Typ hierboven een model, onderdeel, merk of artikelnummer. We doorzoeken alle {count} webshops die we volgen, ook producten die niet in de aanbieding zijn.",
+    resultsOne: "1 product gevonden voor {query}",
+    resultsOther: "{count} producten gevonden voor {query}",
+    dealsCount: "{count} in de aanbieding",
+    foundAt: "Gevonden bij",
+    truncated:
+      "Er zijn meer treffers dan we in één keer doorzoeken. Maak je zoekopdracht specifieker of kies een categorie.",
+    none: "Niets gevonden voor {query}. Probeer een andere schrijfwijze, minder woorden of alleen het artikelnummer.",
   },
   comparePage: {
     metaTitle: "Prijsvergelijker voor RC-producten",

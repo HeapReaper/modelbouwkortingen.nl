@@ -43,6 +43,7 @@ export default async function Footer() {
           links={[
             { href: href("/aanbiedingen"), label: f.allDeals },
             { href: href("/prijsvergelijker"), label: f.compare },
+            { href: href("/partfinder"), label: f.partfinder },
             { href: href("/merken"), label: f.brands },
             { href: href("/volglijst"), label: f.watchlist },
             { href: href("/nieuwsbrief"), label: f.newsletter },

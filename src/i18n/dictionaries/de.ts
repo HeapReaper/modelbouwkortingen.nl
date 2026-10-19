@@ -19,6 +19,7 @@ export const de: Dictionary = {
     deals: "Angebote",
     allDeals: "Alle Angebote",
     compare: "Preisvergleich",
+    partfinder: "Teilefinder",
     categories: "Kategorien",
     shops: "Shops",
     allShops: "Alle Shops ansehen →",
@@ -52,6 +53,7 @@ export const de: Dictionary = {
     site: "Modelbouwkortingen",
     allDeals: "Alle Angebote",
     compare: "Preisvergleich",
+    partfinder: "Teilefinder",
     newsletter: "Täglicher Angebots-Newsletter",
     discord: "Angebote in deinem Discord",
     howItWorks: "Wie funktioniert es?",
@@ -314,6 +316,38 @@ export const de: Dictionary = {
   searchPage: {
     title: "Suchen",
     metaDescription: "Alle RC-Angebote durchsuchen.",
+  },
+  partfinderPage: {
+    metaTitle: "Teilefinder: jedes RC-Teil und Modell finden",
+    metaDescription:
+      "Durchsuche alle RC-Modelle, Ersatzteile und Artikelnummern von {count} Shops und sieh, wo sie auf Lager oder im Angebot sind.",
+    title: "Teilefinder",
+    description:
+      "Suche alles: komplette Modelle, Ersatzteile, Tuningteile oder Artikelnummern. Pro Produkt siehst du, welche Shops es führen und ob es im Angebot ist.",
+    placeholder: "Z. B. Mini-T 2.0 Zahnrad, LOS212018 oder Losi Nascar",
+    button: "Suchen",
+    searching: "Suche…",
+    shop: "Shop",
+    allShops: "Alle Shops",
+    inStock: "Nur auf Lager",
+    dealsOnly: "Nur Angebote",
+    sort: "Sortieren",
+    sorts: {
+      relevantie: "Relevanteste",
+      "prijs-laag": "Niedrigster Preis",
+      "prijs-hoog": "Höchster Preis",
+      korting: "Höchster Rabatt",
+      aanbod: "Meiste Shops",
+    },
+    intro:
+      "Gib oben ein Modell, Teil, eine Marke oder Artikelnummer ein. Wir durchsuchen alle {count} Shops, die wir verfolgen, auch Produkte ohne Rabatt.",
+    resultsOne: "1 Produkt gefunden für {query}",
+    resultsOther: "{count} Produkte gefunden für {query}",
+    dealsCount: "{count} im Angebot",
+    foundAt: "Gefunden bei",
+    truncated:
+      "Es gibt mehr Treffer, als wir auf einmal durchsuchen. Formuliere die Suche genauer oder wähle eine Kategorie.",
+    none: "Nichts gefunden für {query}. Versuche eine andere Schreibweise, weniger Wörter oder nur die Artikelnummer.",
   },
   comparePage: {
     metaTitle: "Preisvergleich für RC-Produkte",

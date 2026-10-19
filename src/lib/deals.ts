@@ -224,12 +224,16 @@ export function termWhere(term: string): Prisma.ProductWhereInput {
 }
 
 export function searchTerms(q?: string) {
-  return (q ?? "")
-    .toLowerCase()
-    .split(/\s+/)
-    .map((t) => t.replace(/[%_\\]/g, ""))
-    .filter((t) => t.length > 0)
-    .slice(0, 6);
+  return (
+    (q ?? "")
+      .toLowerCase()
+      // Ook "/", "," enz. scheiden termen: "losi/nascar" = "losi" + "nascar". Een schaal als
+      // "1/10" (cijfers aan beide kanten) blijft één term.
+      .split(/[\s,;+&|]+|(?<!\d)\/|\/(?!\d)/)
+      .map((t) => t.replace(/[%_\\]/g, ""))
+      .filter((t) => t.length > 0)
+      .slice(0, 6)
+  );
 }
 
 export async function getTopDeals(limit = 12): Promise<Deal[]> {

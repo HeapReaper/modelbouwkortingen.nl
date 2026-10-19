@@ -9,6 +9,7 @@ import {
   Store,
   Tags,
   UserRound,
+  Wrench,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -69,6 +70,13 @@ export function MobileNav() {
               className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted"
             >
               <Scale className="size-5 text-primary" /> {dict.nav.compare}
+            </Link>
+            <Link
+              href={href("/partfinder")}
+              onClick={close}
+              className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted"
+            >
+              <Wrench className="size-5 text-primary" /> {dict.nav.partfinder}
             </Link>
             <Link
               href={href("/webshops")}
