@@ -49,7 +49,7 @@ export const en: Dictionary = {
     categories: "Categories",
     shops: "Shops",
     allShops: "All shops",
-    site: "Modelbouwkortingen",
+    site: "Explore",
     allDeals: "All deals",
     compare: "Price comparison",
     partfinder: "Part finder",

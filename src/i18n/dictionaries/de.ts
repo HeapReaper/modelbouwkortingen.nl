@@ -50,7 +50,7 @@ export const de: Dictionary = {
     categories: "Kategorien",
     shops: "Shops",
     allShops: "Alle Shops",
-    site: "Modelbouwkortingen",
+    site: "Entdecken",
     allDeals: "Alle Angebote",
     compare: "Preisvergleich",
     partfinder: "Teilefinder",

@@ -52,7 +52,7 @@ export const nl = {
     categories: "Categorieën",
     shops: "Webshops",
     allShops: "Alle webshops",
-    site: "Modelbouwkortingen",
+    site: "Ontdek",
     allDeals: "Alle aanbiedingen",
     compare: "Prijsvergelijker",
     partfinder: "Partfinder",
