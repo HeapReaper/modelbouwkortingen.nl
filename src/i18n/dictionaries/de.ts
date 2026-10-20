@@ -177,6 +177,19 @@ export const de: Dictionary = {
       "Niederländischer Spielwaren- und Modellbauladen mit viel Tamiya: RC-Autos, Panzer, Trucks und Ersatzteile, dazu Carson und Kyosho.",
     theborder:
       "RC-Laden in Mijdrecht mit großem Angebot an Autos und Ersatzteilen von Traxxas, Kyosho, Axial, XRAY und mehr, dazu Boote und Akkus.",
+    trxxs:
+      "Belgischer Traxxas-Spezialist in Lommel, auch mit Arrma, Losi, Axial und Pro Boat: Autos, Boote, Ersatzteile und Akkus.",
+    erc: "Belgischer Hubschrauber-Spezialist mit Goosky-Helis, Rotorblättern, Ersatzteilen, Servos, Kreiseln und Ladegeräten.",
+    rcnmore:
+      "Belgischer RC-Laden in Lendelede mit vielen Ersatzteilen für SAB-, Align-, Mikado- und Blade-Helis sowie Traxxas- und Tamiya-Autos.",
+    rcteam:
+      "Großer französischer RC-Laden in Firminy mit Traxxas, Tamiya, Kyosho, HPI, Team Associated und Xray sowie Ersatzteilen und Werkzeug.",
+    mrcmodelisme:
+      "Französischer Modellbauladen mit vielen Traxxas- und Kavan-Ersatzteilen sowie Autos, Flugzeugen, Booten, Akkus und Elektronik.",
+    dronefpvracer:
+      "Französischer FPV-Spezialist mit Racedrohnen, Frames, Motoren, Flugcontrollern, Videobrillen, LiPos und Propellern.",
+    flashrc:
+      "Großer französischer RC-Laden mit Flugzeugen, Hubschraubern, Autos, Drohnen und Booten sowie Sendern, Akkus, Motoren und Ersatzteilen.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
@@ -1045,7 +1058,7 @@ export const de: Dictionary = {
       {
         title: "Mit wem wir Daten teilen",
         body: [
-          "Wir verkaufen deine Daten nie. Für den Versand von Mails nutzen wir einen E-Mail-Anbieter, Nachrichten in Discord laufen über Discord und Anzeigen über Google. Sie verarbeiten Daten nur für diese Aufgabe. Produktnamen deutscher Shops lassen wir von Amazon Translate übersetzen; dabei werden keine personenbezogenen Daten übermittelt.",
+          "Wir verkaufen deine Daten nie. Für den Versand von Mails nutzen wir einen E-Mail-Anbieter, Nachrichten in Discord laufen über Discord und Anzeigen über Google. Sie verarbeiten Daten nur für diese Aufgabe. Produktnamen deutscher und französischer Shops lassen wir von Amazon Translate übersetzen; dabei werden keine personenbezogenen Daten übermittelt.",
         ],
       },
       {

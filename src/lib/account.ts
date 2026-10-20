@@ -383,7 +383,7 @@ export type AccountAlert = {
 
 /**
  * Alle prijsalarmen op het adres van het account (geannuleerde van de laatste 30 dagen), met
- * vertaalde namen voor producten van Duitstalige webshops.
+ * vertaalde namen voor producten van Duitse en Franse webshops.
  */
 export async function getAlerts(
   email: string,

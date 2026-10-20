@@ -44,7 +44,7 @@ func theborderSkip(cats []string) bool {
 }
 
 func (s *TheBorder) ParseListingRaw(pageURL string, body []byte) ([]parse.Product, string) {
-	return parseWooFeed(pageURL, body, theborderSkip)
+	return parseWooFeed(pageURL, body, theborderSkip, nil)
 }
 
 // ParseListing wordt niet gebruikt: de listings zijn JSON (zie ParseListingRaw).

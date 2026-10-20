@@ -170,6 +170,19 @@ export const en: Dictionary = {
       "Dutch toy and hobby store with lots of Tamiya: RC cars, tanks, trucks and parts, plus Carson and Kyosho.",
     theborder:
       "RC store in Mijdrecht with a large range of cars and parts from Traxxas, Kyosho, Axial, XRAY and more, plus boats and batteries.",
+    trxxs:
+      "Belgian Traxxas specialist in Lommel that also stocks Arrma, Losi, Axial and Pro Boat: cars, boats, parts and batteries.",
+    erc: "Belgian helicopter specialist with Goosky helis, rotor blades, parts, servos, gyros and chargers.",
+    rcnmore:
+      "Belgian RC store in Lendelede with lots of parts for SAB, Align, Mikado and Blade helis and Traxxas and Tamiya cars.",
+    rcteam:
+      "Large French RC store in Firminy with Traxxas, Tamiya, Kyosho, HPI, Team Associated and Xray, plus parts and tools.",
+    mrcmodelisme:
+      "French hobby store with lots of Traxxas and Kavan parts, plus cars, planes, boats, batteries and electronics.",
+    dronefpvracer:
+      "French FPV specialist with racing drones, frames, motors, flight controllers, goggles, LiPos and propellers.",
+    flashrc:
+      "Large French RC store with planes, helicopters, cars, drones and boats, plus transmitters, batteries, motors and parts.",
   },
   deals: {
     outOfStock: "Out of stock",
@@ -1023,7 +1036,7 @@ export const en: Dictionary = {
       {
         title: "Who we share data with",
         body: [
-          "We never sell your data. We use an email provider to send email, Discord messages go through Discord, and ads through Google. They only process data for that task. We have product names from German shops translated by Amazon Translate; no personal data is included.",
+          "We never sell your data. We use an email provider to send email, Discord messages go through Discord, and ads through Google. They only process data for that task. We have product names from German and French shops translated by Amazon Translate; no personal data is included.",
         ],
       },
       {

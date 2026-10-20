@@ -6,7 +6,10 @@ import berlinskiLogo from "@/assets/shops/berlinski.svg";
 import bliekLogo from "@/assets/shops/bliek.png";
 import chinahobbylineLogo from "@/assets/shops/chinahobbyline.png";
 import copterfarmLogo from "@/assets/shops/copterfarm.png";
+import dronefpvracerLogo from "@/assets/shops/dronefpvracer.png";
 import droneshopLogo from "@/assets/shops/droneshop.png";
+import ercLogo from "@/assets/shops/erc.png";
+import flashrcLogo from "@/assets/shops/flashrc.svg";
 import hackerLogo from "@/assets/shops/hacker.png";
 import heligearLogo from "@/assets/shops/heligear.png";
 import hepfLogo from "@/assets/shops/hepf.svg";
@@ -15,18 +18,25 @@ import hoelleinLogo from "@/assets/shops/hoellein.png";
 import lindingerLogo from "@/assets/shops/lindinger.svg";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
+import mrcmodelismeLogo from "@/assets/shops/mrcmodelisme.png";
 import nfactoryLogo from "@/assets/shops/nfactory.png";
 import premiummodellbauLogo from "@/assets/shops/premiummodellbau.png";
 import rccaronlineLogo from "@/assets/shops/rccaronline.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
+import rcnmoreLogo from "@/assets/shops/rcnmore.png";
+import rcteamLogo from "@/assets/shops/rcteam.png";
 import shopzinnigLogo from "@/assets/shops/shopzinnig.png";
 import speelgoedenmodelbouwLogo from "@/assets/shops/speelgoedenmodelbouw.png";
 import tamicoLogo from "@/assets/shops/tamico.png";
 import theborderLogo from "@/assets/shops/theborder.png";
 import toemenLogo from "@/assets/shops/toemen.png";
 import toprcLogo from "@/assets/shops/toprc.svg";
+import trxxsLogo from "@/assets/shops/trxxs.png";
 import voltmasterLogo from "@/assets/shops/voltmaster.svg";
 import wetronicLogo from "@/assets/shops/wetronic.png";
+
+/** Talen van productnamen die we vertalen. */
+export type SourceLanguage = "de" | "fr";
 
 /** De omschrijving staat per taal in de woordenboeken (dict.shops[slug]). */
 export type ShopInfo = {
@@ -45,8 +55,8 @@ export type ShopInfo = {
   affiliate?: { params: Record<string, string>; categories?: string[] };
   /** Land van de webshop (ISO 3166-1 alpha-2); leeg als dat niet eenduidig is. */
   country?: string;
-  /** Taal van de productnamen op de site; "de" = namen worden vertaald (zie src/lib/translate.ts). */
-  language?: "de";
+  /** Taal van de productnamen als die niet Nederlands of Engels is; die namen worden vertaald (zie src/lib/translate.ts). */
+  language?: SourceLanguage;
   /**
    * Verzendkosten van een gewoon pakket naar Nederland, en vanaf welk orderbedrag verzending
    * gratis is. Alleen invullen als het op de site van de webshop zelf staat; zonder dit veld
@@ -325,6 +335,73 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-black",
     country: "NL",
   },
+  {
+    slug: "trxxs",
+    name: "Trxxs-Winkel",
+    url: "https://www.trxxs-winkel.be",
+    domain: "trxxs-winkel.be",
+    logo: trxxsLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "BE",
+  },
+  {
+    slug: "erc",
+    name: "e-rc",
+    url: "https://www.e-rc.be",
+    domain: "e-rc.be",
+    logo: ercLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "BE",
+  },
+  {
+    slug: "rcnmore",
+    name: "RC N-more",
+    url: "https://rcn-more.be",
+    domain: "rcn-more.be",
+    logo: rcnmoreLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "BE",
+  },
+  {
+    slug: "rcteam",
+    name: "RC Team",
+    url: "https://www.rcteam.com",
+    domain: "rcteam.com",
+    logo: rcteamLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "FR",
+    language: "fr",
+  },
+  {
+    slug: "mrcmodelisme",
+    name: "MRC Modélisme",
+    url: "https://www.mrcmodelisme.com",
+    domain: "mrcmodelisme.com",
+    logo: mrcmodelismeLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "FR",
+    language: "fr",
+  },
+  {
+    slug: "dronefpvracer",
+    name: "Drone FPV Racer",
+    url: "https://www.drone-fpv-racer.com",
+    domain: "drone-fpv-racer.com",
+    logo: dronefpvracerLogo,
+    logoBg: "bg-[#1e1e1e]",
+    country: "FR",
+    language: "fr",
+  },
+  {
+    slug: "flashrc",
+    name: "FlashRC",
+    url: "https://www.flashrc.com/fr/",
+    domain: "flashrc.com",
+    logo: flashrcLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "FR",
+    language: "fr",
+  },
 ];
 
 const bySlug = new Map(SHOPS.map((s) => [s.slug, s]));
@@ -333,10 +410,15 @@ export function getShop(slug: string | null | undefined): ShopInfo | undefined {
   return slug ? bySlug.get(slug) : undefined;
 }
 
-/** Webshops met Duitse productnamen. */
-export const GERMAN_SHOPS = SHOPS.filter((s) => s.language === "de").map(
-  (s) => s.slug,
+/** Webshops met productnamen in een andere taal, per slug. */
+export const SHOP_LANGUAGES = new Map(
+  SHOPS.flatMap((s) =>
+    s.language ? [[s.slug, s.language] as [string, SourceLanguage]] : [],
+  ),
 );
+
+/** Webshops met productnamen die we vertalen. */
+export const TRANSLATED_SHOPS = [...SHOP_LANGUAGES.keys()];
 
 /** Shops uit dit land tellen als "binnenland": geen douane, meestal snelle levering. */
 export const HOME_COUNTRIES = ["NL", "BE"];

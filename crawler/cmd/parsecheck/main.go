@@ -10,13 +10,15 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/PuerkitoBio/goquery"
+
 	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/categorize"
 	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
 	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/shops"
 )
 
 func main() {
-	shopSlug := flag.String("shop", "", "toprc | toemen | wetronic | hoellein | berlinski | minizshop | mgmodellbau | hacker | rcmotorsports | droneshop | tamico | chinahobbyline | hepf | bliek | aerobertics | heligear | area51 | banggood | voltmaster | nfactory | lindinger | rccaronline | premiummodellbau | copterfarm | shopzinnig | hobbyking | speelgoedenmodelbouw | theborder")
+	shopSlug := flag.String("shop", "", "toprc | toemen | wetronic | hoellein | berlinski | minizshop | mgmodellbau | hacker | rcmotorsports | droneshop | tamico | chinahobbyline | hepf | bliek | aerobertics | heligear | area51 | banggood | voltmaster | nfactory | lindinger | rccaronline | premiummodellbau | copterfarm | shopzinnig | hobbyking | speelgoedenmodelbouw | theborder | trxxs | erc | rcnmore | rcteam | mrcmodelisme | dronefpvracer | flashrc")
 	kind := flag.String("kind", "product", "product | listing")
 	pageURL := flag.String("url", "", "URL van de pagina")
 	flag.Parse()
@@ -29,17 +31,21 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	doc, err := parse.Document(body, "")
-	if err != nil {
-		panic(err)
-	}
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")
 	shop := list[0]
+	raw, isRaw := shop.(shops.RawListingParser)
+	var doc *goquery.Document
+	// JSON-listings zijn geen HTML (en diep genest JSON laat de HTML-parser struikelen).
+	if *kind != "listing" || !isRaw {
+		if doc, err = parse.Document(body, ""); err != nil {
+			panic(err)
+		}
+	}
 	if *kind == "listing" {
 		var products []parse.Product
 		var next string
-		if raw, ok := shop.(shops.RawListingParser); ok {
+		if isRaw {
 			products, next = raw.ParseListingRaw(*pageURL, body)
 		} else {
 			products, next = shop.ParseListing(*pageURL, doc)

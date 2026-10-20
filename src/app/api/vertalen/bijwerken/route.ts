@@ -4,7 +4,7 @@ import { isDbConfigured } from "@/lib/db";
 import { translatePendingDeals } from "@/lib/translate";
 
 /**
- * Vertaalt de namen van nieuwe deals van Duitstalige webshops (zie src/lib/translate.ts).
+ * Vertaalt de namen van nieuwe deals van Duitse en Franse webshops (zie src/lib/translate.ts).
  * Wordt elke paar minuten aangeroepen door de planner in instrumentation.ts ("Authorization:
  * Bearer <NEWSLETTER_CRON_TOKEN>"), of handmatig met de admin-login.
  */

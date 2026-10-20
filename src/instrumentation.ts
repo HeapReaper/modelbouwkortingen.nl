@@ -6,7 +6,7 @@
  *   - /api/prijsalarm/controleren: prijsalarmen waarvan de doelprijs bereikt is (claim per alarm);
  *   - /api/crawler/controleren: crawl-rondes die opvallend weinig producten zagen (één melding
  *     per ronde, primary key op run_id);
- *   - /api/vertalen/bijwerken: namen van nieuwe deals van Duitstalige webshops vertalen (een
+ *   - /api/vertalen/bijwerken: namen van nieuwe deals van Duitse en Franse webshops vertalen (een
  *     dubbele vertaling overschrijft alleen dezelfde rij).
  * Meerdere servers of herstarts zijn dus geen probleem.
  *

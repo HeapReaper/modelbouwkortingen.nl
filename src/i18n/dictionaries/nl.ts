@@ -173,6 +173,19 @@ export const nl = {
       "Nederlandse speelgoed- en modelbouwwinkel met veel Tamiya: RC-auto's, tanks, trucks en onderdelen, plus Carson en Kyosho.",
     theborder:
       "RC-winkel in Mijdrecht met een groot aanbod auto's en onderdelen van Traxxas, Kyosho, Axial, XRAY en meer, plus boten en accu's.",
+    trxxs:
+      "Belgische Traxxas-specialist in Lommel met ook Arrma, Losi, Axial en Pro Boat: auto's, boten, onderdelen en accu's.",
+    erc: "Belgische helikopterspecialist met Goosky-heli's, rotorbladen, onderdelen, servo's, gyro's en laders.",
+    rcnmore:
+      "Belgische RC-winkel in Lendelede met veel onderdelen voor SAB-, Align-, Mikado- en Blade-heli's en Traxxas- en Tamiya-auto's.",
+    rcteam:
+      "Grote Franse RC-winkel in Firminy met Traxxas, Tamiya, Kyosho, HPI, Team Associated en Xray, plus onderdelen en gereedschap.",
+    mrcmodelisme:
+      "Franse modelbouwwinkel met veel Traxxas- en Kavan-onderdelen, plus auto's, vliegtuigen, boten, accu's en elektronica.",
+    dronefpvracer:
+      "Franse FPV-specialist met racedrones, frames, motoren, flight controllers, videobrillen, lipo's en propellers.",
+    flashrc:
+      "Grote Franse RC-winkel met vliegtuigen, helikopters, auto's, drones en boten, plus zenders, accu's, motoren en onderdelen.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",
@@ -1026,7 +1039,7 @@ export const nl = {
       {
         title: "Met wie we gegevens delen",
         body: [
-          "We verkopen je gegevens nooit. Voor het versturen van mail gebruiken we een e-mailprovider, berichten in Discord gaan via Discord, en advertenties via Google. Zij verwerken gegevens alleen voor die taak. Productnamen van Duitse webshops laten we vertalen door Amazon Translate; daarbij gaan geen persoonsgegevens mee.",
+          "We verkopen je gegevens nooit. Voor het versturen van mail gebruiken we een e-mailprovider, berichten in Discord gaan via Discord, en advertenties via Google. Zij verwerken gegevens alleen voor die taak. Productnamen van Duitse en Franse webshops laten we vertalen door Amazon Translate; daarbij gaan geen persoonsgegevens mee.",
         ],
       },
       {

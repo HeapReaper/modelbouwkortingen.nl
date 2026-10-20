@@ -242,10 +242,10 @@ model PriceAlert {
   @@map("price_alerts")
 }
 
-/// Vertaalde productnaam voor producten van Duitstalige webshops (zie src/lib/translate.ts).
+/// Vertaalde productnaam voor producten van Duitse en Franse webshops (zie src/lib/translate.ts).
 model ProductTranslation {
   productId  BigInt   @map("product_id")
-  /// Doeltaal (nl, en).
+  /// Doeltaal (nl, en, de).
   locale     String
   name       String
   /// De originele naam die vertaald is; wijzigt de naam bij de webshop, dan vertalen we opnieuw.

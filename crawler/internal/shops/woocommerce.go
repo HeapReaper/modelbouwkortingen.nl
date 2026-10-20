@@ -78,8 +78,9 @@ type wooProduct struct {
 }
 
 // parseWooFeed leest een pagina van de Store API. skip (mag nil zijn) slaat producten over
-// op basis van hun categorienamen.
-func parseWooFeed(pageURL string, body []byte, skip func(categories []string) bool) ([]parse.Product, string) {
+// op basis van hun categorienamen; keepCategory (mag nil zijn) bepaalt welke categorieën
+// meetellen voor de indeling.
+func parseWooFeed(pageURL string, body []byte, skip func(categories []string) bool, keepCategory func(string) bool) ([]parse.Product, string) {
 	var items []wooProduct
 	if err := json.Unmarshal(body, &items); err != nil {
 		return nil, ""
@@ -91,7 +92,9 @@ func parseWooFeed(pageURL string, body []byte, skip func(categories []string) bo
 		}
 		var cats []string
 		for _, c := range it.Categories {
-			cats = append(cats, parse.Clean(html.UnescapeString(c.Name)))
+			if name := parse.Clean(html.UnescapeString(c.Name)); keepCategory == nil || keepCategory(name) {
+				cats = append(cats, name)
+			}
 		}
 		if skip != nil && skip(cats) {
 			continue

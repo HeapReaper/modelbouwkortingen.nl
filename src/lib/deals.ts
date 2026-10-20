@@ -32,7 +32,7 @@ export type Deal = {
   shopCategory: string | null;
   shopSlug: string;
   shopName: string;
-  /** De Duitse naam als `name` vertaald is (zie localizeDeals() in src/lib/translate.ts). */
+  /** De originele naam als `name` vertaald is (zie localizeDeals() in src/lib/translate.ts). */
   originalName?: string;
   sku: string | null;
   /** false = het product is (nu) geen deal meer, bv. op de volglijst of bij een prijsalarm. */
@@ -216,7 +216,7 @@ export function termWhere(term: string): Prisma.ProductWhereInput {
       { name: contains },
       { brand: contains },
       { sku: contains },
-      // Ook op de vertaalde naam van producten van Duitstalige webshops.
+      // Ook op de vertaalde naam van producten van Duitse en Franse webshops.
       { translations: { some: { name: contains } } },
       ...(norm ? [{ searchNorm: { contains: norm } }] : []),
     ],

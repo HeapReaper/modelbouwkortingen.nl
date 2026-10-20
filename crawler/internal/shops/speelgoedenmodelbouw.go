@@ -39,7 +39,7 @@ func (s *SpeelgoedenModelbouw) Discover(ctx context.Context, f *fetch.Fetcher) (
 }
 
 func (s *SpeelgoedenModelbouw) ParseListingRaw(pageURL string, body []byte) ([]parse.Product, string) {
-	return parseWooFeed(pageURL, body, func(cats []string) bool { return wooHasCategory(cats, "statische modelbouw") })
+	return parseWooFeed(pageURL, body, func(cats []string) bool { return wooHasCategory(cats, "statische modelbouw") }, nil)
 }
 
 // ParseListing wordt niet gebruikt: de listings zijn JSON (zie ParseListingRaw).

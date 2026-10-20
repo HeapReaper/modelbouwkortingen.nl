@@ -1,7 +1,7 @@
 # Modelbouwkortingen.nl
 
-Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 17 Nederlandse en Europese
-modelbouw-webshops (zie [Crawler](#crawler)). Is een product **minstens €5 of 5%** afgeprijsd, dan
+Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 35 Nederlandse, Belgische, Duitse,
+Franse en andere modelbouw-webshops (zie [Crawler](#crawler)). Is een product **minstens €5 of 5%** afgeprijsd, dan
 komt het op de website (Next.js 16 + shadcn/ui).
 
 ## Features
@@ -28,7 +28,7 @@ komt het op de website (Next.js 16 + shadcn/ui).
 
 **Talen**
 - Site in het Nederlands, Engels en Duits, met taaldetectie en taalkiezer.
-- Productnamen van Duitstalige webshops automatisch vertaald via Amazon Translate.
+- Productnamen van Duitse en Franse webshops automatisch vertaald via Amazon Translate.
 - Mail en Discord in de taal waarin de abonnee zich aanmeldde.
 
 **Verdienen**
@@ -123,7 +123,7 @@ koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coo
 | `/api/og/[id]` | Deelafbeelding (1200×630) voor een product; `?lang=` voor de vertaalde naam |
 | `/api/bezoek` | Telt een paginaweergave (`page_views`): gestuurd door de tracker in het layout, zonder cookies; bots, geautomatiseerde browsers en het eigen admin-apparaat tellen niet mee |
 | `/api/uit/[id]` | Telt de klik (`outbound_clicks`, zonder bots) en stuurt door naar de webshop, met affiliate-parameters |
-| `/api/vertalen/bijwerken` | Vertaalt namen van nieuwe deals van Duitstalige webshops (zelfde beveiliging als `/api/nieuwsbrief/verzenden`) |
+| `/api/vertalen/bijwerken` | Vertaalt namen van nieuwe deals van Duitse en Franse webshops (zelfde beveiliging als `/api/nieuwsbrief/verzenden`) |
 | `/api/crawler/controleren` | Zoekt crawl-rondes met opvallend weinig producten en meldt ze (idem) |
 | `/admin` | Admin panel: status van database/SMTP/Amazon Translate/crawler, testmail, live crawlerstatus, handmatig een shop crawlen, 429's, crawl-rondes, grafiek, bezoekers, kliks, berichten, webshops aan/uit, telefoonnummers en social media (Basic Auth) |
 | `/api/stats` | JSON met alle statistieken (Basic Auth of `Bearer STATS_TOKEN`) |
@@ -175,18 +175,19 @@ het abonnement uitgezet.
 
 ### Productnamen vertalen
 
-Duitstalige webshops (`language: "de"` in `src/lib/shops.ts`) hebben Duitse productnamen. Voor
-Nederlandse en Engelse bezoekers worden die vertaald met **Amazon Translate**
-(`src/lib/translate.ts`); Duitse bezoekers zien de originele naam. Elke naam wordt één keer per
+Duitse en Franse webshops (`language: "de"` of `"fr"` in `src/lib/shops.ts`) hebben Duitse of
+Franse productnamen. Die worden vertaald met **Amazon Translate** (`src/lib/translate.ts`) naar de
+taal van de bezoeker; een Duitse bezoeker ziet de originele naam van een Duitse webshop, maar een
+vertaling van een Franse. Elke naam wordt één keer per
 taal vertaald en bewaard in `product_translations`; verandert de naam bij de webshop, dan wordt
 hij opnieuw vertaald. De planner vertaalt elke 5 minuten de nieuwe deals vooraf
 (`/api/vertalen/bijwerken`); andere producten worden vertaald zodra iemand ze bekijkt. Duurt dat
-langer dan 2 seconden, dan toont de pagina die keer de Duitse naam. Op de productpagina staat de
+langer dan 2 seconden, dan toont de pagina die keer de originele naam. Op de productpagina staat de
 originele naam onder de vertaalde.
 
 **Kosten in de hand:** bots (zoekmachines, linkvoorbeelden, scrapers; herkend aan de
 user-agent in `src/lib/bots.ts`) laten nooit iets nieuws vertalen: zij zien bewaarde vertalingen
-of de Duitse naam. Daarnaast vertaalt de site per dag (Nederlandse tijd) hooguit
+of de originele naam. Daarnaast vertaalt de site per dag (Nederlandse tijd) hooguit
 `TRANSLATE_DAILY_CHAR_LIMIT` tekens (standaard 10.000, ≈ $0,15), voor pagina's, planner en mail
 samen; daarna tot middernacht alleen bewaarde vertalingen. Het verbruik van vandaag staat in
 `/admin` bij Diensten.
@@ -274,6 +275,13 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | HobbyKing (EU-magazijn) | Magento 2 + Next.js | geen: alleen listings (productpagina's zijn ~1,4 MB) | 33 vaste categorieën met `?page=N&rowsPerPage=100`; de producten staan als JSON in de Server Components-payload (`self.__next_f.push`), van-prijs = `regular_price`. Cookies `CURRENCY_CODE=EUR; COUNTRY_ID=NL` voor europrijzen, voorraad van het EU-magazijn (`stock_id` 7); een deal telt pas vanaf 8% omdat de europrijs met de dollarkoers meebeweegt |
 | SPEELGOEDenMODELBOUW | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?category=161&per_page=100` (alleen de categorie R/C, ~33 requests; LEGO en Playmobil vallen erbuiten), prijzen in centen, van-prijs = `regular_price`; statische Tamiya-bouwdozen worden overgeslagen |
 | The Border RC | WooCommerce | geen: alleen de Store API (Crawl-delay 5s) | `/wp-json/wc/store/v1/products?per_page=100` zonder Carrera (`category=2825&category_operator=not_in`), ~345 requests; een nieuwe startpagina per 50 pagina's op basis van `X-WP-TotalPages`. Slotcar-accessoires en die-cast worden overgeslagen |
+| Trxxs-Winkel (BE) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~120 requests, zie The Border); veel producten zonder categorie worden op de naam ingedeeld |
+| e-rc (BE) | PrestaShop 8 | geen: alleen de JSON-listing | hoofdcategorie `/2-home?ajax=1&resultsPerPage=100` (4 requests, zie FlashRC); kleine helikopterspecialist met Engelse namen |
+| RC N-more (BE) | EasyWebshop | `/sitemap.xml`: alleen URL's die hun eigen `hreflang="nl"` zijn (~5.800; de Engelse versies en `/en/detail/` vallen af), subcategorieën komen in `crawl_misses` | geen: alle productpagina's (JSON-LD met categorie, product-id uit het winkelwagenformulier) |
+| RC Team (FR) | Shopify | geen: alleen `/products.json` | `/products.json?limit=250` (100 requests; Shopify geeft hooguit 25.000 producten, de rest valt erbuiten). Carrera, die-cast en circuits worden overgeslagen |
+| MRC Modélisme (FR) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~110 requests); de categorieën per model ("4-Tec Drift - 4x4 - 1/10") tellen niet mee voor de indeling, brandstof wordt overgeslagen |
+| Drone FPV Racer (FR) | PrestaShop 8 | geen: alleen de JSON-listing | hoofdcategorie `/2-accueil?ajax=1&resultsPerPage=100` (~47 requests), alles krijgt "fpv" als categoriehint |
+| FlashRC (FR) | PrestaShop | geen: alleen de JSON-listing | hoofdcategorie `/fr/2-accueil?ajax=1&resultsPerPage=100` (~215 requests): `?ajax=1` geeft de productlijst als JSON (prijs, `regular_price_amount` als van-prijs, standaardcategorie, merk; geen voorraad). Kleding en bouwmaterialen worden overgeslagen |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

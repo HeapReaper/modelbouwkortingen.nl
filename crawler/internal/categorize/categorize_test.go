@@ -30,6 +30,16 @@ func TestClassify(t *testing.T) {
 		{[]string{"Color Spray TS"}, "", "", "Tamiya TS-11 Maroon 100ml", "gereedschap"},
 		{[]string{"XRAY Hardware pin-screws-O-rings"}, "", "", "XRAY Pin 2x10", "onderdelen"},
 		{[]string{"Pinions 48DP"}, "", "", "Arrowmax 48DP 21T", "onderdelen"},
+		{[]string{"Pièces détachées", "Traxxas", "Rustler – 4×2 – 1/10"}, "", "", "Triangle avant Rustler", "onderdelen"},
+		{[]string{"Hélicoptères"}, "", "", "Goosky S2 BNF", "helicopters"},
+		{[]string{"Moteurs Variateurs", "Variateurs"}, "", "", "Hobbywing Xerun XR10", "elektronica"},
+		{[]string{"Voiture RC tout-terrain"}, "", "", "MINI MAXX BL-2S USB AVEC ACCUS / CHARGEUR USB noir", "rc-autos"},
+		{[]string{"Chargeurs"}, "fpv", "", "ISDT 608AC", "accus-laders"},
+		{[]string{"Hélices"}, "fpv", "", "HQProp 5x4.3x3 (2CW+2CCW)", "onderdelen"},
+		{[]string{"Drones prêts à voler"}, "fpv", "", "DFR Nazgul5 V3 6S", "drones"},
+		{[]string{"Serpent"}, "", "", "Serpent pignon 17T module 0,6", "onderdelen"},
+		{nil, "Planeurs", "", "Kavan Alfa 1,5m", "vliegtuigen"},
+		{nil, "", "", "Bateau Pro Boat Recoil 2 26 brushless RTR", "boten"},
 		{nil, "", "", "Iets compleet onbekends", "overig"},
 	}
 	for _, c := range cases {

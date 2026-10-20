@@ -8,11 +8,15 @@ import { headers } from "next/headers";
 import type { Locale } from "@/i18n/config";
 import { isBot } from "@/lib/bots";
 import { getPrisma, isDbConfigured, num } from "@/lib/db";
-import { GERMAN_SHOPS } from "@/lib/shops";
+import {
+  SHOP_LANGUAGES,
+  type SourceLanguage,
+  TRANSLATED_SHOPS,
+} from "@/lib/shops";
 
 /**
- * Vertaalt de productnamen van Duitstalige webshops (zie `language` in src/lib/shops.ts) naar
- * de taal van de bezoeker, of bij mail en Discord naar de taal waarin de abonnee zich aanmeldde.
+ * Vertaalt de productnamen van Duitse en Franse webshops (zie `language` in src/lib/shops.ts)
+ * naar de taal van de bezoeker, of bij mail en Discord naar de taal waarin de abonnee zich aanmeldde.
  * Vertalingen komen van Amazon Translate (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION)
  * en staan in product_translations: elke naam wordt één keer per taal vertaald. De planner
  * vertaalt nieuwe deals vooraf (translatePendingDeals), de rest (volglijst, prijsvergelijker,
@@ -20,14 +24,17 @@ import { GERMAN_SHOPS } from "@/lib/shops";
  *
  * Vertalen kost geld, dus:
  *   - bots (zoekmachines, linkvoorbeelden, scrapers; zie src/lib/bots.ts) krijgen alleen
- *     bewaarde vertalingen en anders de Duitse naam; ze laten nooit iets nieuws vertalen;
+ *     bewaarde vertalingen en anders de originele naam; ze laten nooit iets nieuws vertalen;
  *   - per dag (Nederlandse tijd) vertalen we hooguit TRANSLATE_DAILY_CHAR_LIMIT tekens, voor
  *     alles samen (pagina's, planner, mail). Dat vangt ook bots die zich als browser voordoen.
- *     Is de limiet op, dan tonen pagina's de Duitse naam tot de volgende dag.
+ *     Is de limiet op, dan tonen pagina's de originele naam tot de volgende dag.
  */
 
-/** Doeltalen met hun Amazon Translate-code; Duitse bezoekers zien gewoon de originele naam. */
-const TARGETS = { nl: "nl", en: "en" } as const;
+/**
+ * Doeltalen met hun Amazon Translate-code. Een naam wordt niet naar zijn eigen taal vertaald:
+ * Duitse bezoekers zien de originele naam van een Duitse webshop.
+ */
+const TARGETS = { nl: "nl", en: "en", de: "de" } as const;
 type Target = keyof typeof TARGETS;
 
 /** Zoveel namen per keer opslaan; Amazon Translate vertaalt per tekst. */
@@ -72,11 +79,15 @@ function getClient() {
   return client;
 }
 
-async function translateOne(text: string, target: Target): Promise<string> {
+async function translateOne(
+  text: string,
+  source: SourceLanguage,
+  target: Target,
+): Promise<string> {
   const res = await getClient().send(
     new TranslateTextCommand({
       Text: text,
-      SourceLanguageCode: "de",
+      SourceLanguageCode: source,
       TargetLanguageCode: TARGETS[target],
     }),
     { abortSignal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) },
@@ -86,12 +97,13 @@ async function translateOne(text: string, target: Target): Promise<string> {
 
 /** Voor het adminpanel: vertaalt één woord om te zien of de sleutels en de dienst werken. */
 export async function checkTranslator(): Promise<string> {
-  return translateOne("Test", "nl");
+  return translateOne("Test", "de", "nl");
 }
 
 /** Vertaalt alle teksten, of gooit bij de eerste fout (bv. ThrottlingException). */
 async function awsTranslate(
   texts: string[],
+  source: SourceLanguage,
   target: Target,
 ): Promise<string[]> {
   const out: string[] = new Array(texts.length);
@@ -99,7 +111,7 @@ async function awsTranslate(
   const worker = async () => {
     while (next < texts.length) {
       const i = next++;
-      out[i] = await translateOne(texts[i], target);
+      out[i] = await translateOne(texts[i], source, target);
     }
   };
   await Promise.all(
@@ -161,6 +173,7 @@ function logError(err: unknown) {
 /** Vertaalt en bewaart; geeft id → vertaalde naam van wat gelukt is. */
 async function translateAndStore(
   items: { id: number; name: string }[],
+  source: SourceLanguage,
   target: Target,
 ): Promise<Map<number, string>> {
   const out = new Map<number, string>();
@@ -184,6 +197,7 @@ async function translateAndStore(
       budget.used += chunk.reduce((sum, c) => sum + c.name.length, 0);
       const names = await awsTranslate(
         chunk.map((c) => c.name),
+        source,
         target,
       );
       await prisma.$transaction(
@@ -217,6 +231,7 @@ const inflight = new Map<string, Promise<string | null>>();
 
 function translate(
   items: { id: number; name: string }[],
+  source: SourceLanguage,
   target: Target,
 ): Promise<Map<number, string>> {
   const result = new Map<number, string>();
@@ -233,7 +248,7 @@ function translate(
     }
   }
   if (todo.length > 0) {
-    const run = translateAndStore(todo, target);
+    const run = translateAndStore(todo, source, target);
     for (const item of todo) {
       const key = keyOf(item);
       const one = run
@@ -250,10 +265,10 @@ function translate(
 }
 
 /**
- * Zet de namen van producten van Duitstalige webshops in de gevraagde taal (`originalName` =
- * de Duitse naam). Ontbrekende vertalingen worden direct opgehaald; duurt dat langer dan
- * `waitMs`, dan blijft deze keer de originele naam staan en wordt de vertaling op de
- * achtergrond bewaard voor de volgende keer. Zonder AWS-sleutels: alleen bewaarde vertalingen.
+ * Zet de namen van producten van Duitse en Franse webshops in de gevraagde taal
+ * (`originalName` = de originele naam). Ontbrekende vertalingen worden direct opgehaald;
+ * duurt dat langer dan `waitMs`, dan blijft deze keer de originele naam staan en wordt de
+ * vertaling op de achtergrond bewaard voor de volgende keer. Zonder AWS-sleutels: alleen bewaarde vertalingen.
  */
 export async function localizeDeals<T extends Localizable>(
   items: T[],
@@ -261,23 +276,36 @@ export async function localizeDeals<T extends Localizable>(
   opts: { waitMs?: number; background?: boolean } = {},
 ): Promise<T[]> {
   if (!isTarget(lang) || !isDbConfigured()) return items;
-  const german = items.filter((i) => GERMAN_SHOPS.includes(i.shopSlug));
-  if (german.length === 0) return items;
+  const foreign = items.filter((i) => {
+    const source = SHOP_LANGUAGES.get(i.shopSlug);
+    return source !== undefined && source !== lang;
+  });
+  if (foreign.length === 0) return items;
 
   const rows = await getPrisma().productTranslation.findMany({
     where: {
       locale: lang,
-      productId: { in: [...new Set(german.map((i) => BigInt(i.id)))] },
+      productId: { in: [...new Set(foreign.map((i) => BigInt(i.id)))] },
     },
     select: { productId: true, name: true, sourceName: true },
   });
   const stored = new Map(rows.map((r) => [num(r.productId), r]));
   const names = new Map<number, string>();
-  const missing = new Map<number, { id: number; name: string }>();
-  for (const item of german) {
+  const missing = new Map<
+    SourceLanguage,
+    Map<number, { id: number; name: string }>
+  >();
+  for (const item of foreign) {
     const row = stored.get(item.id);
-    if (row && row.sourceName === item.name) names.set(item.id, row.name);
-    else missing.set(item.id, { id: item.id, name: item.name });
+    if (row && row.sourceName === item.name) {
+      names.set(item.id, row.name);
+      continue;
+    }
+    const source = SHOP_LANGUAGES.get(item.shopSlug);
+    if (!source) continue;
+    const todo = missing.get(source) ?? new Map();
+    todo.set(item.id, { id: item.id, name: item.name });
+    missing.set(source, todo);
   }
 
   if (
@@ -286,12 +314,18 @@ export async function localizeDeals<T extends Localizable>(
     (opts.background || !(await fromBot()))
   ) {
     const fresh = await Promise.race([
-      translate([...missing.values()], lang),
-      new Promise<Map<number, string>>((resolve) =>
-        setTimeout(() => resolve(new Map()), opts.waitMs ?? PAGE_WAIT_MS),
+      Promise.all(
+        [...missing].map(([source, todo]) =>
+          translate([...todo.values()], source, lang),
+        ),
+      ),
+      new Promise<Map<number, string>[]>((resolve) =>
+        setTimeout(() => resolve([]), opts.waitMs ?? PAGE_WAIT_MS),
       ),
     ]);
-    for (const [id, name] of fresh) names.set(id, name);
+    for (const done of fresh) {
+      for (const [id, name] of done) names.set(id, name);
+    }
   }
 
   return items.map((item) => {
@@ -324,8 +358,8 @@ export const BACKGROUND = {
 } as const;
 
 /**
- * Vertaalt lopende deals van Duitstalige webshops die nog geen (actuele) vertaling hebben,
- * nieuwste eerst. Wordt elke paar minuten aangeroepen door de planner in instrumentation.ts.
+ * Vertaalt lopende deals van Duitse en Franse webshops die nog geen (actuele) vertaling
+ * hebben, nieuwste eerst. Wordt elke paar minuten aangeroepen door de planner in instrumentation.ts.
  */
 export async function translatePendingDeals(
   limit = 500,
@@ -333,29 +367,37 @@ export async function translatePendingDeals(
   | { status: "not-configured" }
   | { status: "ok"; translated: number; failed: number }
 > {
-  if (!isTranslatorConfigured() || GERMAN_SHOPS.length === 0) {
+  if (!isTranslatorConfigured() || TRANSLATED_SHOPS.length === 0) {
     return { status: "not-configured" };
   }
   const prisma = getPrisma();
   let translated = 0;
   let failed = 0;
+  const sources = [...new Set(SHOP_LANGUAGES.values())];
   for (const target of Object.keys(TARGETS) as Target[]) {
-    const rows = await prisma.$queryRaw<{ id: bigint; name: string }[]>`
-      SELECT p.id, p.name
-      FROM products p
-      JOIN shops s ON s.id = p.shop_id
-      LEFT JOIN product_translations t ON t.product_id = p.id AND t.locale = ${target}
-      WHERE p.is_deal AND s.enabled AND s.slug = ANY(${GERMAN_SHOPS})
-        AND (t.product_id IS NULL OR t.source_name <> p.name)
-      ORDER BY p.deal_since DESC NULLS LAST, p.id DESC
-      LIMIT ${limit}`;
-    if (rows.length === 0) continue;
-    const done = await translate(
-      rows.map((r) => ({ id: num(r.id), name: r.name })),
-      target,
-    );
-    translated += done.size;
-    failed += rows.length - done.size;
+    for (const source of sources) {
+      if (source === target) continue;
+      const slugs = TRANSLATED_SHOPS.filter(
+        (slug) => SHOP_LANGUAGES.get(slug) === source,
+      );
+      const rows = await prisma.$queryRaw<{ id: bigint; name: string }[]>`
+        SELECT p.id, p.name
+        FROM products p
+        JOIN shops s ON s.id = p.shop_id
+        LEFT JOIN product_translations t ON t.product_id = p.id AND t.locale = ${target}
+        WHERE p.is_deal AND s.enabled AND s.slug = ANY(${slugs})
+          AND (t.product_id IS NULL OR t.source_name <> p.name)
+        ORDER BY p.deal_since DESC NULLS LAST, p.id DESC
+        LIMIT ${limit}`;
+      if (rows.length === 0) continue;
+      const done = await translate(
+        rows.map((r) => ({ id: num(r.id), name: r.name })),
+        source,
+        target,
+      );
+      translated += done.size;
+      failed += rows.length - done.size;
+    }
   }
   if (translated > 0) {
     console.info(`[vertalen] ${translated} productnamen vertaald`);

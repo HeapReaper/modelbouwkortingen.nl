@@ -359,7 +359,8 @@ func (r *Runner) crawlListing(ctx context.Context, sr *shopRun, seed string) {
 	for page := 0; u != "" && page < maxListingPagesPerSeed && ctx.Err() == nil; page++ {
 		var products []parse.Product
 		var next string
-		if raw, ok := sr.shop.(shops.RawListingParser); ok {
+		raw, isRaw := sr.shop.(shops.RawListingParser)
+		if isRaw {
 			resp, err := r.getRaw(ctx, sr, u)
 			if err != nil {
 				return
@@ -376,7 +377,9 @@ func (r *Runner) crawlListing(ctx context.Context, sr *shopRun, seed string) {
 			p.URL = parse.AbsURL(sr.shop.BaseURL(), p.URL)
 			r.save(ctx, sr, p, false)
 		}
-		if len(products) == 0 {
+		// Een JSON-feed kan een pagina hebben waarvan de shop alles overslaat (bv. een reeks
+		// slotcars); die geeft zelf aan of er nog een pagina is.
+		if len(products) == 0 && !isRaw {
 			return
 		}
 		u = next
