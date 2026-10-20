@@ -24,7 +24,7 @@ export async function FeaturedShops({ className }: { className?: string }) {
         {dict.promo.shopsTitle}
       </h2>
       <p className="mt-1 text-muted-foreground">{dict.promo.shopsSubtitle}</p>
-      <ul className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <ul className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {shops.map((s) => {
           const out = shopOutLink(s.slug);
           return (
@@ -33,11 +33,11 @@ export async function FeaturedShops({ className }: { className?: string }) {
               className="flex h-full flex-col gap-4 rounded-2xl border-2 border-primary/30 bg-card p-5 shadow-xs"
             >
               <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
+                <div className="flex min-w-0 items-center gap-3">
                   <ShopLogo shop={s} className="h-12 w-32 rounded-xl" />
-                  <div>
-                    <p className="text-lg font-bold">{s.name}</p>
-                    <p className="text-sm text-muted-foreground">{s.domain}</p>
+                  <div className="min-w-0">
+                    <p className="text-lg font-bold break-words">{s.name}</p>
+                    <p className="text-sm break-words text-muted-foreground">{s.domain}</p>
                   </div>
                 </div>
                 <SponsoredBadge className="shrink-0" />

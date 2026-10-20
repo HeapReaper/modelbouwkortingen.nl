@@ -14,7 +14,7 @@ export async function ShopCards({ title }: { title?: string }) {
       <h2 className="text-2xl font-black tracking-tight sm:text-3xl">
         {title ?? dict.home.shopsTitle}
       </h2>
-      <ul className="mt-6 grid gap-4 md:grid-cols-3">
+      <ul className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         {SHOPS.map((s) => (
           <li key={s.slug}>
             <Link
@@ -23,9 +23,9 @@ export async function ShopCards({ title }: { title?: string }) {
             >
               <div className="flex items-center gap-3">
                 <ShopLogo shop={s} className="h-12 w-32 rounded-xl" />
-                <div>
-                  <p className="text-lg font-bold">{s.name}</p>
-                  <p className="text-sm text-muted-foreground">{s.domain}</p>
+                <div className="min-w-0">
+                  <p className="text-lg font-bold break-words">{s.name}</p>
+                  <p className="text-sm break-words text-muted-foreground">{s.domain}</p>
                 </div>
               </div>
               <p className="text-muted-foreground">{dict.shops[s.slug]}</p>
