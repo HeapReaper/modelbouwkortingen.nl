@@ -1,10 +1,12 @@
 "use server";
 
+import { refresh } from "next/cache";
 import { headers } from "next/headers";
 import type { NewsletterState } from "@/app/[lang]/nieuwsbrief/shared";
 import { DEFAULT_LOCALE, hasLocale, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { t } from "@/i18n/translate";
+import { getCurrentUser } from "@/lib/auth";
 import { isDbConfigured } from "@/lib/db";
 import {
   saveWebhookPreferences,
@@ -46,10 +48,13 @@ export async function subscribeDiscord(
     return { ok: false, message: d.unavailable };
   }
   try {
-    const result = await subscribeWebhook(webhook, lang);
+    // Ingelogd: de webhook komt bij het account, zodat de voorkeuren op /account staan.
+    const user = await getCurrentUser();
+    const result = await subscribeWebhook(webhook, lang, user?.id);
     if (!result.ok) {
       return { ok: false, message: d[result.error], email: webhook };
     }
+    if (user) refresh();
     return {
       ok: true,
       message: result.name ? t(d.linkedNamed, { name: result.name }) : d.linked,

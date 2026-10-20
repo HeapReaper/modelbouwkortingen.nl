@@ -210,9 +210,13 @@ model DiscordSubscriber {
   categories      String[]  @default([])
   shops           String[]  @default([])
   minDiscount     Int       @default(0) @map("min_discount")
+  /// Account dat de webhook koppelde terwijl het ingelogd was; dat account kan de voorkeuren beheren.
+  userId          BigInt?   @map("user_id")
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([disabledAt], map: "discord_subscribers_active_idx")
+  @@index([userId], map: "discord_subscribers_user_idx")
   @@map("discord_subscribers")
 }
 
@@ -402,6 +406,7 @@ model User {
   sessions        UserSession[]
   tokens          UserToken[]
   watchlist       WatchlistItem[]
+  discordWebhooks DiscordSubscriber[]
 
   @@map("users")
 }

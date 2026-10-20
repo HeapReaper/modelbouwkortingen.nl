@@ -133,10 +133,14 @@ export type SubscribeResult =
   | { ok: true; name: string | null }
   | { ok: false; error: "invalidUrl" | "unknownWebhook" | "cannotPost" };
 
-/** Koppelt een webhook (of zet een eerder afgemelde weer aan) en stuurt een welkomstbericht. */
+/**
+ * Koppelt een webhook (of zet een eerder afgemelde weer aan) en stuurt een welkomstbericht.
+ * Met `userId` (ingelogd) hoort de webhook daarna bij dat account.
+ */
 export async function subscribeWebhook(
   raw: string,
   lang: Locale,
+  userId?: number,
 ): Promise<SubscribeResult> {
   const parsed = parseWebhookUrl(raw);
   if (!parsed) {
@@ -165,6 +169,7 @@ export async function subscribeWebhook(
     disabledAt: null,
     disabledReason: null,
     locale: lang,
+    ...(userId ? { userId: BigInt(userId) } : {}),
   };
   const sub = await prisma.discordSubscriber.upsert({
     where: { webhookId: parsed.id },
@@ -233,6 +238,29 @@ export async function saveWebhookPreferences(
     data: prefs,
   });
   return count > 0;
+}
+
+export type AccountWebhook = DealPreferences & {
+  /** Token van de webhook, voor het bestaande voorkeurenformulier en de afmeldlink. */
+  token: string;
+  name: string | null;
+};
+
+/** Actieve webhooks die bij het account horen, oudste eerst. */
+export async function getAccountWebhooks(
+  userId: number,
+): Promise<AccountWebhook[]> {
+  return getPrisma().discordSubscriber.findMany({
+    where: { userId: BigInt(userId), disabledAt: null },
+    orderBy: { id: "asc" },
+    select: {
+      token: true,
+      name: true,
+      categories: true,
+      shops: true,
+      minDiscount: true,
+    },
+  });
 }
 
 export async function unsubscribeWebhook(token: string): Promise<boolean> {

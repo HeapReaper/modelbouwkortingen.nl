@@ -6,10 +6,12 @@ import {
   Mail,
   Trash2,
   UserRound,
+  Webhook,
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { saveDiscordPreferences } from "@/app/[lang]/discord/actions";
 import { saveNewsletterPreferences } from "@/app/[lang]/nieuwsbrief/actions";
 import {
   AlertList,
@@ -21,6 +23,7 @@ import {
   NewsletterSwitch,
 } from "@/components/account/AccountForms";
 import { PageHeader } from "@/components/core/PageHeader";
+import { DiscordForm } from "@/components/discord/DiscordForm";
 import { PreferencesForm } from "@/components/preferences/PreferencesForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
@@ -30,6 +33,7 @@ import { t } from "@/i18n/translate";
 import { getAlerts, getNewsletter, getWatchlist } from "@/lib/account";
 import { type CurrentUser, getCurrentUser } from "@/lib/auth";
 import { isDbConfigured } from "@/lib/db";
+import { getAccountWebhooks } from "@/lib/discord";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { dict } = await getI18n();
@@ -115,10 +119,11 @@ async function Dashboard({
 }) {
   const { lang, dict, href, fmt } = await getI18n();
   const a = dict.account;
-  const [watchlist, alerts, newsletter] = await Promise.all([
+  const [watchlist, alerts, newsletter, webhooks] = await Promise.all([
     getWatchlist(user.id),
     getAlerts(user.email, lang),
     getNewsletter(user.email),
+    getAccountWebhooks(user.id),
   ]);
   return (
     <div className="flex flex-col gap-6">
@@ -177,6 +182,45 @@ async function Dashboard({
             />
           </div>
         ) : null}
+      </Section>
+
+      <Section
+        title={a.discordTitle}
+        icon={<Webhook className="size-5 text-primary" />}
+      >
+        <p className="text-muted-foreground">
+          {webhooks.length === 0 ? a.discordEmpty : a.discordHint}
+        </p>
+        {webhooks.map((w) => (
+          <div key={w.token} className="flex flex-col gap-6 border-t pt-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-lg font-semibold">
+                {w.name
+                  ? t(dict.preferences.webhook, { name: w.name })
+                  : a.discordUnnamed}
+              </p>
+              <Link
+                href={href(
+                  `/discord/afmelden?token=${encodeURIComponent(w.token)}`,
+                )}
+                className="font-semibold text-primary hover:underline"
+              >
+                {a.discordStop}
+              </Link>
+            </div>
+            <PreferencesForm
+              token={w.token}
+              initial={w}
+              action={saveDiscordPreferences}
+            />
+          </div>
+        ))}
+        <div className="flex flex-col gap-2 border-t pt-6">
+          {webhooks.length > 0 ? (
+            <h3 className="text-lg font-bold">{a.discordAdd}</h3>
+          ) : null}
+          <DiscordForm className="max-w-2xl" />
+        </div>
       </Section>
 
       <Section

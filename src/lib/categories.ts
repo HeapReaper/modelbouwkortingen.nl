@@ -78,6 +78,15 @@ export const CATEGORIES: Category[] = [
   },
 ];
 
+/** Complete RC-modellen (geen onderdelen, zenders of accu's), voor de rij op de homepage. */
+export const RC_MODEL_CATEGORIES = [
+  "helicopters",
+  "boten",
+  "rc-autos",
+  "drones",
+  "vliegtuigen",
+];
+
 const bySlug = new Map(CATEGORIES.map((c) => [c.slug, c]));
 
 export function getCategory(

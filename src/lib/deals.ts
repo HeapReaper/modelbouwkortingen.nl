@@ -236,11 +236,18 @@ export function searchTerms(q?: string) {
   );
 }
 
-export async function getTopDeals(limit = 12): Promise<Deal[]> {
+/** Hoogste kortingen, eventueel alleen uit deze categorieën. */
+export async function getTopDeals(
+  limit = 12,
+  categories?: string[],
+): Promise<Deal[]> {
   await connection();
   if (!isDbConfigured())
-    return filterDemo({ sort: "korting" }).deals.slice(0, limit);
-  return cached(`top:${limit}`, 60_000, async () => {
+    return filterDemo({ sort: "korting" })
+      .deals.filter((d) => categories?.includes(d.categorySlug) ?? true)
+      .slice(0, limit);
+  const key = `top:${limit}:${categories?.join(",") ?? ""}`;
+  return cached(key, 60_000, async () => {
     // Maximaal 4 per shop zodat één shop de rij niet domineert.
     const prisma = getPrisma();
     const shops = await prisma.shop.findMany({
@@ -256,6 +263,7 @@ export async function getTopDeals(limit = 12): Promise<Deal[]> {
             ...NOT_OUT_OF_STOCK,
             shopId: s.id,
             imageUrl: { not: null },
+            ...(categories ? { categorySlug: { in: categories } } : {}),
           },
           orderBy: { discountPercent: "desc" },
           take: 4,

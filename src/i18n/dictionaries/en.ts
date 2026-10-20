@@ -254,6 +254,8 @@ export const en: Dictionary = {
     statUpdated: "updated {ago}",
     featured: "Top deal right now",
     saveSr: "Save {amount}",
+    rcTitle: "RC models",
+    rcSubtitle: "Complete models only: cars, planes, helicopters, drones and boats",
     topTitle: "Biggest discounts",
     topSubtitle: "The highest discount percentages right now",
     newTitle: "Just in",
@@ -902,6 +904,14 @@ export const en: Dictionary = {
     newsletterTitle: "Deals email",
     newsletterHint: "The biggest new RC discounts in your inbox every morning.",
     newsletterSwitch: "Send me the daily deals email",
+    discordTitle: "Deals in Discord",
+    discordHint:
+      "Choose per Discord webhook which deals appear in your channel. Webhooks you link while logged in show up here.",
+    discordEmpty:
+      "No Discord webhook is linked to your account yet. Paste a webhook URL below; you can also re-enter a webhook you linked before.",
+    discordUnnamed: "Discord webhook",
+    discordStop: "Stop notifications",
+    discordAdd: "Link another webhook",
     passwordTitle: "Change password",
     changePassword: "Change password",
     passwordChanged:
@@ -927,7 +937,7 @@ export const en: Dictionary = {
       "Your email address has been changed. Your price alerts and the deals email now go to the new address.",
     deleteTitle: "Delete account",
     deleteText:
-      "This deletes your account, your watchlist, your price alerts and your deals email subscription. This can't be undone.",
+      "This deletes your account, your watchlist, your price alerts and your deals email subscription, and stops your account's Discord notifications. This can't be undone.",
     deleteConfirmPassword: "Enter your password to confirm",
     deleteSubmit: "Delete account permanently",
     deleting: "Deleting…",

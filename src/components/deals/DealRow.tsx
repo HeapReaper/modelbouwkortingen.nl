@@ -14,7 +14,8 @@ import { cn } from "@/lib/utils";
 
 /**
  * Horizontale rij met deals: swipen op mobiel, pijltjes op desktop. `href` zonder taalprefix;
- * zonder href geen "Bekijk alles". `sponsored` = uitgelichte producten (zie DealCard).
+ * zonder href geen "Bekijk alles". `sponsored` = uitgelichte producten (zie DealCard). `children`
+ * komt tussen de kop en de deals (bijv. snelkoppelingen).
  */
 export async function DealRow({
   title,
@@ -24,6 +25,7 @@ export async function DealRow({
   icon,
   sponsored,
   className,
+  children,
 }: {
   title: string;
   subtitle?: string;
@@ -32,6 +34,7 @@ export async function DealRow({
   icon?: React.ReactNode;
   sponsored?: boolean;
   className?: string;
+  children?: React.ReactNode;
 }) {
   const { dict, href: localize } = await getI18n();
   return (
@@ -65,6 +68,7 @@ export async function DealRow({
             </div>
           </div>
         </div>
+        {children}
         {deals.length === 0 ? (
           <p className="rounded-2xl border border-dashed p-8 text-center text-muted-foreground">
             {dict.deals.noneYet}

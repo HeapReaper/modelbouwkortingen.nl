@@ -256,6 +256,9 @@ export const nl = {
     statUpdated: "bijgewerkt {ago}",
     featured: "Topdeal van dit moment",
     saveSr: "Bespaar {amount}",
+    rcTitle: "RC-modellen",
+    rcSubtitle:
+      "Alleen complete modellen: auto's, vliegtuigen, helicopters, drones en boten",
     topTitle: "Grootste kortingen",
     topSubtitle: "De hoogste kortingspercentages van dit moment",
     newTitle: "Net binnen",
@@ -905,6 +908,14 @@ export const nl = {
     newsletterTitle: "Kortingsmail",
     newsletterHint: "Elke ochtend de grootste nieuwe RC-kortingen in je inbox.",
     newsletterSwitch: "Stuur mij de dagelijkse kortingsmail",
+    discordTitle: "Deals in Discord",
+    discordHint:
+      "Kies per Discord-webhook welke deals er in je kanaal verschijnen. Koppel je een webhook terwijl je bent ingelogd, dan staat hij hier.",
+    discordEmpty:
+      "Er is nog geen Discord-webhook aan je account gekoppeld. Plak hieronder een webhook-URL; een eerder gekoppelde webhook kun je ook opnieuw invoeren.",
+    discordUnnamed: "Discord-webhook",
+    discordStop: "Meldingen stoppen",
+    discordAdd: "Nog een webhook koppelen",
     passwordTitle: "Wachtwoord wijzigen",
     changePassword: "Wachtwoord wijzigen",
     passwordChanged:
@@ -930,7 +941,7 @@ export const nl = {
       "Je e-mailadres is gewijzigd. Je prijsalarmen en de kortingsmail gaan voortaan naar het nieuwe adres.",
     deleteTitle: "Account verwijderen",
     deleteText:
-      "Hiermee verwijder je je account, je volglijst, je prijsalarmen en je aanmelding voor de kortingsmail. Dit kun je niet ongedaan maken.",
+      "Hiermee verwijder je je account, je volglijst, je prijsalarmen en je aanmelding voor de kortingsmail, en stop je de Discord-meldingen van je account. Dit kun je niet ongedaan maken.",
     deleteConfirmPassword: "Vul je wachtwoord in om te bevestigen",
     deleteSubmit: "Account definitief verwijderen",
     deleting: "Verwijderen…",

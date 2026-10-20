@@ -261,6 +261,9 @@ export const de: Dictionary = {
     statUpdated: "aktualisiert {ago}",
     featured: "Top-Angebot im Moment",
     saveSr: "Spare {amount}",
+    rcTitle: "RC-Modelle",
+    rcSubtitle:
+      "Nur komplette Modelle: Autos, Flugzeuge, Helikopter, Drohnen und Boote",
     topTitle: "Größte Rabatte",
     topSubtitle: "Die höchsten Rabatte im Moment",
     newTitle: "Neu dabei",
@@ -924,6 +927,14 @@ export const de: Dictionary = {
     newsletterHint:
       "Jeden Morgen die größten neuen RC-Rabatte in deinem Postfach.",
     newsletterSwitch: "Schick mir die tägliche Angebots-Mail",
+    discordTitle: "Angebote in Discord",
+    discordHint:
+      "Wähle pro Discord-Webhook, welche Angebote in deinem Kanal erscheinen. Webhooks, die du eingeloggt verknüpfst, stehen hier.",
+    discordEmpty:
+      "Mit deinem Konto ist noch kein Discord-Webhook verknüpft. Füge unten eine Webhook-URL ein; einen früher verknüpften Webhook kannst du auch erneut eingeben.",
+    discordUnnamed: "Discord-Webhook",
+    discordStop: "Benachrichtigungen beenden",
+    discordAdd: "Weiteren Webhook verknüpfen",
     passwordTitle: "Passwort ändern",
     changePassword: "Passwort ändern",
     passwordChanged:
@@ -949,7 +960,7 @@ export const de: Dictionary = {
       "Deine E-Mail-Adresse wurde geändert. Deine Preisalarme und die Angebots-Mail gehen ab jetzt an die neue Adresse.",
     deleteTitle: "Konto löschen",
     deleteText:
-      "Damit löschst du dein Konto, deine Merkliste, deine Preisalarme und deine Anmeldung zur Angebots-Mail. Das lässt sich nicht rückgängig machen.",
+      "Damit löschst du dein Konto, deine Merkliste, deine Preisalarme und deine Anmeldung zur Angebots-Mail, und beendest die Discord-Benachrichtigungen deines Kontos. Das lässt sich nicht rückgängig machen.",
     deleteConfirmPassword: "Gib zur Bestätigung dein Passwort ein",
     deleteSubmit: "Konto endgültig löschen",
     deleting: "Löschen…",

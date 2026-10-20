@@ -301,7 +301,8 @@ export async function confirmEmailChange(
 
 /**
  * Verwijdert het account met sessies en volglijst, en ook de prijsalarmen en de
- * kortingsmail-aanmelding op hetzelfde adres. Vraagt het wachtwoord ter bevestiging.
+ * kortingsmail-aanmelding op hetzelfde adres; gekoppelde Discord-webhooks gaan uit. Vraagt het
+ * wachtwoord ter bevestiging.
  */
 export async function deleteAccount(
   userId: number,
@@ -314,6 +315,10 @@ export async function deleteAccount(
   await prisma.$transaction([
     prisma.priceAlert.deleteMany({ where: { email: user.email } }),
     prisma.newsletterSubscriber.deleteMany({ where: { email: user.email } }),
+    prisma.discordSubscriber.updateMany({
+      where: { userId: user.id, disabledAt: null },
+      data: { disabledAt: new Date(), disabledReason: "account verwijderd" },
+    }),
     prisma.user.delete({ where: { id: user.id } }),
   ]);
   return true;

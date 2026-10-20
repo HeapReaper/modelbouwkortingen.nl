@@ -1,4 +1,5 @@
-import { Flame, Sparkles } from "lucide-react";
+import { Car, Flame, Sparkles } from "lucide-react";
+import Link from "next/link";
 import { Suspense } from "react";
 import { DealGridSkeleton } from "@/components/deals/DealGrid";
 import { DealRow } from "@/components/deals/DealRow";
@@ -10,6 +11,7 @@ import { NewsletterSignup } from "@/components/newsletter/NewsletterSignup";
 import { FeaturedDeals } from "@/components/promo/FeaturedDeals";
 import { FeaturedShops } from "@/components/promo/FeaturedShops";
 import { getI18n } from "@/i18n/server";
+import { getCategory, RC_MODEL_CATEGORIES } from "@/lib/categories";
 import { getNewestDeals, getTopDeals } from "@/lib/deals";
 import { localizeDeals } from "@/lib/translate";
 
@@ -21,6 +23,10 @@ export default function Home() {
       {/* Betaalde plaatsingen; zonder lopende promoties rendert dit niets. */}
       <Suspense fallback={null}>
         <FeaturedDeals />
+      </Suspense>
+
+      <Suspense fallback={<RowSkeleton />}>
+        <RcModelsRow />
       </Suspense>
 
       <Suspense fallback={<RowSkeleton />}>
@@ -40,6 +46,39 @@ export default function Home() {
       <ShopCards />
       <HowItWorks />
     </div>
+  );
+}
+
+async function RcModelsRow() {
+  const { lang, dict, href } = await getI18n();
+  const deals = await localizeDeals(
+    await getTopDeals(12, RC_MODEL_CATEGORIES),
+    lang,
+  );
+  return (
+    <DealRow
+      title={dict.home.rcTitle}
+      subtitle={dict.home.rcSubtitle}
+      deals={deals}
+      icon={<Car className="size-7 text-primary" />}
+    >
+      {/* /aanbiedingen filtert op één categorie, dus een link per categorie. */}
+      <div className="flex flex-wrap gap-2">
+        {RC_MODEL_CATEGORIES.map((slug) => {
+          const Icon = getCategory(slug)?.icon ?? Car;
+          return (
+            <Link
+              key={slug}
+              href={href(`/categorie/${slug}`)}
+              className="flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 text-sm font-semibold hover:border-primary hover:text-primary"
+            >
+              <Icon className="size-4 text-primary" />
+              {dict.categories[slug].name}
+            </Link>
+          );
+        })}
+      </div>
+    </DealRow>
   );
 }
 
