@@ -23,6 +23,7 @@ import {
   DeleteMessageButton,
   MessageHandledButton,
   ResolveAlertButton,
+  ShopCategoriesButton,
   ShopEnabledSwitch,
 } from "@/components/admin/AdminButtons";
 import { AnalyticsChart } from "@/components/admin/AnalyticsChart";
@@ -531,6 +532,7 @@ function ShopsSection({ data }: { data: AdminOverview }) {
                 </TableHead>
                 <TableHead>Laatst gezien</TableHead>
                 <TableHead>Tonen</TableHead>
+                <TableHead>Categorieën</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -552,6 +554,18 @@ function ShopsSection({ data }: { data: AdminOverview }) {
                   <TableCell>{timeAgo(s.lastSeen) ?? "—"}</TableCell>
                   <TableCell>
                     <ShopEnabledSwitch slug={s.slug} enabled={s.enabled} />
+                  </TableCell>
+                  <TableCell>
+                    <ShopCategoriesButton
+                      slug={s.slug}
+                      name={s.name}
+                      categories={s.categories.map((c) => ({
+                        ...c,
+                        name:
+                          getDictionary("nl").categories[c.slug]?.name ??
+                          c.slug,
+                      }))}
+                    />
                   </TableCell>
                 </TableRow>
               ))}

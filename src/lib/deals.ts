@@ -158,10 +158,16 @@ const ORDER_BY: Record<SortKey, Prisma.ProductOrderByWithRelationInput[]> = {
   "prijs-hoog": [{ price: "desc" }, { id: "desc" }],
 };
 
+/** Producten van ingeschakelde shops, buiten de categorieën die bij die shop verborgen zijn. */
+const VISIBLE = {
+  hidden: false,
+  shop: { enabled: true },
+} satisfies Prisma.ProductWhereInput;
+
 /** Actieve deals van ingeschakelde shops. */
 const ACTIVE_DEAL = {
+  ...VISIBLE,
   isDeal: true,
-  shop: { enabled: true },
 } satisfies Prisma.ProductWhereInput;
 
 /** in_stock IS NOT FALSE: op voorraad of onbekend. */
@@ -404,7 +410,7 @@ export async function getDealsByIds(ids: number[]): Promise<Deal[]> {
     return valid.flatMap((id) => demoDeals().find((d) => d.id === id) ?? []);
   const rows = await getPrisma().product.findMany({
     select: DEAL_SELECT,
-    where: { id: { in: valid.map(BigInt) }, shop: { enabled: true } },
+    where: { id: { in: valid.map(BigInt) }, ...VISIBLE },
   });
   const byId = new Map(rows.map((r) => [num(r.id), toDeal(r)]));
   return withPriceInsights(valid.flatMap((id) => byId.get(id) ?? []));
@@ -431,6 +437,7 @@ export async function getAlternatives(deal: Deal, limit = 10): Promise<Deal[]> {
     where: {
       skuNorm: self.skuNorm,
       id: { not: BigInt(deal.id) },
+      hidden: false,
       shop: { enabled: true, slug: { not: deal.shopSlug } },
       lastSeenAt: { gte: new Date(Date.now() - ALTERNATIVE_MAX_AGE_MS) },
     },
@@ -556,7 +563,7 @@ export async function getSiteStats(): Promise<SiteStats> {
     const prisma = getPrisma();
     const [all, deals, cats, shops] = await Promise.all([
       prisma.product.aggregate({
-        where: { shop: { enabled: true } },
+        where: VISIBLE,
         _count: true,
         _max: { updatedAt: true },
       }),
@@ -575,7 +582,9 @@ export async function getSiteStats(): Promise<SiteStats> {
         where: { enabled: true },
         select: {
           slug: true,
-          _count: { select: { products: { where: { isDeal: true } } } },
+          _count: {
+            select: { products: { where: { isDeal: true, hidden: false } } },
+          },
         },
       }),
     ]);

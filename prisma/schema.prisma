@@ -14,29 +14,43 @@ datasource db {
 }
 
 model Shop {
-  id          Int             @id @default(autoincrement())
-  slug        String          @unique
-  name        String
-  baseUrl     String          @map("base_url")
-  description String          @default("")
-  enabled     Boolean         @default(true)
-  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz
-  products    Product[]
-  crawlRuns   CrawlRun[]
-  crawlMisses CrawlMiss[]
-  clicks      OutboundClick[]
-  promotions  Promotion[]
+  id               Int                  @id @default(autoincrement())
+  slug             String               @unique
+  name             String
+  baseUrl          String               @map("base_url")
+  description      String               @default("")
+  enabled          Boolean              @default(true)
+  createdAt        DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  products         Product[]
+  crawlRuns        CrawlRun[]
+  crawlMisses      CrawlMiss[]
+  clicks           OutboundClick[]
+  promotions       Promotion[]
+  hiddenCategories ShopHiddenCategory[]
 
   @@map("shops")
 }
 
 model Category {
-  slug      String    @id
+  slug      String               @id
   name      String
-  sortOrder Int       @default(0) @map("sort_order")
+  sortOrder Int                  @default(0) @map("sort_order")
   products  Product[]
+  hiddenAt  ShopHiddenCategory[]
 
   @@map("categories")
+}
+
+/// Categorie die bij deze webshop niet op de site staat (adminpanel). Zie Product.hidden.
+model ShopHiddenCategory {
+  shopId       Int      @map("shop_id")
+  categorySlug String   @map("category_slug")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  shop         Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  category     Category @relation(fields: [categorySlug], references: [slug], onDelete: Cascade)
+
+  @@id([shopId, categorySlug])
+  @@map("shop_hidden_categories")
 }
 
 model Product {
@@ -57,6 +71,10 @@ model Product {
   imageUrl        String?              @map("image_url")
   categorySlug    String               @default("overig") @map("category_slug")
   shopCategory    String?              @map("shop_category")
+  /// true = de categorie is bij deze shop verborgen (shop_hidden_categories); dan staat het product
+  /// nergens op de site. Door Postgres bijgehouden via triggers (migratie
+  /// 20261023120000_shop_hidden_categories): nooit zelf schrijven.
+  hidden          Boolean              @default(false)
   price           Decimal              @db.Decimal(10, 2)
   /// "Van"-prijs zoals de webshop die toont (doorgestreept), of NULL.
   oldPrice        Decimal?             @map("old_price") @db.Decimal(10, 2)
@@ -392,17 +410,17 @@ model AnalyticsSalt {
 /// Gebruikersaccount (e-mail + wachtwoord). Inloggen kan pas na het bevestigen van het
 /// e-mailadres; daarom horen prijsalarmen en de kortingsmail met hetzelfde adres bij het account.
 model User {
-  id              BigInt          @id @default(autoincrement())
+  id              BigInt              @id @default(autoincrement())
   /// Altijd in kleine letters opgeslagen.
-  email           String          @unique
+  email           String              @unique
   /// scrypt, zie src/lib/auth.ts ("scrypt$<salt>$<hash>", base64url).
-  passwordHash    String          @map("password_hash")
+  passwordHash    String              @map("password_hash")
   /// NULL = nog niet bevestigd; zolang kan er niet worden ingelogd.
-  emailVerifiedAt DateTime?       @map("email_verified_at") @db.Timestamptz
+  emailVerifiedAt DateTime?           @map("email_verified_at") @db.Timestamptz
   /// Taal van de site bij het registreren; de accountmails gaan in deze taal.
-  locale          String          @default("nl")
-  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz
-  lastLoginAt     DateTime?       @map("last_login_at") @db.Timestamptz
+  locale          String              @default("nl")
+  createdAt       DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  lastLoginAt     DateTime?           @map("last_login_at") @db.Timestamptz
   sessions        UserSession[]
   tokens          UserToken[]
   watchlist       WatchlistItem[]

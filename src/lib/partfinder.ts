@@ -94,6 +94,7 @@ export async function findParts(
     );
   } else {
     base = {
+      hidden: false,
       shop: { enabled: true },
       lastSeenAt: { gte: new Date(Date.now() - MAX_AGE_MS) },
       ...(f.inStock ? { OR: [{ inStock: true }, { inStock: null }] } : {}),

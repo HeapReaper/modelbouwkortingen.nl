@@ -158,6 +158,7 @@ export async function sendDueAlerts(): Promise<AlertRunResult> {
         AND a.triggered_at IS NULL
         AND a.cancelled_at IS NULL
         AND s.enabled
+        AND NOT p.hidden
         AND p.price <= a.target_price
         AND p.in_stock IS DISTINCT FROM false
         AND p.last_seen_at > ${new Date(Date.now() - MAX_PRICE_AGE_MS)}

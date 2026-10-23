@@ -121,6 +121,7 @@ export async function comparePrices(
   } else {
     const prisma = getPrisma();
     const base: Prisma.ProductWhereInput = {
+      hidden: false,
       shop: { enabled: true },
       lastSeenAt: { gte: new Date(Date.now() - MAX_AGE_MS) },
       ...(opts.inStock ? { OR: [{ inStock: true }, { inStock: null }] } : {}),

@@ -13,6 +13,15 @@ export type ShopOverview = {
   avgDiscount: number | null;
   lastSeen: string | null;
   crawledLast24h: number;
+  /** Alle categorieën (in de volgorde van de site); hidden = bij deze shop niet op de site. */
+  categories: ShopCategory[];
+};
+
+export type ShopCategory = {
+  slug: string;
+  products: number;
+  deals: number;
+  hidden: boolean;
 };
 
 export type CrawlRun = {
@@ -129,6 +138,9 @@ export async function getAdminOverview(): Promise<AdminOverview> {
       alertsActive,
       alertsUnconfirmed,
       alertsSent30,
+      productsPerShopCategory,
+      dealsPerShopCategory,
+      hiddenCategories,
     ] = await Promise.all([
       prisma.shop.findMany({
         select: { id: true, slug: true, name: true, enabled: true },
@@ -216,6 +228,18 @@ export async function getAdminOverview(): Promise<AdminOverview> {
         where: { confirmedAt: null, cancelledAt: null },
       }),
       prisma.priceAlert.count({ where: { triggeredAt: { gte: ago30 } } }),
+      prisma.product.groupBy({
+        by: ["shopId", "categorySlug"],
+        _count: true,
+      }),
+      prisma.product.groupBy({
+        by: ["shopId", "categorySlug"],
+        where: { isDeal: true },
+        _count: true,
+      }),
+      prisma.shopHiddenCategory.findMany({
+        select: { shopId: true, categorySlug: true },
+      }),
     ]);
     const topIds = clickProducts.flatMap((c) => c.productId ?? []);
     const topNames = new Map(
@@ -234,6 +258,15 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     const products = byShop(productsPerShop);
     const deals = byShop(dealsPerShop);
     const crawled = byShop(crawledPerShop);
+    const shopCat = (r: { shopId: number; categorySlug: string }) =>
+      `${r.shopId}:${r.categorySlug}`;
+    const shopCatProducts = new Map(
+      productsPerShopCategory.map((r) => [shopCat(r), r._count]),
+    );
+    const shopCatDeals = new Map(
+      dealsPerShopCategory.map((r) => [shopCat(r), r._count]),
+    );
+    const hidden = new Set(hiddenCategories.map(shopCat));
     const catDeals = new Map(
       dealsPerCategory.map((c) => [c.categorySlug, c._count]),
     );
@@ -266,6 +299,15 @@ export async function getAdminOverview(): Promise<AdminOverview> {
           avgDiscount: avg === null ? null : Math.round(avg * 10) / 10,
           lastSeen: iso(products.get(s.id)?._max.lastSeenAt ?? null),
           crawledLast24h: crawled.get(s.id)?._count ?? 0,
+          categories: categories.map((c) => {
+            const key = shopCat({ shopId: s.id, categorySlug: c.slug });
+            return {
+              slug: c.slug,
+              products: shopCatProducts.get(key) ?? 0,
+              deals: shopCatDeals.get(key) ?? 0,
+              hidden: hidden.has(key),
+            };
+          }),
         };
       }),
       runs: runs.map((r) => ({

@@ -118,6 +118,31 @@ export async function toggleShopEnabled(slug: string, enabled: boolean) {
   refresh();
 }
 
+/** Categorie bij één shop tonen of verbergen (zie Product.hidden). */
+export async function toggleShopCategory(
+  slug: string,
+  categorySlug: string,
+  visible: boolean,
+) {
+  await assertAdmin();
+  const prisma = getPrisma();
+  const shop = await prisma.shop.findUnique({
+    select: { id: true },
+    where: { slug },
+  });
+  if (!shop) return;
+  if (visible)
+    await prisma.shopHiddenCategory.deleteMany({
+      where: { shopId: shop.id, categorySlug },
+    });
+  else
+    await prisma.shopHiddenCategory.createMany({
+      data: [{ shopId: shop.id, categorySlug }],
+      skipDuplicates: true,
+    });
+  refresh();
+}
+
 export type ContactFormState = { error?: string; ok?: number };
 
 export async function addPhoneNumber(

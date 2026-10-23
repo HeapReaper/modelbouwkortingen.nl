@@ -385,7 +385,7 @@ export async function translatePendingDeals(
         FROM products p
         JOIN shops s ON s.id = p.shop_id
         LEFT JOIN product_translations t ON t.product_id = p.id AND t.locale = ${target}
-        WHERE p.is_deal AND s.enabled AND s.slug = ANY(${slugs})
+        WHERE p.is_deal AND NOT p.hidden AND s.enabled AND s.slug = ANY(${slugs})
           AND (t.product_id IS NULL OR t.source_name <> p.name)
         ORDER BY p.deal_since DESC NULLS LAST, p.id DESC
         LIMIT ${limit}`;
