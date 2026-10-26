@@ -1086,6 +1086,10 @@ export const nl = {
     item: "{price} bij {shop} (was {was}, -{percent}%)",
     toShop: "Bekijk bij {shop}",
   },
+  maintenance: {
+    title: "We zijn even bezig met onderhoud",
+    body: "Modelbouwkortingen.nl is tijdelijk niet beschikbaar. Probeer het straks opnieuw.",
+  },
 };
 
 export type Dictionary = typeof nl;

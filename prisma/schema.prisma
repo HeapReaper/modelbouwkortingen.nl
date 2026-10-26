@@ -469,3 +469,15 @@ model WatchlistItem {
   @@id([userId, productId])
   @@map("watchlist_items")
 }
+
+/// Instellingen voor de hele site (één rij, id 1), beheerd in het adminpanel.
+model SiteSetting {
+  id                 Int      @id @default(1)
+  /// Onderhoudsmodus: bezoekers krijgen een 503-pagina, de admin (cookie) niet.
+  maintenance        Boolean  @default(false)
+  /// Optioneel, onder de standaardtekst op de onderhoudspagina.
+  maintenanceMessage String   @default("") @map("maintenance_message")
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("site_settings")
+}

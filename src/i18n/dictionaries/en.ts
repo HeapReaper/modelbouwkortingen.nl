@@ -1082,4 +1082,8 @@ export const en: Dictionary = {
     item: "{price} at {shop} (was {was}, -{percent}%)",
     toShop: "View at {shop}",
   },
+  maintenance: {
+    title: "We're doing some maintenance",
+    body: "Modelbouwkortingen.nl is temporarily unavailable. Please try again shortly.",
+  },
 };

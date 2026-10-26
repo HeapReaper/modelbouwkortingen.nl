@@ -8,6 +8,12 @@ import {
   splitLocale,
 } from "@/i18n/config";
 import { adminEnabled, isAuthorized } from "@/lib/admin-auth";
+import {
+  getMaintenance,
+  MAINTENANCE_BYPASS_COOKIE,
+  maintenanceBypassToken,
+  maintenancePage,
+} from "@/lib/maintenance";
 
 /**
  * 1. Basic Auth voor het admin panel en /api/stats.
@@ -17,18 +23,28 @@ import { adminEnabled, isAuthorized } from "@/lib/admin-auth";
  *    bezoeker die taal zelf koos (cookie) of, zonder keuze, als de browser die taal liever wil
  *    (Accept-Language). Zonder Accept-Language (zoals bij de meeste zoekmachines) blijft het
  *    Nederlands.
+ * 3. Onderhoudsmodus (adminpanel): bezoekers krijgen een 503-pagina. /admin en de API-routes
+ *    blijven werken, en de admin ziet de site gewoon dankzij een cookie die bij elk bezoek aan
+ *    /admin gezet wordt.
  */
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isApi = pathname.startsWith("/api/");
   const { path } = splitLocale(pathname);
-  if (isApi || path === "/admin" || path.startsWith("/admin/")) {
+  const isAdmin = path === "/admin" || path.startsWith("/admin/");
+  if (isApi || isAdmin) {
     const denied = checkAdmin(request, isApi);
     if (denied) return denied;
     if (isApi) return NextResponse.next();
   }
 
+  if (isAdmin) return withBypassCookie(route(request));
+  return (await maintenanceResponse(request)) ?? route(request);
+}
+
+function route(request: NextRequest): NextResponse {
+  const { pathname } = request.nextUrl;
   const first = pathname.split("/")[1];
   // /nl/... bestaat alleen intern: de Nederlandse URL is die zonder prefix.
   if (first === DEFAULT_LOCALE) {
@@ -40,10 +56,7 @@ export function proxy(request: NextRequest) {
 
   // Alleen bij gewoon bekijken omleiden, niet bij formulieren (Server Actions zijn POSTs).
   if (request.method === "GET" || request.method === "HEAD") {
-    const chosen = request.cookies.get(LOCALE_COOKIE)?.value;
-    const lang = hasLocale(chosen)
-      ? chosen
-      : negotiateLocale(request.headers.get("accept-language"));
+    const lang = visitorLocale(request);
     if (lang !== DEFAULT_LOCALE) {
       const url = request.nextUrl.clone();
       url.pathname = localePath(lang, pathname);
@@ -59,6 +72,56 @@ export function proxy(request: NextRequest) {
   const target = `/${DEFAULT_LOCALE}${pathname === "/" ? "" : pathname}${request.nextUrl.search}`;
   const res = NextResponse.rewrite(new URL(target, request.url));
   res.headers.set("Vary", "Accept-Language, Cookie");
+  return res;
+}
+
+/** Taal uit de URL, anders de gekozen taal (cookie), anders Accept-Language. */
+function visitorLocale(request: NextRequest) {
+  const first = request.nextUrl.pathname.split("/")[1];
+  if (hasLocale(first)) return first;
+  const chosen = request.cookies.get(LOCALE_COOKIE)?.value;
+  return hasLocale(chosen)
+    ? chosen
+    : negotiateLocale(request.headers.get("accept-language"));
+}
+
+async function maintenanceResponse(
+  request: NextRequest,
+): Promise<NextResponse | null> {
+  const maintenance = await getMaintenance();
+  if (!maintenance.enabled) return null;
+  const token = maintenanceBypassToken();
+  if (
+    token &&
+    request.cookies.get(MAINTENANCE_BYPASS_COOKIE)?.value === token
+  ) {
+    return null;
+  }
+  return new NextResponse(
+    maintenancePage(visitorLocale(request), maintenance.message),
+    {
+      status: 503,
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "no-store",
+        "Retry-After": "600",
+      },
+    },
+  );
+}
+
+/** Ingelogd op /admin: deze browser mag de site ook in onderhoudsmodus zien. */
+function withBypassCookie(res: NextResponse): NextResponse {
+  const token = maintenanceBypassToken();
+  if (token) {
+    res.cookies.set(MAINTENANCE_BYPASS_COOKIE, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 30 * 24 * 60 * 60,
+    });
+  }
   return res;
 }
 

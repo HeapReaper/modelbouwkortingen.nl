@@ -11,6 +11,7 @@ import {
 import { isAuthorized } from "@/lib/admin-auth";
 import { getPrisma, isDbConfigured } from "@/lib/db";
 import { sendMail } from "@/lib/mail";
+import { setMaintenance } from "@/lib/maintenance";
 import { dateOnly, forgetPromotions, todayNL } from "@/lib/promotions";
 import { forgetServiceStatus } from "@/lib/service-status";
 import {
@@ -141,6 +142,23 @@ export async function toggleShopCategory(
       skipDuplicates: true,
     });
   refresh();
+}
+
+export type MaintenanceFormState = { error?: string; ok?: number };
+
+/** Onderhoudsmodus aan/uit, met een optionele tekst voor op de onderhoudspagina. */
+export async function saveMaintenance(
+  _prev: MaintenanceFormState,
+  form: FormData,
+): Promise<MaintenanceFormState> {
+  await assertAdmin();
+  const enabled = form.get("enabled") === "on";
+  const message = String(form.get("message") ?? "")
+    .trim()
+    .slice(0, 500);
+  await setMaintenance(enabled, message);
+  refresh();
+  return { ok: Date.now() };
 }
 
 export type ContactFormState = { error?: string; ok?: number };

@@ -2,6 +2,7 @@ import {
   Activity,
   AlertTriangle,
   BellRing,
+  Construction,
   Database,
   Eye,
   Gauge,
@@ -34,6 +35,7 @@ import {
 } from "@/components/admin/ContactAdmin";
 import { CrawlerLogs } from "@/components/admin/CrawlerLogs";
 import { DailyChart } from "@/components/admin/DailyChart";
+import { MaintenanceAdmin } from "@/components/admin/MaintenanceAdmin";
 import { PromotionsAdmin } from "@/components/admin/PromotionsAdmin";
 import { RecheckButton, TestMailForm } from "@/components/admin/ServiceAdmin";
 import { AnalyticsOptOut } from "@/components/analytics/AnalyticsOptOut";
@@ -57,6 +59,7 @@ import {
 import { type Analytics, getAnalytics } from "@/lib/analytics";
 import { isDbConfigured } from "@/lib/db";
 import { formatDateTime, formatNumber, timeAgo } from "@/lib/format";
+import { getMaintenance } from "@/lib/maintenance";
 import { listPromotions, todayNL } from "@/lib/promotions";
 import {
   getServiceStatus,
@@ -95,7 +98,7 @@ export default function AdminPage() {
 }
 
 async function AdminContent() {
-  const [data, live, contact, status, promotions, analytics] =
+  const [data, live, contact, status, promotions, analytics, maintenance] =
     await Promise.all([
       getAdminOverview(),
       getCrawlerLive(),
@@ -103,6 +106,7 @@ async function AdminContent() {
       getServiceStatus(),
       loadPromotions(),
       getAnalytics(),
+      getMaintenance(),
     ]);
   const totalDeals = data.shops.reduce((s, x) => s + x.deals, 0);
   const totalProducts = data.shops.reduce((s, x) => s + x.products, 0);
@@ -111,6 +115,12 @@ async function AdminContent() {
     <>
       {!data.db.ok ? (
         <Notice tone="warn">Database: {data.db.error}</Notice>
+      ) : null}
+      {maintenance.enabled ? (
+        <Notice tone="warn">
+          <strong>Onderhoudsmodus staat aan:</strong> bezoekers zien de
+          onderhoudspagina.
+        </Notice>
       ) : null}
       {data.crawlAlerts.map((a) => (
         <Notice
@@ -191,6 +201,18 @@ async function AdminContent() {
       {analytics ? <AnalyticsSection a={analytics} /> : null}
 
       <ServicesSection status={status} live={live} />
+      {isDbConfigured() ? (
+        <Section
+          title="Onderhoudsmodus"
+          icon={<Construction className="size-5 text-primary" />}
+        >
+          <MaintenanceAdmin
+            key={`${maintenance.enabled}-${maintenance.message}`}
+            enabled={maintenance.enabled}
+            message={maintenance.message}
+          />
+        </Section>
+      ) : null}
       <CrawlerSection live={live} />
       <Section
         title="Crawler-logs (live)"
