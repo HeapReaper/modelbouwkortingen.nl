@@ -130,7 +130,8 @@ export async function comparePrices(
       prisma.product.findMany({
         select: SELECT,
         where: { AND: [base, category, ...terms.map(termWhere)] },
-        orderBy: { price: "asc" },
+        // id als tiebreaker: bij gelijke prijzen kiest Postgres anders per keer andere rijen.
+        orderBy: [{ price: "asc" }, { id: "asc" }],
         take: MAX_MATCHES + 1,
       });
     const buckets = opts.category
@@ -227,6 +228,7 @@ export async function siblingRows(
         { skuNorm: { in: norms } },
       ],
     },
+    orderBy: [{ price: "asc" }, { id: "asc" }],
     take: maxSkus * 3,
   });
 }

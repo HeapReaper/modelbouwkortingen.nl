@@ -441,7 +441,7 @@ export async function getAlternatives(deal: Deal, limit = 10): Promise<Deal[]> {
       shop: { enabled: true, slug: { not: deal.shopSlug } },
       lastSeenAt: { gte: new Date(Date.now() - ALTERNATIVE_MAX_AGE_MS) },
     },
-    orderBy: { price: "asc" },
+    orderBy: [{ price: "asc" }, { id: "asc" }],
     take: 50,
   });
   const seen = new Set<string>();

@@ -111,7 +111,7 @@ export async function findParts(
       getPrisma().product.findMany({
         select: SELECT,
         where: where(category),
-        orderBy: { price: "asc" },
+        orderBy: [{ price: "asc" }, { id: "asc" }],
         take: MAX_MATCHES + 1,
       });
     // Modellen apart, anders verdringen goedkope onderdelen ze bij een brede zoekterm.
