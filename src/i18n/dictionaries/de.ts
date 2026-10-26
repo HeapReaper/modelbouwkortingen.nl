@@ -1069,7 +1069,7 @@ export const de: Dictionary = {
       {
         title: "Mit wem wir Daten teilen",
         body: [
-          "Wir verkaufen deine Daten nie. Für den Versand von Mails nutzen wir einen E-Mail-Anbieter, Nachrichten in Discord laufen über Discord und Anzeigen über Google. Sie verarbeiten Daten nur für diese Aufgabe. Produktnamen deutscher und französischer Shops lassen wir von Amazon Translate übersetzen; dabei werden keine personenbezogenen Daten übermittelt.",
+          "Wir verkaufen deine Daten nie. Für den Versand von Mails nutzen wir einen E-Mail-Anbieter, Nachrichten in Discord laufen über Discord und Anzeigen über Google. Sie verarbeiten Daten nur für diese Aufgabe. Produktnamen deutscher und französischer Shops übersetzen wir auf unserem eigenen Server; dafür wird nichts an einen externen Dienst übermittelt.",
         ],
       },
       {

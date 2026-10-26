@@ -95,10 +95,7 @@ services:
       - NEWSLETTER_SEND_HOUR=${NEWSLETTER_SEND_HOUR:-8}
       - NEWSLETTER_SCHEDULER=${NEWSLETTER_SCHEDULER:-}
       - NEWSLETTER_CRON_TOKEN=${NEWSLETTER_CRON_TOKEN:-}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
-      - AWS_REGION=${AWS_REGION:-eu-central-1}
-      - TRANSLATE_DAILY_CHAR_LIMIT=${TRANSLATE_DAILY_CHAR_LIMIT:-10000}
+      - LIBRETRANSLATE_URL=${LIBRETRANSLATE_URL:-http://libretranslate:5000}
       - ALERT_DISCORD_WEBHOOK=${ALERT_DISCORD_WEBHOOK:-}
       - CRAWL_ALERT_RATIO=${CRAWL_ALERT_RATIO:-0.5}
     healthcheck:
@@ -108,5 +105,20 @@ services:
       start_period: 20s
       retries: 3
 
+  # Vertaalt productnamen van Duitse en Franse webshops (gratis, draait op de CPU). Bij de
+  # eerste start downloadt hij de taalmodellen naar het volume; tot die klaar zijn toont de site
+  # de originele namen.
+  libretranslate:
+    image: libretranslate/libretranslate:v1.9.6
+    restart: unless-stopped
+    expose:
+      - "5000"
+    environment:
+      - LT_LOAD_ONLY=de,fr,nl,en
+      - LT_DISABLE_WEB_UI=true
+    volumes:
+      - ltmodels:/home/libretranslate/.local
+
 volumes:
   pgdata:
+  ltmodels:

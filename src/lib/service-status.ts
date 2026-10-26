@@ -3,17 +3,13 @@ import "server-only";
 import { connection } from "next/server";
 import { getPrisma, isDbConfigured } from "@/lib/db";
 import { isMailConfigured, verifyMail } from "@/lib/mail";
-import {
-  checkTranslator,
-  isTranslatorConfigured,
-  translationBudget,
-} from "@/lib/translate";
+import { checkTranslator, isTranslatorConfigured } from "@/lib/translate";
 
 /**
- * Status van de externe diensten voor het adminpanel: database, SMTP en Amazon Translate
+ * Status van de externe diensten voor het adminpanel: database, SMTP en LibreTranslate
  * (echt geprobeerd), plus wat alleen ingesteld hoeft te zijn. Het panel ververst elke 15
- * seconden; daarom onthouden we de uitkomst CACHE_MS lang (zo kost Amazon Translate hooguit
- * een paar tekens per 5 minuten). "Opnieuw controleren" gooit die uitkomst weg.
+ * seconden; daarom onthouden we de uitkomst CACHE_MS lang. "Opnieuw controleren" gooit die
+ * uitkomst weg.
  */
 
 /** ok = werkt, down = ingesteld maar kapot, off = niet ingesteld. */
@@ -96,18 +92,14 @@ async function checkAll(): Promise<ServiceStatus> {
           "SMTP_HOST en MAIL_FROM zijn niet ingesteld",
         ),
     isTranslatorConfigured()
-      ? probe("translate", "Amazon Translate", async () => {
-          const [text, { used, limit }] = await Promise.all([
-            checkTranslator(),
-            translationBudget(),
-          ]);
-          const fmt = (n: number) => n.toLocaleString("nl-NL");
-          return `"Test" → "${text}" (${process.env.AWS_REGION || "eu-central-1"}) · vandaag ${fmt(used)} van ${fmt(limit)} tekens`;
+      ? probe("translate", "LibreTranslate", async () => {
+          const text = await checkTranslator();
+          return `"Test" → "${text}" (${process.env.LIBRETRANSLATE_URL})`;
         })
       : off(
           "translate",
-          "Amazon Translate",
-          "AWS_ACCESS_KEY_ID en AWS_SECRET_ACCESS_KEY zijn niet ingesteld",
+          "LibreTranslate",
+          "LIBRETRANSLATE_URL is niet ingesteld",
         ),
     process.env.ALERT_DISCORD_WEBHOOK
       ? {

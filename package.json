@@ -14,7 +14,6 @@
     "db:generate": "prisma generate"
   },
   "dependencies": {
-    "@aws-sdk/client-translate": "^3.1152.0",
     "@base-ui/react": "^1.9.0",
     "@prisma/adapter-pg": "^7.10.1",
     "@prisma/client": "^7.10.1",

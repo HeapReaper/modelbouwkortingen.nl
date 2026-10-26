@@ -1046,7 +1046,7 @@ export const en: Dictionary = {
       {
         title: "Who we share data with",
         body: [
-          "We never sell your data. We use an email provider to send email, Discord messages go through Discord, and ads through Google. They only process data for that task. We have product names from German and French shops translated by Amazon Translate; no personal data is included.",
+          "We never sell your data. We use an email provider to send email, Discord messages go through Discord, and ads through Google. They only process data for that task. We translate product names from German and French shops on our own server; nothing is sent to an outside service for this.",
         ],
       },
       {

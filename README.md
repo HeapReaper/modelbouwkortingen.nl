@@ -32,7 +32,7 @@ komt het op de website (Next.js 16 + shadcn/ui).
 
 **Talen**
 - Site in het Nederlands, Engels en Duits, met taaldetectie en taalkiezer.
-- Productnamen van Duitse en Franse webshops automatisch vertaald via Amazon Translate.
+- Productnamen van Duitse en Franse webshops automatisch vertaald met LibreTranslate (eigen container).
 - Mail en Discord in de taal waarin de abonnee zich aanmeldde.
 
 **Verdienen**
@@ -46,7 +46,7 @@ komt het op de website (Next.js 16 + shadcn/ui).
   talen, robots.txt.
 
 **Beheer**
-- Adminpanel: status van de diensten (database, SMTP, Amazon Translate, crawler, planner) met
+- Adminpanel: status van de diensten (database, SMTP, LibreTranslate, crawler, planner) met
   een knop voor een testmail, live crawlerstatus en crawler-logs, HTTP 429's, crawl-rondes, statistieken van de afgelopen 14
   dagen, bezoekersstatistieken, kliks naar webshops, uitgelichte webshops en producten, contactberichten, webshops
   aan/uit, telefoonnummers en
@@ -129,7 +129,7 @@ koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coo
 | `/api/uit/[id]` | Telt de klik (`outbound_clicks`, zonder bots) en stuurt door naar de webshop, met affiliate-parameters |
 | `/api/vertalen/bijwerken` | Vertaalt namen van nieuwe deals van Duitse en Franse webshops (zelfde beveiliging als `/api/nieuwsbrief/verzenden`) |
 | `/api/crawler/controleren` | Zoekt crawl-rondes met opvallend weinig producten en meldt ze (idem) |
-| `/admin` | Admin panel: status van database/SMTP/Amazon Translate/crawler, testmail, live crawlerstatus, handmatig een shop crawlen, 429's, crawl-rondes, grafiek, bezoekers, kliks, berichten, webshops aan/uit, telefoonnummers en social media (Basic Auth) |
+| `/admin` | Admin panel: status van database/SMTP/LibreTranslate/crawler, testmail, live crawlerstatus, handmatig een shop crawlen, 429's, crawl-rondes, grafiek, bezoekers, kliks, berichten, webshops aan/uit, telefoonnummers en social media (Basic Auth) |
 | `/api/stats` | JSON met alle statistieken (Basic Auth of `Bearer STATS_TOKEN`) |
 | `/api/health` | Publieke health check |
 
@@ -180,7 +180,7 @@ het abonnement uitgezet.
 ### Productnamen vertalen
 
 Duitse en Franse webshops (`language: "de"` of `"fr"` in `src/lib/shops.ts`) hebben Duitse of
-Franse productnamen. Die worden vertaald met **Amazon Translate** (`src/lib/translate.ts`) naar de
+Franse productnamen. Die worden vertaald met **LibreTranslate** (`src/lib/translate.ts`) naar de
 taal van de bezoeker; een Duitse bezoeker ziet de originele naam van een Duitse webshop, maar een
 vertaling van een Franse. Elke naam wordt één keer per
 taal vertaald en bewaard in `product_translations`; verandert de naam bij de webshop, dan wordt
@@ -189,15 +189,14 @@ hij opnieuw vertaald. De planner vertaalt elke 5 minuten de nieuwe deals vooraf
 langer dan 2 seconden, dan toont de pagina die keer de originele naam. Op de productpagina staat de
 originele naam onder de vertaalde.
 
-**Kosten in de hand:** bots (zoekmachines, linkvoorbeelden, scrapers; herkend aan de
-user-agent in `src/lib/bots.ts`) laten nooit iets nieuws vertalen: zij zien bewaarde vertalingen
-of de originele naam. Daarnaast vertaalt de site per dag (Nederlandse tijd) hooguit
-`TRANSLATE_DAILY_CHAR_LIMIT` tekens (standaard 10.000, ≈ $0,15), voor pagina's, planner en mail
-samen; daarna tot middernacht alleen bewaarde vertalingen. Het verbruik van vandaag staat in
-`/admin` bij Diensten.
+Bots (zoekmachines, linkvoorbeelden, scrapers; herkend aan de user-agent in `src/lib/bots.ts`)
+laten nooit iets nieuws vertalen: zij zien bewaarde vertalingen of de originele naam.
 
-Zet `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` en `AWS_REGION` (bv. `eu-central-1`), van een
-IAM-gebruiker die alleen `translate:TranslateText` mag. Zonder sleutels worden alleen al bewaarde
+LibreTranslate draait als eigen container (`libretranslate` in `docker-compose.yml`, alleen de
+talen `de,fr,nl,en`), dus vertalen kost niets en er gaat niets naar een externe dienst. Bij de
+eerste start downloadt de container de taalmodellen naar het volume `ltmodels`; tot dat klaar is
+toont de site de originele namen. Reken op een paar GB RAM. Zet `LIBRETRANSLATE_URL` (in
+docker-compose standaard `http://libretranslate:5000`); zonder worden alleen al bewaarde
 vertalingen getoond.
 
 ### Prijsalarm en volglijst
@@ -343,8 +342,7 @@ Zie `.env.example` voor alle variabelen. De belangrijkste:
 | `MAIL_FROM` | website | — |
 | `NEWSLETTER_SEND_HOUR` | website | `8` |
 | `NEWSLETTER_SCHEDULER` / `NEWSLETTER_CRON_TOKEN` | website | planner aan / — |
-| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_REGION` | website | — / — / `eu-central-1` (zonder: geen nieuwe vertalingen) |
-| `TRANSLATE_DAILY_CHAR_LIMIT` | website | `10000` tekens per dag |
+| `LIBRETRANSLATE_URL` / `LIBRETRANSLATE_API_KEY` | website | `http://libretranslate:5000` in docker-compose (zonder: geen nieuwe vertalingen) / — |
 | `ALERT_DISCORD_WEBHOOK` / `CRAWL_ALERT_RATIO` | website | — / `0.5` |
 | `CRAWLER_INTERVAL` | crawler | `6h` |
 | `CRAWLER_WORKERS_PER_SHOP` | crawler | `4` |
