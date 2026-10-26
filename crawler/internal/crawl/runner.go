@@ -1,4 +1,4 @@
-// Package crawl orkestreert crawl-rondes: alle shops parallel, per shop meerdere workers.
+// Package crawl orkestreert crawl-rondes: elke shop in een eigen lus, per shop meerdere workers.
 package crawl
 
 import (
@@ -64,17 +64,32 @@ func (r *Runner) release(slug string) {
 	delete(r.active, slug)
 }
 
-// RunAll crawlt alle shops tegelijk en wacht tot ze klaar zijn.
-func (r *Runner) RunAll(ctx context.Context, list []shops.Shop) {
+// Schedule crawlt elke shop in een eigen lus: na een ronde wacht die shop interval
+// (gerekend vanaf de start van de ronde) en begint dan opnieuw. Een trage shop houdt
+// zo de andere niet op. Met once draait elke shop één ronde. Wacht tot alle lussen klaar zijn.
+func (r *Runner) Schedule(ctx context.Context, list []shops.Shop, interval time.Duration, once bool) {
 	var wg sync.WaitGroup
 	for _, s := range list {
 		wg.Go(func() {
-			err := r.RunShop(ctx, s)
-			switch {
-			case errors.Is(err, ErrBusy):
-				r.log.Info("overgeslagen: ronde loopt al (handmatig gestart?)", "shop", s.Slug())
-			case err != nil && ctx.Err() == nil:
-				r.log.Error("crawl mislukt", "shop", s.Slug(), "err", err)
+			for {
+				started := time.Now()
+				err := r.RunShop(ctx, s)
+				switch {
+				case errors.Is(err, ErrBusy):
+					r.log.Info("overgeslagen: ronde loopt al (handmatig gestart?)", "shop", s.Slug())
+				case err != nil && ctx.Err() == nil:
+					r.log.Error("crawl mislukt", "shop", s.Slug(), "err", err)
+				}
+				if once || ctx.Err() != nil {
+					return
+				}
+				wait := max(interval-time.Since(started), time.Minute)
+				r.log.Info("wachten tot de volgende ronde", "shop", s.Slug(), "over", wait.Round(time.Second))
+				select {
+				case <-ctx.Done():
+					return
+				case <-time.After(wait):
+				}
 			}
 		})
 	}

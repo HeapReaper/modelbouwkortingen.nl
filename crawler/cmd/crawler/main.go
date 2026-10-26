@@ -90,25 +90,7 @@ func main() {
 
 	runner.Store(crawl.NewRunner(cfg, fetcher, st, reg, log))
 
-	for {
-		started := time.Now()
-		runner.Load().RunAll(ctx, list)
-		if cfg.RunOnce || ctx.Err() != nil {
-			break
-		}
-		wait := cfg.Interval - time.Since(started)
-		if wait < time.Minute {
-			wait = time.Minute
-		}
-		log.Info("wachten tot de volgende ronde", "over", wait.Round(time.Second))
-		select {
-		case <-ctx.Done():
-		case <-time.After(wait):
-		}
-		if ctx.Err() != nil {
-			break
-		}
-	}
+	runner.Load().Schedule(ctx, list, cfg.Interval, cfg.RunOnce)
 	log.Info("crawler gestopt")
 }
 

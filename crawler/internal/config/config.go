@@ -26,7 +26,7 @@ type Config struct {
 	Backoff429     time.Duration // eerste wachttijd na een 429, verdubbelt bij elke volgende 429
 	MaxBackoff     time.Duration
 
-	Interval        time.Duration // tijd tussen twee volledige crawl-rondes
+	Interval        time.Duration // tijd tussen de starts van twee crawl-rondes van dezelfde shop
 	RunOnce         bool
 	DryRun          bool // niet naar de database schrijven, alleen loggen
 	MaxProductPages int  // max productpagina's per shop per ronde (0 = onbeperkt)
