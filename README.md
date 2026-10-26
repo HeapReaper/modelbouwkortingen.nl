@@ -1,5 +1,9 @@
 # Modelbouwkortingen.nl
 
+> **Dit is een AI-project.** De code (website en crawler) is grotendeels geschreven met AI, met
+> [Claude Code](https://claude.com/claude-code), en daarna door een mens nagekeken, getest en
+> uitgerold.
+
 Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 35 Nederlandse, Belgische, Duitse,
 Franse en andere modelbouw-webshops (zie [Crawler](#crawler)). Is een product **minstens €5 of 5%** afgeprijsd, dan
 komt het op de website (Next.js 16 + shadcn/ui).
