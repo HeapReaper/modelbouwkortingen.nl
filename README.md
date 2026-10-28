@@ -4,7 +4,7 @@
 > [Claude Code](https://claude.com/claude-code), en daarna door een mens nagekeken, getest en
 > uitgerold.
 
-Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 53 Nederlandse, Belgische, Duitse,
+Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 54 Nederlandse, Belgische, Duitse,
 Franse en andere modelbouw-webshops (zie [Crawler](#crawler)). Is een product **minstens €5 of 5%** afgeprijsd, dan
 komt het op de website (Next.js 16 + shadcn/ui).
 
@@ -303,6 +303,7 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | Quartel | WooCommerce (Flatsome) | `product-sitemapN.xml` (~30.000 producten; de Store API geeft 403) | geen: alle productpagina's (JSON-LD van Yoast, prijs in `priceSpecification`, voorraad als tekst); de categorie komt uit de link `/product-category/...` onder het product |
 | Monster-Hopups (DE) | JTL-Shop 5 | geen: alleen listings | subcategorieën uit `/Sitemap` (zonder merken, kleding en cadeaus), `?af=50`, `_sN`; voorraad uit het statuslampje; 5 s tussen requests (robots.txt) |
 | GHW Modellbau (DE) | JTL-Shop 5 | geen: alleen listings | (sub)categorieën uit `/Sitemap`, `?af=50`, `_sN`; voorraad uit het statuslampje |
+| RCFOX (DE) | JTL-Shop 5 (eigen thema) | geen: alleen listings | categorieën uit het megamenu (zonder merchandise, kleding, plastic bouwdozen en standmodellen); producten uit de JSON-LD ItemList (~60 per pagina, `?af=` verboden), `_sN`; grote merkcategorieën worden afgekapt op 50 pagina's |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

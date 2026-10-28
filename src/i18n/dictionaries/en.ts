@@ -219,6 +219,8 @@ export const en: Dictionary = {
       "German RC shop focused on cars and trucks from Traxxas, Arrma, Axial and Losi, with lots of parts, tuning, electronics, boats and planes.",
     ghw:
       "German model shop for RC excavators and hydraulics, with materials, screws, drivetrain parts, electronics and tools.",
+    rcfox:
+      "Large German RC shop with cars, trucks, planes, helis and boats, plus a huge range of parts by brand, electronics and tools.",
   },
   deals: {
     outOfStock: "Out of stock",

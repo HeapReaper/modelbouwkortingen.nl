@@ -93,6 +93,7 @@ func Canonical(doc *goquery.Document) string {
 // JSONLDProduct bevat de velden uit een schema.org Product blok die we gebruiken.
 type JSONLDProduct struct {
 	Name         string
+	URL          string
 	SKU          string
 	Brand        string
 	Image        string
@@ -102,8 +103,40 @@ type JSONLDProduct struct {
 
 // JSONLD zoekt het eerste schema.org Product en de BreadcrumbList in de pagina.
 func JSONLD(doc *goquery.Document) (*JSONLDProduct, []string) {
-	var product *JSONLDProduct
+	products, crumbs := JSONLDProducts(doc)
+	if len(products) == 0 {
+		return nil, crumbs
+	}
+	return products[0], crumbs
+}
+
+// JSONLDProducts geeft alle schema.org Products in de pagina, ook die in een ItemList (zoals
+// op categoriepagina's), en de langste BreadcrumbList.
+func JSONLDProducts(doc *goquery.Document) ([]*JSONLDProduct, []string) {
+	var products []*JSONLDProduct
 	var crumbs []string
+	var visit func(obj map[string]any)
+	visit = func(obj map[string]any) {
+		switch typeOf(obj) {
+		case "product":
+			products = append(products, jsonldProduct(obj))
+		case "itemlist":
+			items, _ := obj["itemListElement"].([]any)
+			for _, it := range items {
+				if m, ok := it.(map[string]any); ok {
+					if item, ok := m["item"].(map[string]any); ok {
+						m = item
+					}
+					visit(m)
+				}
+			}
+		case "breadcrumblist":
+			// Sommige shops hebben meerdere lijsten (bv. "Home > Winkel" naast het echte pad).
+			if c := jsonldCrumbs(obj); len(c) > len(crumbs) {
+				crumbs = c
+			}
+		}
+	}
 	doc.Find(`script[type="application/ld+json"]`).Each(func(_ int, s *goquery.Selection) {
 		var raw any
 		// Sommige shops zetten letterlijke newlines in strings; die maken we eerst onschadelijk.
@@ -111,21 +144,9 @@ func JSONLD(doc *goquery.Document) (*JSONLDProduct, []string) {
 		if err := json.Unmarshal([]byte(txt), &raw); err != nil {
 			return
 		}
-		walkJSONLD(raw, func(obj map[string]any) {
-			switch typeOf(obj) {
-			case "product":
-				if product == nil {
-					product = jsonldProduct(obj)
-				}
-			case "breadcrumblist":
-				// Sommige shops hebben meerdere lijsten (bv. "Home > Winkel" naast het echte pad).
-				if c := jsonldCrumbs(obj); len(c) > len(crumbs) {
-					crumbs = c
-				}
-			}
-		})
+		walkJSONLD(raw, visit)
 	})
-	return product, crumbs
+	return products, crumbs
 }
 
 func walkJSONLD(v any, fn func(map[string]any)) {
@@ -183,6 +204,7 @@ func jsonldProduct(obj map[string]any) *JSONLDProduct {
 		SKU:   str(obj["sku"]),
 		Brand: str(obj["brand"]),
 		Image: str(obj["image"]),
+		URL:   str(obj["url"]),
 	}
 	var offers []any
 	switch o := obj["offers"].(type) {
@@ -215,6 +237,9 @@ func jsonldProduct(obj map[string]any) *JSONLDProduct {
 		}
 		if p.Availability == "" {
 			p.Availability = str(m["availability"])
+		}
+		if p.URL == "" {
+			p.URL = str(m["url"])
 		}
 	}
 	return p

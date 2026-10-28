@@ -222,6 +222,8 @@ export const nl = {
       "Duitse RC-shop met vooral auto's en trucks van Traxxas, Arrma, Axial en Losi, plus veel onderdelen, tuning, elektronica, boten en vliegtuigen.",
     ghw:
       "Duitse modelbouwshop voor RC-graafmachines en hydrauliek, met materialen, schroeven, aandrijving, elektronica en gereedschap.",
+    rcfox:
+      "Grote Duitse RC-shop met auto's, trucks, vliegtuigen, heli's en boten, en heel veel onderdelen per merk, elektronica en gereedschap.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

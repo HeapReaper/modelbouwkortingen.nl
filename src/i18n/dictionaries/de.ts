@@ -226,6 +226,8 @@ export const de: Dictionary = {
       "RC-Shop mit Schwerpunkt auf Autos und Trucks von Traxxas, Arrma, Axial und Losi, dazu viele Ersatz- und Tuningteile, Elektronik, Boote und Flugmodelle.",
     ghw:
       "Modellbau-Versand für RC-Baumaschinen und Hydraulik, mit Halbzeugen, Schrauben, Antriebstechnik, Elektronik und Werkzeug.",
+    rcfox:
+      "Großer RC-Shop mit Autos, Trucks, Flugzeugen, Helis und Booten sowie sehr vielen Ersatzteilen nach Marke, Elektronik und Werkzeug.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

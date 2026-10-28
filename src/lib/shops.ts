@@ -30,6 +30,7 @@ import premiummodellbauLogo from "@/assets/shops/premiummodellbau.png";
 import quartelLogo from "@/assets/shops/quartel.png";
 import radiocontrolledshopLogo from "@/assets/shops/radiocontrolledshop.png";
 import rccaronlineLogo from "@/assets/shops/rccaronline.png";
+import rcfoxLogo from "@/assets/shops/rcfox.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
 import rcnmoreLogo from "@/assets/shops/rcnmore.png";
 import rcproLogo from "@/assets/shops/rcpro.png";
@@ -591,6 +592,15 @@ export const SHOPS: ShopInfo[] = [
     url: "https://ghw-modellbau.de",
     domain: "ghw-modellbau.de",
     logo: ghwLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+  },
+  {
+    slug: "rcfox",
+    name: "RCFOX",
+    url: "https://www.rcfox.de",
+    domain: "rcfox.de",
+    logo: rcfoxLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
   },

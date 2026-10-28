@@ -81,3 +81,37 @@ func ldParseProduct(pageURL string, doc *goquery.Document, idRe *regexp.Regexp) 
 	}
 	return p
 }
+
+// ldParseListing leest de producten uit een JSON-LD ItemList op een categoriepagina. Het id is
+// de SKU, of anders het pad van de product-URL. De breadcrumbs van de pagina (zonder "Home")
+// worden de categoriehint.
+func ldParseListing(doc *goquery.Document) []parse.Product {
+	items, crumbs := parse.JSONLDProducts(doc)
+	if len(crumbs) > 1 {
+		crumbs = crumbs[1:]
+	}
+	hint := strings.Join(crumbs, " | ")
+	var out []parse.Product
+	for _, it := range items {
+		p := parse.Product{
+			ExternalID:   it.SKU,
+			URL:          stripQuery(it.URL),
+			Name:         it.Name,
+			SKU:          it.SKU,
+			Brand:        it.Brand,
+			ImageURL:     it.Image,
+			Price:        it.Price,
+			InStock:      parse.Availability(it.Availability),
+			CategoryHint: hint,
+		}
+		if p.ExternalID == "" {
+			if u, err := url.Parse(p.URL); err == nil {
+				p.ExternalID = strings.Trim(u.Path, "/")
+			}
+		}
+		if p.ExternalID != "" && p.URL != "" && p.Name != "" && p.Price > 0 {
+			out = append(out, p)
+		}
+	}
+	return out
+}
