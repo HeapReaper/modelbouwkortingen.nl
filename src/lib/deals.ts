@@ -213,20 +213,39 @@ export function searchNorm(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
-/** Eén zoekterm: los van spelling met streepjes/spaties ("eflite" vindt ook "E-flite"). */
+/**
+ * Eén zoekterm: los van spelling met streepjes/spaties ("eflite" vindt ook "E-flite").
+ * search_norm bevat naam, merk en de vertaalde namen al genormaliseerd; met de sku erbij zijn
+ * dat twee kolommen met een trigram-index, zodat Postgres de OR via de indexen doet in plaats
+ * van de hele tabel door te lopen. Alleen een term zonder letters of cijfers (bv. "ä") gaat
+ * nog los op naam, merk en vertaling.
+ */
 export function termWhere(term: string): Prisma.ProductWhereInput {
   const contains = { contains: term, mode: "insensitive" } as const;
   const norm = searchNorm(term);
+  if (norm) {
+    return { OR: [{ searchNorm: { contains: norm } }, { sku: contains }] };
+  }
   return {
     OR: [
       { name: contains },
       { brand: contains },
       { sku: contains },
-      // Ook op de vertaalde naam van producten van anderstalige webshops.
       { translations: { some: { name: contains } } },
-      ...(norm ? [{ searchNorm: { contains: norm } }] : []),
     ],
   };
+}
+
+/**
+ * Minimale lengte (genormaliseerd) van de langste zoekterm voor de prijsvergelijker en de
+ * partfinder. Een trigram-index helpt pas vanaf 3 tekens; met alleen "rc" of "4s" doorzoekt
+ * Postgres de hele tabel en zijn er toch te veel treffers.
+ */
+export const MIN_TERM_LENGTH = 3;
+
+/** Heeft de zoekopdracht minstens één term van MIN_TERM_LENGTH tekens? */
+export function hasSearchableTerm(terms: string[]) {
+  return terms.some((t) => searchNorm(t).length >= MIN_TERM_LENGTH);
 }
 
 export function searchTerms(q?: string) {

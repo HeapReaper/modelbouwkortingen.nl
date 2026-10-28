@@ -182,10 +182,21 @@ async function Results({ searchParams }: { searchParams: SearchParams }) {
       </p>
     );
   }
-  const { groups, total, totalPages, page, truncated } = await comparePrices(
-    q,
-    { inStock, category, sort, lang, page: params.page },
-  );
+  const { groups, total, totalPages, page, truncated, tooShort } =
+    await comparePrices(q, {
+      inStock,
+      category,
+      sort,
+      lang,
+      page: params.page,
+    });
+  if (tooShort) {
+    return (
+      <p className="rounded-2xl border border-dashed p-8 text-center text-lg text-muted-foreground">
+        {c.tooShort}
+      </p>
+    );
+  }
   const query = `“${q}”`;
   if (total === 0) {
     return (

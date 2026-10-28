@@ -8,16 +8,17 @@ import {
   demoRows,
   groupOffers,
   localizeGroups,
-  MAX_AGE_MS,
   MODEL_CATEGORIES,
   normalizeSku,
   type OfferRow,
+  SEARCH_CACHE_MS,
   SELECT,
+  searchBase,
   toOffer,
   withSiblings,
 } from "@/lib/compare";
-import { getPrisma, isDbConfigured } from "@/lib/db";
-import { searchTerms, termWhere } from "@/lib/deals";
+import { getPrisma, isDbConfigured, searchCache } from "@/lib/db";
+import { hasSearchableTerm, searchTerms, termWhere } from "@/lib/deals";
 
 /**
  * Partfinder: doorzoekt de hele database (modellen, onderdelen, artikelnummers) en laat per
@@ -59,6 +60,8 @@ export type PartResults = {
   totalPages: number;
   /** Meer treffers dan we in één keer bekijken: verfijn de zoekopdracht. */
   truncated: boolean;
+  /** Geen zoekterm van minstens MIN_TERM_LENGTH tekens: niet gezocht. */
+  tooShort: boolean;
 };
 
 export const PART_PAGE_SIZE = 24;
@@ -72,6 +75,7 @@ const EMPTY: PartResults = {
   deals: 0,
   totalPages: 0,
   truncated: false,
+  tooShort: false,
 };
 
 export async function findParts(
@@ -82,49 +86,27 @@ export async function findParts(
   const terms = searchTerms(f.q);
   if (terms.length === 0) return EMPTY;
 
-  let rows: OfferRow[];
-  let truncated = false;
-  let base: Prisma.ProductWhereInput = {};
-  if (!isDbConfigured()) {
-    rows = demoRows(terms, f.category).filter(
-      (r) =>
-        (!f.inStock || r.offer.inStock !== false) &&
-        (!f.dealsOnly || r.offer.isDeal),
-    );
-  } else {
-    base = {
-      hidden: false,
-      shop: { enabled: true },
-      lastSeenAt: { gte: new Date(Date.now() - MAX_AGE_MS) },
-      ...(f.inStock ? { OR: [{ inStock: true }, { inStock: null }] } : {}),
-    };
-    const where = (category: Prisma.ProductWhereInput) => ({
-      AND: [
-        base,
-        category,
-        ...(f.dealsOnly ? [{ isDeal: true }] : []),
-        ...terms.map(termWhere),
-      ],
-    });
-    const search = (category: Prisma.ProductWhereInput) =>
-      getPrisma().product.findMany({
-        select: SELECT,
-        where: where(category),
-        orderBy: [{ price: "asc" }, { id: "asc" }],
-        take: MAX_MATCHES + 1,
-      });
-    // Modellen apart, anders verdringen goedkope onderdelen ze bij een brede zoekterm.
-    const buckets = f.category
-      ? [await search({ categorySlug: f.category })]
-      : await Promise.all([
-          search({ categorySlug: { in: MODEL_CATEGORIES } }),
-          search({ categorySlug: { notIn: MODEL_CATEGORIES } }),
-        ]);
-    truncated = buckets.some((b) => b.length > MAX_MATCHES);
-    rows = buckets
-      .flatMap((b) => b.slice(0, MAX_MATCHES))
-      .map((r) => ({ sku: r.sku, offer: toOffer(r) }));
-  }
+  if (!hasSearchableTerm(terms)) return { ...EMPTY, tooShort: true };
+
+  const base = searchBase(f.inStock);
+  // De treffers (vóór webshopfilter, sortering en pagina) gaan in de cache: bladeren, sorteren
+  // en op een webshop klikken raken de database dan niet.
+  const cached = isDbConfigured()
+    ? await searchCache(
+        `parts:${JSON.stringify([terms, f.category ?? "", f.inStock ?? false, f.dealsOnly ?? false])}`,
+        SEARCH_CACHE_MS,
+        () => partRows(base, terms, f),
+      )
+    : {
+        rows: demoRows(terms, f.category).filter(
+          (r) =>
+            (!f.inStock || r.offer.inStock !== false) &&
+            (!f.dealsOnly || r.offer.isDeal),
+        ),
+        truncated: false,
+      };
+  let rows = cached.rows;
+  const truncated = cached.truncated;
 
   // Webshopfilter pas hier, zodat de tellingen per webshop alle treffers laten zien.
   const shopCounts = new Map<string, { name: string; count: number }>();
@@ -152,10 +134,46 @@ export async function findParts(
     total,
     totalPages,
     truncated,
+    tooShort: false,
     deals: list.filter((g) => g.offers.some((o) => o.isDeal)).length,
     shops: [...shopCounts]
       .map(([slug, s]) => ({ slug, ...s }))
       .sort((a, b) => b.count - a.count),
+  };
+}
+
+/** De treffers uit de database: modellen en de rest apart, elk hooguit MAX_MATCHES. */
+async function partRows(
+  base: Prisma.ProductWhereInput,
+  terms: string[],
+  f: PartFilters,
+): Promise<{ rows: OfferRow[]; truncated: boolean }> {
+  const search = (category: Prisma.ProductWhereInput) =>
+    getPrisma().product.findMany({
+      select: SELECT,
+      where: {
+        AND: [
+          base,
+          category,
+          ...(f.dealsOnly ? [{ isDeal: true }] : []),
+          ...terms.map(termWhere),
+        ],
+      },
+      orderBy: [{ price: "asc" }, { id: "asc" }],
+      take: MAX_MATCHES + 1,
+    });
+  // Modellen apart, anders verdringen goedkope onderdelen ze bij een brede zoekterm.
+  const buckets = f.category
+    ? [await search({ categorySlug: f.category })]
+    : await Promise.all([
+        search({ categorySlug: { in: MODEL_CATEGORIES } }),
+        search({ categorySlug: { notIn: MODEL_CATEGORIES } }),
+      ]);
+  return {
+    rows: buckets
+      .flatMap((b) => b.slice(0, MAX_MATCHES))
+      .map((r) => ({ sku: r.sku, offer: toOffer(r) })),
+    truncated: buckets.some((b) => b.length > MAX_MATCHES),
   };
 }
 

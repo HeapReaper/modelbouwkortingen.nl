@@ -224,6 +224,13 @@ async function Results({ searchParams }: { searchParams: SearchParams }) {
     );
   }
   const r = await findParts(f, lang);
+  if (r.tooShort) {
+    return (
+      <p className="rounded-2xl border border-dashed p-8 text-center text-lg text-muted-foreground">
+        {c.tooShort}
+      </p>
+    );
+  }
   const query = `“${f.q}”`;
   const link = (params: Partial<Record<string, string | number>>) =>
     withParams(href("/partfinder"), { ...toParams(f), ...params });

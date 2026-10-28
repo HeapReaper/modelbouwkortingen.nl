@@ -445,6 +445,8 @@ export const en: Dictionary = {
     resultsOther: "{count} products found for {query}",
     dealsCount: "{count} on sale",
     foundAt: "Found at",
+    tooShort:
+      "Type at least one word or part number of 3 characters or more, such as “lipo” or “trx3655”.",
     truncated:
       "There are more matches than we search at once. Make your search more specific or pick a category.",
     none: "Nothing found for {query}. Try a different spelling, fewer words or just the part number.",
@@ -467,6 +469,8 @@ export const en: Dictionary = {
       "Type a product, brand or part number above. We search every product we track at {count} shops, not just the deals.",
     resultsOne: "1 product found for {query}",
     resultsOther: "{count} products found for {query}",
+    tooShort:
+      "Type at least one word or part number of 3 characters or more, such as “lipo” or “trx3655”.",
     truncated:
       "There are more matches. Make your search more specific for a better comparison.",
     none: "Nothing found for {query}. Try a different spelling or just the part number.",

@@ -450,6 +450,8 @@ export const nl = {
     resultsOther: "{count} producten gevonden voor {query}",
     dealsCount: "{count} in de aanbieding",
     foundAt: "Gevonden bij",
+    tooShort:
+      "Typ minstens één woord of artikelnummer van 3 tekens of meer, zoals “lipo” of “trx3655”.",
     truncated:
       "Er zijn meer treffers dan we in één keer doorzoeken. Maak je zoekopdracht specifieker of kies een categorie.",
     none: "Niets gevonden voor {query}. Probeer een andere schrijfwijze, minder woorden of alleen het artikelnummer.",
@@ -472,6 +474,8 @@ export const nl = {
       "Typ hierboven een product, merk of artikelnummer. We zoeken in alle producten die we bij {count} webshops volgen, niet alleen in de aanbiedingen.",
     resultsOne: "1 product gevonden voor {query}",
     resultsOther: "{count} producten gevonden voor {query}",
+    tooShort:
+      "Typ minstens één woord of artikelnummer van 3 tekens of meer, zoals “lipo” of “trx3655”.",
     truncated:
       "Er zijn nog meer treffers. Maak je zoekopdracht specifieker voor een betere vergelijking.",
     none: "Niets gevonden voor {query}. Probeer een andere schrijfwijze of alleen het artikelnummer.",

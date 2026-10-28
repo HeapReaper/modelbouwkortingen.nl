@@ -455,6 +455,8 @@ export const de: Dictionary = {
     resultsOther: "{count} Produkte gefunden für {query}",
     dealsCount: "{count} im Angebot",
     foundAt: "Gefunden bei",
+    tooShort:
+      "Gib mindestens ein Wort oder eine Artikelnummer mit 3 oder mehr Zeichen ein, z. B. „lipo“ oder „trx3655“.",
     truncated:
       "Es gibt mehr Treffer, als wir auf einmal durchsuchen. Formuliere die Suche genauer oder wähle eine Kategorie.",
     none: "Nichts gefunden für {query}. Versuche eine andere Schreibweise, weniger Wörter oder nur die Artikelnummer.",
@@ -477,6 +479,8 @@ export const de: Dictionary = {
       "Gib oben ein Produkt, eine Marke oder eine Artikelnummer ein. Wir durchsuchen alle Produkte, die wir bei {count} Shops beobachten, nicht nur die Angebote.",
     resultsOne: "1 Produkt gefunden für {query}",
     resultsOther: "{count} Produkte gefunden für {query}",
+    tooShort:
+      "Gib mindestens ein Wort oder eine Artikelnummer mit 3 oder mehr Zeichen ein, z. B. „lipo“ oder „trx3655“.",
     truncated:
       "Es gibt noch mehr Treffer. Formuliere deine Suche genauer für einen besseren Vergleich.",
     none: "Nichts gefunden für {query}. Versuche eine andere Schreibweise oder nur die Artikelnummer.",

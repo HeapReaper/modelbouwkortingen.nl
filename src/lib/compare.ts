@@ -3,8 +3,13 @@ import "server-only";
 import { connection } from "next/server";
 import type { Prisma } from "@/generated/prisma/client";
 import type { Locale } from "@/i18n/config";
-import { getPrisma, isDbConfigured, num } from "@/lib/db";
-import { searchNorm, searchTerms, termWhere } from "@/lib/deals";
+import { getPrisma, isDbConfigured, num, searchCache } from "@/lib/db";
+import {
+  hasSearchableTerm,
+  searchNorm,
+  searchTerms,
+  termWhere,
+} from "@/lib/deals";
 import { demoDeals } from "@/lib/demo-data";
 import { localizeDeals } from "@/lib/translate";
 
@@ -101,6 +106,13 @@ export function toOffer(r: Row): Offer {
 }
 
 export const COMPARE_PAGE_SIZE = 24;
+/** Zo lang blijven de treffers van een zoekopdracht bewaard (bladeren, opnieuw sorteren). */
+export const SEARCH_CACHE_MS = 5 * 60_000;
+/**
+ * Zo lang wacht een zoekpagina hooguit op nieuwe vertalingen; de vertaling loopt daarna door en
+ * wordt bewaard, dus de volgende keer staat hij er wel.
+ */
+const SEARCH_TRANSLATE_WAIT_MS = 800;
 
 export type CompareResults = {
   /** Alleen de producten (groepen) van deze pagina. */
@@ -111,7 +123,28 @@ export type CompareResults = {
   /** De getoonde pagina (begrensd op totalPages). */
   page: number;
   truncated: boolean;
+  /** Geen zoekterm van minstens MIN_TERM_LENGTH tekens: niet gezocht. */
+  tooShort: boolean;
 };
+
+const NO_RESULTS: CompareResults = {
+  groups: [],
+  total: 0,
+  totalPages: 0,
+  page: 1,
+  truncated: false,
+  tooShort: false,
+};
+
+/** Producten die we tonen: zichtbaar, van een ingeschakelde shop en onlangs nog gezien. */
+export function searchBase(inStock?: boolean): Prisma.ProductWhereInput {
+  return {
+    hidden: false,
+    shop: { enabled: true },
+    lastSeenAt: { gte: new Date(Date.now() - MAX_AGE_MS) },
+    ...(inStock ? { OR: [{ inStock: true }, { inStock: null }] } : {}),
+  };
+}
 
 export async function comparePrices(
   q: string | undefined,
@@ -125,46 +158,19 @@ export async function comparePrices(
 ): Promise<CompareResults> {
   await connection();
   const terms = searchTerms(q);
-  if (terms.length === 0)
-    return { groups: [], total: 0, totalPages: 0, page: 1, truncated: false };
+  if (terms.length === 0) return NO_RESULTS;
+  if (!hasSearchableTerm(terms)) return { ...NO_RESULTS, tooShort: true };
 
-  let rows: OfferRow[];
-  let truncated = false;
-  let base: Prisma.ProductWhereInput = {};
-  if (!isDbConfigured()) {
-    rows = demoRows(terms, opts.category);
-  } else {
-    const prisma = getPrisma();
-    base = {
-      hidden: false,
-      shop: { enabled: true },
-      lastSeenAt: { gte: new Date(Date.now() - MAX_AGE_MS) },
-      ...(opts.inStock ? { OR: [{ inStock: true }, { inStock: null }] } : {}),
-    };
-    const search = (category: Prisma.ProductWhereInput) =>
-      prisma.product.findMany({
-        select: SELECT,
-        where: { AND: [base, category, ...terms.map(termWhere)] },
-        // id als tiebreaker: bij gelijke prijzen kiest Postgres anders per keer andere rijen.
-        orderBy: [{ price: "asc" }, { id: "asc" }],
-        take: MAX_MATCHES + 1,
-      });
-    const buckets = opts.category
-      ? [await search({ categorySlug: opts.category })]
-      : await Promise.all([
-          search({ categorySlug: { in: MODEL_CATEGORIES } }),
-          search({ categorySlug: { notIn: MODEL_CATEGORIES } }),
-        ]);
-    truncated = buckets.some((b) => b.length > MAX_MATCHES);
-    const found = buckets.flatMap((b) => b.slice(0, MAX_MATCHES));
-
-    // Hetzelfde artikelnummer bij andere shops telt mee voor de sortering op aanbod.
-    const siblings = await siblingRows(base, found, 100);
-    rows = [...found, ...siblings].map((r) => ({
-      sku: r.sku,
-      offer: toOffer(r),
-    }));
-  }
+  const base = searchBase(opts.inStock);
+  // De treffers (zonder sortering of pagina) gaan in de cache: bladeren en opnieuw sorteren
+  // raken de database dan niet.
+  const { rows, truncated } = isDbConfigured()
+    ? await searchCache(
+        `compare:${JSON.stringify([terms, opts.inStock ?? false, opts.category ?? ""])}`,
+        SEARCH_CACHE_MS,
+        () => compareRows(base, terms, opts.category),
+      )
+    : { rows: demoRows(terms, opts.category), truncated: false };
 
   const list = groupOffers(rows);
   list.sort((a, b) =>
@@ -182,7 +188,40 @@ export async function comparePrices(
   );
   if (isDbConfigured()) groups = await withSiblings(base, groups);
   if (opts.lang) groups = await localizeGroups(groups, opts.lang);
-  return { groups, total, totalPages, page, truncated };
+  return { groups, total, totalPages, page, truncated, tooShort: false };
+}
+
+/** De treffers uit de database, plus hetzelfde artikelnummer bij andere shops. */
+async function compareRows(
+  base: Prisma.ProductWhereInput,
+  terms: string[],
+  category: string | undefined,
+): Promise<{ rows: OfferRow[]; truncated: boolean }> {
+  const prisma = getPrisma();
+  const search = (cat: Prisma.ProductWhereInput) =>
+    prisma.product.findMany({
+      select: SELECT,
+      where: { AND: [base, cat, ...terms.map(termWhere)] },
+      // id als tiebreaker: bij gelijke prijzen kiest Postgres anders per keer andere rijen.
+      orderBy: [{ price: "asc" }, { id: "asc" }],
+      take: MAX_MATCHES + 1,
+    });
+  const buckets = category
+    ? [await search({ categorySlug: category })]
+    : await Promise.all([
+        search({ categorySlug: { in: MODEL_CATEGORIES } }),
+        search({ categorySlug: { notIn: MODEL_CATEGORIES } }),
+      ]);
+  const found = buckets.flatMap((b) => b.slice(0, MAX_MATCHES));
+  // Hetzelfde artikelnummer bij andere shops telt mee voor de sortering op aanbod.
+  const siblings = await siblingRows(base, found, 100);
+  return {
+    rows: [...found, ...siblings].map((r) => ({
+      sku: r.sku,
+      offer: toOffer(r),
+    })),
+    truncated: buckets.some((b) => b.length > MAX_MATCHES),
+  };
 }
 
 /**
@@ -216,6 +255,7 @@ export async function localizeGroups(
   const offers = await localizeDeals(
     groups.flatMap((g) => g.offers),
     lang,
+    { waitMs: SEARCH_TRANSLATE_WAIT_MS },
   );
   const byId = new Map(offers.map((o) => [o.id, o]));
   return groups.map((g) => {

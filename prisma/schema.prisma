@@ -65,8 +65,9 @@ model Product {
   skuNorm         String?              @map("sku_norm")
   name            String
   brand           String?
-  /// Naam + merk in kleine letters, alleen a-z en 0-9 (zie searchNorm() in src/lib/deals.ts).
-  /// Door Postgres berekend via een trigger (migratie 20261019220000_search_norm): nooit zelf schrijven.
+  /// Naam + merk + actuele vertalingen in kleine letters, alleen a-z en 0-9 (zie searchNorm() in
+  /// src/lib/deals.ts). Door Postgres berekend via triggers op products en product_translations
+  /// (migraties 20261019220000_search_norm en 20261028200000_search_norm_index): nooit zelf schrijven.
   searchNorm      String?              @map("search_norm")
   imageUrl        String?              @map("image_url")
   categorySlug    String               @default("overig") @map("category_slug")
@@ -112,6 +113,8 @@ model Product {
   @@index([brand(ops: raw("gin_trgm_ops"))], map: "products_brand_trgm_idx", type: Gin)
   /// Voor de prijsvergelijker: zoeken op (een deel van) het artikelnummer.
   @@index([sku(ops: raw("gin_trgm_ops"))], map: "products_sku_trgm_idx", type: Gin)
+  /// Zoeken (termWhere in src/lib/deals.ts): samen met de sku-index de hele zoekterm.
+  @@index([searchNorm(ops: raw("gin_trgm_ops"))], map: "products_search_norm_trgm_idx", type: Gin)
   /// "Ook verkrijgbaar bij": hetzelfde artikelnummer bij andere webshops.
   @@index([skuNorm], map: "products_sku_norm_idx")
   @@index([brand], map: "products_brand_idx")
