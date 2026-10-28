@@ -256,6 +256,8 @@ export const de: Dictionary = {
       "Modellbau-Shop aus Köln mit Flugmodellen, RC-Cars, Schiffen, Fernsteuerungen, Elektronik und Motoren sowie vielen Ersatzteilen und Werkstoffen.",
     metz:
       "Shop aus Singhofen (Rheinland-Pfalz) mit RC-Cars und großem Angebot an Ersatz- und Tuningteilen, u. a. von Traxxas, Arrma und JS-Parts.",
+    rotorama:
+      "FPV-Spezialist aus Prag mit Drohnen, Frames, Motoren, Flightcontrollern, digitalen Videosystemen, Brillen und Akkus.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

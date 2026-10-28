@@ -249,6 +249,8 @@ export const en: Dictionary = {
       "Model shop from Cologne with planes, RC cars, boats, radios, electronics and motors, plus lots of spare parts and building materials.",
     metz:
       "Shop from Singhofen (Rhineland-Palatinate) with RC cars and a large range of spare parts and tuning, including Traxxas, Arrma and JS-Parts.",
+    rotorama:
+      "FPV specialist from Prague with drones, frames, motors, flight controllers, digital video systems, goggles and batteries.",
   },
   deals: {
     outOfStock: "Out of stock",

@@ -46,6 +46,7 @@ import rcraceshopLogo from "@/assets/shops/rcraceshop.png";
 import rcstorealgarveLogo from "@/assets/shops/rcstorealgarve.png";
 import rcteamLogo from "@/assets/shops/rcteam.png";
 import rcypadelLogo from "@/assets/shops/rcypadel.png";
+import rotoramaLogo from "@/assets/shops/rotorama.png";
 import ruddogLogo from "@/assets/shops/ruddog.png";
 import scalercbuzzLogo from "@/assets/shops/scalercbuzz.png";
 import shamrockLogo from "@/assets/shops/shamrock.png";
@@ -758,6 +759,15 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
     language: "de",
+  },
+  {
+    slug: "rotorama",
+    name: "Rotorama",
+    url: "https://www.rotorama.com",
+    domain: "rotorama.com",
+    logo: rotoramaLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "CZ",
   },
 ];
 

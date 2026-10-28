@@ -252,6 +252,8 @@ export const nl = {
       "Modelbouwshop uit Keulen met vliegtuigen, RC-auto's, boten, zenders, elektronica en motoren, plus veel onderdelen en bouwmaterialen.",
     metz:
       "Shop uit Singhofen (Rijnland-Palts) met RC-auto's en een groot aanbod onderdelen en tuning, onder meer van Traxxas, Arrma en JS-Parts.",
+    rotorama:
+      "FPV-specialist uit Praag met drones, frames, motoren, flightcontrollers, digitale videosystemen, brillen en accu's.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",
