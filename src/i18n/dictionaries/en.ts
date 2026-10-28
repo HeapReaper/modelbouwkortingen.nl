@@ -231,6 +231,8 @@ export const en: Dictionary = {
       "Berlin RC car shop with lots of parts and tuning by brand and model (Traxxas, GPM, Hobao, CEN, Corally), plus models and bodies.",
     dedition:
       "German model and toy shop with RC cars, trucks, tanks, planes and boats, plus lots of parts by brand and model.",
+    rckleinkram:
+      "German shop for RC car parts and tuning, with lots of small parts, tyres, bodies and tools for racers.",
   },
   deals: {
     outOfStock: "Out of stock",

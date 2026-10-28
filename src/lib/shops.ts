@@ -33,6 +33,7 @@ import quartelLogo from "@/assets/shops/quartel.png";
 import radiocontrolledshopLogo from "@/assets/shops/radiocontrolledshop.png";
 import rccaronlineLogo from "@/assets/shops/rccaronline.png";
 import rcfoxLogo from "@/assets/shops/rcfox.png";
+import rckleinkramLogo from "@/assets/shops/rckleinkram.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
 import rcnmoreLogo from "@/assets/shops/rcnmore.png";
 import rcproLogo from "@/assets/shops/rcpro.png";
@@ -651,6 +652,15 @@ export const SHOPS: ShopInfo[] = [
     url: "https://www.d-edition.de",
     domain: "d-edition.de",
     logo: deditionLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+  },
+  {
+    slug: "rckleinkram",
+    name: "RC-Kleinkram",
+    url: "https://www.rc-kleinkram.de",
+    domain: "rc-kleinkram.de",
+    logo: rckleinkramLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
   },

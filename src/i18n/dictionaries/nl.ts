@@ -234,6 +234,8 @@ export const nl = {
       "RC-autoshop uit Berlijn met veel onderdelen en tuning per merk en model (Traxxas, GPM, Hobao, CEN, Corally), plus modellen en karosserieën.",
     dedition:
       "Duitse modelbouw- en speelgoedwinkel met RC-auto's, trucks, tanks, vliegtuigen en boten, en veel onderdelen per merk en model.",
+    rckleinkram:
+      "Duitse shop voor RC-auto-onderdelen en tuning, met veel kleine onderdelen, banden, karosserieën en gereedschap voor wedstrijdrijders.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

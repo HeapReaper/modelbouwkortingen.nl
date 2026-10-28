@@ -238,6 +238,8 @@ export const de: Dictionary = {
       "RC-Car-Shop aus Berlin mit vielen Ersatz- und Tuningteilen nach Marke und Modell (Traxxas, GPM, Hobao, CEN, Corally) sowie Modellen und Karosserien.",
     dedition:
       "Modellbau- und Spielwarenhändler mit RC-Autos, Trucks, Panzern, Flugzeugen und Booten sowie vielen Ersatzteilen nach Marke und Modell.",
+    rckleinkram:
+      "Shop für RC-Car-Ersatz- und Tuningteile mit vielen Kleinteilen, Reifen, Karosserien und Werkzeug für Rennfahrer.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
