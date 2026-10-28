@@ -266,6 +266,8 @@ export const de: Dictionary = {
       "Spanischer RC-Shop, vor allem mit Ersatzteilen für Nitro- und Elektro-Cars (Mugen, Xray, Kyosho) sowie Silikonöl, Werkzeug und Elektronik.",
     wartelle:
       "RC-Shop aus Vieux-Condé (Nordfrankreich) mit Autos, Buggys und Crawlern sowie großem Angebot an Ersatz- und Tuningteilen, Akkus und Nitro-Zubehör.",
+    mikado:
+      "Shop des deutschen Herstellers der LOGO-Helikopter und der VBar/VStabi-Flybarless-Elektronik, mit Helis, Ersatzteilen, Rotorblättern und Zubehör.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

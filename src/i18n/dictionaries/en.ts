@@ -259,6 +259,8 @@ export const en: Dictionary = {
       "Spanish RC shop focused on parts for nitro and electric cars (Mugen, Xray, Kyosho), plus silicone oil, tools and electronics.",
     wartelle:
       "RC shop from Vieux-Condé (northern France) with cars, buggies and crawlers and a large range of spare parts, tuning, batteries and nitro accessories.",
+    mikado:
+      "Shop of the German maker of LOGO helicopters and VBar/VStabi flybarless electronics, with helis, spare parts, rotor blades and accessories.",
   },
   deals: {
     outOfStock: "Out of stock",

@@ -27,6 +27,7 @@ import jonathanLogo from "@/assets/shops/jonathan.png";
 import lindingerLogo from "@/assets/shops/lindinger.svg";
 import metzLogo from "@/assets/shops/metz.png";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
+import mikadoLogo from "@/assets/shops/mikado.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
 import modelvigoLogo from "@/assets/shops/modelvigo.png";
 import monsterhopupsLogo from "@/assets/shops/monsterhopups.png";
@@ -811,6 +812,16 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-black",
     country: "FR",
     language: "fr",
+  },
+  {
+    slug: "mikado",
+    name: "Mikado",
+    url: "https://shop.mikado-heli.de",
+    domain: "shop.mikado-heli.de",
+    logo: mikadoLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+    language: "de",
   },
 ];
 

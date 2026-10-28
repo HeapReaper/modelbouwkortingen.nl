@@ -262,6 +262,8 @@ export const nl = {
       "Spaanse RC-shop met vooral onderdelen voor nitro- en elektrische auto's (Mugen, Xray, Kyosho), plus siliconenolie, gereedschap en elektronica.",
     wartelle:
       "RC-shop uit Vieux-Condé (Noord-Frankrijk) met auto's, buggy's en crawlers en een groot aanbod onderdelen, tuning, accu's en nitro-toebehoren.",
+    mikado:
+      "Webshop van de Duitse fabrikant van LOGO-helikopters en VBar/VStabi-flybarless-elektronica, met heli's, onderdelen, rotorbladen en toebehoren.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",
