@@ -252,6 +252,8 @@ export const de: Dictionary = {
       "Spanischer RC-Shop mit Autos (HSP, Team Magic), Booten, Flugzeugen und Helis sowie vielen Ersatzteilen, Akkus, Ladegeräten und Werkzeug.",
     xtremrc:
       "RC-Shop aus Landivisiau (Bretagne) mit Schwerpunkt auf Autos und Ersatzteilen (Traxxas, Team Associated, Xray, Hobbytech) sowie Reifen, Elektronik, Akkus und Pflege.",
+    derkum:
+      "Modellbau-Shop aus Köln mit Flugmodellen, RC-Cars, Schiffen, Fernsteuerungen, Elektronik und Motoren sowie vielen Ersatzteilen und Werkstoffen.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

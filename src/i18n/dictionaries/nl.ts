@@ -248,6 +248,8 @@ export const nl = {
       "Spaanse RC-shop met auto's (HSP, Team Magic), boten, vliegtuigen en heli's, plus veel onderdelen, accu's, laders en gereedschap.",
     xtremrc:
       "RC-winkel uit Landivisiau (Bretagne) met vooral auto's en onderdelen (Traxxas, Team Associated, Xray, Hobbytech), plus banden, elektronica, accu's en onderhoud.",
+    derkum:
+      "Modelbouwshop uit Keulen met vliegtuigen, RC-auto's, boten, zenders, elektronica en motoren, plus veel onderdelen en bouwmaterialen.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

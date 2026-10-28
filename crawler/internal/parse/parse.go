@@ -264,12 +264,88 @@ func jsonldCrumbs(obj map[string]any) []string {
 	return out
 }
 
+// MicrodataProduct leest het eerste schema.org Product dat met microdata is opgemaakt, in
+// dezelfde vorm als een JSON-LD Product.
+func MicrodataProduct(doc *goquery.Document) *JSONLDProduct {
+	item := doc.Find(`[itemtype$="schema.org/Product"]`).First()
+	if item.Length() == 0 {
+		return nil
+	}
+	// itemprop-waarde: content, dan href/src (link, img), dan de tekst.
+	prop := func(s *goquery.Selection, name string) string {
+		el := s.Find(`[itemprop="` + name + `"]`).First()
+		for _, a := range []string{"content", "href", "src"} {
+			if v, ok := el.Attr(a); ok && strings.TrimSpace(v) != "" {
+				return Clean(v)
+			}
+		}
+		return Clean(el.Text())
+	}
+	p := &JSONLDProduct{
+		Name:  prop(item, "name"),
+		SKU:   prop(item, "sku"),
+		Image: prop(item, "image"),
+		URL:   prop(item, "url"),
+	}
+	if brand := item.Find(`[itemprop="brand"]`).First(); brand.Length() > 0 {
+		p.Brand = Clean(firstAttrOrText(brand.Find(`[itemprop="name"]`).First(), brand))
+	}
+	item.Find(`[itemprop="offers"]`).Each(func(_ int, offer *goquery.Selection) {
+		price := Price(prop(offer, "price"))
+		if price == 0 {
+			price = Price(prop(offer, "lowPrice"))
+		}
+		if price > 0 && (p.Price == 0 || price < p.Price) {
+			p.Price = price
+		}
+		if p.Availability == "" {
+			p.Availability = prop(offer, "availability")
+		}
+	})
+	if p.Price == 0 {
+		// Sommige shops zetten de prijs niet binnen het offers-element.
+		p.Price = Price(prop(item, "price"))
+	}
+	if p.Availability == "" {
+		p.Availability = prop(item, "availability")
+	}
+	return p
+}
+
+// firstAttrOrText geeft de content van het eerste element, of anders de tekst van fallback.
+func firstAttrOrText(el, fallback *goquery.Selection) string {
+	if v, ok := el.Attr("content"); ok && v != "" {
+		return v
+	}
+	if t := strings.TrimSpace(el.Text()); t != "" {
+		return t
+	}
+	if v, ok := fallback.Attr("content"); ok {
+		return v
+	}
+	return fallback.Text()
+}
+
 // MicrodataCrumbs leest breadcrumbs die met schema.org microdata zijn opgemaakt.
 func MicrodataCrumbs(doc *goquery.Document) []string {
 	var out []string
 	doc.Find(`[itemtype*="BreadcrumbList"] [itemprop="itemListElement"]`).Each(func(_ int, s *goquery.Selection) {
 		if n := Clean(s.Find(`[itemprop="name"]`).First().Text()); n != "" {
 			out = append(out, n)
+		}
+	})
+	return out
+}
+
+// HTMLCrumbs leest de eerste gewone breadcrumb-lijst (ol/ul met class breadcrumb(s)). Een
+// item zonder tekst (een huisje-icoon) wordt "Home".
+func HTMLCrumbs(doc *goquery.Document) []string {
+	var out []string
+	doc.Find(`ol.breadcrumb, ul.breadcrumb, ol.breadcrumbs, ul.breadcrumbs`).First().Find("li").Each(func(_ int, s *goquery.Selection) {
+		if n := Clean(s.Text()); n != "" {
+			out = append(out, n)
+		} else if len(out) == 0 {
+			out = append(out, "Home")
 		}
 	})
 	return out

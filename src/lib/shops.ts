@@ -8,6 +8,7 @@ import bliekLogo from "@/assets/shops/bliek.png";
 import chinahobbylineLogo from "@/assets/shops/chinahobbyline.png";
 import copterfarmLogo from "@/assets/shops/copterfarm.png";
 import deditionLogo from "@/assets/shops/dedition.png";
+import derkumLogo from "@/assets/shops/derkum.png";
 import dmtLogo from "@/assets/shops/dmt.png";
 import dronefpvracerLogo from "@/assets/shops/dronefpvracer.png";
 import droneshopLogo from "@/assets/shops/droneshop.png";
@@ -736,6 +737,16 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "FR",
     language: "fr",
+  },
+  {
+    slug: "derkum",
+    name: "Derkum Modellbau",
+    url: "https://www.derkum-modellbau.com",
+    domain: "derkum-modellbau.com",
+    logo: derkumLogo,
+    logoBg: "bg-black",
+    country: "DE",
+    language: "de",
   },
 ];
 

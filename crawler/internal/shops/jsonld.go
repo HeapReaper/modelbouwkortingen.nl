@@ -14,7 +14,7 @@ import (
 )
 
 // Gedeelde aanpak voor shops zonder bruikbare feed of listings: de productpagina's komen uit
-// de XML-sitemap en de gegevens uit het schema.org Product-blok (JSON-LD) op de pagina. De
+// de XML-sitemap en de gegevens uit het schema.org Product-blok (JSON-LD of microdata). De
 // runner bezoekt per ronde hooguit CRAWLER_MAX_PRODUCT_PAGES productpagina's; bij grotere shops
 // is niet elk product elke ronde aan de beurt.
 
@@ -36,12 +36,25 @@ func ldSitemapProducts(ctx context.Context, f *fetch.Fetcher, sitemapURL string,
 	return out, nil
 }
 
-// ldParseProduct leest een productpagina met een JSON-LD Product. idRe haalt het product-id
-// uit de (canonieke) URL (groep 1); zonder idRe of zonder match is het id de SKU, of anders
-// het pad van de URL. De eerste breadcrumb ("Home") en een laatste die de productnaam is
-// vallen weg.
+// ldParseProduct leest een productpagina met een JSON-LD Product, of anders schema.org-
+// microdata. idRe haalt het product-id uit de (canonieke) URL (groep 1); zonder idRe of zonder
+// match is het id de SKU, of anders het pad van de URL. De eerste breadcrumb ("Home") en een
+// laatste die de productnaam is vallen weg. Zonder JSON-LD- of microdata-breadcrumbs gebruiken we
+// de gewone breadcrumb-lijst van de pagina.
 func ldParseProduct(pageURL string, doc *goquery.Document, idRe *regexp.Regexp) *parse.Product {
 	ld, crumbs := parse.JSONLD(doc)
+	if ld == nil || ld.Price == 0 {
+		// Geen (bruikbaar) JSON-LD: probeer schema.org-microdata.
+		if md := parse.MicrodataProduct(doc); md != nil && md.Price > 0 {
+			ld = md
+		}
+	}
+	if len(crumbs) == 0 {
+		crumbs = parse.MicrodataCrumbs(doc)
+	}
+	if len(crumbs) == 0 {
+		crumbs = parse.HTMLCrumbs(doc)
+	}
 	if ld == nil || ld.Price == 0 || ld.Name == "" {
 		return nil
 	}
@@ -75,7 +88,12 @@ func ldParseProduct(pageURL string, doc *goquery.Document, idRe *regexp.Regexp) 
 			p.ExternalID = strings.Trim(u.Path, "/")
 		}
 	}
-	// Een @id-verwijzing ("#primaryimage") is geen afbeelding.
+	// Een @id-verwijzing ("#primaryimage") is geen afbeelding; een pad wel.
+	if strings.HasPrefix(p.ImageURL, "/") {
+		if u, err := url.Parse(link); err == nil {
+			p.ImageURL = parse.AbsURL(u.Scheme+"://"+u.Host, p.ImageURL)
+		}
+	}
 	if !strings.HasPrefix(p.ImageURL, "http") {
 		p.ImageURL = parse.MetaContent(doc, "og:image")
 	}

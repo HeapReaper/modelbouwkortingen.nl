@@ -50,3 +50,48 @@ func TestJSONLDProductsItemList(t *testing.T) {
 		t.Errorf("second product = %+v", products[1])
 	}
 }
+
+func TestMicrodataProduct(t *testing.T) {
+	html := `<div itemscope itemtype="https://schema.org/Product">
+		<h1 itemprop="name">Servo DS-1</h1><span itemprop="sku">DS1</span>
+		<div itemprop="brand" itemscope itemtype="https://schema.org/Brand"><meta itemprop="name" content="Savox"></div>
+		<img itemprop="image" src="https://x/s.jpg">
+		<div itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+			<span itemprop="price" content="49.95">49,95 €</span>
+			<link itemprop="availability" href="https://schema.org/InStock">
+		</div></div>`
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := MicrodataProduct(doc)
+	if p == nil || p.Name != "Servo DS-1" || p.SKU != "DS1" || p.Brand != "Savox" || p.Image != "https://x/s.jpg" ||
+		p.Price != 49.95 || p.Availability != "https://schema.org/InStock" {
+		t.Errorf("MicrodataProduct = %+v", p)
+	}
+}
+
+func TestMicrodataProductItemAvailability(t *testing.T) {
+	html := `<div itemscope itemtype="http://schema.org/Product"><span itemprop="name">Akku</span>
+		<div itemprop="offers" itemscope itemtype="http://schema.org/Offer"><span itemprop="price">11.95</span></div>
+		<link itemprop="availability" content="OutOfStock" href="http://schema.org/OutOfStock"></div>`
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p := MicrodataProduct(doc); p == nil || p.Price != 11.95 || p.Availability != "OutOfStock" {
+		t.Errorf("MicrodataProduct = %+v", p)
+	}
+}
+
+func TestHTMLCrumbs(t *testing.T) {
+	html := `<ol class="breadcrumb"><li><a href="/"><i class="fa fa-home"></i></a></li>
+		<li><a href="/motors">Motors</a></li><li><a href="/motors/11">11XX-20XX</a></li></ol>`
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := strings.Join(HTMLCrumbs(doc), " | "); got != "Home | Motors | 11XX-20XX" {
+		t.Errorf("HTMLCrumbs = %q", got)
+	}
+}

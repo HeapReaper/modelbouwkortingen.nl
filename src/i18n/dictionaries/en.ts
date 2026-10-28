@@ -245,6 +245,8 @@ export const en: Dictionary = {
       "Spanish RC shop with cars (HSP, Team Magic), boats, planes and helis, plus lots of parts, batteries, chargers and tools.",
     xtremrc:
       "RC shop from Landivisiau (Brittany) focused on cars and parts (Traxxas, Team Associated, Xray, Hobbytech), plus tyres, electronics, batteries and maintenance.",
+    derkum:
+      "Model shop from Cologne with planes, RC cars, boats, radios, electronics and motors, plus lots of spare parts and building materials.",
   },
   deals: {
     outOfStock: "Out of stock",
