@@ -591,6 +591,7 @@ export const SHOPS: ShopInfo[] = [
     logo: monsterhopupsLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "ghw",
@@ -600,6 +601,7 @@ export const SHOPS: ShopInfo[] = [
     logo: ghwLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "rcfox",
@@ -609,6 +611,7 @@ export const SHOPS: ShopInfo[] = [
     logo: rcfoxLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "ruddog",
@@ -618,6 +621,7 @@ export const SHOPS: ShopInfo[] = [
     logo: ruddogLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "shamrock",
@@ -636,6 +640,7 @@ export const SHOPS: ShopInfo[] = [
     logo: bauerLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "rcraceshop",
@@ -645,6 +650,7 @@ export const SHOPS: ShopInfo[] = [
     logo: rcraceshopLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "dedition",
@@ -654,6 +660,7 @@ export const SHOPS: ShopInfo[] = [
     logo: deditionLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
   {
     slug: "rckleinkram",
@@ -663,6 +670,7 @@ export const SHOPS: ShopInfo[] = [
     logo: rckleinkramLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
   },
 ];
 
