@@ -24,6 +24,11 @@ import { CATEGORIES } from "@/lib/categories";
 import { SHOPS } from "@/lib/shops";
 import { cn } from "@/lib/utils";
 
+/** Alfabetisch in het menu, zodat je een webshop snel vindt. */
+const SORTED_SHOPS = [...SHOPS].sort((a, b) =>
+  a.name.localeCompare(b.name, "nl", { sensitivity: "base" }),
+);
+
 export default function Navbar() {
   const { dict, href } = useI18n();
   return (
@@ -84,7 +89,7 @@ export default function Navbar() {
           <NavigationMenuItem>
             <NavigationMenuTrigger className="text-base">{dict.nav.shops}</NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="grid w-[40rem] grid-cols-2 gap-1 p-2">
+              <ul className="grid max-h-[calc(100dvh-6rem)] w-[40rem] grid-cols-2 gap-1 overflow-y-auto p-2">
                 <li>
                   <NavigationMenuLink
                     render={
@@ -103,7 +108,7 @@ export default function Navbar() {
                     }
                   />
                 </li>
-                {SHOPS.map((s) => (
+                {SORTED_SHOPS.map((s) => (
                   <li key={s.slug}>
                     <NavigationMenuLink
                       render={
