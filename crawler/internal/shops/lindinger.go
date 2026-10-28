@@ -26,6 +26,9 @@ import (
 //   - Overgeslagen: de merken-, landingspagina-, sale- en neuhedenbomen (dubbel), en uit
 //     Bauzubehör: boeken, cadeaubonnen, cursussen, reclameartikelen en plastic standmodellen.
 //   - Listings zonder bestelknop (B-Ware) slaan we over: die kaarten hebben geen product-UUID.
+//   - Voorraad: de schema.org-availability klopt niet ("Nur noch wenige auf Lager" staat als
+//     InStock, "Vorbestellung möglich. Nicht lagernd." als LimitedAvailability). We lezen de
+//     tooltip van het statusbolletje en tellen alleen "Auf Lager. ..." als op voorraad.
 //   - Productpagina's bezoeken we niet: ze zijn ~770 KB per product, en het Acris-thema laat
 //     daar de standaard-opmaak (h1.product-detail-name, prijscontainer) weg.
 type Lindinger struct{}
@@ -67,7 +70,7 @@ func (s *Lindinger) Discover(ctx context.Context, f *fetch.Fetcher) ([]string, [
 var lindingerPathRe = regexp.MustCompile(`/de/(.+)/[^/]+/\d+$`)
 
 func (s *Lindinger) ParseListing(pageURL string, doc *goquery.Document) ([]parse.Product, string) {
-	products, next := sw6ParseListing(pageURL, doc)
+	products, next := sw6ParseListing(pageURL, doc, lindingerInStock)
 	// De listing-breadcrumbs zijn maar twee niveaus diep ("RC-Flugzeuge | ...-Antriebe"); het
 	// pad in de product-URL is preciezer (".../Luftschrauben") en houdt propellers bij onderdelen.
 	for i := range products {
@@ -76,6 +79,16 @@ func (s *Lindinger) ParseListing(pageURL string, doc *goquery.Document) ([]parse
 		}
 	}
 	return products, next
+}
+
+// lindingerInStock leest de tooltip van het statusbolletje (zie boven).
+func lindingerInStock(card *goquery.Selection) *bool {
+	title := strings.TrimSpace(attr(card.Find(".delivery-status-indicator[title]").First(), "title"))
+	if title == "" {
+		return parse.Availability(attr(card.Find(`[itemprop="availability"]`).First(), "href"))
+	}
+	in := strings.HasPrefix(title, "Auf Lager")
+	return &in
 }
 
 func (s *Lindinger) ParseProduct(pageURL string, doc *goquery.Document) *parse.Product {

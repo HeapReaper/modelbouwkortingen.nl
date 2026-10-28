@@ -18,7 +18,13 @@ import (
 //   - Productpagina's hebben schema.org-microdata: productID (dezelfde UUID), sku, prijs,
 //     availability en BreadcrumbList.
 
-func sw6ParseListing(pageURL string, doc *goquery.Document) ([]parse.Product, string) {
+// inStock bepaalt de voorraadstatus van een kaart; nil gebruikt de schema.org-availability.
+func sw6ParseListing(pageURL string, doc *goquery.Document, inStock func(card *goquery.Selection) *bool) ([]parse.Product, string) {
+	if inStock == nil {
+		inStock = func(card *goquery.Selection) *bool {
+			return parse.Availability(attr(card.Find(`[itemprop="availability"]`).First(), "href"))
+		}
+	}
 	hint := strings.Join(parse.MicrodataCrumbs(doc), " | ")
 	var out []parse.Product
 	doc.Find(".card.product-box").Each(func(_ int, card *goquery.Selection) {
@@ -34,7 +40,7 @@ func sw6ParseListing(pageURL string, doc *goquery.Document) ([]parse.Product, st
 			Brand:        attr(card.Find(`input[name="brand-name"]`).First(), "value"),
 			ImageURL:     stripQuery(imgSrc(card.Find("img.product-image").First())),
 			Price:        parse.Price(cur.Text()),
-			InStock:      parse.Availability(attr(card.Find(`[itemprop="availability"]`).First(), "href")),
+			InStock:      inStock(card),
 			CategoryHint: hint,
 		}
 		if old > p.Price {
