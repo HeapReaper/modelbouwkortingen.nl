@@ -276,6 +276,8 @@ export const de: Dictionary = {
       "RC-Shop aus Novara mit Helikoptern, Flugzeugen, Drohnen und Autos sowie vielen Ersatzteilen (u. a. Align und DJI), Servos und Elektronik.",
     mcmracing:
       "Großer RC-Shop aus Huizingen mit Autos, Helis, Flugzeugen, Booten und Drohnen sowie riesiger Ersatzteilauswahl, u. a. von Traxxas, Team Associated, Hudy und Schumacher.",
+    verspaget:
+      "Modellbaugeschäft aus Eindhoven mit RC-Cars, Flugzeugen, Bausätzen (Tamiya, Italeri, Artesania Latina), Farben, Balsa und vielen Ersatzteilen.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

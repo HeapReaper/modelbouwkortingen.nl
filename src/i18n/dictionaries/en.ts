@@ -269,6 +269,8 @@ export const en: Dictionary = {
       "RC shop from Novara with helicopters, planes, drones and cars, plus lots of spare parts (including Align and DJI), servos and electronics.",
     mcmracing:
       "Large RC shop from Huizingen with cars, helis, planes, boats and drones and a huge range of spare parts from Traxxas, Team Associated, Hudy, Schumacher and more.",
+    verspaget:
+      "Model shop from Eindhoven with RC cars, planes, kits (Tamiya, Italeri, Artesania Latina), paint, balsa and lots of spare parts.",
   },
   deals: {
     outOfStock: "Out of stock",

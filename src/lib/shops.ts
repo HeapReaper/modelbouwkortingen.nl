@@ -73,6 +73,7 @@ import tormodelLogo from "@/assets/shops/tormodel.png";
 import trxxsLogo from "@/assets/shops/trxxs.png";
 import ttmodelismoLogo from "@/assets/shops/ttmodelismo.png";
 import turbohobbyLogo from "@/assets/shops/turbohobby.png";
+import verspagetLogo from "@/assets/shops/verspaget.png";
 import voltmasterLogo from "@/assets/shops/voltmaster.svg";
 import wartelleLogo from "@/assets/shops/wartelle.png";
 import wetronicLogo from "@/assets/shops/wetronic.png";
@@ -862,6 +863,15 @@ export const SHOPS: ShopInfo[] = [
     logo: mcmracingLogo,
     logoBg: "bg-black",
     country: "BE",
+  },
+  {
+    slug: "verspaget",
+    name: "Verspaget Modelbouw",
+    url: "https://www.verspaget.nl",
+    domain: "verspaget.nl",
+    logo: verspagetLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "NL",
   },
 ];
 

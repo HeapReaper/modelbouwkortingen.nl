@@ -272,6 +272,8 @@ export const nl = {
       "RC-shop uit Novara met helikopters, vliegtuigen, drones en auto's, plus veel onderdelen (onder meer Align en DJI), servo's en elektronica.",
     mcmracing:
       "Grote RC-shop uit Huizingen met auto's, heli's, vliegtuigen, boten en drones en een zeer groot aanbod onderdelen van onder meer Traxxas, Team Associated, Hudy en Schumacher.",
+    verspaget:
+      "Modelbouwwinkel uit Eindhoven met RC-auto's, vliegtuigen, bouwdozen (Tamiya, Italeri, Artesania Latina), verf, balsa en veel onderdelen.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",
