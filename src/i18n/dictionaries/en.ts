@@ -243,6 +243,8 @@ export const en: Dictionary = {
       "Dutch maker of laser-cut RC plane kits (scale, warbirds, vintage), with building plans and accessories.",
     turbohobby:
       "Spanish RC shop with cars (HSP, Team Magic), boats, planes and helis, plus lots of parts, batteries, chargers and tools.",
+    xtremrc:
+      "RC shop from Landivisiau (Brittany) focused on cars and parts (Traxxas, Team Associated, Xray, Hobbytech), plus tyres, electronics, batteries and maintenance.",
   },
   deals: {
     outOfStock: "Out of stock",

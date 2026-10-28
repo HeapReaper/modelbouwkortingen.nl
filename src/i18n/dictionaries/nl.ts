@@ -246,6 +246,8 @@ export const nl = {
       "Nederlandse maker van lasergesneden bouwpakketten voor RC-vliegtuigen (scale, warbirds, vintage), met bouwtekeningen en toebehoren.",
     turbohobby:
       "Spaanse RC-shop met auto's (HSP, Team Magic), boten, vliegtuigen en heli's, plus veel onderdelen, accu's, laders en gereedschap.",
+    xtremrc:
+      "RC-winkel uit Landivisiau (Bretagne) met vooral auto's en onderdelen (Traxxas, Team Associated, Xray, Hobbytech), plus banden, elektronica, accu's en onderhoud.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

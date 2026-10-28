@@ -64,6 +64,7 @@ import ttmodelismoLogo from "@/assets/shops/ttmodelismo.png";
 import turbohobbyLogo from "@/assets/shops/turbohobby.png";
 import voltmasterLogo from "@/assets/shops/voltmaster.svg";
 import wetronicLogo from "@/assets/shops/wetronic.png";
+import xtremrcLogo from "@/assets/shops/xtremrc.png";
 
 /** Talen van productnamen die we vertalen. */
 export type SourceLanguage = "de" | "fr" | "es" | "it" | "pt";
@@ -725,6 +726,16 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "ES",
     language: "es",
+  },
+  {
+    slug: "xtremrc",
+    name: "XtremRC",
+    url: "https://www.xtremrc.com",
+    domain: "xtremrc.com",
+    logo: xtremrcLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "FR",
+    language: "fr",
   },
 ];
 

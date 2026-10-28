@@ -250,6 +250,8 @@ export const de: Dictionary = {
       "Niederländischer Hersteller von gelaserten RC-Flugzeugbausätzen (Scale, Warbirds, Vintage) mit Bauplänen und Zubehör.",
     turbohobby:
       "Spanischer RC-Shop mit Autos (HSP, Team Magic), Booten, Flugzeugen und Helis sowie vielen Ersatzteilen, Akkus, Ladegeräten und Werkzeug.",
+    xtremrc:
+      "RC-Shop aus Landivisiau (Bretagne) mit Schwerpunkt auf Autos und Ersatzteilen (Traxxas, Team Associated, Xray, Hobbytech) sowie Reifen, Elektronik, Akkus und Pflege.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
