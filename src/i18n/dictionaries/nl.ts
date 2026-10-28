@@ -230,6 +230,8 @@ export const nl = {
       "Modelbouwwinkel in Maastricht (sinds 1972) met RC-auto's en veel onderdelen (Traxxas, Tamiya, Kyosho, Arrma, HPI), plus vliegtuigen, boten, accu's en zenders.",
     bauer:
       "Duitse specialist in RC-schepen: bouwdozen, beslag, schroeven en asaandrijvingen, plus motoren, regelaars, verlichting en materialen.",
+    rcraceshop:
+      "RC-autoshop uit Berlijn met veel onderdelen en tuning per merk en model (Traxxas, GPM, Hobao, CEN, Corally), plus modellen en karosserieën.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

@@ -35,6 +35,7 @@ import rcfoxLogo from "@/assets/shops/rcfox.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
 import rcnmoreLogo from "@/assets/shops/rcnmore.png";
 import rcproLogo from "@/assets/shops/rcpro.png";
+import rcraceshopLogo from "@/assets/shops/rcraceshop.png";
 import rcstorealgarveLogo from "@/assets/shops/rcstorealgarve.png";
 import rcteamLogo from "@/assets/shops/rcteam.png";
 import rcypadelLogo from "@/assets/shops/rcypadel.png";
@@ -631,6 +632,15 @@ export const SHOPS: ShopInfo[] = [
     url: "https://www.bauer-modelle.com",
     domain: "bauer-modelle.com",
     logo: bauerLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+  },
+  {
+    slug: "rcraceshop",
+    name: "RC-Race-Shop",
+    url: "https://www.rc-race-shop.de",
+    domain: "rc-race-shop.de",
+    logo: rcraceshopLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
   },

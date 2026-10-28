@@ -234,6 +234,8 @@ export const de: Dictionary = {
       "Modellbauladen in Maastricht (seit 1972) mit RC-Autos und vielen Ersatzteilen (Traxxas, Tamiya, Kyosho, Arrma, HPI) sowie Flugzeugen, Booten, Akkus und Fernsteuerungen.",
     bauer:
       "Spezialist für RC-Schiffsmodelle: Baukästen, Beschlagteile, Propeller und Wellenantriebe sowie Motoren, Regler, Beleuchtung und Werkstoffe.",
+    rcraceshop:
+      "RC-Car-Shop aus Berlin mit vielen Ersatz- und Tuningteilen nach Marke und Modell (Traxxas, GPM, Hobao, CEN, Corally) sowie Modellen und Karosserien.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

@@ -127,22 +127,37 @@ func sw6NextPage(pageURL string, doc *goquery.Document) string {
 }
 
 func sw6ParseProduct(pageURL string, doc *goquery.Document) *parse.Product {
-	id := attr(doc.Find(`meta[itemprop="productID"]`).First(), "content")
+	// Sommige thema's laten de microdata weg; dan lezen we de buybox en de meta-tags.
+	form := doc.Find("#productDetailPageBuyProductForm").First()
+	id := firstNonEmpty(
+		attr(doc.Find(`meta[itemprop="productID"]`).First(), "content"),
+		attr(form.Find(`input[name^="lineItems["][name$="][id]"]`).First(), "value"),
+	)
 	box := doc.Find(".product-detail-price-container").First()
 	if id == "" || box.Length() == 0 {
 		return nil
 	}
 	crumbs := parse.MicrodataCrumbs(doc)
+	if len(crumbs) == 0 {
+		doc.Find("ol.breadcrumb .breadcrumb-title").Each(func(_ int, t *goquery.Selection) {
+			if c := parse.Clean(t.Text()); c != "" {
+				crumbs = append(crumbs, c)
+			}
+		})
+	}
 	p := &parse.Product{
 		ExternalID:  id,
 		URL:         firstNonEmpty(parse.Canonical(doc), stripQuery(pageURL)),
 		Name:        parse.Clean(doc.Find("h1.product-detail-name").First().Text()),
-		SKU:         parse.Clean(doc.Find(`[itemprop="sku"]`).First().Text()),
-		Brand:       attr(doc.Find(`[itemprop="brand"] meta[itemprop="name"]`).First(), "content"),
+		SKU:         parse.Clean(firstNonEmpty(doc.Find(`[itemprop="sku"]`).First().Text(), doc.Find(".product-detail-ordernumber").First().Text())),
+		Brand:       firstNonEmpty(attr(doc.Find(`[itemprop="brand"] meta[itemprop="name"]`).First(), "content"), parse.MetaContent(doc, "product:brand")),
 		ImageURL:    stripQuery(parse.MetaContent(doc, "og:image")),
-		Price:       parse.Price(attr(box.Find(`meta[itemprop="price"]`).First(), "content")),
+		Price:       parse.Price(firstNonEmpty(attr(box.Find(`meta[itemprop="price"]`).First(), "content"), parse.MetaContent(doc, "product:price:amount"))),
 		InStock:     parse.Availability(attr(doc.Find(`link[itemprop="availability"]`).First(), "href")),
 		Breadcrumbs: crumbs,
+	}
+	if p.InStock == nil {
+		p.InStock = sw6DeliveryStatus(doc.Find(".delivery-information").First())
 	}
 	if old := parse.Price(box.Find(".list-price-price").First().Text()); old > p.Price {
 		p.OldPrice = old
@@ -151,4 +166,15 @@ func sw6ParseProduct(pageURL string, doc *goquery.Document) *parse.Product {
 		return nil
 	}
 	return p
+}
+
+// sw6DeliveryStatus leest de levertijd-regel van de buybox: delivery-available is op voorraad;
+// delivery-restock ("Versandfertig in N Tagen"), -soldout en -preorder niet.
+func sw6DeliveryStatus(s *goquery.Selection) *bool {
+	class := attr(s, "class")
+	if !strings.Contains(class, "delivery-") {
+		return nil
+	}
+	in := strings.Contains(class, "delivery-available")
+	return &in
 }
