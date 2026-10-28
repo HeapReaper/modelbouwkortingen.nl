@@ -6,6 +6,7 @@ import (
 	"html"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/fetch"
 	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
@@ -25,9 +26,14 @@ import (
 
 const psPageSize = 100
 
-// psFeed is de JSON-listing van een categorie (zonder page).
+// psFeed is de JSON-listing van een categorie (zonder page). Zonder vriendelijke URL's is de
+// categorie /index.php?id_category=2&controller=category.
 func psFeed(categoryURL string) string {
-	return categoryURL + "?ajax=1&resultsPerPage=" + strconv.Itoa(psPageSize)
+	sep := "?"
+	if strings.Contains(categoryURL, "?") {
+		sep = "&"
+	}
+	return categoryURL + sep + "ajax=1&resultsPerPage=" + strconv.Itoa(psPageSize)
 }
 
 type psListing struct {

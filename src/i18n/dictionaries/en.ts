@@ -201,6 +201,18 @@ export const en: Dictionary = {
       "Portuguese RC store in the Algarve with electric and nitro cars, crawlers, parts, batteries and electronics, plus lots of paint and tools.",
     myrcpitstop:
       "Cypriot RC store in Nicosia with lots of Traxxas parts, plus Sworkz, Xray, Hudy, bearings, pinions, batteries and electronics.",
+    radiocontrolledshop:
+      "Irish RC store in Dublin with lots of parts for helis (Align, Blade), drones (DJI) and cars, plus batteries, chargers, cables and propellers.",
+    helygo:
+      "Italian RC store with cars, crawlers, planes and helis, plus lots of parts, servos, LiPos, transmitters and tools.",
+    todohobby:
+      "Spanish hobby store with RC cars, planes, drones and boats, glow engines and turbines, plus parts, batteries and tools.",
+    rcpro:
+      "Large Spanish RC car store with Traxxas, Absima, Team Associated and Losi, plus lots of parts, tyres, bodies, electronics and batteries.",
+    tormodel:
+      "Spanish model aircraft store with Dynam and Volantex planes, heli parts, propellers, motors, servos, batteries and building supplies.",
+    hobby351:
+      "Portuguese RC car store for racers with Mugen, Ruddog, tyres, parts, tools and electronics.",
   },
   deals: {
     outOfStock: "Out of stock",

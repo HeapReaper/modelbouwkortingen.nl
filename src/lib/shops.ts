@@ -12,7 +12,9 @@ import ercLogo from "@/assets/shops/erc.png";
 import flashrcLogo from "@/assets/shops/flashrc.svg";
 import hackerLogo from "@/assets/shops/hacker.png";
 import heligearLogo from "@/assets/shops/heligear.png";
+import helygoLogo from "@/assets/shops/helygo.png";
 import hepfLogo from "@/assets/shops/hepf.svg";
+import hobby351Logo from "@/assets/shops/hobby351.png";
 import hobbykingLogo from "@/assets/shops/hobbyking.svg";
 import hoelleinLogo from "@/assets/shops/hoellein.png";
 import lindingerLogo from "@/assets/shops/lindinger.svg";
@@ -23,9 +25,11 @@ import myrcpitstopLogo from "@/assets/shops/myrcpitstop.png";
 import nfactoryLogo from "@/assets/shops/nfactory.png";
 import originhobbiesLogo from "@/assets/shops/originhobbies.png";
 import premiummodellbauLogo from "@/assets/shops/premiummodellbau.png";
+import radiocontrolledshopLogo from "@/assets/shops/radiocontrolledshop.png";
 import rccaronlineLogo from "@/assets/shops/rccaronline.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
 import rcnmoreLogo from "@/assets/shops/rcnmore.png";
+import rcproLogo from "@/assets/shops/rcpro.png";
 import rcstorealgarveLogo from "@/assets/shops/rcstorealgarve.png";
 import rcteamLogo from "@/assets/shops/rcteam.png";
 import rcypadelLogo from "@/assets/shops/rcypadel.png";
@@ -37,8 +41,10 @@ import speelgoedenmodelbouwLogo from "@/assets/shops/speelgoedenmodelbouw.png";
 import stormrcLogo from "@/assets/shops/stormrc.png";
 import tamicoLogo from "@/assets/shops/tamico.png";
 import theborderLogo from "@/assets/shops/theborder.png";
+import todohobbyLogo from "@/assets/shops/todohobby.png";
 import toemenLogo from "@/assets/shops/toemen.png";
 import toprcLogo from "@/assets/shops/toprc.svg";
+import tormodelLogo from "@/assets/shops/tormodel.png";
 import trxxsLogo from "@/assets/shops/trxxs.png";
 import ttmodelismoLogo from "@/assets/shops/ttmodelismo.png";
 import voltmasterLogo from "@/assets/shops/voltmaster.svg";
@@ -498,6 +504,65 @@ export const SHOPS: ShopInfo[] = [
     logo: myrcpitstopLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "CY",
+  },
+  {
+    slug: "radiocontrolledshop",
+    name: "Radio Controlled Shop",
+    url: "https://www.radiocontrolledshop.ie",
+    domain: "radiocontrolledshop.ie",
+    logo: radiocontrolledshopLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "IE",
+  },
+  {
+    slug: "helygo",
+    name: "Hely-Go!",
+    url: "https://hely-go.net",
+    domain: "hely-go.net",
+    logo: helygoLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "IT",
+    language: "it",
+  },
+  {
+    slug: "todohobby",
+    name: "TodoHobby",
+    url: "https://todohobby.net",
+    domain: "todohobby.net",
+    logo: todohobbyLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "ES",
+    language: "es",
+  },
+  {
+    slug: "rcpro",
+    name: "RC-Pro",
+    url: "https://www.rc-pro.es",
+    domain: "rc-pro.es",
+    logo: rcproLogo,
+    logoBg: "bg-black",
+    country: "ES",
+    language: "es",
+  },
+  {
+    slug: "tormodel",
+    name: "Tormodel",
+    url: "https://www.tormodel.com",
+    domain: "tormodel.com",
+    logo: tormodelLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "ES",
+    language: "es",
+  },
+  {
+    slug: "hobby351",
+    name: "Hobby351",
+    url: "https://hobby351.com",
+    domain: "hobby351.com",
+    logo: hobby351Logo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "PT",
+    language: "pt",
   },
 ];
 

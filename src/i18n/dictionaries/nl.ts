@@ -204,6 +204,18 @@ export const nl = {
       "Portugese RC-winkel in de Algarve met elektrische en nitro-auto's, crawlers, onderdelen, accu's en elektronica, plus veel verf en gereedschap.",
     myrcpitstop:
       "Cypriotische RC-winkel in Nicosia met veel Traxxas-onderdelen, plus Sworkz, Xray, Hudy, lagers, pinions, accu's en elektronica.",
+    radiocontrolledshop:
+      "Ierse RC-winkel in Dublin met veel onderdelen voor heli's (Align, Blade), drones (DJI) en auto's, plus accu's, laders, kabels en propellers.",
+    helygo:
+      "Italiaanse RC-winkel met auto's, crawlers, vliegtuigen en heli's, plus veel onderdelen, servo's, lipo's, zenders en gereedschap.",
+    todohobby:
+      "Spaanse hobbywinkel met RC-auto's, vliegtuigen, drones en boten, verbrandingsmotoren en turbines, plus onderdelen, accu's en gereedschap.",
+    rcpro:
+      "Grote Spaanse RC-autowinkel met Traxxas, Absima, Team Associated en Losi, plus veel onderdelen, banden, carrosserieën, elektronica en accu's.",
+    tormodel:
+      "Spaanse modelvliegwinkel met Dynam- en Volantex-vliegtuigen, heli-onderdelen, propellers, motoren, servo's, accu's en bouwbenodigdheden.",
+    hobby351:
+      "Portugese RC-autowinkel voor wedstrijdrijders met Mugen, Ruddog, banden, onderdelen, gereedschap en elektronica.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

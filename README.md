@@ -4,7 +4,7 @@
 > [Claude Code](https://claude.com/claude-code), en daarna door een mens nagekeken, getest en
 > uitgerold.
 
-Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 44 Nederlandse, Belgische, Duitse,
+Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 50 Nederlandse, Belgische, Duitse,
 Franse en andere modelbouw-webshops (zie [Crawler](#crawler)). Is een product **minstens €5 of 5%** afgeprijsd, dan
 komt het op de website (Next.js 16 + shadcn/ui).
 
@@ -294,6 +294,12 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | Smart Modelismo (PT) | WooCommerce | geen: alleen de Store API (Crawl-delay 5s) | `/wp-json/wc/store/v1/products?per_page=100` (~128 requests); statische modelbouw, educatief speelgoed, 3D-printen en brandstof worden overgeslagen |
 | RC Store Algarve (PT) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~17 requests); statische modelbouw, speelgoed (Hot Wheels, LEGO) en brandstof worden overgeslagen; "Aviões e Helicópteros" telt niet mee voor de indeling |
 | MyRCPitstop (CY) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~12 requests); de merkcategorieën ("Traxxas RC Cars & Parts") tellen niet mee voor de indeling, cadeaubonnen, brandstof en gebruikte auto's worden overgeslagen |
+| Radio Controlled Shop (IE) | PrestaShop | geen: alleen de JSON-listing | hoofdcategorie `/2-home?ajax=1&resultsPerPage=100` (~60 requests); gebruikte producten en bouwmaterialen worden overgeslagen |
+| Hely-Go! (IT) | PrestaShop | geen: alleen de JSON-listing (Crawl-delay 5s) | hoofdcategorie `/2-categorie?ajax=1&resultsPerPage=100` (~60 requests); zonder categorie in de JSON, de indeling komt uit de URL en de naam |
+| TodoHobby (ES) | PrestaShop | geen: alleen de JSON-listing | hoofdcategorie `/es/2-inicio?ajax=1&resultsPerPage=100` (~131 requests); poppenhuizen, puzzels, decoratie, speelgoed, statische modelbouw, darts en kleding worden overgeslagen (op categorie en op URL) |
+| RC-Pro (ES) | PrestaShop | geen: alleen de JSON-listing (Crawl-delay 2s) | hoofdcategorie `/index.php?id_category=2&controller=category&ajax=1&resultsPerPage=100` (~534 requests); die-cast wordt overgeslagen |
+| Tormodel (ES) | PrestaShop | geen: alleen de JSON-listing | hoofdcategorie `/2-inicio?ajax=1&resultsPerPage=100` (~35 requests); statische replica's, hout en brandstof worden overgeslagen |
+| Hobby351 (PT) | PrestaShop | geen: alleen de JSON-listing | hoofdcategorie `/index.php?id_category=2&controller=category&ajax=1&resultsPerPage=100` (~39 requests); geen categorie in de JSON of de URL, indeling op naam |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

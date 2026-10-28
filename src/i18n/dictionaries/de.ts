@@ -208,6 +208,18 @@ export const de: Dictionary = {
       "Portugiesischer RC-Laden an der Algarve mit Elektro- und Nitro-Autos, Crawlern, Ersatzteilen, Akkus und Elektronik sowie viel Farbe und Werkzeug.",
     myrcpitstop:
       "Zyprischer RC-Laden in Nikosia mit vielen Traxxas-Teilen sowie Sworkz, Xray, Hudy, Kugellagern, Ritzeln, Akkus und Elektronik.",
+    radiocontrolledshop:
+      "Irischer RC-Laden in Dublin mit vielen Ersatzteilen für Helis (Align, Blade), Drohnen (DJI) und Autos sowie Akkus, Ladegeräten, Kabeln und Propellern.",
+    helygo:
+      "Italienischer RC-Laden mit Autos, Crawlern, Flugzeugen und Helis sowie vielen Ersatzteilen, Servos, LiPos, Sendern und Werkzeug.",
+    todohobby:
+      "Spanischer Hobbyladen mit RC-Autos, Flugzeugen, Drohnen und Booten, Verbrennungsmotoren und Turbinen sowie Ersatzteilen, Akkus und Werkzeug.",
+    rcpro:
+      "Großer spanischer RC-Autoladen mit Traxxas, Absima, Team Associated und Losi sowie vielen Ersatzteilen, Reifen, Karosserien, Elektronik und Akkus.",
+    tormodel:
+      "Spanischer Modellflugladen mit Flugzeugen von Dynam und Volantex, Heli-Ersatzteilen, Propellern, Motoren, Servos, Akkus und Baubedarf.",
+    hobby351:
+      "Portugiesischer RC-Autoladen für Rennfahrer mit Mugen, Ruddog, Reifen, Ersatzteilen, Werkzeug und Elektronik.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
