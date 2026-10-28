@@ -14,6 +14,7 @@ import dronefpvracerLogo from "@/assets/shops/dronefpvracer.png";
 import droneshopLogo from "@/assets/shops/droneshop.png";
 import ercLogo from "@/assets/shops/erc.png";
 import flashrcLogo from "@/assets/shops/flashrc.svg";
+import freakwareLogo from "@/assets/shops/freakware.png";
 import ghwLogo from "@/assets/shops/ghw.png";
 import hackerLogo from "@/assets/shops/hacker.png";
 import heligearLogo from "@/assets/shops/heligear.png";
@@ -768,6 +769,16 @@ export const SHOPS: ShopInfo[] = [
     logo: rotoramaLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "CZ",
+  },
+  {
+    slug: "freakware",
+    name: "Freakware",
+    url: "https://www.freakware.de",
+    domain: "freakware.de",
+    logo: freakwareLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+    language: "de",
   },
 ];
 

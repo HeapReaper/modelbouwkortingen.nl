@@ -251,6 +251,8 @@ export const en: Dictionary = {
       "Shop from Singhofen (Rhineland-Palatinate) with RC cars and a large range of spare parts and tuning, including Traxxas, Arrma and JS-Parts.",
     rotorama:
       "FPV specialist from Prague with drones, frames, motors, flight controllers, digital video systems, goggles and batteries.",
+    freakware:
+      "RC shop from Kerpen with cars, helis, planes, boats and drones and a huge range of spare parts from Traxxas, Axial, Losi, Align, SAB and more.",
   },
   deals: {
     outOfStock: "Out of stock",

@@ -88,10 +88,12 @@ func ldParseProduct(pageURL string, doc *goquery.Document, idRe *regexp.Regexp) 
 			p.ExternalID = strings.Trim(u.Path, "/")
 		}
 	}
-	// Een @id-verwijzing ("#primaryimage") is geen afbeelding; een pad wel.
-	if strings.HasPrefix(p.ImageURL, "/") {
-		if u, err := url.Parse(link); err == nil {
-			p.ImageURL = parse.AbsURL(u.Scheme+"://"+u.Host, p.ImageURL)
+	// Een @id-verwijzing ("#primaryimage") is geen afbeelding; een (relatief) pad wel.
+	if p.ImageURL != "" && !strings.HasPrefix(p.ImageURL, "http") && !strings.HasPrefix(p.ImageURL, "#") {
+		if base, err := url.Parse(link); err == nil {
+			if ref, err := url.Parse(p.ImageURL); err == nil {
+				p.ImageURL = base.ResolveReference(ref).String()
+			}
 		}
 	}
 	if !strings.HasPrefix(p.ImageURL, "http") {

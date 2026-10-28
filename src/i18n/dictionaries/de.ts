@@ -258,6 +258,8 @@ export const de: Dictionary = {
       "Shop aus Singhofen (Rheinland-Pfalz) mit RC-Cars und großem Angebot an Ersatz- und Tuningteilen, u. a. von Traxxas, Arrma und JS-Parts.",
     rotorama:
       "FPV-Spezialist aus Prag mit Drohnen, Frames, Motoren, Flightcontrollern, digitalen Videosystemen, Brillen und Akkus.",
+    freakware:
+      "RC-Shop aus Kerpen mit Autos, Helis, Flugzeugen, Booten und Drohnen sowie riesiger Ersatzteilauswahl, u. a. von Traxxas, Axial, Losi, Align und SAB.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

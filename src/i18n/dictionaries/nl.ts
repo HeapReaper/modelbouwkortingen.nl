@@ -254,6 +254,8 @@ export const nl = {
       "Shop uit Singhofen (Rijnland-Palts) met RC-auto's en een groot aanbod onderdelen en tuning, onder meer van Traxxas, Arrma en JS-Parts.",
     rotorama:
       "FPV-specialist uit Praag met drones, frames, motoren, flightcontrollers, digitale videosystemen, brillen en accu's.",
+    freakware:
+      "RC-shop uit Kerpen met auto's, heli's, vliegtuigen, boten en drones en een zeer groot aanbod onderdelen van onder meer Traxxas, Axial, Losi, Align en SAB.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",
