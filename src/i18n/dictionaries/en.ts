@@ -239,6 +239,8 @@ export const en: Dictionary = {
       "Shop from Briesen (Brandenburg) for RC speedboats: propellers, drives, flex shafts, motors, water cooling, rudders and exhausts.",
     dmt:
       "Model shop from Dobl-Zwaring (Styria) with planes, helis, RC cars and drones, plus lots of motors, servos, electronics, batteries and materials.",
+    rceurope:
+      "Dutch maker of laser-cut RC plane kits (scale, warbirds, vintage), with building plans and accessories.",
   },
   deals: {
     outOfStock: "Out of stock",

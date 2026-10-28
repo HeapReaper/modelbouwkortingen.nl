@@ -34,6 +34,7 @@ import premiummodellbauLogo from "@/assets/shops/premiummodellbau.png";
 import quartelLogo from "@/assets/shops/quartel.png";
 import radiocontrolledshopLogo from "@/assets/shops/radiocontrolledshop.png";
 import rccaronlineLogo from "@/assets/shops/rccaronline.png";
+import rceuropeLogo from "@/assets/shops/rceurope.png";
 import rcfoxLogo from "@/assets/shops/rcfox.png";
 import rckleinkramLogo from "@/assets/shops/rckleinkram.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
@@ -704,6 +705,15 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "AT",
     language: "de",
+  },
+  {
+    slug: "rceurope",
+    name: "RC-Europe",
+    url: "https://www.rc-europe.eu",
+    domain: "rc-europe.eu",
+    logo: rceuropeLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "NL",
   },
 ];
 

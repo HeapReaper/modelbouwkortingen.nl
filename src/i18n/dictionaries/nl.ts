@@ -242,6 +242,8 @@ export const nl = {
       "Webshop uit Briesen (Brandenburg) voor RC-speedboten: propellers, aandrijvingen, flexassen, motoren, waterkoeling, roeren en uitlaten.",
     dmt:
       "Modelbouwshop uit Dobl-Zwaring (Stiermarken) met vliegtuigen, heli's, RC-auto's en drones, plus veel motoren, servo's, elektronica, accu's en materialen.",
+    rceurope:
+      "Nederlandse maker van lasergesneden bouwpakketten voor RC-vliegtuigen (scale, warbirds, vintage), met bouwtekeningen en toebehoren.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

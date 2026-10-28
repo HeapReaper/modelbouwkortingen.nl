@@ -246,6 +246,8 @@ export const de: Dictionary = {
       "Shop aus Briesen (Brandenburg) für RC-Rennboote: Propeller, Antriebe, Flexwellen, Motoren, Wasserkühlung, Ruder und Auspuffanlagen.",
     dmt:
       "Modellbau-Shop aus Dobl-Zwaring (Steiermark) mit Flugzeugen, Helis, RC-Cars und Drohnen sowie vielen Motoren, Servos, Elektronik, Akkus und Werkstoffen.",
+    rceurope:
+      "Niederländischer Hersteller von gelaserten RC-Flugzeugbausätzen (Scale, Warbirds, Vintage) mit Bauplänen und Zubehör.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
