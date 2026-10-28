@@ -56,6 +56,7 @@ import smartmodelismoLogo from "@/assets/shops/smartmodelismo.png";
 import speedlimitrcLogo from "@/assets/shops/speedlimitrc.png";
 import speelgoedenmodelbouwLogo from "@/assets/shops/speelgoedenmodelbouw.png";
 import stormrcLogo from "@/assets/shops/stormrc.png";
+import svmodelismoLogo from "@/assets/shops/svmodelismo.png";
 import tamicoLogo from "@/assets/shops/tamico.png";
 import tflLogo from "@/assets/shops/tfl.png";
 import theborderLogo from "@/assets/shops/theborder.png";
@@ -779,6 +780,15 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
     language: "de",
+  },
+  {
+    slug: "svmodelismo",
+    name: "SV Modelismo",
+    url: "https://www.svmodelismo.net",
+    domain: "svmodelismo.net",
+    logo: svmodelismoLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "PT",
   },
 ];
 

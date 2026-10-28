@@ -253,6 +253,8 @@ export const en: Dictionary = {
       "FPV specialist from Prague with drones, frames, motors, flight controllers, digital video systems, goggles and batteries.",
     freakware:
       "RC shop from Kerpen with cars, helis, planes, boats and drones and a huge range of spare parts from Traxxas, Axial, Losi, Align, SAB and more.",
+    svmodelismo:
+      "Model shop from Lisbon with planes, boats, cars, electronics, batteries, covering film (Oracover) and building materials.",
   },
   deals: {
     outOfStock: "Out of stock",

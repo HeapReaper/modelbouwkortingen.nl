@@ -256,6 +256,8 @@ export const nl = {
       "FPV-specialist uit Praag met drones, frames, motoren, flightcontrollers, digitale videosystemen, brillen en accu's.",
     freakware:
       "RC-shop uit Kerpen met auto's, heli's, vliegtuigen, boten en drones en een zeer groot aanbod onderdelen van onder meer Traxxas, Axial, Losi, Align en SAB.",
+    svmodelismo:
+      "Modelbouwshop uit Lissabon met vliegtuigen, boten, auto's, elektronica, accu's, bespanningsfolie (Oracover) en bouwmaterialen.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",
