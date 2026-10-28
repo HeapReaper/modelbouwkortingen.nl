@@ -75,6 +75,13 @@ func ldParseProduct(pageURL string, doc *goquery.Document, idRe *regexp.Regexp) 
 		InStock:     parse.Availability(ld.Availability),
 		Breadcrumbs: crumbs,
 	}
+	// Magento 2 zonder availability in de microdata: div.stock.available / .unavailable.
+	if p.InStock == nil {
+		if st := doc.Find(".product-info-stock-sku .stock").First(); st.Length() > 0 && (st.HasClass("available") || st.HasClass("unavailable")) {
+			in := st.HasClass("available")
+			p.InStock = &in
+		}
+	}
 	if idRe != nil {
 		if m := idRe.FindStringSubmatch(link); m != nil {
 			p.ExternalID = m[1]

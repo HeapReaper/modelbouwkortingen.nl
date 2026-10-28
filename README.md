@@ -4,7 +4,7 @@
 > [Claude Code](https://claude.com/claude-code), en daarna door een mens nagekeken, getest en
 > uitgerold.
 
-Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 75 Nederlandse, Belgische, Duitse,
+Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 76 Nederlandse, Belgische, Duitse,
 Franse en andere modelbouw-webshops (zie [Crawler](#crawler)). Is een product **minstens €5 of 5%** afgeprijsd, dan
 komt het op de website (Next.js 16 + shadcn/ui).
 
@@ -325,6 +325,7 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | Wartelle Shop (FR) | WiziShop | `Sitemap.asp` (~20.000 producten, URL's op `-c2x<id>`) | alle productpagina's (microdata) |
 | Mikado (DE) | eigen systeem | `sitemap.xml` (~1.000 producten, `?a=article&ProdNr=`) | alle productpagina's (microdata) |
 | Modelbouw Baillien (BE) | Odoo | `sitemap.xml` (~39.000 producten onder `/shop/`) | alle productpagina's (microdata) |
+| Kopterworx (SI) | Magento 2 | `sitemap.xml` (~2.300 URL's) | alle productpagina's (microdata) |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

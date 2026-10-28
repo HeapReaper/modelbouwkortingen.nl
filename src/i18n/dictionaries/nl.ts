@@ -266,6 +266,8 @@ export const nl = {
       "Webshop van de Duitse fabrikant van LOGO-helikopters en VBar/VStabi-flybarless-elektronica, met heli's, onderdelen, rotorbladen en toebehoren.",
     baillien:
       "Modelbouwwinkel uit Borgerhout (Antwerpen) met RC-auto's, vliegtuigen, boten, treinen, bouwdozen, verf en veel onderdelen.",
+    kopterworx:
+      "Dronespecialist uit Leskovec pri Krškem (Slovenië) met DJI-drones, gimbals, frames, motoren, propellers en onderdelen.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

@@ -25,6 +25,7 @@ import hobby351Logo from "@/assets/shops/hobby351.png";
 import hobbykingLogo from "@/assets/shops/hobbyking.svg";
 import hoelleinLogo from "@/assets/shops/hoellein.png";
 import jonathanLogo from "@/assets/shops/jonathan.png";
+import kopterworxLogo from "@/assets/shops/kopterworx.png";
 import lindingerLogo from "@/assets/shops/lindinger.svg";
 import metzLogo from "@/assets/shops/metz.png";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
@@ -832,6 +833,15 @@ export const SHOPS: ShopInfo[] = [
     logo: baillienLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "BE",
+  },
+  {
+    slug: "kopterworx",
+    name: "Kopterworx",
+    url: "https://www.kopterworx.com",
+    domain: "kopterworx.com",
+    logo: kopterworxLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "SI",
   },
 ];
 

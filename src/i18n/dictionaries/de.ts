@@ -270,6 +270,8 @@ export const de: Dictionary = {
       "Shop des deutschen Herstellers der LOGO-Helikopter und der VBar/VStabi-Flybarless-Elektronik, mit Helis, Ersatzteilen, Rotorblättern und Zubehör.",
     baillien:
       "Modellbaugeschäft aus Borgerhout (Antwerpen) mit RC-Cars, Flugzeugen, Booten, Eisenbahnen, Bausätzen, Farben und vielen Ersatzteilen.",
+    kopterworx:
+      "Drohnen-Spezialist aus Leskovec pri Krškem (Slowenien) mit DJI-Drohnen, Gimbals, Frames, Motoren, Propellern und Ersatzteilen.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
