@@ -4,7 +4,7 @@
 > [Claude Code](https://claude.com/claude-code), en daarna door een mens nagekeken, getest en
 > uitgerold.
 
-Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 67 Nederlandse, Belgische, Duitse,
+Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 68 Nederlandse, Belgische, Duitse,
 Franse en andere modelbouw-webshops (zie [Crawler](#crawler)). Is een product **minstens €5 of 5%** afgeprijsd, dan
 komt het op de website (Next.js 16 + shadcn/ui).
 
@@ -317,6 +317,7 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | TurboHobby (ES) | PrestaShop 1.7 | `1_index_sitemap.xml` (~4.300 producten; de JSON-listing bevat geen productgegevens) | alle productpagina's (JSON-LD, kruimelpad uit het `prestashop`-object); maximaal TLS 1.2 |
 | XtremRC (FR) | eigen platform | geen: alleen listings | onderste categorieën uit `googlesitemap.php?language=fr` (zonder merkenbomen, soldes, maquettes en Gunpla); producten als JSON-LD op de categoriepagina, `?big_result=true` (100 per pagina), `&page=N`; Crawl-delay 5 s |
 | Derkum Modellbau (DE) | eigen systeem | `sitemap.xml` (~8.000 URL's, ook categorieën) | alle productpagina's (microdata) |
+| Modellbau Metz (DE) | eigen systeem | `sitemap.xml` (~34.000 producten onder `/modellbau/`) | alle productpagina's (microdata) |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

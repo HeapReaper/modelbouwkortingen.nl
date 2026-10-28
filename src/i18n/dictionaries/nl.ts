@@ -250,6 +250,8 @@ export const nl = {
       "RC-winkel uit Landivisiau (Bretagne) met vooral auto's en onderdelen (Traxxas, Team Associated, Xray, Hobbytech), plus banden, elektronica, accu's en onderhoud.",
     derkum:
       "Modelbouwshop uit Keulen met vliegtuigen, RC-auto's, boten, zenders, elektronica en motoren, plus veel onderdelen en bouwmaterialen.",
+    metz:
+      "Shop uit Singhofen (Rijnland-Palts) met RC-auto's en een groot aanbod onderdelen en tuning, onder meer van Traxxas, Arrma en JS-Parts.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

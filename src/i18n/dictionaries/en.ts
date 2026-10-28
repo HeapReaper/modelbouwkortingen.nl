@@ -247,6 +247,8 @@ export const en: Dictionary = {
       "RC shop from Landivisiau (Brittany) focused on cars and parts (Traxxas, Team Associated, Xray, Hobbytech), plus tyres, electronics, batteries and maintenance.",
     derkum:
       "Model shop from Cologne with planes, RC cars, boats, radios, electronics and motors, plus lots of spare parts and building materials.",
+    metz:
+      "Shop from Singhofen (Rhineland-Palatinate) with RC cars and a large range of spare parts and tuning, including Traxxas, Arrma and JS-Parts.",
   },
   deals: {
     outOfStock: "Out of stock",

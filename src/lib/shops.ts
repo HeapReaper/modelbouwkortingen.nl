@@ -24,6 +24,7 @@ import hobbykingLogo from "@/assets/shops/hobbyking.svg";
 import hoelleinLogo from "@/assets/shops/hoellein.png";
 import jonathanLogo from "@/assets/shops/jonathan.png";
 import lindingerLogo from "@/assets/shops/lindinger.svg";
+import metzLogo from "@/assets/shops/metz.png";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
 import monsterhopupsLogo from "@/assets/shops/monsterhopups.png";
@@ -745,6 +746,16 @@ export const SHOPS: ShopInfo[] = [
     domain: "derkum-modellbau.com",
     logo: derkumLogo,
     logoBg: "bg-black",
+    country: "DE",
+    language: "de",
+  },
+  {
+    slug: "metz",
+    name: "Modellbau Metz",
+    url: "https://www.modellbau-metz.com",
+    domain: "modellbau-metz.com",
+    logo: metzLogo,
+    logoBg: "bg-white ring-1 ring-border",
     country: "DE",
     language: "de",
   },
