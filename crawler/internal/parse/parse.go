@@ -351,9 +351,10 @@ func HTMLCrumbs(doc *goquery.Document) []string {
 	return out
 }
 
-// Availability vertaalt schema.org availability naar een bool (nil = onbekend).
+// Availability vertaalt schema.org availability naar een bool (nil = onbekend). Varianten als
+// "in_stock" tellen ook mee.
 func Availability(s string) *bool {
-	s = strings.ToLower(s)
+	s = strings.NewReplacer("_", "", "-", "").Replace(strings.ToLower(s))
 	if s == "" {
 		return nil
 	}

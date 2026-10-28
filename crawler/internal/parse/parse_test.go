@@ -95,3 +95,11 @@ func TestHTMLCrumbs(t *testing.T) {
 		t.Errorf("HTMLCrumbs = %q", got)
 	}
 }
+
+func TestAvailabilityVariants(t *testing.T) {
+	for in, want := range map[string]bool{"https://schema.org/InStock": true, "in_stock": true, "out_of_stock": false, "OutOfStock": false} {
+		if got := Availability(in); got == nil || *got != want {
+			t.Errorf("Availability(%q) = %v, want %v", in, got, want)
+		}
+	}
+}
