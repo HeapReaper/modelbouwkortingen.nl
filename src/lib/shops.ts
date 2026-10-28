@@ -20,6 +20,7 @@ import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
 import mrcmodelismeLogo from "@/assets/shops/mrcmodelisme.png";
 import nfactoryLogo from "@/assets/shops/nfactory.png";
+import originhobbiesLogo from "@/assets/shops/originhobbies.png";
 import premiummodellbauLogo from "@/assets/shops/premiummodellbau.png";
 import rccaronlineLogo from "@/assets/shops/rccaronline.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
@@ -401,6 +402,15 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "FR",
     language: "fr",
+  },
+  {
+    slug: "originhobbies",
+    name: "OriginHobbies",
+    url: "https://originhobbies.com",
+    domain: "originhobbies.com",
+    logo: originhobbiesLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "FI",
   },
 ];
 

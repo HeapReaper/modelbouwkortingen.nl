@@ -60,6 +60,27 @@ func TestWooCommerceFeed(t *testing.T) {
 	}
 }
 
+func TestWooCommerceStock(t *testing.T) {
+	cases := []struct {
+		fields string
+		want   bool
+	}{
+		{`"is_in_stock":true,"is_on_backorder":false,"low_stock_remaining":null`, true},
+		{`"is_in_stock":true,"is_on_backorder":false,"low_stock_remaining":2`, true},
+		{`"is_in_stock":true,"is_on_backorder":false,"low_stock_remaining":0`, false},
+		{`"is_in_stock":true,"is_on_backorder":true,"low_stock_remaining":null`, false},
+		{`"is_in_stock":false,"is_on_backorder":false,"low_stock_remaining":null`, false},
+	}
+	for _, c := range cases {
+		body := []byte(`[{"id":1,"name":"OMP M2 Main Motor set","permalink":"https://originhobbies.com/shop/x/",` +
+			`"prices":{"price":"5999","regular_price":"5999","currency_code":"EUR","currency_minor_unit":2},` + c.fields + `,"categories":[]}]`)
+		products, _ := (&OriginHobbies{}).ParseListingRaw("https://originhobbies.com/wp-json/wc/store/v1/products?page=1", body)
+		if len(products) != 1 || products[0].InStock == nil || *products[0].InStock != c.want {
+			t.Errorf("%s: got %+v, want InStock=%v", c.fields, products, c.want)
+		}
+	}
+}
+
 func TestSpeelgoedenModelbouwSkipsStatic(t *testing.T) {
 	body := []byte(`[{"id":1,"name":"Tamiya Mercedes-Benz 300 SL 1:24 (bouwpakket)","permalink":"https://www.speelgoedenmodelbouw.com/product/x/",` +
 		`"prices":{"price":"5890","regular_price":"5890","currency_code":"EUR","currency_minor_unit":2},"is_in_stock":true,` +

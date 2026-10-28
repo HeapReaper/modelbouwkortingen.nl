@@ -183,6 +183,8 @@ export const en: Dictionary = {
       "French FPV specialist with racing drones, frames, motors, flight controllers, goggles, LiPos and propellers.",
     flashrc:
       "Large French RC store with planes, helicopters, cars, drones and boats, plus transmitters, batteries, motors and parts.",
+    originhobbies:
+      "Finnish helicopter specialist with OMPHobby, SAB, Tron and Flywing helis and lots of parts, plus Radiomaster transmitters, motors and batteries.",
   },
   deals: {
     outOfStock: "Out of stock",

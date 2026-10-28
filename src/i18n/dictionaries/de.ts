@@ -190,6 +190,8 @@ export const de: Dictionary = {
       "Französischer FPV-Spezialist mit Racedrohnen, Frames, Motoren, Flugcontrollern, Videobrillen, LiPos und Propellern.",
     flashrc:
       "Großer französischer RC-Laden mit Flugzeugen, Hubschraubern, Autos, Drohnen und Booten sowie Sendern, Akkus, Motoren und Ersatzteilen.",
+    originhobbies:
+      "Finnischer Hubschrauber-Spezialist mit OMPHobby-, SAB-, Tron- und Flywing-Helis und vielen Ersatzteilen sowie Radiomaster-Sendern, Motoren und Akkus.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

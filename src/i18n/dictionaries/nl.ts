@@ -186,6 +186,8 @@ export const nl = {
       "Franse FPV-specialist met racedrones, frames, motoren, flight controllers, videobrillen, lipo's en propellers.",
     flashrc:
       "Grote Franse RC-winkel met vliegtuigen, helikopters, auto's, drones en boten, plus zenders, accu's, motoren en onderdelen.",
+    originhobbies:
+      "Finse helikopterspecialist met OMPHobby-, SAB-, Tron- en Flywing-heli's en veel onderdelen, plus Radiomaster-zenders, motoren en accu's.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

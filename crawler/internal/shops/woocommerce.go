@@ -25,6 +25,9 @@ import (
 //   - orderby=id houdt de volgorde vast, zodat nieuwe producten tijdens een ronde niet alles
 //     een plek opschuiven. Het totaal staat in de header X-WP-TotalPages; omdat de runner per
 //     startpagina maximaal 50 pagina's volgt, starten we elke 50 pagina's een nieuwe reeks.
+//   - Voorraad: is_in_stock is ook true voor backorders, en bij OriginHobbies voor producten
+//     met voorraad 0 ("Only 0 left in stock", low_stock_remaining 0). Die tellen we als niet
+//     op voorraad.
 
 const wooPageSize = 100
 
@@ -34,7 +37,7 @@ func wooFeed(baseURL string, extra url.Values) string {
 		"per_page": {strconv.Itoa(wooPageSize)},
 		"orderby":  {"id"},
 		"order":    {"asc"},
-		"_fields":  {"id,name,sku,permalink,prices,is_in_stock,categories,images"},
+		"_fields":  {"id,name,sku,permalink,prices,is_in_stock,is_on_backorder,low_stock_remaining,categories,images"},
 	}
 	maps.Copy(q, extra)
 	return baseURL + "/wp-json/wc/store/v1/products?" + q.Encode()
@@ -68,8 +71,10 @@ type wooProduct struct {
 		MinorUnit    int    `json:"currency_minor_unit"`
 		CurrencyCode string `json:"currency_code"`
 	} `json:"prices"`
-	IsInStock  bool `json:"is_in_stock"`
-	Categories []struct {
+	IsInStock         bool `json:"is_in_stock"`
+	IsOnBackorder     bool `json:"is_on_backorder"`
+	LowStockRemaining *int `json:"low_stock_remaining"`
+	Categories        []struct {
 		Name string `json:"name"`
 	} `json:"categories"`
 	Images []struct {
@@ -110,7 +115,7 @@ func parseWooFeed(pageURL string, body []byte, skip func(categories []string) bo
 		if regular := wooMoney(it.Prices.RegularPrice, it.Prices.MinorUnit); regular > p.Price {
 			p.OldPrice = regular
 		}
-		in := it.IsInStock
+		in := it.IsInStock && !it.IsOnBackorder && (it.LowStockRemaining == nil || *it.LowStockRemaining > 0)
 		p.InStock = &in
 		if len(it.Images) > 0 {
 			p.ImageURL = it.Images[0].Src
