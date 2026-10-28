@@ -37,7 +37,7 @@ import voltmasterLogo from "@/assets/shops/voltmaster.svg";
 import wetronicLogo from "@/assets/shops/wetronic.png";
 
 /** Talen van productnamen die we vertalen. */
-export type SourceLanguage = "de" | "fr";
+export type SourceLanguage = "de" | "fr" | "es" | "it" | "pt";
 
 /** De omschrijving staat per taal in de woordenboeken (dict.shops[slug]). */
 export type ShopInfo = {

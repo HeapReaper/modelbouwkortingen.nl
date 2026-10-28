@@ -114,7 +114,7 @@ services:
     expose:
       - "5000"
     environment:
-      - LT_LOAD_ONLY=de,fr,nl,en
+      - LT_LOAD_ONLY=de,fr,es,it,pt,nl,en
       - LT_DISABLE_WEB_UI=true
     volumes:
       - ltmodels:/home/libretranslate/.local

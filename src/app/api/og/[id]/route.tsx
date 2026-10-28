@@ -12,7 +12,7 @@ import { localizeDeals } from "@/lib/translate";
  * Deelafbeelding (Open Graph, 1200×630) voor een product: foto, naam, prijs, was-prijs en
  * korting. Gekoppeld in generateMetadata() van /product/[id]. Een route handler en geen
  * opengraph-image.tsx in [lang]/product/[id], zodat de URL taalloos is (geen /nl-redirect).
- * ?lang= bepaalt de taal van de productnaam (vertaalde namen van Duitse en Franse webshops).
+ * ?lang= bepaalt de taal van de productnaam (vertaalde namen van anderstalige webshops).
  */
 
 const SIZE = { width: 1200, height: 630 };

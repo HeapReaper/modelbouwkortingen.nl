@@ -264,7 +264,7 @@ model PriceAlert {
   @@map("price_alerts")
 }
 
-/// Vertaalde productnaam voor producten van Duitse en Franse webshops (zie src/lib/translate.ts).
+/// Vertaalde productnaam voor producten van anderstalige webshops (zie src/lib/translate.ts).
 model ProductTranslation {
   productId  BigInt   @map("product_id")
   /// Doeltaal (nl, en, de).

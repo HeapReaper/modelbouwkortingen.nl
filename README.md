@@ -32,7 +32,7 @@ komt het op de website (Next.js 16 + shadcn/ui).
 
 **Talen**
 - Site in het Nederlands, Engels en Duits, met taaldetectie en taalkiezer.
-- Productnamen van Duitse en Franse webshops automatisch vertaald met LibreTranslate (eigen container).
+- Productnamen van Duitse, Franse, Spaanse, Italiaanse en Portugese webshops automatisch vertaald met LibreTranslate (eigen container).
 - Mail en Discord in de taal waarin de abonnee zich aanmeldde.
 
 **Verdienen**
@@ -127,7 +127,7 @@ koppelt het domein aan de `web`-service via `SERVICE_FQDN_WEB_3000`. Stel in Coo
 | `/api/og/[id]` | Deelafbeelding (1200×630) voor een product; `?lang=` voor de vertaalde naam |
 | `/api/bezoek` | Telt een paginaweergave (`page_views`): gestuurd door de tracker in het layout, zonder cookies; bots, geautomatiseerde browsers en het eigen admin-apparaat tellen niet mee |
 | `/api/uit/[id]` | Telt de klik (`outbound_clicks`, zonder bots) en stuurt door naar de webshop, met affiliate-parameters |
-| `/api/vertalen/bijwerken` | Vertaalt namen van nieuwe deals van Duitse en Franse webshops (zelfde beveiliging als `/api/nieuwsbrief/verzenden`) |
+| `/api/vertalen/bijwerken` | Vertaalt namen van nieuwe deals van anderstalige webshops (zelfde beveiliging als `/api/nieuwsbrief/verzenden`) |
 | `/api/crawler/controleren` | Zoekt crawl-rondes met opvallend weinig producten en meldt ze (idem) |
 | `/admin` | Admin panel: status van database/SMTP/LibreTranslate/crawler, testmail, live crawlerstatus, handmatig een shop crawlen, 429's, crawl-rondes, grafiek, bezoekers, kliks, berichten, webshops aan/uit, telefoonnummers en social media (Basic Auth) |
 | `/api/stats` | JSON met alle statistieken (Basic Auth of `Bearer STATS_TOKEN`) |
@@ -179,10 +179,10 @@ het abonnement uitgezet.
 
 ### Productnamen vertalen
 
-Duitse en Franse webshops (`language: "de"` of `"fr"` in `src/lib/shops.ts`) hebben Duitse of
-Franse productnamen. Die worden vertaald met **LibreTranslate** (`src/lib/translate.ts`) naar de
+Anderstalige webshops (`language: "de"`, `"fr"`, `"es"`, `"it"` of `"pt"` in `src/lib/shops.ts`)
+hebben Duitse, Franse, Spaanse, Italiaanse of Portugese productnamen. Die worden vertaald met **LibreTranslate** (`src/lib/translate.ts`) naar de
 taal van de bezoeker; een Duitse bezoeker ziet de originele naam van een Duitse webshop, maar een
-vertaling van een Franse. Elke naam wordt één keer per
+vertaling van een Franse of Spaanse. Elke naam wordt één keer per
 taal vertaald en bewaard in `product_translations`; verandert de naam bij de webshop, dan wordt
 hij opnieuw vertaald. De planner vertaalt elke 5 minuten de nieuwe deals vooraf
 (`/api/vertalen/bijwerken`); andere producten worden vertaald zodra iemand ze bekijkt. Duurt dat
@@ -193,7 +193,7 @@ Bots (zoekmachines, linkvoorbeelden, scrapers; herkend aan de user-agent in `src
 laten nooit iets nieuws vertalen: zij zien bewaarde vertalingen of de originele naam.
 
 LibreTranslate draait als eigen container (`libretranslate` in `docker-compose.yml`, alleen de
-talen `de,fr,nl,en`), dus vertalen kost niets en er gaat niets naar een externe dienst. Bij de
+talen `de,fr,es,it,pt,nl,en`), dus vertalen kost niets en er gaat niets naar een externe dienst. Bij de
 eerste start downloadt de container de taalmodellen naar het volume `ltmodels`; tot dat klaar is
 toont de site de originele namen. Reken op een paar GB RAM. Zet `LIBRETRANSLATE_URL` (in
 docker-compose standaard `http://libretranslate:5000`); zonder worden alleen al bewaarde

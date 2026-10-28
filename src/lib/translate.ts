@@ -11,7 +11,7 @@ import {
 } from "@/lib/shops";
 
 /**
- * Vertaalt de productnamen van Duitse en Franse webshops (zie `language` in src/lib/shops.ts)
+ * Vertaalt de productnamen van anderstalige webshops (zie `language` in src/lib/shops.ts)
  * naar de taal van de bezoeker, of bij mail en Discord naar de taal waarin de abonnee zich aanmeldde.
  * Vertalingen komen van LibreTranslate, een eigen container (LIBRETRANSLATE_URL, zie
  * docker-compose.yml), en staan in product_translations: elke naam wordt één keer per taal
@@ -181,7 +181,7 @@ function translate(
 }
 
 /**
- * Zet de namen van producten van Duitse en Franse webshops in de gevraagde taal
+ * Zet de namen van producten van anderstalige webshops in de gevraagde taal
  * (`originalName` = de originele naam). Ontbrekende vertalingen worden direct opgehaald;
  * duurt dat langer dan `waitMs`, dan blijft deze keer de originele naam staan en wordt de
  * vertaling op de achtergrond bewaard voor de volgende keer. Zonder LIBRETRANSLATE_URL: alleen
@@ -275,7 +275,7 @@ export const BACKGROUND = {
 } as const;
 
 /**
- * Vertaalt lopende deals van Duitse en Franse webshops die nog geen (actuele) vertaling
+ * Vertaalt lopende deals van anderstalige webshops die nog geen (actuele) vertaling
  * hebben, nieuwste eerst. Wordt elke paar minuten aangeroepen door de planner in instrumentation.ts.
  */
 export async function translatePendingDeals(

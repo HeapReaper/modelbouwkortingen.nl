@@ -1052,7 +1052,7 @@ export const nl = {
       {
         title: "Met wie we gegevens delen",
         body: [
-          "We verkopen je gegevens nooit. Voor het versturen van mail gebruiken we een e-mailprovider, berichten in Discord gaan via Discord, en advertenties via Google. Zij verwerken gegevens alleen voor die taak. Productnamen van Duitse en Franse webshops vertalen we op onze eigen server; daarvoor gaat niets naar een externe dienst.",
+          "We verkopen je gegevens nooit. Voor het versturen van mail gebruiken we een e-mailprovider, berichten in Discord gaan via Discord, en advertenties via Google. Zij verwerken gegevens alleen voor die taak. Productnamen van anderstalige webshops vertalen we op onze eigen server; daarvoor gaat niets naar een externe dienst.",
         ],
       },
       {

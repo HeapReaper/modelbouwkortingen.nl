@@ -222,7 +222,7 @@ export function termWhere(term: string): Prisma.ProductWhereInput {
       { name: contains },
       { brand: contains },
       { sku: contains },
-      // Ook op de vertaalde naam van producten van Duitse en Franse webshops.
+      // Ook op de vertaalde naam van producten van anderstalige webshops.
       { translations: { some: { name: contains } } },
       ...(norm ? [{ searchNorm: { contains: norm } }] : []),
     ],

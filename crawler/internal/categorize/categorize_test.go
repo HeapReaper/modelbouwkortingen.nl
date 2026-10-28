@@ -40,6 +40,16 @@ func TestClassify(t *testing.T) {
 		{[]string{"Serpent"}, "", "", "Serpent pignon 17T module 0,6", "onderdelen"},
 		{nil, "Planeurs", "", "Kavan Alfa 1,5m", "vliegtuigen"},
 		{nil, "", "", "Bateau Pro Boat Recoil 2 26 brushless RTR", "boten"},
+		{[]string{"Coches RC", "Crawlers"}, "", "", "Axial SCX24 Jeep Wrangler RTR", "rc-autos"},
+		{[]string{"Recambios", "Traxxas"}, "", "", "Traxxas trapecio delantero", "onderdelen"},
+		{[]string{"Baterías"}, "", "", "Gens Ace 5000mAh 2S", "accus-laders"},
+		{[]string{"Aeromodelismo", "Aviones"}, "", "", "E-flite Timber X BNF", "vliegtuigen"},
+		{[]string{"Elicotteri"}, "", "", "Goosky S1 BNF", "helicopters"},
+		{[]string{"Ricambi"}, "", "", "Kyosho braccetto anteriore", "onderdelen"},
+		{[]string{"Radiocomandi"}, "", "", "Futaba 4PM Plus", "zenders"},
+		{[]string{"Barcos"}, "", "", "Pro Boat Blackjack 24", "boten"},
+		{nil, "", "", "Carro de combate Heng Long Tiger I 1/16", "tanks"},
+		{[]string{"Peças", "Carroçarias"}, "", "", "Killerbody Toyota Hilux", "onderdelen"},
 		{nil, "", "", "Iets compleet onbekends", "overig"},
 	}
 	for _, c := range cases {
