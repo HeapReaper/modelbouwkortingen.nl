@@ -9,6 +9,7 @@ import (
 	"cmp"
 	"compress/gzip"
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"io"
@@ -44,10 +45,11 @@ type Options struct {
 }
 
 type Fetcher struct {
-	opts   Options
-	client *http.Client
-	stats  *stats.Registry
-	log    *slog.Logger
+	opts     Options
+	client   *http.Client
+	client12 *http.Client // maximaal TLS 1.2, voor hosts met SetHostTLS12
+	stats    *stats.Registry
+	log      *slog.Logger
 
 	mu    sync.Mutex
 	hosts map[string]*host
@@ -66,6 +68,7 @@ type host struct {
 	minDelay   time.Duration // Crawl-delay uit robots.txt of SetHostPolicy
 	userAgent  string        // afwijkende user-agent voor deze host ("" = standaard)
 	cookie     string        // vaste Cookie-header voor deze host ("" = geen)
+	tls12      bool          // maximaal TLS 1.2 (zie SetHostTLS12)
 }
 
 type Response struct {
@@ -76,25 +79,32 @@ type Response struct {
 }
 
 func New(opts Options, st *stats.Registry, log *slog.Logger) *Fetcher {
-	transport := &http.Transport{
-		Proxy:                 http.ProxyFromEnvironment,
-		DialContext:           (&net.Dialer{Timeout: 15 * time.Second, KeepAlive: 30 * time.Second}).DialContext,
-		MaxIdleConnsPerHost:   8,
-		IdleConnTimeout:       90 * time.Second,
-		TLSHandshakeTimeout:   15 * time.Second,
-		ResponseHeaderTimeout: opts.Timeout,
-		ForceAttemptHTTP2:     true,
-		DisableCompression:    true, // we vragen zelf gzip aan en pakken het zelf uit
-	}
 	f := &Fetcher{
 		opts:  opts,
 		stats: st,
 		log:   log,
 		hosts: map[string]*host{},
 	}
-	f.client = &http.Client{
+	f.client = f.newClient(nil)
+	f.client12 = f.newClient(&tls.Config{MaxVersion: tls.VersionTLS12})
+	return f
+}
+
+func (f *Fetcher) newClient(tlsConfig *tls.Config) *http.Client {
+	transport := &http.Transport{
+		Proxy:                 http.ProxyFromEnvironment,
+		DialContext:           (&net.Dialer{Timeout: 15 * time.Second, KeepAlive: 30 * time.Second}).DialContext,
+		TLSClientConfig:       tlsConfig,
+		MaxIdleConnsPerHost:   8,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   15 * time.Second,
+		ResponseHeaderTimeout: f.opts.Timeout,
+		ForceAttemptHTTP2:     true,
+		DisableCompression:    true, // we vragen zelf gzip aan en pakken het zelf uit
+	}
+	return &http.Client{
 		Transport: transport,
-		Timeout:   opts.Timeout,
+		Timeout:   f.opts.Timeout,
 		// Ook redirects moeten aan robots.txt voldoen (bv. doorverwijzing naar /customer/login).
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			if len(via) >= 5 {
@@ -109,7 +119,6 @@ func New(opts Options, st *stats.Registry, log *slog.Logger) *Fetcher {
 			return nil
 		},
 	}
-	return f
 }
 
 func (f *Fetcher) host(h string) *host {
@@ -140,6 +149,15 @@ func (f *Fetcher) SetHostCookie(hostName, cookie string) {
 	hs.mu.Lock()
 	defer hs.mu.Unlock()
 	hs.cookie = cookie
+}
+
+// SetHostTLS12 beperkt de verbinding met deze host tot TLS 1.2, voor servers die de TLS
+// 1.3-handshake van Go niet afmaken (curl werkt er wel).
+func (f *Fetcher) SetHostTLS12(hostName string) {
+	hs := f.host(hostName)
+	hs.mu.Lock()
+	defer hs.mu.Unlock()
+	hs.tls12 = true
 }
 
 // Allowed controleert robots.txt voor de URL (robots.txt wordt één keer per host opgehaald).
@@ -311,6 +329,10 @@ func (f *Fetcher) do(ctx context.Context, hs *host, hostName, rawURL string) (*R
 	hs.mu.Lock()
 	ua := cmp.Or(hs.userAgent, f.opts.UserAgent)
 	cookie := hs.cookie
+	client := f.client
+	if hs.tls12 {
+		client = f.client12
+	}
 	hs.mu.Unlock()
 	if cookie != "" {
 		req.Header.Set("Cookie", cookie)
@@ -322,7 +344,7 @@ func (f *Fetcher) do(ctx context.Context, hs *host, hostName, rawURL string) (*R
 	req.Header.Set("From", "crawler@modelbouwkortingen.nl")
 
 	start := time.Now()
-	resp, err := f.client.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		if errors.Is(err, ErrRobots) {
 			f.stats.RobotsBlocked(hostName)

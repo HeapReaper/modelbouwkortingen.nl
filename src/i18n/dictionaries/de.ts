@@ -248,6 +248,8 @@ export const de: Dictionary = {
       "Modellbau-Shop aus Dobl-Zwaring (Steiermark) mit Flugzeugen, Helis, RC-Cars und Drohnen sowie vielen Motoren, Servos, Elektronik, Akkus und Werkstoffen.",
     rceurope:
       "Niederländischer Hersteller von gelaserten RC-Flugzeugbausätzen (Scale, Warbirds, Vintage) mit Bauplänen und Zubehör.",
+    turbohobby:
+      "Spanischer RC-Shop mit Autos (HSP, Team Magic), Booten, Flugzeugen und Helis sowie vielen Ersatzteilen, Akkus, Ladegeräten und Werkzeug.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

@@ -48,6 +48,12 @@ type HostPolicy interface {
 	MinDelay() time.Duration
 }
 
+// HostTLS12 is voor shops waarvan de server de TLS 1.3-handshake van Go niet afmaakt; de
+// fetcher gebruikt voor die host maximaal TLS 1.2.
+type HostTLS12 interface {
+	TLS12()
+}
+
 // HostCookies is voor shops die een vaste cookie nodig hebben, bv. om prijzen in euro's te
 // krijgen in plaats van de standaardvaluta van de site.
 type HostCookies interface {
@@ -62,7 +68,7 @@ type PercentDeals interface {
 }
 
 func All() []Shop {
-	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}, &RCMotorsports{}, &Droneshop{}, &Tamico{}, &ChinaHobbyLine{}, &Hepf{}, &Bliek{}, &Aerobertics{}, &Heligear{}, &Area51{}, &Banggood{}, &Voltmaster{}, &NFactory{}, &Lindinger{}, &RCCarOnline{}, &PremiumModellbau{}, &CopterFarm{}, &Shopzinnig{}, &HobbyKing{}, &SpeelgoedenModelbouw{}, &TheBorder{}, &Trxxs{}, &ERC{}, &RCNMore{}, &RCTeam{}, &MRCModelisme{}, &DroneFPVRacer{}, &FlashRC{}, &OriginHobbies{}, &StormRC{}, &SpeedLimitRC{}, &RCYPadel{}, &TTModelismo{}, &ScaleRCBuzz{}, &SmartModelismo{}, &RCStoreAlgarve{}, &MyRCPitstop{}, &RadioControlledShop{}, &HelyGo{}, &TodoHobby{}, &RCPro{}, &Tormodel{}, &Hobby351{}, &Quartel{}, &MonsterHopups{}, &GHW{}, &RCFOX{}, &RUDDOG{}, &Shamrock{}, &Bauer{}, &RCRaceShop{}, &DEdition{}, &RCKleinkram{}, &Jonathan{}, &TFL{}, &DMT{}, &RCEurope{}}
+	return []Shop{&TopRC{}, &Toemen{}, &Wetronic{}, &Hoellein{}, &Berlinski{}, &MiniZShop{}, &MGModellbau{}, &Hacker{}, &RCMotorsports{}, &Droneshop{}, &Tamico{}, &ChinaHobbyLine{}, &Hepf{}, &Bliek{}, &Aerobertics{}, &Heligear{}, &Area51{}, &Banggood{}, &Voltmaster{}, &NFactory{}, &Lindinger{}, &RCCarOnline{}, &PremiumModellbau{}, &CopterFarm{}, &Shopzinnig{}, &HobbyKing{}, &SpeelgoedenModelbouw{}, &TheBorder{}, &Trxxs{}, &ERC{}, &RCNMore{}, &RCTeam{}, &MRCModelisme{}, &DroneFPVRacer{}, &FlashRC{}, &OriginHobbies{}, &StormRC{}, &SpeedLimitRC{}, &RCYPadel{}, &TTModelismo{}, &ScaleRCBuzz{}, &SmartModelismo{}, &RCStoreAlgarve{}, &MyRCPitstop{}, &RadioControlledShop{}, &HelyGo{}, &TodoHobby{}, &RCPro{}, &Tormodel{}, &Hobby351{}, &Quartel{}, &MonsterHopups{}, &GHW{}, &RCFOX{}, &RUDDOG{}, &Shamrock{}, &Bauer{}, &RCRaceShop{}, &DEdition{}, &RCKleinkram{}, &Jonathan{}, &TFL{}, &DMT{}, &RCEurope{}, &TurboHobby{}}
 }
 
 func BySlug(slugs []string) []Shop {

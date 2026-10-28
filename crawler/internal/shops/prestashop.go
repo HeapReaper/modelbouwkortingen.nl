@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	"html"
 	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/PuerkitoBio/goquery"
 
 	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/fetch"
 	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
@@ -123,4 +126,31 @@ func parsePSListing(pageURL string, body []byte, skip func(category string) bool
 	q.Set("page", strconv.Itoa(l.Pagination.CurrentPage+1))
 	u.RawQuery = q.Encode()
 	return out, u.String()
+}
+
+var psBreadcrumbRe = regexp.MustCompile(`"breadcrumb":\{"links":(\[[^\]]*\])`)
+
+// psBreadcrumbs leest het kruimelpad uit het inline prestashop-object van een pagina
+// (prestashop.breadcrumb.links), zonder "Home" en zonder de pagina zelf.
+func psBreadcrumbs(doc *goquery.Document) []string {
+	var crumbs []string
+	doc.Find("script").EachWithBreak(func(_ int, s *goquery.Selection) bool {
+		m := psBreadcrumbRe.FindStringSubmatch(s.Text())
+		if m == nil {
+			return true
+		}
+		var links []struct {
+			Title string `json:"title"`
+		}
+		if json.Unmarshal([]byte(m[1]), &links) == nil {
+			for _, l := range links {
+				crumbs = append(crumbs, parse.Clean(html.UnescapeString(l.Title)))
+			}
+		}
+		return false
+	})
+	if len(crumbs) > 2 {
+		return crumbs[1 : len(crumbs)-1]
+	}
+	return nil
 }

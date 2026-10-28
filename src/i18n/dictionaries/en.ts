@@ -241,6 +241,8 @@ export const en: Dictionary = {
       "Model shop from Dobl-Zwaring (Styria) with planes, helis, RC cars and drones, plus lots of motors, servos, electronics, batteries and materials.",
     rceurope:
       "Dutch maker of laser-cut RC plane kits (scale, warbirds, vintage), with building plans and accessories.",
+    turbohobby:
+      "Spanish RC shop with cars (HSP, Team Magic), boats, planes and helis, plus lots of parts, batteries, chargers and tools.",
   },
   deals: {
     outOfStock: "Out of stock",

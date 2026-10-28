@@ -244,6 +244,8 @@ export const nl = {
       "Modelbouwshop uit Dobl-Zwaring (Stiermarken) met vliegtuigen, heli's, RC-auto's en drones, plus veel motoren, servo's, elektronica, accu's en materialen.",
     rceurope:
       "Nederlandse maker van lasergesneden bouwpakketten voor RC-vliegtuigen (scale, warbirds, vintage), met bouwtekeningen en toebehoren.",
+    turbohobby:
+      "Spaanse RC-shop met auto's (HSP, Team Magic), boten, vliegtuigen en heli's, plus veel onderdelen, accu's, laders en gereedschap.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

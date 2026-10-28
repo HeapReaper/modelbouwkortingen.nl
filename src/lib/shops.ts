@@ -61,6 +61,7 @@ import toprcLogo from "@/assets/shops/toprc.svg";
 import tormodelLogo from "@/assets/shops/tormodel.png";
 import trxxsLogo from "@/assets/shops/trxxs.png";
 import ttmodelismoLogo from "@/assets/shops/ttmodelismo.png";
+import turbohobbyLogo from "@/assets/shops/turbohobby.png";
 import voltmasterLogo from "@/assets/shops/voltmaster.svg";
 import wetronicLogo from "@/assets/shops/wetronic.png";
 
@@ -714,6 +715,16 @@ export const SHOPS: ShopInfo[] = [
     logo: rceuropeLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "NL",
+  },
+  {
+    slug: "turbohobby",
+    name: "TurboHobby",
+    url: "https://turbohobby.com",
+    domain: "turbohobby.com",
+    logo: turbohobbyLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "ES",
+    language: "es",
   },
 ];
 
