@@ -236,6 +236,8 @@ export const nl = {
       "Duitse modelbouw- en speelgoedwinkel met RC-auto's, trucks, tanks, vliegtuigen en boten, en veel onderdelen per merk en model.",
     rckleinkram:
       "Duitse shop voor RC-auto-onderdelen en tuning, met veel kleine onderdelen, banden, karosserieën en gereedschap voor wedstrijdrijders.",
+    jonathan:
+      "Italiaanse RC-importeur en -winkel met vliegtuigen, heli's, auto's en boten van Horizon Hobby, Arrma en Phoenix Model, plus onderdelen en elektronica.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

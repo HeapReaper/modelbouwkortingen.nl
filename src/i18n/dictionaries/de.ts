@@ -240,6 +240,8 @@ export const de: Dictionary = {
       "Modellbau- und Spielwarenhändler mit RC-Autos, Trucks, Panzern, Flugzeugen und Booten sowie vielen Ersatzteilen nach Marke und Modell.",
     rckleinkram:
       "Shop für RC-Car-Ersatz- und Tuningteile mit vielen Kleinteilen, Reifen, Karosserien und Werkzeug für Rennfahrer.",
+    jonathan:
+      "Italienischer RC-Importeur und -Shop mit Flugzeugen, Helis, Autos und Booten von Horizon Hobby, Arrma und Phoenix Model sowie Ersatzteilen und Elektronik.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

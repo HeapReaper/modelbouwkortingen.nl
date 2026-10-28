@@ -20,6 +20,7 @@ import hepfLogo from "@/assets/shops/hepf.svg";
 import hobby351Logo from "@/assets/shops/hobby351.png";
 import hobbykingLogo from "@/assets/shops/hobbyking.svg";
 import hoelleinLogo from "@/assets/shops/hoellein.png";
+import jonathanLogo from "@/assets/shops/jonathan.png";
 import lindingerLogo from "@/assets/shops/lindinger.svg";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
@@ -671,6 +672,16 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
     language: "de",
+  },
+  {
+    slug: "jonathan",
+    name: "Jonathan",
+    url: "https://shop.jonathan.it",
+    domain: "shop.jonathan.it",
+    logo: jonathanLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "IT",
+    language: "it",
   },
 ];
 

@@ -233,6 +233,8 @@ export const en: Dictionary = {
       "German model and toy shop with RC cars, trucks, tanks, planes and boats, plus lots of parts by brand and model.",
     rckleinkram:
       "German shop for RC car parts and tuning, with lots of small parts, tyres, bodies and tools for racers.",
+    jonathan:
+      "Italian RC importer and shop with planes, helis, cars and boats from Horizon Hobby, Arrma and Phoenix Model, plus parts and electronics.",
   },
   deals: {
     outOfStock: "Out of stock",
