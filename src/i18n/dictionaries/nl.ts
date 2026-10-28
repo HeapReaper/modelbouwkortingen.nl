@@ -240,6 +240,8 @@ export const nl = {
       "Italiaanse RC-importeur en -winkel met vliegtuigen, heli's, auto's en boten van Horizon Hobby, Arrma en Phoenix Model, plus onderdelen en elektronica.",
     tfl:
       "Webshop uit Briesen (Brandenburg) voor RC-speedboten: propellers, aandrijvingen, flexassen, motoren, waterkoeling, roeren en uitlaten.",
+    dmt:
+      "Modelbouwshop uit Dobl-Zwaring (Stiermarken) met vliegtuigen, heli's, RC-auto's en drones, plus veel motoren, servo's, elektronica, accu's en materialen.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

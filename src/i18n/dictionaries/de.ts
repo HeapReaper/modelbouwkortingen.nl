@@ -244,6 +244,8 @@ export const de: Dictionary = {
       "Italienischer RC-Importeur und -Shop mit Flugzeugen, Helis, Autos und Booten von Horizon Hobby, Arrma und Phoenix Model sowie Ersatzteilen und Elektronik.",
     tfl:
       "Shop aus Briesen (Brandenburg) für RC-Rennboote: Propeller, Antriebe, Flexwellen, Motoren, Wasserkühlung, Ruder und Auspuffanlagen.",
+    dmt:
+      "Modellbau-Shop aus Dobl-Zwaring (Steiermark) mit Flugzeugen, Helis, RC-Cars und Drohnen sowie vielen Motoren, Servos, Elektronik, Akkus und Werkstoffen.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

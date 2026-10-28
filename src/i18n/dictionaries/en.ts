@@ -237,6 +237,8 @@ export const en: Dictionary = {
       "Italian RC importer and shop with planes, helis, cars and boats from Horizon Hobby, Arrma and Phoenix Model, plus parts and electronics.",
     tfl:
       "Shop from Briesen (Brandenburg) for RC speedboats: propellers, drives, flex shafts, motors, water cooling, rudders and exhausts.",
+    dmt:
+      "Model shop from Dobl-Zwaring (Styria) with planes, helis, RC cars and drones, plus lots of motors, servos, electronics, batteries and materials.",
   },
   deals: {
     outOfStock: "Out of stock",

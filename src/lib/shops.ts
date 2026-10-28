@@ -8,6 +8,7 @@ import bliekLogo from "@/assets/shops/bliek.png";
 import chinahobbylineLogo from "@/assets/shops/chinahobbyline.png";
 import copterfarmLogo from "@/assets/shops/copterfarm.png";
 import deditionLogo from "@/assets/shops/dedition.png";
+import dmtLogo from "@/assets/shops/dmt.png";
 import dronefpvracerLogo from "@/assets/shops/dronefpvracer.png";
 import droneshopLogo from "@/assets/shops/droneshop.png";
 import ercLogo from "@/assets/shops/erc.png";
@@ -692,6 +693,16 @@ export const SHOPS: ShopInfo[] = [
     logo: tflLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+    language: "de",
+  },
+  {
+    slug: "dmt",
+    name: "D-M-T Modellsport",
+    url: "https://www.d-m-t.at",
+    domain: "d-m-t.at",
+    logo: dmtLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "AT",
     language: "de",
   },
 ];
