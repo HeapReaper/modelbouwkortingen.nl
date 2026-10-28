@@ -1,6 +1,7 @@
 import type { StaticImageData } from "next/image";
 import aeroberticsLogo from "@/assets/shops/aerobertics.png";
 import area51Logo from "@/assets/shops/area51.png";
+import baillienLogo from "@/assets/shops/baillien.png";
 import banggoodLogo from "@/assets/shops/banggood.png";
 import bauerLogo from "@/assets/shops/bauer.png";
 import berlinskiLogo from "@/assets/shops/berlinski.svg";
@@ -822,6 +823,15 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
     language: "de",
+  },
+  {
+    slug: "baillien",
+    name: "Modelbouw Baillien",
+    url: "https://www.modelbouw-baillien.be",
+    domain: "modelbouw-baillien.be",
+    logo: baillienLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "BE",
   },
 ];
 
