@@ -39,6 +39,7 @@ import rcteamLogo from "@/assets/shops/rcteam.png";
 import rcypadelLogo from "@/assets/shops/rcypadel.png";
 import ruddogLogo from "@/assets/shops/ruddog.png";
 import scalercbuzzLogo from "@/assets/shops/scalercbuzz.png";
+import shamrockLogo from "@/assets/shops/shamrock.png";
 import shopzinnigLogo from "@/assets/shops/shopzinnig.png";
 import smartmodelismoLogo from "@/assets/shops/smartmodelismo.png";
 import speedlimitrcLogo from "@/assets/shops/speedlimitrc.png";
@@ -613,6 +614,15 @@ export const SHOPS: ShopInfo[] = [
     logo: ruddogLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
+  },
+  {
+    slug: "shamrock",
+    name: "Shamrock Modelbouw",
+    url: "https://shamrock-modelbouw.nl",
+    domain: "shamrock-modelbouw.nl",
+    logo: shamrockLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "NL",
   },
 ];
 

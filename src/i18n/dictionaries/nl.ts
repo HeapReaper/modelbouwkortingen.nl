@@ -226,6 +226,8 @@ export const nl = {
       "Grote Duitse RC-shop met auto's, trucks, vliegtuigen, heli's en boten, en heel veel onderdelen per merk, elektronica en gereedschap.",
     ruddog:
       "Duitse RC-importeur met vooral auto-onderdelen en tuning (Team Associated, Avid, Bittydesign), plus regelaars, motoren, accu's en gereedschap.",
+    shamrock:
+      "Modelbouwwinkel in Maastricht (sinds 1972) met RC-auto's en veel onderdelen (Traxxas, Tamiya, Kyosho, Arrma, HPI), plus vliegtuigen, boten, accu's en zenders.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

@@ -230,6 +230,8 @@ export const de: Dictionary = {
       "Großer RC-Shop mit Autos, Trucks, Flugzeugen, Helis und Booten sowie sehr vielen Ersatzteilen nach Marke, Elektronik und Werkzeug.",
     ruddog:
       "RC-Importeur mit Schwerpunkt auf Auto-Ersatz- und Tuningteilen (Team Associated, Avid, Bittydesign) sowie Reglern, Motoren, Akkus und Werkzeug.",
+    shamrock:
+      "Modellbauladen in Maastricht (seit 1972) mit RC-Autos und vielen Ersatzteilen (Traxxas, Tamiya, Kyosho, Arrma, HPI) sowie Flugzeugen, Booten, Akkus und Fernsteuerungen.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

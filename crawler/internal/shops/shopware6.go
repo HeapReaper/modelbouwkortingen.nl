@@ -1,13 +1,17 @@
 package shops
 
 import (
+	"context"
 	"net/url"
+	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/fetch"
 	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
+	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/sitemap"
 )
 
 // Gedeelde helpers voor shops op Shopware 6, zoals Lindinger en RC-Car-Online.
@@ -17,6 +21,35 @@ import (
 //     adviesprijs zit daarin als .list-price. Paginering via ?p=N (data-page in de paginering).
 //   - Productpagina's hebben schema.org-microdata: productID (dezelfde UUID), sku, prijs,
 //     availability en BreadcrumbList.
+
+// sw6SitemapCategories haalt de categorieën uit de sitemap: standaard eindigen categorie-URL's
+// in Shopware 6 op "/". We nemen alleen de onderste categorieën, omdat een categorie vaak ook de
+// producten van haar subcategorieën toont; producten die alleen aan een bovenliggende categorie
+// hangen, missen we zo. skip krijgt het pad zonder baseURL, bv. "Producten/Auto-s/".
+func sw6SitemapCategories(ctx context.Context, f *fetch.Fetcher, sitemapURL, baseURL, query string, skip func(path string) bool) ([]string, error) {
+	urls, err := sitemap.Fetch(ctx, f, sitemapURL, nil)
+	if err != nil && len(urls) == 0 {
+		return nil, err
+	}
+	var cats []string
+	for _, u := range urls {
+		path, ok := strings.CutPrefix(u.Loc, baseURL+"/")
+		if ok && path != "" && strings.HasSuffix(path, "/") && (skip == nil || !skip(path)) {
+			cats = append(cats, path)
+		}
+	}
+	sort.Strings(cats)
+	cats = dedupe(cats)
+	var out []string
+	for i, c := range cats {
+		// Gesorteerd staat een subcategorie direct na haar ouder.
+		if i+1 < len(cats) && strings.HasPrefix(cats[i+1], c) {
+			continue
+		}
+		out = append(out, baseURL+"/"+c+query)
+	}
+	return out, nil
+}
 
 // inStock bepaalt de voorraadstatus van een kaart; nil gebruikt de schema.org-availability.
 func sw6ParseListing(pageURL string, doc *goquery.Document, inStock func(card *goquery.Selection) *bool) ([]parse.Product, string) {

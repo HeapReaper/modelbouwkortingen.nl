@@ -223,6 +223,8 @@ export const en: Dictionary = {
       "Large German RC shop with cars, trucks, planes, helis and boats, plus a huge range of parts by brand, electronics and tools.",
     ruddog:
       "German RC importer focused on car parts and tuning (Team Associated, Avid, Bittydesign), plus ESCs, motors, batteries and tools.",
+    shamrock:
+      "Model shop in Maastricht (since 1972) with RC cars and lots of parts (Traxxas, Tamiya, Kyosho, Arrma, HPI), plus planes, boats, batteries and radios.",
   },
   deals: {
     outOfStock: "Out of stock",
