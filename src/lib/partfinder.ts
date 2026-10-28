@@ -3,6 +3,7 @@ import "server-only";
 import { connection } from "next/server";
 import type { Prisma } from "@/generated/prisma/client";
 import type { Locale } from "@/i18n/config";
+import { searchCache } from "@/lib/cache";
 import {
   type CompareGroup,
   demoRows,
@@ -17,7 +18,7 @@ import {
   toOffer,
   withSiblings,
 } from "@/lib/compare";
-import { getPrisma, isDbConfigured, searchCache } from "@/lib/db";
+import { getPrisma, isDbConfigured } from "@/lib/db";
 import { hasSearchableTerm, searchTerms, termWhere } from "@/lib/deals";
 
 /**

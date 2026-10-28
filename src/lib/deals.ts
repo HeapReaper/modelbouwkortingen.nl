@@ -2,8 +2,9 @@ import "server-only";
 
 import { connection } from "next/server";
 import type { Prisma } from "@/generated/prisma/client";
+import { cached } from "@/lib/cache";
 import { CATEGORIES } from "@/lib/categories";
-import { cached, getPrisma, isDbConfigured, num } from "@/lib/db";
+import { getPrisma, isDbConfigured, num } from "@/lib/db";
 import { demoDeals, demoHistory } from "@/lib/demo-data";
 import { type DealFilters, PAGE_SIZE, type SortKey } from "@/lib/filters";
 import {

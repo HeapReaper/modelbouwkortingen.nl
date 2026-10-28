@@ -1,7 +1,8 @@
 import "server-only";
 
 import { connection } from "next/server";
-import { cached, forget, getPrisma, isDbConfigured, num } from "@/lib/db";
+import { cached, forget } from "@/lib/cache";
+import { getPrisma, isDbConfigured, num } from "@/lib/db";
 import { type Deal, getDealsByIds } from "@/lib/deals";
 import { SHOPS, type ShopInfo } from "@/lib/shops";
 

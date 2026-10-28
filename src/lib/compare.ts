@@ -3,7 +3,8 @@ import "server-only";
 import { connection } from "next/server";
 import type { Prisma } from "@/generated/prisma/client";
 import type { Locale } from "@/i18n/config";
-import { getPrisma, isDbConfigured, num, searchCache } from "@/lib/db";
+import { searchCache } from "@/lib/cache";
+import { getPrisma, isDbConfigured, num } from "@/lib/db";
 import {
   hasSearchableTerm,
   searchNorm,

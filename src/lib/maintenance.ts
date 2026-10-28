@@ -3,12 +3,14 @@ import "server-only";
 import { createHash } from "node:crypto";
 import type { Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
-import { cached, forget, getPrisma, isDbConfigured } from "@/lib/db";
+import { cached, forget } from "@/lib/cache";
+import { getPrisma, isDbConfigured } from "@/lib/db";
 
 /**
  * Onderhoudsmodus, aan/uit in het adminpanel. De proxy toont bezoekers dan een 503-pagina;
  * /admin, de API-routes en de admin zelf (cookie, gezet bij het inloggen op /admin) niet.
- * De proxy heeft een eigen kopie van de cache, dus een wijziging is daar binnen CACHE_MS zichtbaar.
+ * Met Redis (REDIS_URL) delen de proxy en de pagina's de cache en is een wijziging meteen overal
+ * zichtbaar; zonder Redis heeft de proxy een eigen kopie en duurt dat hooguit CACHE_MS.
  */
 
 export type Maintenance = { enabled: boolean; message: string };

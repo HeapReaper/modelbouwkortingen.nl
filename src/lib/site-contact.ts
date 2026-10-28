@@ -1,7 +1,8 @@
 import "server-only";
 
 import { connection } from "next/server";
-import { cached, forget, getPrisma, isDbConfigured } from "@/lib/db";
+import { cached, forget } from "@/lib/cache";
+import { getPrisma, isDbConfigured } from "@/lib/db";
 import { isSocialPlatform, type SocialPlatform } from "@/lib/social-platforms";
 
 /**

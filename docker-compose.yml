@@ -74,6 +74,8 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
+      redis:
+        condition: service_started
     # Geen `ports:` — Coolify's proxy (Traefik/Caddy) routeert via SERVICE_FQDN_WEB_3000.
     expose:
       - "3000"
@@ -96,6 +98,7 @@ services:
       - NEWSLETTER_SCHEDULER=${NEWSLETTER_SCHEDULER:-}
       - NEWSLETTER_CRON_TOKEN=${NEWSLETTER_CRON_TOKEN:-}
       - LIBRETRANSLATE_URL=${LIBRETRANSLATE_URL:-http://libretranslate:5000}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
       - ALERT_DISCORD_WEBHOOK=${ALERT_DISCORD_WEBHOOK:-}
       - CRAWL_ALERT_RATIO=${CRAWL_ALERT_RATIO:-0.5}
     healthcheck:
@@ -103,6 +106,30 @@ services:
       interval: 30s
       timeout: 5s
       start_period: 20s
+      retries: 3
+
+  # Cache van de website (src/lib/cache.ts): alleen in het geheugen, niets op schijf. Is het vol,
+  # dan gaat wat het langst niet gebruikt is eruit; valt hij weg, dan werkt de site gewoon door
+  # op de database.
+  redis:
+    image: redis:7.4.1-alpine
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --save
+      - ""
+      - --appendonly
+      - "no"
+      - --maxmemory
+      - ${REDIS_MAXMEMORY:-256mb}
+      - --maxmemory-policy
+      - allkeys-lru
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
       retries: 3
 
   # Vertaalt productnamen van Duitse en Franse webshops (gratis, draait op de CPU). Bij de
