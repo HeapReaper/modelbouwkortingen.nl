@@ -51,12 +51,12 @@ func sw6SitemapCategories(ctx context.Context, f *fetch.Fetcher, sitemapURL, bas
 	return out, nil
 }
 
-// inStock bepaalt de voorraadstatus van een kaart; nil gebruikt de schema.org-availability.
-func sw6ParseListing(pageURL string, doc *goquery.Document, inStock func(card *goquery.Selection) *bool) ([]parse.Product, string) {
+// inStock bepaalt de voorraadstatus van een kaart; nil gebruikt sw6InStock. Met detailOnly
+// tellen ook kaarten zonder bestelknop mee (alleen een "Details"-knop); hun UUID staat dan in
+// input[name="product-id"].
+func sw6ParseListing(pageURL string, doc *goquery.Document, inStock func(card *goquery.Selection) *bool, detailOnly bool) ([]parse.Product, string) {
 	if inStock == nil {
-		inStock = func(card *goquery.Selection) *bool {
-			return parse.Availability(attr(card.Find(`[itemprop="availability"]`).First(), "href"))
-		}
+		inStock = sw6InStock
 	}
 	hint := strings.Join(parse.MicrodataCrumbs(doc), " | ")
 	var out []parse.Product
@@ -76,6 +76,9 @@ func sw6ParseListing(pageURL string, doc *goquery.Document, inStock func(card *g
 			InStock:      inStock(card),
 			CategoryHint: hint,
 		}
+		if p.ExternalID == "" && detailOnly {
+			p.ExternalID = attr(card.Find(`input[name="product-id"]`).First(), "value")
+		}
 		if old > p.Price {
 			p.OldPrice = old
 		}
@@ -87,6 +90,20 @@ func sw6ParseListing(pageURL string, doc *goquery.Document, inStock func(card *g
 		return out, ""
 	}
 	return out, sw6NextPage(pageURL, doc)
+}
+
+// sw6InStock leest de schema.org-availability van een kaart, of anders het statusbolletje
+// (.availability-indicator: indicator-available, -limited of -unavailable).
+func sw6InStock(card *goquery.Selection) *bool {
+	if in := parse.Availability(attr(card.Find(`[itemprop="availability"]`).First(), "href")); in != nil {
+		return in
+	}
+	class := attr(card.Find(".availability-indicator").First(), "class")
+	if !strings.Contains(class, "indicator-") {
+		return nil
+	}
+	in := !strings.Contains(class, "indicator-unavailable")
+	return &in
 }
 
 // sw6NextPage geeft dezelfde URL met p=<huidige+1> als de paginering die pagina kent.

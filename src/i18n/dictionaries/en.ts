@@ -225,6 +225,8 @@ export const en: Dictionary = {
       "German RC importer focused on car parts and tuning (Team Associated, Avid, Bittydesign), plus ESCs, motors, batteries and tools.",
     shamrock:
       "Model shop in Maastricht (since 1972) with RC cars and lots of parts (Traxxas, Tamiya, Kyosho, Arrma, HPI), plus planes, boats, batteries and radios.",
+    bauer:
+      "German RC ship specialist: kits, fittings, propellers and shaft drives, plus motors, ESCs, lighting and materials.",
   },
   deals: {
     outOfStock: "Out of stock",

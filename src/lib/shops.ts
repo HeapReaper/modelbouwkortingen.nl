@@ -2,6 +2,7 @@ import type { StaticImageData } from "next/image";
 import aeroberticsLogo from "@/assets/shops/aerobertics.png";
 import area51Logo from "@/assets/shops/area51.png";
 import banggoodLogo from "@/assets/shops/banggood.png";
+import bauerLogo from "@/assets/shops/bauer.png";
 import berlinskiLogo from "@/assets/shops/berlinski.svg";
 import bliekLogo from "@/assets/shops/bliek.png";
 import chinahobbylineLogo from "@/assets/shops/chinahobbyline.png";
@@ -623,6 +624,15 @@ export const SHOPS: ShopInfo[] = [
     logo: shamrockLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "NL",
+  },
+  {
+    slug: "bauer",
+    name: "Bauer Modelle",
+    url: "https://www.bauer-modelle.com",
+    domain: "bauer-modelle.com",
+    logo: bauerLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
   },
 ];
 

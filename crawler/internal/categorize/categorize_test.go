@@ -102,6 +102,8 @@ func TestClassifyGerman(t *testing.T) {
 		{nil, "RC Planes | E-FLITE", "E-flite Timber X 1.2m", "vliegtuigen"},
 		{nil, "LiHV", "CNHL Lightning LiHV 3200mAh 15,2V 4S 120C HV Lipo-accu met XT60-stekker", "accus-laders"},
 		{nil, "Zubehör | Dämpferöl", "Koswork Silicone Fluid (22.5WT | 350cst | 70ml)", "onderdelen"},
+		{nil, "Beschlagteile modern | Reling | rund gedreht", "Relingstütze 2 Durchzüge 20mm", "onderdelen"},
+		{nil, "Schiffsmodelle | Arbeitsschiffe", "Hafenschlepper Bugsier 3 Baukasten", "boten"},
 		{nil, "Element RC | Element RC Crawler Baukästen", "Element RC Enduro Trail Truck Cattleman Kit", "rc-autos"},
 	}
 	for _, c := range cases {

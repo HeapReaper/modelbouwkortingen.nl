@@ -70,7 +70,7 @@ func (s *Lindinger) Discover(ctx context.Context, f *fetch.Fetcher) ([]string, [
 var lindingerPathRe = regexp.MustCompile(`/de/(.+)/[^/]+/\d+$`)
 
 func (s *Lindinger) ParseListing(pageURL string, doc *goquery.Document) ([]parse.Product, string) {
-	products, next := sw6ParseListing(pageURL, doc, lindingerInStock)
+	products, next := sw6ParseListing(pageURL, doc, lindingerInStock, false)
 	// De listing-breadcrumbs zijn maar twee niveaus diep ("RC-Flugzeuge | ...-Antriebe"); het
 	// pad in de product-URL is preciezer (".../Luftschrauben") en houdt propellers bij onderdelen.
 	for i := range products {

@@ -40,7 +40,7 @@ func (s *Shamrock) Discover(ctx context.Context, f *fetch.Fetcher) ([]string, []
 }
 
 func (s *Shamrock) ParseListing(pageURL string, doc *goquery.Document) ([]parse.Product, string) {
-	return sw6ParseListing(pageURL, doc, nil)
+	return sw6ParseListing(pageURL, doc, nil, false)
 }
 
 func (s *Shamrock) ParseProduct(pageURL string, doc *goquery.Document) *parse.Product {

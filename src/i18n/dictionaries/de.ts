@@ -232,6 +232,8 @@ export const de: Dictionary = {
       "RC-Importeur mit Schwerpunkt auf Auto-Ersatz- und Tuningteilen (Team Associated, Avid, Bittydesign) sowie Reglern, Motoren, Akkus und Werkzeug.",
     shamrock:
       "Modellbauladen in Maastricht (seit 1972) mit RC-Autos und vielen Ersatzteilen (Traxxas, Tamiya, Kyosho, Arrma, HPI) sowie Flugzeugen, Booten, Akkus und Fernsteuerungen.",
+    bauer:
+      "Spezialist für RC-Schiffsmodelle: Baukästen, Beschlagteile, Propeller und Wellenantriebe sowie Motoren, Regler, Beleuchtung und Werkstoffe.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
