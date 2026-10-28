@@ -236,6 +236,8 @@ export const de: Dictionary = {
       "Spezialist für RC-Schiffsmodelle: Baukästen, Beschlagteile, Propeller und Wellenantriebe sowie Motoren, Regler, Beleuchtung und Werkstoffe.",
     rcraceshop:
       "RC-Car-Shop aus Berlin mit vielen Ersatz- und Tuningteilen nach Marke und Modell (Traxxas, GPM, Hobao, CEN, Corally) sowie Modellen und Karosserien.",
+    dedition:
+      "Modellbau- und Spielwarenhändler mit RC-Autos, Trucks, Panzern, Flugzeugen und Booten sowie vielen Ersatzteilen nach Marke und Modell.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

@@ -232,6 +232,8 @@ export const nl = {
       "Duitse specialist in RC-schepen: bouwdozen, beslag, schroeven en asaandrijvingen, plus motoren, regelaars, verlichting en materialen.",
     rcraceshop:
       "RC-autoshop uit Berlijn met veel onderdelen en tuning per merk en model (Traxxas, GPM, Hobao, CEN, Corally), plus modellen en karosserieën.",
+    dedition:
+      "Duitse modelbouw- en speelgoedwinkel met RC-auto's, trucks, tanks, vliegtuigen en boten, en veel onderdelen per merk en model.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

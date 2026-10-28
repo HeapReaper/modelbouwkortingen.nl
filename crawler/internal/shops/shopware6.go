@@ -51,6 +51,31 @@ func sw6SitemapCategories(ctx context.Context, f *fetch.Fetcher, sitemapURL, bas
 	return out, nil
 }
 
+// sw6NavCategories leest de onderste categorieën uit de flyout-menu's van de hoofdnavigatie
+// (standaardthema), voor shops waarvan de sitemap categorieën en producten niet onderscheidt.
+// top is de categorie van de flyout zelf.
+func sw6NavCategories(ctx context.Context, f *fetch.Fetcher, pageURL, query string, skip func(top, name string) bool) ([]string, error) {
+	doc, _, err := fetchDoc(ctx, f, pageURL)
+	if err != nil {
+		return nil, err
+	}
+	var out []string
+	doc.Find(".navigation-flyout").Each(func(_ int, fly *goquery.Selection) {
+		top := parse.Clean(attr(fly.Find(".navigation-flyout-category-link a").First(), "title"))
+		fly.Find("a.navigation-flyout-link").Each(func(_ int, a *goquery.Selection) {
+			// Een categorie met subcategorieën heeft die in de .navigation-flyout-categories ernaast.
+			if a.NextFiltered(".navigation-flyout-categories").Find("a.navigation-flyout-link").Length() > 0 {
+				return
+			}
+			name := parse.Clean(firstNonEmpty(attr(a, "title"), a.Text()))
+			if href := stripQuery(attr(a, "href")); href != "" && (skip == nil || !skip(top, name)) {
+				out = append(out, href+query)
+			}
+		})
+	})
+	return dedupe(out), nil
+}
+
 // inStock bepaalt de voorraadstatus van een kaart; nil gebruikt sw6InStock. Met detailOnly
 // tellen ook kaarten zonder bestelknop mee (alleen een "Details"-knop); hun UUID staat dan in
 // input[name="product-id"].
@@ -59,8 +84,13 @@ func sw6ParseListing(pageURL string, doc *goquery.Document, inStock func(card *g
 		inStock = sw6InStock
 	}
 	hint := strings.Join(parse.MicrodataCrumbs(doc), " | ")
+	// Productsliders elders op de pagina ("Beliebte Produkte") horen niet bij de listing.
+	cards := doc.Find(".cms-element-product-listing .card.product-box")
+	if cards.Length() == 0 {
+		cards = doc.Find(".card.product-box")
+	}
 	var out []parse.Product
-	doc.Find(".card.product-box").Each(func(_ int, card *goquery.Selection) {
+	cards.Each(func(_ int, card *goquery.Selection) {
 		link := card.Find("a.product-name").First()
 		price := card.Find(".product-price").First()
 		old := parse.Price(price.Find(".list-price-price").First().Text())
@@ -118,7 +148,8 @@ func sw6NextPage(pageURL string, doc *goquery.Document) string {
 		cur = 1
 	}
 	next := strconv.Itoa(cur + 1)
-	if doc.Find(`.pagination [data-page="`+next+`"], .pagination input[name="p"][value="`+next+`"]`).Length() == 0 {
+	// Een uitgeschakelde "volgende"-knop bevat soms toch het nummer van de volgende pagina.
+	if doc.Find(`.pagination .page-item:not(.disabled) [data-page="`+next+`"], .pagination .page-item:not(.disabled) input[name="p"][value="`+next+`"]`).Length() == 0 {
 		return ""
 	}
 	q.Set("p", next)

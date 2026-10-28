@@ -7,6 +7,7 @@ import berlinskiLogo from "@/assets/shops/berlinski.svg";
 import bliekLogo from "@/assets/shops/bliek.png";
 import chinahobbylineLogo from "@/assets/shops/chinahobbyline.png";
 import copterfarmLogo from "@/assets/shops/copterfarm.png";
+import deditionLogo from "@/assets/shops/dedition.png";
 import dronefpvracerLogo from "@/assets/shops/dronefpvracer.png";
 import droneshopLogo from "@/assets/shops/droneshop.png";
 import ercLogo from "@/assets/shops/erc.png";
@@ -641,6 +642,15 @@ export const SHOPS: ShopInfo[] = [
     url: "https://www.rc-race-shop.de",
     domain: "rc-race-shop.de",
     logo: rcraceshopLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+  },
+  {
+    slug: "dedition",
+    name: "D-Edition",
+    url: "https://www.d-edition.de",
+    domain: "d-edition.de",
+    logo: deditionLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
   },
