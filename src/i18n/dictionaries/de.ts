@@ -222,6 +222,10 @@ export const de: Dictionary = {
       "Portugiesischer RC-Autoladen für Rennfahrer mit Mugen, Ruddog, Reifen, Ersatzteilen, Werkzeug und Elektronik.",
     quartel:
       "Modellbauladen in Pijnacker (seit 1970) mit RC-Autos, Flugzeugen, Helis und Booten sowie Ersatzteilen, Treibstoff, Akkus und Werkzeug.",
+    monsterhopups:
+      "RC-Shop mit Schwerpunkt auf Autos und Trucks von Traxxas, Arrma, Axial und Losi, dazu viele Ersatz- und Tuningteile, Elektronik, Boote und Flugmodelle.",
+    ghw:
+      "Modellbau-Versand für RC-Baumaschinen und Hydraulik, mit Halbzeugen, Schrauben, Antriebstechnik, Elektronik und Werkzeug.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

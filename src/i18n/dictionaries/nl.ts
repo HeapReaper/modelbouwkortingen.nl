@@ -218,6 +218,10 @@ export const nl = {
       "Portugese RC-autowinkel voor wedstrijdrijders met Mugen, Ruddog, banden, onderdelen, gereedschap en elektronica.",
     quartel:
       "Modelbouwwinkel in Pijnacker (sinds 1970) met RC-auto's, vliegtuigen, heli's en boten, plus onderdelen, brandstof, accu's en gereedschap.",
+    monsterhopups:
+      "Duitse RC-shop met vooral auto's en trucks van Traxxas, Arrma, Axial en Losi, plus veel onderdelen, tuning, elektronica, boten en vliegtuigen.",
+    ghw:
+      "Duitse modelbouwshop voor RC-graafmachines en hydrauliek, met materialen, schroeven, aandrijving, elektronica en gereedschap.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

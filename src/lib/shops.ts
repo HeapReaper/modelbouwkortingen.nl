@@ -10,6 +10,7 @@ import dronefpvracerLogo from "@/assets/shops/dronefpvracer.png";
 import droneshopLogo from "@/assets/shops/droneshop.png";
 import ercLogo from "@/assets/shops/erc.png";
 import flashrcLogo from "@/assets/shops/flashrc.svg";
+import ghwLogo from "@/assets/shops/ghw.png";
 import hackerLogo from "@/assets/shops/hacker.png";
 import heligearLogo from "@/assets/shops/heligear.png";
 import helygoLogo from "@/assets/shops/helygo.png";
@@ -20,6 +21,7 @@ import hoelleinLogo from "@/assets/shops/hoellein.png";
 import lindingerLogo from "@/assets/shops/lindinger.svg";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
+import monsterhopupsLogo from "@/assets/shops/monsterhopups.png";
 import mrcmodelismeLogo from "@/assets/shops/mrcmodelisme.png";
 import myrcpitstopLogo from "@/assets/shops/myrcpitstop.png";
 import nfactoryLogo from "@/assets/shops/nfactory.png";
@@ -573,6 +575,24 @@ export const SHOPS: ShopInfo[] = [
     logo: quartelLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "NL",
+  },
+  {
+    slug: "monsterhopups",
+    name: "Monster-Hopups",
+    url: "https://www.monsterhopups.de",
+    domain: "monsterhopups.de",
+    logo: monsterhopupsLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+  },
+  {
+    slug: "ghw",
+    name: "GHW Modellbau",
+    url: "https://ghw-modellbau.de",
+    domain: "ghw-modellbau.de",
+    logo: ghwLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
   },
 ];
 

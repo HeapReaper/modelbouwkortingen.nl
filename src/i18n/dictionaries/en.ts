@@ -215,6 +215,10 @@ export const en: Dictionary = {
       "Portuguese RC car store for racers with Mugen, Ruddog, tyres, parts, tools and electronics.",
     quartel:
       "Model shop in Pijnacker (since 1970) with RC cars, planes, helis and boats, plus parts, fuel, batteries and tools.",
+    monsterhopups:
+      "German RC shop focused on cars and trucks from Traxxas, Arrma, Axial and Losi, with lots of parts, tuning, electronics, boats and planes.",
+    ghw:
+      "German model shop for RC excavators and hydraulics, with materials, screws, drivetrain parts, electronics and tools.",
   },
   deals: {
     outOfStock: "Out of stock",

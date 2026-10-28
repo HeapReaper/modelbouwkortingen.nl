@@ -64,6 +64,9 @@ func jtlParseListing(pageURL string, doc *goquery.Document, query string) ([]par
 			InStock:      parse.Availability(attr(offers.Find(`[itemprop="availability"]`).First(), "href")),
 			CategoryHint: hint,
 		}
+		if p.InStock == nil {
+			p.InStock = jtlSignal(card)
+		}
 		if p.ExternalID != "" && p.URL != "" && p.Name != "" && p.Price > 0 {
 			out = append(out, p)
 		}
@@ -72,6 +75,19 @@ func jtlParseListing(pageURL string, doc *goquery.Document, query string) ([]par
 		return out, ""
 	}
 	return out, jtlNextPage(pageURL, doc, query)
+}
+
+var jtlStatusRe = regexp.MustCompile(`\bstatus-(\d)\b`)
+
+// jtlSignal leest het voorraadlampje (.signal_image status-N) voor shops die geen
+// availability-microdata tonen: status-0 is "nicht verfügbar", hogere statussen zijn leverbaar.
+func jtlSignal(s *goquery.Selection) *bool {
+	m := jtlStatusRe.FindStringSubmatch(attr(s.Find(".signal_image").First(), "class"))
+	if m == nil {
+		return nil
+	}
+	in := m[1] != "0"
+	return &in
 }
 
 var jtlPageRe = regexp.MustCompile(`_s(\d+)$`)
@@ -118,6 +134,9 @@ func jtlParseProduct(pageURL string, doc *goquery.Document) *parse.Product {
 		Price:       parse.Price(attr(main.Find(`meta[itemprop="price"]`).First(), "content")),
 		InStock:     parse.Availability(attr(offer.Find(`[itemprop="availability"]`).First(), "href")),
 		Breadcrumbs: crumbs,
+	}
+	if p.InStock == nil {
+		p.InStock = jtlSignal(main)
 	}
 	if p.Price == 0 || p.Name == "" {
 		return nil
