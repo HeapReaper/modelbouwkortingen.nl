@@ -26,7 +26,9 @@ import rccaronlineLogo from "@/assets/shops/rccaronline.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
 import rcnmoreLogo from "@/assets/shops/rcnmore.png";
 import rcteamLogo from "@/assets/shops/rcteam.png";
+import rcypadelLogo from "@/assets/shops/rcypadel.png";
 import shopzinnigLogo from "@/assets/shops/shopzinnig.png";
+import speedlimitrcLogo from "@/assets/shops/speedlimitrc.png";
 import speelgoedenmodelbouwLogo from "@/assets/shops/speelgoedenmodelbouw.png";
 import stormrcLogo from "@/assets/shops/stormrc.png";
 import tamicoLogo from "@/assets/shops/tamico.png";
@@ -422,6 +424,26 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-black",
     country: "FR",
     language: "fr",
+  },
+  {
+    slug: "speedlimitrc",
+    name: "SpeedLimit RC",
+    url: "https://speedlimitrc.com",
+    domain: "speedlimitrc.com",
+    logo: speedlimitrcLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "ES",
+    language: "es",
+  },
+  {
+    slug: "rcypadel",
+    name: "RC y Pádel",
+    url: "https://www.rcypadel.es",
+    domain: "rcypadel.es",
+    logo: rcypadelLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "ES",
+    language: "es",
   },
 ];
 

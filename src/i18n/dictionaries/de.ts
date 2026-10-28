@@ -194,6 +194,10 @@ export const de: Dictionary = {
       "Finnischer Hubschrauber-Spezialist mit OMPHobby-, SAB-, Tron- und Flywing-Helis und vielen Ersatzteilen sowie Radiomaster-Sendern, Motoren und Akkus.",
     stormrc:
       "Französischer RC-Laden mit Autos und Ersatzteilen von Tamiya, Kyosho und Traxxas sowie Akkus, Reifen und einigen Flugzeugen und Booten.",
+    speedlimitrc:
+      "Spanischer Modellflug-Spezialist mit Flugzeugen von FMS, Freewing und HSD, Benzin- und Turbinenjets und vielen Ersatzteilen sowie Servos und Elektronik.",
+    rcypadel:
+      "Spanischer RC-Laden mit Autos, Motorrädern, Booten, Drohnen, Flugzeugen und Helis sowie Ersatzteilen, Sendern, Akkus und Verbrennungsmotoren.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

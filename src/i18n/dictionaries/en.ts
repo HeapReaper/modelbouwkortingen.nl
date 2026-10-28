@@ -187,6 +187,10 @@ export const en: Dictionary = {
       "Finnish helicopter specialist with OMPHobby, SAB, Tron and Flywing helis and lots of parts, plus Radiomaster transmitters, motors and batteries.",
     stormrc:
       "French RC store with Tamiya, Kyosho and Traxxas cars and parts, plus batteries, tyres and a few planes and boats.",
+    speedlimitrc:
+      "Spanish model aircraft specialist with FMS, Freewing and HSD planes, petrol and turbine jets and lots of parts, plus servos and electronics.",
+    rcypadel:
+      "Spanish RC store with cars, motorbikes, boats, drones, planes and helis, plus parts, transmitters, batteries and glow engines.",
   },
   deals: {
     outOfStock: "Out of stock",

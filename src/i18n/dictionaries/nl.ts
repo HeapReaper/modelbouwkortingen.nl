@@ -190,6 +190,10 @@ export const nl = {
       "Finse helikopterspecialist met OMPHobby-, SAB-, Tron- en Flywing-heli's en veel onderdelen, plus Radiomaster-zenders, motoren en accu's.",
     stormrc:
       "Franse RC-winkel met Tamiya-, Kyosho- en Traxxas-auto's en onderdelen, plus accu's, banden en een paar vliegtuigen en boten.",
+    speedlimitrc:
+      "Spaanse modelvliegspecialist met FMS-, Freewing- en HSD-vliegtuigen, benzine- en turbinejets en veel onderdelen, plus servo's en elektronica.",
+    rcypadel:
+      "Spaanse RC-winkel met auto's, motoren, boten, drones, vliegtuigen en heli's, plus onderdelen, zenders, accu's en verbrandingsmotoren.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

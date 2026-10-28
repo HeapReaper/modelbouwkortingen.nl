@@ -4,7 +4,7 @@
 > [Claude Code](https://claude.com/claude-code), en daarna door een mens nagekeken, getest en
 > uitgerold.
 
-Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 37 Nederlandse, Belgische, Duitse,
+Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 39 Nederlandse, Belgische, Duitse,
 Franse en andere modelbouw-webshops (zie [Crawler](#crawler)). Is een product **minstens €5 of 5%** afgeprijsd, dan
 komt het op de website (Next.js 16 + shadcn/ui).
 
@@ -287,6 +287,8 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | FlashRC (FR) | PrestaShop | geen: alleen de JSON-listing | hoofdcategorie `/fr/2-accueil?ajax=1&resultsPerPage=100` (~215 requests): `?ajax=1` geeft de productlijst als JSON (prijs, `regular_price_amount` als van-prijs, standaardcategorie, merk; geen voorraad). Kleding en bouwmaterialen worden overgeslagen |
 | OriginHobbies (FI) | WooCommerce (WordPress.com) | geen: alleen de Store API (Crawl-delay 30s) | `/wp-json/wc/store/v1/products?per_page=100` (~30 requests, een kwartier per ronde); helikopterspecialist met Engelse namen. Motorcategorieën per klasse ("Micro Class Helicopter Motors") tellen niet mee voor de indeling |
 | Storm RC (FR) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~9 requests); de hoofdcategorieën per voertuig ("Voitures RC", ook bij onderdelen) en de andere verzamelcategorieën tellen niet mee voor de indeling, brandstof wordt overgeslagen |
+| SpeedLimit RC (ES) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~11 requests); modelvliegspecialist, brandstof wordt overgeslagen |
+| RC y Pádel (ES) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~7 requests); padel wordt overgeslagen |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 
