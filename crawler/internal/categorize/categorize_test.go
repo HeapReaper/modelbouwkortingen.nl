@@ -101,6 +101,8 @@ func TestClassifyGerman(t *testing.T) {
 		{nil, "Electronics | Transmitters | Futaba", "Futaba T16IZ", "zenders"},
 		{nil, "RC Planes | E-FLITE", "E-flite Timber X 1.2m", "vliegtuigen"},
 		{nil, "LiHV", "CNHL Lightning LiHV 3200mAh 15,2V 4S 120C HV Lipo-accu met XT60-stekker", "accus-laders"},
+		{nil, "Zubehör | Dämpferöl", "Koswork Silicone Fluid (22.5WT | 350cst | 70ml)", "onderdelen"},
+		{nil, "Element RC | Element RC Crawler Baukästen", "Element RC Enduro Trail Truck Cattleman Kit", "rc-autos"},
 	}
 	for _, c := range cases {
 		if got := Classify(c.crumbs, c.hint, "", c.name); got != c.want {

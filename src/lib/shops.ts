@@ -37,6 +37,7 @@ import rcproLogo from "@/assets/shops/rcpro.png";
 import rcstorealgarveLogo from "@/assets/shops/rcstorealgarve.png";
 import rcteamLogo from "@/assets/shops/rcteam.png";
 import rcypadelLogo from "@/assets/shops/rcypadel.png";
+import ruddogLogo from "@/assets/shops/ruddog.png";
 import scalercbuzzLogo from "@/assets/shops/scalercbuzz.png";
 import shopzinnigLogo from "@/assets/shops/shopzinnig.png";
 import smartmodelismoLogo from "@/assets/shops/smartmodelismo.png";
@@ -601,6 +602,15 @@ export const SHOPS: ShopInfo[] = [
     url: "https://www.rcfox.de",
     domain: "rcfox.de",
     logo: rcfoxLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+  },
+  {
+    slug: "ruddog",
+    name: "RUDDOG",
+    url: "https://www.ruddog.eu",
+    domain: "ruddog.eu",
+    logo: ruddogLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "DE",
   },

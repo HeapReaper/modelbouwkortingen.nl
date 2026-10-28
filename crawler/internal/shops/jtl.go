@@ -41,6 +41,24 @@ func jtlCategories(ctx context.Context, f *fetch.Fetcher, baseURL, query string,
 	return dedupe(out), nil
 }
 
+// jtlCategoryBox leest de onderste categorieën uit de NOVA-categoriebox (.snippets-categories)
+// op pageURL, voor shops waarvan /Sitemap geen categorieën toont. top is de categorie op het
+// hoogste niveau.
+func jtlCategoryBox(ctx context.Context, f *fetch.Fetcher, pageURL, query string, skip func(top, name string) bool) ([]string, error) {
+	doc, _, err := fetchDoc(ctx, f, pageURL)
+	if err != nil {
+		return nil, err
+	}
+	var out []string
+	doc.Find(".snippets-categories-collapse li.nav-item:not(.dropdown) > a[href]").Each(func(_ int, a *goquery.Selection) {
+		top := parse.Clean(a.ParentsFiltered("li.nav-item.dropdown").Last().ChildrenFiltered("span").Find("a").First().Text())
+		if href := stripQuery(attr(a, "href")); href != "" && (skip == nil || !skip(top, parse.Clean(a.Text()))) {
+			out = append(out, href+query)
+		}
+	})
+	return dedupe(out), nil
+}
+
 // jtlParseListing leest de productkaarten van een categoriepagina. `query` komt achter de
 // volgende pagina, omdat de links in de paginering hem verliezen.
 func jtlParseListing(pageURL string, doc *goquery.Document, query string) ([]parse.Product, string) {

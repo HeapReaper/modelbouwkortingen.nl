@@ -221,6 +221,8 @@ export const en: Dictionary = {
       "German model shop for RC excavators and hydraulics, with materials, screws, drivetrain parts, electronics and tools.",
     rcfox:
       "Large German RC shop with cars, trucks, planes, helis and boats, plus a huge range of parts by brand, electronics and tools.",
+    ruddog:
+      "German RC importer focused on car parts and tuning (Team Associated, Avid, Bittydesign), plus ESCs, motors, batteries and tools.",
   },
   deals: {
     outOfStock: "Out of stock",

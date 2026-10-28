@@ -228,6 +228,8 @@ export const de: Dictionary = {
       "Modellbau-Versand für RC-Baumaschinen und Hydraulik, mit Halbzeugen, Schrauben, Antriebstechnik, Elektronik und Werkzeug.",
     rcfox:
       "Großer RC-Shop mit Autos, Trucks, Flugzeugen, Helis und Booten sowie sehr vielen Ersatzteilen nach Marke, Elektronik und Werkzeug.",
+    ruddog:
+      "RC-Importeur mit Schwerpunkt auf Auto-Ersatz- und Tuningteilen (Team Associated, Avid, Bittydesign) sowie Reglern, Motoren, Akkus und Werkzeug.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
