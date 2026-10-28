@@ -216,6 +216,8 @@ export const nl = {
       "Spaanse modelvliegwinkel met Dynam- en Volantex-vliegtuigen, heli-onderdelen, propellers, motoren, servo's, accu's en bouwbenodigdheden.",
     hobby351:
       "Portugese RC-autowinkel voor wedstrijdrijders met Mugen, Ruddog, banden, onderdelen, gereedschap en elektronica.",
+    quartel:
+      "Modelbouwwinkel in Pijnacker (sinds 1970) met RC-auto's, vliegtuigen, heli's en boten, plus onderdelen, brandstof, accu's en gereedschap.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

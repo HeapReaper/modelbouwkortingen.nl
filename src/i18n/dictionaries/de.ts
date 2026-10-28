@@ -220,6 +220,8 @@ export const de: Dictionary = {
       "Spanischer Modellflugladen mit Flugzeugen von Dynam und Volantex, Heli-Ersatzteilen, Propellern, Motoren, Servos, Akkus und Baubedarf.",
     hobby351:
       "Portugiesischer RC-Autoladen für Rennfahrer mit Mugen, Ruddog, Reifen, Ersatzteilen, Werkzeug und Elektronik.",
+    quartel:
+      "Modellbauladen in Pijnacker (seit 1970) mit RC-Autos, Flugzeugen, Helis und Booten sowie Ersatzteilen, Treibstoff, Akkus und Werkzeug.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

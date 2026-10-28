@@ -200,6 +200,16 @@ func jsonldProduct(obj map[string]any) *JSONLDProduct {
 		if price == 0 {
 			price = Price(str(m["lowPrice"]))
 		}
+		// Yoast WooCommerce SEO zet de prijs in priceSpecification.
+		if price == 0 {
+			if spec, ok := m["priceSpecification"].([]any); ok && len(spec) > 0 {
+				if sm, ok := spec[0].(map[string]any); ok {
+					price = Price(str(sm["price"]))
+				}
+			} else if sm, ok := m["priceSpecification"].(map[string]any); ok {
+				price = Price(str(sm["price"]))
+			}
+		}
 		if price > 0 && (p.Price == 0 || price < p.Price) {
 			p.Price = price
 		}

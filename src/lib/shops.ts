@@ -25,6 +25,7 @@ import myrcpitstopLogo from "@/assets/shops/myrcpitstop.png";
 import nfactoryLogo from "@/assets/shops/nfactory.png";
 import originhobbiesLogo from "@/assets/shops/originhobbies.png";
 import premiummodellbauLogo from "@/assets/shops/premiummodellbau.png";
+import quartelLogo from "@/assets/shops/quartel.png";
 import radiocontrolledshopLogo from "@/assets/shops/radiocontrolledshop.png";
 import rccaronlineLogo from "@/assets/shops/rccaronline.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
@@ -563,6 +564,15 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "PT",
     language: "pt",
+  },
+  {
+    slug: "quartel",
+    name: "Quartel",
+    url: "https://quartel.nl",
+    domain: "quartel.nl",
+    logo: quartelLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "NL",
   },
 ];
 

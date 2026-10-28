@@ -213,6 +213,8 @@ export const en: Dictionary = {
       "Spanish model aircraft store with Dynam and Volantex planes, heli parts, propellers, motors, servos, batteries and building supplies.",
     hobby351:
       "Portuguese RC car store for racers with Mugen, Ruddog, tyres, parts, tools and electronics.",
+    quartel:
+      "Model shop in Pijnacker (since 1970) with RC cars, planes, helis and boats, plus parts, fuel, batteries and tools.",
   },
   deals: {
     outOfStock: "Out of stock",
