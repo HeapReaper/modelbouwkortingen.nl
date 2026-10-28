@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { PagerPending } from "@/components/deals/PagerPending";
 import { buttonVariants } from "@/components/ui/button";
 import { getI18n } from "@/i18n/server";
 import { cn } from "@/lib/utils";
@@ -23,7 +24,7 @@ export async function Pager({
   const list = [...pages].sort((a, b) => a - b);
   const btn = cn(
     buttonVariants({ variant: "outline", size: "lg" }),
-    "h-11 min-w-11 text-base",
+    "relative h-11 min-w-11 text-base",
   );
   return (
     <nav
@@ -33,6 +34,7 @@ export async function Pager({
       {page > 1 ? (
         <Link href={href(page - 1)} className={btn} rel="prev">
           <ChevronLeft className="size-4" /> {dict.deals.previous}
+          <PagerPending />
         </Link>
       ) : null}
       {list.map((p, i) => (
@@ -50,12 +52,14 @@ export async function Pager({
             )}
           >
             {p}
+            {p === page ? null : <PagerPending />}
           </Link>
         </span>
       ))}
       {page < totalPages ? (
         <Link href={href(page + 1)} className={btn} rel="next">
           {dict.deals.next} <ChevronRight className="size-4" />
+          <PagerPending />
         </Link>
       ) : null}
     </nav>

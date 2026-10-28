@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { CompareCard } from "@/components/compare/CompareResults";
 import { CompareSubmit } from "@/components/compare/CompareSubmit";
 import { PageHeader } from "@/components/core/PageHeader";
+import { Pager } from "@/components/deals/Pager";
 import {
   InputGroup,
   InputGroupAddon,
@@ -19,6 +20,7 @@ import { getI18n } from "@/i18n/server";
 import { t } from "@/i18n/translate";
 import { CATEGORIES, getCategory } from "@/lib/categories";
 import { type CompareSort, comparePrices } from "@/lib/compare";
+import { withParams } from "@/lib/format";
 import { SHOPS } from "@/lib/shops";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -38,11 +40,25 @@ async function readParams(searchParams: SearchParams) {
     const v = sp[k];
     return (Array.isArray(v) ? v[0] : v)?.trim() || undefined;
   };
+  const page = Number(one("pagina"));
   return {
     q: one("q")?.slice(0, 100),
     inStock: one("voorraad") === "1",
     category: getCategory(one("categorie"))?.slug,
     sort: (one("sort") === "aanbod" ? "aanbod" : "prijs") as CompareSort,
+    page: Number.isInteger(page) && page > 1 ? page : 1,
+  };
+}
+
+type CompareParams = Awaited<ReturnType<typeof readParams>>;
+
+/** De filters als URL-parameters (zelfde namen als het formulier), zonder pagina. */
+function toParams(p: CompareParams) {
+  return {
+    q: p.q,
+    voorraad: p.inStock ? "1" : undefined,
+    categorie: p.category,
+    sort: p.sort === "prijs" ? undefined : p.sort,
   };
 }
 
@@ -155,9 +171,10 @@ async function CompareForm({ searchParams }: { searchParams: SearchParams }) {
 }
 
 async function Results({ searchParams }: { searchParams: SearchParams }) {
-  const { lang, dict } = await getI18n();
+  const { lang, dict, href } = await getI18n();
   const c = dict.comparePage;
-  const { q, inStock, category, sort } = await readParams(searchParams);
+  const params = await readParams(searchParams);
+  const { q, inStock, category, sort } = params;
   if (!q) {
     return (
       <p className="rounded-2xl border border-dashed p-8 text-center text-lg text-muted-foreground">
@@ -165,14 +182,12 @@ async function Results({ searchParams }: { searchParams: SearchParams }) {
       </p>
     );
   }
-  const { groups, truncated } = await comparePrices(q, {
-    inStock,
-    category,
-    sort,
-    lang,
-  });
+  const { groups, total, totalPages, page, truncated } = await comparePrices(
+    q,
+    { inStock, category, sort, lang, page: params.page },
+  );
   const query = `“${q}”`;
-  if (groups.length === 0) {
+  if (total === 0) {
     return (
       <p className="rounded-2xl border border-dashed p-8 text-center text-lg text-muted-foreground">
         {t(c.none, { query })}
@@ -182,13 +197,23 @@ async function Results({ searchParams }: { searchParams: SearchParams }) {
   return (
     <>
       <p className="text-lg font-semibold" aria-live="polite">
-        {groups.length === 1
+        {total === 1
           ? t(c.resultsOne, { query })
-          : t(c.resultsOther, { count: groups.length, query })}
+          : t(c.resultsOther, { count: total, query })}
       </p>
       {groups.map((g) => (
         <CompareCard key={g.key} group={g} />
       ))}
+      <Pager
+        page={page}
+        totalPages={totalPages}
+        href={(p) =>
+          withParams(href("/prijsvergelijker"), {
+            ...toParams(params),
+            pagina: p > 1 ? p : undefined,
+          })
+        }
+      />
       {truncated ? (
         <p className="text-muted-foreground">{c.truncated}</p>
       ) : null}

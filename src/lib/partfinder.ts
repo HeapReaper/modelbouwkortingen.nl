@@ -7,22 +7,21 @@ import {
   type CompareGroup,
   demoRows,
   groupOffers,
+  localizeGroups,
   MAX_AGE_MS,
   MODEL_CATEGORIES,
   normalizeSku,
   type OfferRow,
   SELECT,
-  siblingRows,
   toOffer,
+  withSiblings,
 } from "@/lib/compare";
 import { getPrisma, isDbConfigured } from "@/lib/db";
 import { searchTerms, termWhere } from "@/lib/deals";
-import { localizeDeals } from "@/lib/translate";
 
 /**
  * Partfinder: doorzoekt de hele database (modellen, onderdelen, artikelnummers) en laat per
- * product zien welke webshops het hebben en of het in de aanbieding is. Anders dan de
- * prijsvergelijker zonder harde grens van 60 resultaten: alles, met paginering.
+ * product zien welke webshops het hebben en of het in de aanbieding is, met paginering.
  */
 
 export type PartSort =
@@ -145,35 +144,8 @@ export async function findParts(
 
   // Andere webshops met hetzelfde artikelnummer, alleen voor deze pagina (zonder webshop- en
   // dealfilter: je wilt juist zien waar het nog meer te koop is).
-  if (isDbConfigured() && groups.length > 0) {
-    const shown = groups.flatMap((g) =>
-      g.offers.map((o) => ({ id: BigInt(o.id), sku: g.sku })),
-    );
-    const extra = await siblingRows(base, shown, PART_PAGE_SIZE);
-    if (extra.length > 0) {
-      const byKey = new Map(groups.map((g) => [g.key, g]));
-      const merged = groupOffers([
-        ...groups.flatMap((g) =>
-          g.offers.map((offer) => ({ sku: g.sku, offer })),
-        ),
-        ...extra.map((r) => ({ sku: r.sku, offer: toOffer(r) })),
-      ]).filter((g) => byKey.has(g.key));
-      const mergedByKey = new Map(merged.map((g) => [g.key, g]));
-      groups = groups.map((g) => mergedByKey.get(g.key) ?? g);
-    }
-  }
-
-  if (lang) {
-    const offers = await localizeDeals(
-      groups.flatMap((g) => g.offers),
-      lang,
-    );
-    const byId = new Map(offers.map((o) => [o.id, o]));
-    groups = groups.map((g) => {
-      const localized = g.offers.map((o) => byId.get(o.id) ?? o);
-      return { ...g, name: localized[0].name, offers: localized };
-    });
-  }
+  if (isDbConfigured()) groups = await withSiblings(base, groups);
+  if (lang) groups = await localizeGroups(groups, lang);
 
   return {
     groups,

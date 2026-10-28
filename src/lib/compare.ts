@@ -45,7 +45,6 @@ export type CompareSort = "prijs" | "aanbod";
 export const MAX_AGE_MS = 14 * 24 * 60 * 60_000;
 /** Zoveel treffers op de zoektermen; meer betekent: verfijn de zoekopdracht. */
 const MAX_MATCHES = 300;
-const MAX_GROUPS = 60;
 /**
  * Complete modellen. Bij een brede zoekterm ("losi") zijn de goedkoopste treffers allemaal
  * onderdelen; deze categorieën halen we apart op en gaan voor bij het afkappen.
@@ -101,6 +100,19 @@ export function toOffer(r: Row): Offer {
   };
 }
 
+export const COMPARE_PAGE_SIZE = 24;
+
+export type CompareResults = {
+  /** Alleen de producten (groepen) van deze pagina. */
+  groups: CompareGroup[];
+  /** Aantal producten over alle pagina's. */
+  total: number;
+  totalPages: number;
+  /** De getoonde pagina (begrensd op totalPages). */
+  page: number;
+  truncated: boolean;
+};
+
 export async function comparePrices(
   q: string | undefined,
   opts: {
@@ -108,19 +120,22 @@ export async function comparePrices(
     category?: string;
     sort?: CompareSort;
     lang?: Locale;
+    page?: number;
   } = {},
-): Promise<{ groups: CompareGroup[]; truncated: boolean }> {
+): Promise<CompareResults> {
   await connection();
   const terms = searchTerms(q);
-  if (terms.length === 0) return { groups: [], truncated: false };
+  if (terms.length === 0)
+    return { groups: [], total: 0, totalPages: 0, page: 1, truncated: false };
 
   let rows: OfferRow[];
   let truncated = false;
+  let base: Prisma.ProductWhereInput = {};
   if (!isDbConfigured()) {
     rows = demoRows(terms, opts.category);
   } else {
     const prisma = getPrisma();
-    const base: Prisma.ProductWhereInput = {
+    base = {
       hidden: false,
       shop: { enabled: true },
       lastSeenAt: { gte: new Date(Date.now() - MAX_AGE_MS) },
@@ -143,34 +158,70 @@ export async function comparePrices(
     truncated = buckets.some((b) => b.length > MAX_MATCHES);
     const found = buckets.flatMap((b) => b.slice(0, MAX_MATCHES));
 
+    // Hetzelfde artikelnummer bij andere shops telt mee voor de sortering op aanbod.
     const siblings = await siblingRows(base, found, 100);
     rows = [...found, ...siblings].map((r) => ({
       sku: r.sku,
       offer: toOffer(r),
     }));
   }
-  if (opts.lang) {
-    const offers = await localizeDeals(
-      rows.map((r) => r.offer),
-      opts.lang,
-    );
-    rows = rows.map((r, i) => ({ ...r, offer: offers[i] }));
-  }
 
   const list = groupOffers(rows);
-  const order = (a: CompareGroup, b: CompareGroup) =>
+  list.sort((a, b) =>
     opts.sort === "aanbod"
       ? b.offers.length - a.offers.length ||
         a.offers[0].price - b.offers[0].price
-      : a.offers[0].price - b.offers[0].price;
-  // Te veel treffers: eerst de modellen, aangevuld met de rest; daarna gewoon op volgorde.
-  const isModel = (g: CompareGroup) =>
-    MODEL_CATEGORIES.includes(g.categorySlug);
-  list.sort((a, b) => Number(isModel(b)) - Number(isModel(a)) || order(a, b));
-  return {
-    groups: list.slice(0, MAX_GROUPS).sort(order),
-    truncated: truncated || list.length > MAX_GROUPS,
-  };
+      : a.offers[0].price - b.offers[0].price,
+  );
+  const total = list.length;
+  const totalPages = Math.max(1, Math.ceil(total / COMPARE_PAGE_SIZE));
+  const page = Math.min(Math.max(1, opts.page ?? 1), totalPages);
+  let groups = list.slice(
+    (page - 1) * COMPARE_PAGE_SIZE,
+    page * COMPARE_PAGE_SIZE,
+  );
+  if (isDbConfigured()) groups = await withSiblings(base, groups);
+  if (opts.lang) groups = await localizeGroups(groups, opts.lang);
+  return { groups, total, totalPages, page, truncated };
+}
+
+/**
+ * Vult de groepen van één pagina aan met andere webshops die hetzelfde artikelnummer hebben
+ * (zie siblingRows). Alleen voor de getoonde pagina, dus hooguit één extra query.
+ */
+export async function withSiblings(
+  base: Prisma.ProductWhereInput,
+  groups: CompareGroup[],
+): Promise<CompareGroup[]> {
+  if (groups.length === 0) return groups;
+  const shown = groups.flatMap((g) =>
+    g.offers.map((o) => ({ id: BigInt(o.id), sku: g.sku })),
+  );
+  const extra = await siblingRows(base, shown, groups.length);
+  if (extra.length === 0) return groups;
+  const byKey = new Map(groups.map((g) => [g.key, g]));
+  const merged = groupOffers([
+    ...groups.flatMap((g) => g.offers.map((offer) => ({ sku: g.sku, offer }))),
+    ...extra.map((r) => ({ sku: r.sku, offer: toOffer(r) })),
+  ]).filter((g) => byKey.has(g.key));
+  const mergedByKey = new Map(merged.map((g) => [g.key, g]));
+  return groups.map((g) => mergedByKey.get(g.key) ?? g);
+}
+
+/** Vertaalt de productnamen van de getoonde groepen (de groepsnaam is die van het goedkoopste aanbod). */
+export async function localizeGroups(
+  groups: CompareGroup[],
+  lang: Locale,
+): Promise<CompareGroup[]> {
+  const offers = await localizeDeals(
+    groups.flatMap((g) => g.offers),
+    lang,
+  );
+  const byId = new Map(offers.map((o) => [o.id, o]));
+  return groups.map((g) => {
+    const localized = g.offers.map((o) => byId.get(o.id) ?? o);
+    return { ...g, name: localized[0].name, offers: localized };
+  });
 }
 
 /** Demo-modus (geen DATABASE_URL): de voorbeelddeals als zoekresultaat. */
