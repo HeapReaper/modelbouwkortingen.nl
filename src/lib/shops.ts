@@ -69,6 +69,7 @@ import trxxsLogo from "@/assets/shops/trxxs.png";
 import ttmodelismoLogo from "@/assets/shops/ttmodelismo.png";
 import turbohobbyLogo from "@/assets/shops/turbohobby.png";
 import voltmasterLogo from "@/assets/shops/voltmaster.svg";
+import wartelleLogo from "@/assets/shops/wartelle.png";
 import wetronicLogo from "@/assets/shops/wetronic.png";
 import xtremrcLogo from "@/assets/shops/xtremrc.png";
 
@@ -800,6 +801,16 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "ES",
     language: "es",
+  },
+  {
+    slug: "wartelle",
+    name: "Wartelle Shop",
+    url: "https://www.wartelle-shop.com",
+    domain: "wartelle-shop.com",
+    logo: wartelleLogo,
+    logoBg: "bg-black",
+    country: "FR",
+    language: "fr",
   },
 ];
 

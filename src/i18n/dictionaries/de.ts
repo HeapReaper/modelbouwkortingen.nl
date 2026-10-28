@@ -264,6 +264,8 @@ export const de: Dictionary = {
       "Modellbau-Shop aus Lissabon mit Flugzeugen, Booten, Autos, Elektronik, Akkus, Bespannfolie (Oracover) und Baumaterialien.",
     modelvigo:
       "Spanischer RC-Shop, vor allem mit Ersatzteilen für Nitro- und Elektro-Cars (Mugen, Xray, Kyosho) sowie Silikonöl, Werkzeug und Elektronik.",
+    wartelle:
+      "RC-Shop aus Vieux-Condé (Nordfrankreich) mit Autos, Buggys und Crawlern sowie großem Angebot an Ersatz- und Tuningteilen, Akkus und Nitro-Zubehör.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

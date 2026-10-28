@@ -257,6 +257,8 @@ export const en: Dictionary = {
       "Model shop from Lisbon with planes, boats, cars, electronics, batteries, covering film (Oracover) and building materials.",
     modelvigo:
       "Spanish RC shop focused on parts for nitro and electric cars (Mugen, Xray, Kyosho), plus silicone oil, tools and electronics.",
+    wartelle:
+      "RC shop from Vieux-Condé (northern France) with cars, buggies and crawlers and a large range of spare parts, tuning, batteries and nitro accessories.",
   },
   deals: {
     outOfStock: "Out of stock",

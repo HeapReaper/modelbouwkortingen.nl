@@ -260,6 +260,8 @@ export const nl = {
       "Modelbouwshop uit Lissabon met vliegtuigen, boten, auto's, elektronica, accu's, bespanningsfolie (Oracover) en bouwmaterialen.",
     modelvigo:
       "Spaanse RC-shop met vooral onderdelen voor nitro- en elektrische auto's (Mugen, Xray, Kyosho), plus siliconenolie, gereedschap en elektronica.",
+    wartelle:
+      "RC-shop uit Vieux-Condé (Noord-Frankrijk) met auto's, buggy's en crawlers en een groot aanbod onderdelen, tuning, accu's en nitro-toebehoren.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",
