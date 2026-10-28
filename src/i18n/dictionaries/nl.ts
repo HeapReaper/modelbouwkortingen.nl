@@ -188,6 +188,8 @@ export const nl = {
       "Grote Franse RC-winkel met vliegtuigen, helikopters, auto's, drones en boten, plus zenders, accu's, motoren en onderdelen.",
     originhobbies:
       "Finse helikopterspecialist met OMPHobby-, SAB-, Tron- en Flywing-heli's en veel onderdelen, plus Radiomaster-zenders, motoren en accu's.",
+    stormrc:
+      "Franse RC-winkel met Tamiya-, Kyosho- en Traxxas-auto's en onderdelen, plus accu's, banden en een paar vliegtuigen en boten.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

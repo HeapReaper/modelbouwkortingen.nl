@@ -185,6 +185,8 @@ export const en: Dictionary = {
       "Large French RC store with planes, helicopters, cars, drones and boats, plus transmitters, batteries, motors and parts.",
     originhobbies:
       "Finnish helicopter specialist with OMPHobby, SAB, Tron and Flywing helis and lots of parts, plus Radiomaster transmitters, motors and batteries.",
+    stormrc:
+      "French RC store with Tamiya, Kyosho and Traxxas cars and parts, plus batteries, tyres and a few planes and boats.",
   },
   deals: {
     outOfStock: "Out of stock",

@@ -28,6 +28,7 @@ import rcnmoreLogo from "@/assets/shops/rcnmore.png";
 import rcteamLogo from "@/assets/shops/rcteam.png";
 import shopzinnigLogo from "@/assets/shops/shopzinnig.png";
 import speelgoedenmodelbouwLogo from "@/assets/shops/speelgoedenmodelbouw.png";
+import stormrcLogo from "@/assets/shops/stormrc.png";
 import tamicoLogo from "@/assets/shops/tamico.png";
 import theborderLogo from "@/assets/shops/theborder.png";
 import toemenLogo from "@/assets/shops/toemen.png";
@@ -411,6 +412,16 @@ export const SHOPS: ShopInfo[] = [
     logo: originhobbiesLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "FI",
+  },
+  {
+    slug: "stormrc",
+    name: "Storm RC",
+    url: "https://storm-rc.com",
+    domain: "storm-rc.com",
+    logo: stormrcLogo,
+    logoBg: "bg-black",
+    country: "FR",
+    language: "fr",
   },
 ];
 

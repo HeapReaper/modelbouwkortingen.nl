@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	shopSlug := flag.String("shop", "", "toprc | toemen | wetronic | hoellein | berlinski | minizshop | mgmodellbau | hacker | rcmotorsports | droneshop | tamico | chinahobbyline | hepf | bliek | aerobertics | heligear | area51 | banggood | voltmaster | nfactory | lindinger | rccaronline | premiummodellbau | copterfarm | shopzinnig | hobbyking | speelgoedenmodelbouw | theborder | trxxs | erc | rcnmore | rcteam | mrcmodelisme | dronefpvracer | flashrc | originhobbies")
+	shopSlug := flag.String("shop", "", "toprc | toemen | wetronic | hoellein | berlinski | minizshop | mgmodellbau | hacker | rcmotorsports | droneshop | tamico | chinahobbyline | hepf | bliek | aerobertics | heligear | area51 | banggood | voltmaster | nfactory | lindinger | rccaronline | premiummodellbau | copterfarm | shopzinnig | hobbyking | speelgoedenmodelbouw | theborder | trxxs | erc | rcnmore | rcteam | mrcmodelisme | dronefpvracer | flashrc | originhobbies | stormrc")
 	kind := flag.String("kind", "product", "product | listing")
 	pageURL := flag.String("url", "", "URL van de pagina")
 	flag.Parse()

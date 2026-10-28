@@ -192,6 +192,8 @@ export const de: Dictionary = {
       "Großer französischer RC-Laden mit Flugzeugen, Hubschraubern, Autos, Drohnen und Booten sowie Sendern, Akkus, Motoren und Ersatzteilen.",
     originhobbies:
       "Finnischer Hubschrauber-Spezialist mit OMPHobby-, SAB-, Tron- und Flywing-Helis und vielen Ersatzteilen sowie Radiomaster-Sendern, Motoren und Akkus.",
+    stormrc:
+      "Französischer RC-Laden mit Autos und Ersatzteilen von Tamiya, Kyosho und Traxxas sowie Akkus, Reifen und einigen Flugzeugen und Booten.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
