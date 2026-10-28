@@ -28,6 +28,7 @@ import lindingerLogo from "@/assets/shops/lindinger.svg";
 import metzLogo from "@/assets/shops/metz.png";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
+import modelvigoLogo from "@/assets/shops/modelvigo.png";
 import monsterhopupsLogo from "@/assets/shops/monsterhopups.png";
 import mrcmodelismeLogo from "@/assets/shops/mrcmodelisme.png";
 import myrcpitstopLogo from "@/assets/shops/myrcpitstop.png";
@@ -789,6 +790,16 @@ export const SHOPS: ShopInfo[] = [
     logo: svmodelismoLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "PT",
+  },
+  {
+    slug: "modelvigo",
+    name: "ModelVigo",
+    url: "https://www.modelvigo.es",
+    domain: "modelvigo.es",
+    logo: modelvigoLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "ES",
+    language: "es",
   },
 ];
 

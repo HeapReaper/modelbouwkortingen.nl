@@ -258,6 +258,8 @@ export const nl = {
       "RC-shop uit Kerpen met auto's, heli's, vliegtuigen, boten en drones en een zeer groot aanbod onderdelen van onder meer Traxxas, Axial, Losi, Align en SAB.",
     svmodelismo:
       "Modelbouwshop uit Lissabon met vliegtuigen, boten, auto's, elektronica, accu's, bespanningsfolie (Oracover) en bouwmaterialen.",
+    modelvigo:
+      "Spaanse RC-shop met vooral onderdelen voor nitro- en elektrische auto's (Mugen, Xray, Kyosho), plus siliconenolie, gereedschap en elektronica.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

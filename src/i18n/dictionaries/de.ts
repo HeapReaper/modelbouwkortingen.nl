@@ -262,6 +262,8 @@ export const de: Dictionary = {
       "RC-Shop aus Kerpen mit Autos, Helis, Flugzeugen, Booten und Drohnen sowie riesiger Ersatzteilauswahl, u. a. von Traxxas, Axial, Losi, Align und SAB.",
     svmodelismo:
       "Modellbau-Shop aus Lissabon mit Flugzeugen, Booten, Autos, Elektronik, Akkus, Bespannfolie (Oracover) und Baumaterialien.",
+    modelvigo:
+      "Spanischer RC-Shop, vor allem mit Ersatzteilen für Nitro- und Elektro-Cars (Mugen, Xray, Kyosho) sowie Silikonöl, Werkzeug und Elektronik.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
