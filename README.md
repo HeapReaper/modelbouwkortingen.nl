@@ -4,7 +4,7 @@
 > [Claude Code](https://claude.com/claude-code), en daarna door een mens nagekeken, getest en
 > uitgerold.
 
-Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 43 Nederlandse, Belgische, Duitse,
+Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 44 Nederlandse, Belgische, Duitse,
 Franse en andere modelbouw-webshops (zie [Crawler](#crawler)). Is een product **minstens €5 of 5%** afgeprijsd, dan
 komt het op de website (Next.js 16 + shadcn/ui).
 
@@ -293,6 +293,7 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | scaleRCBuzz (PT) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~6 requests); crawlerspecialist, merchandise wordt overgeslagen |
 | Smart Modelismo (PT) | WooCommerce | geen: alleen de Store API (Crawl-delay 5s) | `/wp-json/wc/store/v1/products?per_page=100` (~128 requests); statische modelbouw, educatief speelgoed, 3D-printen en brandstof worden overgeslagen |
 | RC Store Algarve (PT) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~17 requests); statische modelbouw, speelgoed (Hot Wheels, LEGO) en brandstof worden overgeslagen; "Aviões e Helicópteros" telt niet mee voor de indeling |
+| MyRCPitstop (CY) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~12 requests); de merkcategorieën ("Traxxas RC Cars & Parts") tellen niet mee voor de indeling, cadeaubonnen, brandstof en gebruikte auto's worden overgeslagen |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

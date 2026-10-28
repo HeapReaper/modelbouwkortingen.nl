@@ -206,6 +206,8 @@ export const de: Dictionary = {
       "Großer portugiesischer RC-Laden mit Autos, Crawlern, Panzern, Baufahrzeugen, Flugzeugen und Booten sowie vielen Ersatzteilen, Karosserien und Elektronik.",
     rcstorealgarve:
       "Portugiesischer RC-Laden an der Algarve mit Elektro- und Nitro-Autos, Crawlern, Ersatzteilen, Akkus und Elektronik sowie viel Farbe und Werkzeug.",
+    myrcpitstop:
+      "Zyprischer RC-Laden in Nikosia mit vielen Traxxas-Teilen sowie Sworkz, Xray, Hudy, Kugellagern, Ritzeln, Akkus und Elektronik.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

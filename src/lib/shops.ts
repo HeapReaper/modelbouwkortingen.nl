@@ -19,6 +19,7 @@ import lindingerLogo from "@/assets/shops/lindinger.svg";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import minizshopLogo from "@/assets/shops/minizshop.svg";
 import mrcmodelismeLogo from "@/assets/shops/mrcmodelisme.png";
+import myrcpitstopLogo from "@/assets/shops/myrcpitstop.png";
 import nfactoryLogo from "@/assets/shops/nfactory.png";
 import originhobbiesLogo from "@/assets/shops/originhobbies.png";
 import premiummodellbauLogo from "@/assets/shops/premiummodellbau.png";
@@ -488,6 +489,15 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "PT",
     language: "pt",
+  },
+  {
+    slug: "myrcpitstop",
+    name: "MyRCPitstop",
+    url: "https://myrcpitstop.eu",
+    domain: "myrcpitstop.eu",
+    logo: myrcpitstopLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "CY",
   },
 ];
 

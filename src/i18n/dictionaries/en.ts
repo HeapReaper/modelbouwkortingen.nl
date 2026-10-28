@@ -199,6 +199,8 @@ export const en: Dictionary = {
       "Large Portuguese RC store with cars, crawlers, tanks, construction vehicles, planes and boats, plus lots of parts, bodies and electronics.",
     rcstorealgarve:
       "Portuguese RC store in the Algarve with electric and nitro cars, crawlers, parts, batteries and electronics, plus lots of paint and tools.",
+    myrcpitstop:
+      "Cypriot RC store in Nicosia with lots of Traxxas parts, plus Sworkz, Xray, Hudy, bearings, pinions, batteries and electronics.",
   },
   deals: {
     outOfStock: "Out of stock",
