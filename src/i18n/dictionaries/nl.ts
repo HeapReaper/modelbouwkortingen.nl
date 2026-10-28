@@ -268,6 +268,8 @@ export const nl = {
       "Modelbouwwinkel uit Borgerhout (Antwerpen) met RC-auto's, vliegtuigen, boten, treinen, bouwdozen, verf en veel onderdelen.",
     kopterworx:
       "Dronespecialist uit Leskovec pri Krškem (Slovenië) met DJI-drones, gimbals, frames, motoren, propellers en onderdelen.",
+    elyshop:
+      "RC-shop uit Novara met helikopters, vliegtuigen, drones en auto's, plus veel onderdelen (onder meer Align en DJI), servo's en elektronica.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

@@ -13,6 +13,7 @@ import derkumLogo from "@/assets/shops/derkum.png";
 import dmtLogo from "@/assets/shops/dmt.png";
 import dronefpvracerLogo from "@/assets/shops/dronefpvracer.png";
 import droneshopLogo from "@/assets/shops/droneshop.png";
+import elyshopLogo from "@/assets/shops/elyshop.png";
 import ercLogo from "@/assets/shops/erc.png";
 import flashrcLogo from "@/assets/shops/flashrc.svg";
 import freakwareLogo from "@/assets/shops/freakware.png";
@@ -842,6 +843,15 @@ export const SHOPS: ShopInfo[] = [
     logo: kopterworxLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "SI",
+  },
+  {
+    slug: "elyshop",
+    name: "Elyshop",
+    url: "https://www.elyshop.com",
+    domain: "elyshop.com",
+    logo: elyshopLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "IT",
   },
 ];
 

@@ -272,6 +272,8 @@ export const de: Dictionary = {
       "Modellbaugeschäft aus Borgerhout (Antwerpen) mit RC-Cars, Flugzeugen, Booten, Eisenbahnen, Bausätzen, Farben und vielen Ersatzteilen.",
     kopterworx:
       "Drohnen-Spezialist aus Leskovec pri Krškem (Slowenien) mit DJI-Drohnen, Gimbals, Frames, Motoren, Propellern und Ersatzteilen.",
+    elyshop:
+      "RC-Shop aus Novara mit Helikoptern, Flugzeugen, Drohnen und Autos sowie vielen Ersatzteilen (u. a. Align und DJI), Servos und Elektronik.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

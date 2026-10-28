@@ -265,6 +265,8 @@ export const en: Dictionary = {
       "Model shop from Borgerhout (Antwerp) with RC cars, planes, boats, trains, kits, paint and lots of spare parts.",
     kopterworx:
       "Drone specialist from Leskovec pri Krškem (Slovenia) with DJI drones, gimbals, frames, motors, propellers and spare parts.",
+    elyshop:
+      "RC shop from Novara with helicopters, planes, drones and cars, plus lots of spare parts (including Align and DJI), servos and electronics.",
   },
   deals: {
     outOfStock: "Out of stock",
