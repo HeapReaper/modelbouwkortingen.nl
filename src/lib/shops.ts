@@ -51,6 +51,7 @@ import speedlimitrcLogo from "@/assets/shops/speedlimitrc.png";
 import speelgoedenmodelbouwLogo from "@/assets/shops/speelgoedenmodelbouw.png";
 import stormrcLogo from "@/assets/shops/stormrc.png";
 import tamicoLogo from "@/assets/shops/tamico.png";
+import tflLogo from "@/assets/shops/tfl.png";
 import theborderLogo from "@/assets/shops/theborder.png";
 import todohobbyLogo from "@/assets/shops/todohobby.png";
 import toemenLogo from "@/assets/shops/toemen.png";
@@ -682,6 +683,16 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "IT",
     language: "it",
+  },
+  {
+    slug: "tfl",
+    name: "TFL Hobby",
+    url: "https://www.tfl-hobby.de",
+    domain: "tfl-hobby.de",
+    logo: tflLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "DE",
+    language: "de",
   },
 ];
 

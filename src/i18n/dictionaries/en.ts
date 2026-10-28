@@ -235,6 +235,8 @@ export const en: Dictionary = {
       "German shop for RC car parts and tuning, with lots of small parts, tyres, bodies and tools for racers.",
     jonathan:
       "Italian RC importer and shop with planes, helis, cars and boats from Horizon Hobby, Arrma and Phoenix Model, plus parts and electronics.",
+    tfl:
+      "Shop from Briesen (Brandenburg) for RC speedboats: propellers, drives, flex shafts, motors, water cooling, rudders and exhausts.",
   },
   deals: {
     outOfStock: "Out of stock",

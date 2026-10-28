@@ -242,6 +242,8 @@ export const de: Dictionary = {
       "Shop für RC-Car-Ersatz- und Tuningteile mit vielen Kleinteilen, Reifen, Karosserien und Werkzeug für Rennfahrer.",
     jonathan:
       "Italienischer RC-Importeur und -Shop mit Flugzeugen, Helis, Autos und Booten von Horizon Hobby, Arrma und Phoenix Model sowie Ersatzteilen und Elektronik.",
+    tfl:
+      "Shop aus Briesen (Brandenburg) für RC-Rennboote: Propeller, Antriebe, Flexwellen, Motoren, Wasserkühlung, Ruder und Auspuffanlagen.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",
