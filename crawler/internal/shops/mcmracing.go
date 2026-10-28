@@ -14,10 +14,14 @@ import (
 
 // MCM Racing draait op PrestaShop 1.6 (zonder JSON-listing).
 //
-//   - Nederlandstalige productpagina's (/nl/<categorie>/<id>-<slug>, ~104.000) uit
-//     de Nederlandse sitemaps uit 1_index_sitemap.xml, met JSON-LD of microdata. robots.txt vraagt 10 seconden tussen
+//   - Nederlandstalige productpagina's (/nl/<categorie>/<id>-<slug>, ~104.000) uit de
+//     Nederlandse sitemaps in 1_index_sitemap.xml. robots.txt vraagt 10 seconden tussen
 //     verzoeken, dus een ronde van CRAWLER_MAX_PRODUCT_PAGES pagina's duurt uren en elk product
 //     komt maar af en toe aan de beurt.
+//   - De pagina heeft itemprops zonder schema.org Product-blok (het oude data-vocabulary.org),
+//     dus we lezen ze zelf: naam (h1), prijs (#our_price_display), adviesprijs
+//     (#old_price_display), referentie, merk en availability ("in_stock"). Breadcrumbs zijn
+//     er niet (alleen "MCM Racing"); de indeling gaat op de naam.
 type MCMRacing struct{}
 
 func (*MCMRacing) Slug() string    { return "mcmracing" }
@@ -56,6 +60,30 @@ func (s *MCMRacing) ParseListing(string, *goquery.Document) ([]parse.Product, st
 }
 
 func (s *MCMRacing) ParseProduct(pageURL string, doc *goquery.Document) *parse.Product {
-	p := ldParseProduct(pageURL, doc, mcmracingIDRe)
+	m := mcmracingIDRe.FindStringSubmatch(pageURL)
+	block := doc.Find("#primary_block")
+	name := parse.Clean(block.Find(`h1[itemprop="name"]`).First().Text())
+	if name == "" {
+		name = parse.Clean(doc.Find(`h1[itemprop="name"]`).First().Text())
+	}
+	price := parse.Price(doc.Find("#our_price_display").First().Text())
+	if m == nil || name == "" || price == 0 {
+		return nil
+	}
+	p := &parse.Product{
+		ExternalID: m[1],
+		URL:        stripQuery(pageURL),
+		Name:       name,
+		SKU:        parse.Clean(doc.Find("#product_reference .editable").First().Text()),
+		Brand:      parse.Clean(doc.Find(`[itemprop="brand"]`).First().Text()),
+		ImageURL:   parse.MetaContent(doc, "og:image"),
+		Price:      price,
+	}
+	if old := parse.Price(doc.Find("#old_price_display").First().Text()); old > price {
+		p.OldPrice = old
+	}
+	if av, ok := doc.Find(`[itemprop="availability"]`).First().Attr("content"); ok {
+		p.InStock = parse.Availability(av)
+	}
 	return p
 }

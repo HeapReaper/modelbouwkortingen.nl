@@ -28,6 +28,7 @@ import hoelleinLogo from "@/assets/shops/hoellein.png";
 import jonathanLogo from "@/assets/shops/jonathan.png";
 import kopterworxLogo from "@/assets/shops/kopterworx.png";
 import lindingerLogo from "@/assets/shops/lindinger.svg";
+import mcmracingLogo from "@/assets/shops/mcmracing.png";
 import metzLogo from "@/assets/shops/metz.png";
 import mgmodellbauLogo from "@/assets/shops/mgmodellbau.png";
 import mikadoLogo from "@/assets/shops/mikado.png";
@@ -852,6 +853,15 @@ export const SHOPS: ShopInfo[] = [
     logo: elyshopLogo,
     logoBg: "bg-white ring-1 ring-border",
     country: "IT",
+  },
+  {
+    slug: "mcmracing",
+    name: "MCM Racing",
+    url: "https://www.mcmracing.com",
+    domain: "mcmracing.com",
+    logo: mcmracingLogo,
+    logoBg: "bg-black",
+    country: "BE",
   },
 ];
 

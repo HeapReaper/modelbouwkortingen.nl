@@ -274,6 +274,8 @@ export const de: Dictionary = {
       "Drohnen-Spezialist aus Leskovec pri Krškem (Slowenien) mit DJI-Drohnen, Gimbals, Frames, Motoren, Propellern und Ersatzteilen.",
     elyshop:
       "RC-Shop aus Novara mit Helikoptern, Flugzeugen, Drohnen und Autos sowie vielen Ersatzteilen (u. a. Align und DJI), Servos und Elektronik.",
+    mcmracing:
+      "Großer RC-Shop aus Huizingen mit Autos, Helis, Flugzeugen, Booten und Drohnen sowie riesiger Ersatzteilauswahl, u. a. von Traxxas, Team Associated, Hudy und Schumacher.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

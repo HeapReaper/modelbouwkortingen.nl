@@ -270,6 +270,8 @@ export const nl = {
       "Dronespecialist uit Leskovec pri Krškem (Slovenië) met DJI-drones, gimbals, frames, motoren, propellers en onderdelen.",
     elyshop:
       "RC-shop uit Novara met helikopters, vliegtuigen, drones en auto's, plus veel onderdelen (onder meer Align en DJI), servo's en elektronica.",
+    mcmracing:
+      "Grote RC-shop uit Huizingen met auto's, heli's, vliegtuigen, boten en drones en een zeer groot aanbod onderdelen van onder meer Traxxas, Team Associated, Hudy en Schumacher.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",
