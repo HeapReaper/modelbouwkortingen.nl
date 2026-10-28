@@ -483,6 +483,7 @@ export const nl = {
     deal: "{percent}% korting",
     outOfStock: "Niet op voorraad",
     inStockLabel: "Op voorraad",
+    stockUnknown: "Voorraad onbekend",
     toShop: "Naar shop",
     history: "Prijsverloop",
     disclaimer:

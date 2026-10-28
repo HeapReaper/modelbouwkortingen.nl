@@ -86,7 +86,11 @@ export async function CompareCard({ group }: { group: CompareGroup }) {
                     </span>
                   ) : o.inStock ? (
                     <span className="text-savings">{c.inStockLabel}</span>
-                  ) : null}
+                  ) : (
+                    <span className="text-muted-foreground">
+                      {c.stockUnknown}
+                    </span>
+                  )}
                   {o.isDeal && o.discountPercent > 0 ? (
                     <span className="rounded bg-primary px-1.5 py-0.5 text-xs font-bold text-primary-foreground">
                       {t(c.deal, { percent: Math.round(o.discountPercent) })}

@@ -478,6 +478,7 @@ export const en: Dictionary = {
     deal: "{percent}% off",
     outOfStock: "Out of stock",
     inStockLabel: "In stock",
+    stockUnknown: "Stock unknown",
     toShop: "Go to shop",
     history: "Price history",
     disclaimer:
