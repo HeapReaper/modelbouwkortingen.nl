@@ -191,6 +191,14 @@ export const en: Dictionary = {
       "Spanish model aircraft specialist with FMS, Freewing and HSD planes, petrol and turbine jets and lots of parts, plus servos and electronics.",
     rcypadel:
       "Spanish RC store with cars, motorbikes, boats, drones, planes and helis, plus parts, transmitters, batteries and glow engines.",
+    ttmodelismo:
+      "Portuguese RC car store with crawlers and scale cars, lots of Injora parts, tyres, bodies, electronics and batteries.",
+    scalercbuzz:
+      "Portuguese crawler specialist with RC4WD parts, wheels, tyres, scale accessories, electronics and a few complete cars.",
+    smartmodelismo:
+      "Large Portuguese RC store with cars, crawlers, tanks, construction vehicles, planes and boats, plus lots of parts, bodies and electronics.",
+    rcstorealgarve:
+      "Portuguese RC store in the Algarve with electric and nitro cars, crawlers, parts, batteries and electronics, plus lots of paint and tools.",
   },
   deals: {
     outOfStock: "Out of stock",

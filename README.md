@@ -4,7 +4,7 @@
 > [Claude Code](https://claude.com/claude-code), en daarna door een mens nagekeken, getest en
 > uitgerold.
 
-Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 39 Nederlandse, Belgische, Duitse,
+Kortingssite voor RC/modelbouw. Een Go-crawler volgt de producten van 43 Nederlandse, Belgische, Duitse,
 Franse en andere modelbouw-webshops (zie [Crawler](#crawler)). Is een product **minstens €5 of 5%** afgeprijsd, dan
 komt het op de website (Next.js 16 + shadcn/ui).
 
@@ -289,6 +289,10 @@ Per shop staat in `crawler/internal/shops/*.go` hoe de site in elkaar zit:
 | Storm RC (FR) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~9 requests); de hoofdcategorieën per voertuig ("Voitures RC", ook bij onderdelen) en de andere verzamelcategorieën tellen niet mee voor de indeling, brandstof wordt overgeslagen |
 | SpeedLimit RC (ES) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~11 requests); modelvliegspecialist, brandstof wordt overgeslagen |
 | RC y Pádel (ES) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~7 requests); padel wordt overgeslagen |
+| TTmodelismo (PT) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~41 requests); ruilkaarten, Warhammer, speelgoed, merchandise, treinen en brandstof worden overgeslagen (op categorie en op URL: producten staan vaak alleen in de diepste categorie) |
+| scaleRCBuzz (PT) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~6 requests); crawlerspecialist, merchandise wordt overgeslagen |
+| Smart Modelismo (PT) | WooCommerce | geen: alleen de Store API (Crawl-delay 5s) | `/wp-json/wc/store/v1/products?per_page=100` (~128 requests); statische modelbouw, educatief speelgoed, 3D-printen en brandstof worden overgeslagen |
+| RC Store Algarve (PT) | WooCommerce | geen: alleen de Store API | `/wp-json/wc/store/v1/products?per_page=100` (~17 requests); statische modelbouw, speelgoed (Hot Wheels, LEGO) en brandstof worden overgeslagen; "Aviões e Helicópteros" telt niet mee voor de indeling |
 
 `wetronics.nl` verwijst door naar **wetronic.nl**; daarom heet de shop `wetronic`.
 

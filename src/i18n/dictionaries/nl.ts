@@ -194,6 +194,14 @@ export const nl = {
       "Spaanse modelvliegspecialist met FMS-, Freewing- en HSD-vliegtuigen, benzine- en turbinejets en veel onderdelen, plus servo's en elektronica.",
     rcypadel:
       "Spaanse RC-winkel met auto's, motoren, boten, drones, vliegtuigen en heli's, plus onderdelen, zenders, accu's en verbrandingsmotoren.",
+    ttmodelismo:
+      "Portugese RC-autowinkel met crawlers en scale-auto's, veel Injora-onderdelen, banden, carrosserieën, elektronica en accu's.",
+    scalercbuzz:
+      "Portugese crawlerspecialist met RC4WD-onderdelen, velgen, banden, scale-accessoires, elektronica en een paar complete auto's.",
+    smartmodelismo:
+      "Grote Portugese RC-winkel met auto's, crawlers, tanks, werkvoertuigen, vliegtuigen en boten, plus veel onderdelen, carrosserieën en elektronica.",
+    rcstorealgarve:
+      "Portugese RC-winkel in de Algarve met elektrische en nitro-auto's, crawlers, onderdelen, accu's en elektronica, plus veel verf en gereedschap.",
   } as Record<string, string>,
   deals: {
     outOfStock: "Niet op voorraad",

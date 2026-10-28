@@ -198,6 +198,14 @@ export const de: Dictionary = {
       "Spanischer Modellflug-Spezialist mit Flugzeugen von FMS, Freewing und HSD, Benzin- und Turbinenjets und vielen Ersatzteilen sowie Servos und Elektronik.",
     rcypadel:
       "Spanischer RC-Laden mit Autos, Motorrädern, Booten, Drohnen, Flugzeugen und Helis sowie Ersatzteilen, Sendern, Akkus und Verbrennungsmotoren.",
+    ttmodelismo:
+      "Portugiesischer RC-Autoladen mit Crawlern und Scale-Autos, vielen Injora-Teilen, Reifen, Karosserien, Elektronik und Akkus.",
+    scalercbuzz:
+      "Portugiesischer Crawler-Spezialist mit RC4WD-Teilen, Felgen, Reifen, Scale-Zubehör, Elektronik und einigen kompletten Autos.",
+    smartmodelismo:
+      "Großer portugiesischer RC-Laden mit Autos, Crawlern, Panzern, Baufahrzeugen, Flugzeugen und Booten sowie vielen Ersatzteilen, Karosserien und Elektronik.",
+    rcstorealgarve:
+      "Portugiesischer RC-Laden an der Algarve mit Elektro- und Nitro-Autos, Crawlern, Ersatzteilen, Akkus und Elektronik sowie viel Farbe und Werkzeug.",
   },
   deals: {
     outOfStock: "Nicht auf Lager",

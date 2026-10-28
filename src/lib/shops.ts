@@ -25,9 +25,12 @@ import premiummodellbauLogo from "@/assets/shops/premiummodellbau.png";
 import rccaronlineLogo from "@/assets/shops/rccaronline.png";
 import rcmotorsportsLogo from "@/assets/shops/rcmotorsports.png";
 import rcnmoreLogo from "@/assets/shops/rcnmore.png";
+import rcstorealgarveLogo from "@/assets/shops/rcstorealgarve.png";
 import rcteamLogo from "@/assets/shops/rcteam.png";
 import rcypadelLogo from "@/assets/shops/rcypadel.png";
+import scalercbuzzLogo from "@/assets/shops/scalercbuzz.png";
 import shopzinnigLogo from "@/assets/shops/shopzinnig.png";
+import smartmodelismoLogo from "@/assets/shops/smartmodelismo.png";
 import speedlimitrcLogo from "@/assets/shops/speedlimitrc.png";
 import speelgoedenmodelbouwLogo from "@/assets/shops/speelgoedenmodelbouw.png";
 import stormrcLogo from "@/assets/shops/stormrc.png";
@@ -36,6 +39,7 @@ import theborderLogo from "@/assets/shops/theborder.png";
 import toemenLogo from "@/assets/shops/toemen.png";
 import toprcLogo from "@/assets/shops/toprc.svg";
 import trxxsLogo from "@/assets/shops/trxxs.png";
+import ttmodelismoLogo from "@/assets/shops/ttmodelismo.png";
 import voltmasterLogo from "@/assets/shops/voltmaster.svg";
 import wetronicLogo from "@/assets/shops/wetronic.png";
 
@@ -444,6 +448,46 @@ export const SHOPS: ShopInfo[] = [
     logoBg: "bg-white ring-1 ring-border",
     country: "ES",
     language: "es",
+  },
+  {
+    slug: "ttmodelismo",
+    name: "TTmodelismo",
+    url: "https://ttmodelismo.com",
+    domain: "ttmodelismo.com",
+    logo: ttmodelismoLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "PT",
+    language: "pt",
+  },
+  {
+    slug: "scalercbuzz",
+    name: "scaleRCBuzz",
+    url: "https://scalercbuzz.com",
+    domain: "scalercbuzz.com",
+    logo: scalercbuzzLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "PT",
+    language: "pt",
+  },
+  {
+    slug: "smartmodelismo",
+    name: "Smart Modelismo",
+    url: "https://smartmodelismo.pt",
+    domain: "smartmodelismo.pt",
+    logo: smartmodelismoLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "PT",
+    language: "pt",
+  },
+  {
+    slug: "rcstorealgarve",
+    name: "RC Store Algarve",
+    url: "https://rcstorealgarve.pt",
+    domain: "rcstorealgarve.pt",
+    logo: rcstorealgarveLogo,
+    logoBg: "bg-white ring-1 ring-border",
+    country: "PT",
+    language: "pt",
   },
 ];
 
