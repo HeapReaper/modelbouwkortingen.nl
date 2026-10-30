@@ -196,7 +196,9 @@ export async function getDeals(
   for (const term of searchTerms(filters.q)) and.push(termWhere(term));
   const where: Prisma.ProductWhereInput = { AND: and };
   const prisma = getPrisma();
-  const [rows, total] = await prisma.$transaction([
+  // Bewust geen $transaction: die breekt na 5 s af, en een telling die een fractie afwijkt
+  // van de pagina is geen probleem.
+  const [rows, total] = await Promise.all([
     prisma.product.findMany({
       select: DEAL_SELECT,
       where,

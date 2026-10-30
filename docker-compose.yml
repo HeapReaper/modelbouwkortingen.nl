@@ -143,8 +143,13 @@ services:
     environment:
       - LT_LOAD_ONLY=de,fr,es,it,pt,nl,en
       - LT_DISABLE_WEB_UI=true
+      # Aantal workers (standaard 4), elk met de modellen in het geheugen. Eén is genoeg: de
+      # planner vertaalt één batch tegelijk.
+      - LT_THREADS=${LIBRETRANSLATE_WORKERS:-1}
     volumes:
       - ltmodels:/home/libretranslate/.local
+    # Vertalen mag de hele CPU niet opeisen: Postgres en de website draaien op dezelfde machine.
+    cpus: ${LIBRETRANSLATE_CPUS:-1}
 
 volumes:
   pgdata:
