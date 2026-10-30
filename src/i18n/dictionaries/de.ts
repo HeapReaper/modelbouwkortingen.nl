@@ -224,8 +224,7 @@ export const de: Dictionary = {
       "Modellbauladen in Pijnacker (seit 1970) mit RC-Autos, Flugzeugen, Helis und Booten sowie Ersatzteilen, Treibstoff, Akkus und Werkzeug.",
     monsterhopups:
       "RC-Shop mit Schwerpunkt auf Autos und Trucks von Traxxas, Arrma, Axial und Losi, dazu viele Ersatz- und Tuningteile, Elektronik, Boote und Flugmodelle.",
-    ghw:
-      "Modellbau-Versand für RC-Baumaschinen und Hydraulik, mit Halbzeugen, Schrauben, Antriebstechnik, Elektronik und Werkzeug.",
+    ghw: "Modellbau-Versand für RC-Baumaschinen und Hydraulik, mit Halbzeugen, Schrauben, Antriebstechnik, Elektronik und Werkzeug.",
     rcfox:
       "Großer RC-Shop mit Autos, Trucks, Flugzeugen, Helis und Booten sowie sehr vielen Ersatzteilen nach Marke, Elektronik und Werkzeug.",
     ruddog:
@@ -242,10 +241,8 @@ export const de: Dictionary = {
       "Shop für RC-Car-Ersatz- und Tuningteile mit vielen Kleinteilen, Reifen, Karosserien und Werkzeug für Rennfahrer.",
     jonathan:
       "Italienischer RC-Importeur und -Shop mit Flugzeugen, Helis, Autos und Booten von Horizon Hobby, Arrma und Phoenix Model sowie Ersatzteilen und Elektronik.",
-    tfl:
-      "Shop aus Briesen (Brandenburg) für RC-Rennboote: Propeller, Antriebe, Flexwellen, Motoren, Wasserkühlung, Ruder und Auspuffanlagen.",
-    dmt:
-      "Modellbau-Shop aus Dobl-Zwaring (Steiermark) mit Flugzeugen, Helis, RC-Cars und Drohnen sowie vielen Motoren, Servos, Elektronik, Akkus und Werkstoffen.",
+    tfl: "Shop aus Briesen (Brandenburg) für RC-Rennboote: Propeller, Antriebe, Flexwellen, Motoren, Wasserkühlung, Ruder und Auspuffanlagen.",
+    dmt: "Modellbau-Shop aus Dobl-Zwaring (Steiermark) mit Flugzeugen, Helis, RC-Cars und Drohnen sowie vielen Motoren, Servos, Elektronik, Akkus und Werkstoffen.",
     rceurope:
       "Niederländischer Hersteller von gelaserten RC-Flugzeugbausätzen (Scale, Warbirds, Vintage) mit Bauplänen und Zubehör.",
     turbohobby:
@@ -254,8 +251,7 @@ export const de: Dictionary = {
       "RC-Shop aus Landivisiau (Bretagne) mit Schwerpunkt auf Autos und Ersatzteilen (Traxxas, Team Associated, Xray, Hobbytech) sowie Reifen, Elektronik, Akkus und Pflege.",
     derkum:
       "Modellbau-Shop aus Köln mit Flugmodellen, RC-Cars, Schiffen, Fernsteuerungen, Elektronik und Motoren sowie vielen Ersatzteilen und Werkstoffen.",
-    metz:
-      "Shop aus Singhofen (Rheinland-Pfalz) mit RC-Cars und großem Angebot an Ersatz- und Tuningteilen, u. a. von Traxxas, Arrma und JS-Parts.",
+    metz: "Shop aus Singhofen (Rheinland-Pfalz) mit RC-Cars und großem Angebot an Ersatz- und Tuningteilen, u. a. von Traxxas, Arrma und JS-Parts.",
     rotorama:
       "FPV-Spezialist aus Prag mit Drohnen, Frames, Motoren, Flightcontrollern, digitalen Videosystemen, Brillen und Akkus.",
     freakware:
@@ -422,6 +418,38 @@ export const de: Dictionary = {
     metaDescription:
       "Alle aktuellen Angebote von {name} ({domain}) mit mindestens 5 € oder 5 % Rabatt.",
     visit: "Zu {domain}",
+    factsTitle: "Über {name}",
+    summary:
+      "Wir verfolgen {count} Produkte von {name}. Davon sind gerade {deals} im Angebot, im Schnitt {avg} günstiger als der höchste Preis, den wir in den 30 Tagen davor bei {name} gesehen haben.",
+    summaryNoDeals:
+      "Wir verfolgen {count} Produkte von {name}. Im Moment ist kein Produkt mindestens 5 € oder 5 % günstiger als der Preis, den wir dort vorher gesehen haben.",
+    statProducts: "Verfolgte Produkte",
+    statDeals: "Gerade im Angebot",
+    statAvg: "Durchschnittlicher Rabatt",
+    statAvgHint: "Höchster: {max}",
+    statDrops: "Preissenkungen pro Woche",
+    statDropsHint: "{count} in den letzten {days} Tagen",
+    statChecked: "In 24 Stunden geprüft",
+    statCheckedHint: "Zuletzt {ago}",
+    statStock: "Auf Lager",
+    statStockHint: "{percent} der Produkte",
+    country: "Land",
+    countryUnknown: "Nicht eindeutig",
+    shipping: "Versand in die Niederlande",
+    shippingFreeFrom: "{cost}, kostenlos ab {free}",
+    shippingFree: "Kostenlos",
+    language: "Produktnamen",
+    languageTranslated: "{language}, von uns automatisch übersetzt",
+    languageDefault: "Niederländisch oder Englisch",
+    trackedSince: "Verfolgt seit",
+    affiliate: "Provision",
+    affiliateText:
+      "Kaufst du über unseren Link, bekommen wir eine kleine Provision. Du zahlst dasselbe, und es ändert nichts daran, welche Angebote wir zeigen.",
+    affiliateNone: "Nein, wir verdienen nichts an Käufen bei diesem Shop.",
+    categoriesTitle: "Die meisten Produkte in",
+    categoryCount: "{products} Produkte · {deals} Angebote",
+    method: "Alle Zahlen stammen aus unserer eigenen Preishistorie. {link}",
+    methodLink: "So berechnen wir Rabatte",
   },
   searchPage: {
     title: "Suchen",
@@ -543,9 +571,90 @@ export const de: Dictionary = {
   about: {
     title: "Wie funktioniert es?",
     metaDescription:
-      "So findet Modelbouwkortingen.nl die besten RC-Angebote, plus Informationen für Shops über unseren Crawler.",
+      "So sammelt und prüft Modelbouwkortingen.nl RC-Preise, so berechnen wir Rabatte und den niedrigsten Preis, und so verdienen wir Geld.",
     description:
       "Modelbouwkortingen.nl sammelt automatisch RC-Angebote von niederländischen und anderen europäischen Modellbaushops, damit du nicht überall suchen musst.",
+    statsLine:
+      "Im Moment verfolgen wir {products} Produkte bei {shops} Shops. Davon sind {deals} im Angebot.",
+    sections: [
+      {
+        id: "wie",
+        title: "Wer steckt dahinter?",
+        text: [
+          "Modelbouwkortingen.nl ist eine unabhängige Website. Kein Shop ist Eigentümer oder Miteigentümer, und ein Shop kann nicht für einen höheren Rabatt oder einen besseren Platz zwischen den normalen Angeboten bezahlen.",
+          "Den Crawler, die Preishistorie und die Website bauen und pflegen wir selbst. Jede Frage, jeden Fehler und jeden Tipp über das Kontaktformular lesen und beantworten wir selbst.",
+        ],
+        list: [],
+        after: [],
+      },
+      {
+        id: "verdienen",
+        title: "Wie verdienen wir Geld?",
+        text: ["Die Website ist kostenlos. Wir verdienen auf drei Arten:"],
+        list: [
+          "Werbung über Google AdSense.",
+          "Eine kleine Provision bei einigen Shops, wenn du über unseren Link etwas kaufst. Du zahlst dasselbe. Auf der Seite jedes Shops steht, ob das bei diesem Shop so ist.",
+          "Bezahlte Platzierungen: Ein Shop kann sich selbst oder ein Produkt hervorheben lassen. Diese Platzierungen stehen immer getrennt und tragen immer das Label „Gesponsert“.",
+        ],
+        after: [
+          "Keine dieser Einnahmen ändert die Preise oder Rabatte oder welche Produkte wir als Angebot zeigen. Das entscheidet nur der Crawler, nach den Regeln unten.",
+        ],
+      },
+      {
+        id: "verzamelen",
+        title: "So sammeln wir Preise",
+        text: [
+          "Wir verfolgen nur Shops, die in Euro verkaufen. Für jeden Shop bauen und testen wir eine eigene Anbindung in unserem Crawler, damit wir die Preise richtig auslesen.",
+        ],
+        list: [
+          "Der Crawler liest die öffentlichen Produktseiten und Kategorieübersichten: Name, Preis, einen eventuellen Streichpreis, Lagerbestand, Bild, Artikelnummer und Kategorie.",
+          "Jede Preisänderung speichern wir in unserer eigenen Preishistorie. Daraus stammen die Preisdiagramme auf den Produktseiten und alle Rabatte auf dieser Website.",
+          "Wir ordnen jedes Produkt unseren eigenen Kategorien zu, anhand der Kategorie im Shop und des Produktnamens.",
+          "Produktnamen aus französischen, spanischen, italienischen und portugiesischen Shops übersetzen wir automatisch mit unserem eigenen Übersetzungsserver. Den Originalnamen speichern wir ebenfalls.",
+        ],
+        after: [],
+      },
+      {
+        id: "controleren",
+        title: "So prüfen wir Preise",
+        text: [],
+        list: [
+          "Ein Rabatt von mehr als 90 % ist fast immer ein Auslesefehler. Den zeigen wir nicht als Angebot.",
+          "Sehen wir ein Produkt 4 Tage lang nicht mehr im Shop, verschwindet das Angebot. Liefert die Produktseite einen Fehler (404), sofort.",
+          "Findet der Crawler bei einem Shop plötzlich viel weniger Produkte als in den vorigen Runden, bekommen wir eine Meldung und schauen nach, was los ist. Meistens wurde der Shop umgebaut und wir passen die Anbindung an.",
+          "Stimmt trotzdem etwas nicht? Melde es über das Kontaktformular, dann korrigieren wir es.",
+        ],
+        after: ["Maßgeblich ist immer der Preis auf der Website des Shops."],
+      },
+      {
+        id: "korting",
+        title: "So berechnen wir Rabatte",
+        text: [
+          "Wir verwenden nie den Streichpreis, den ein Shop selbst zeigt. Das ist manchmal eine unverbindliche Preisempfehlung, die in diesem Shop nie gegolten hat. Wir vergleichen nur mit Preisen, die wir selbst im selben Shop gesehen haben.",
+        ],
+        list: [
+          "Referenzpreis: der höchste Preis, den wir in den letzten 30 Tagen in diesem Shop gesehen haben.",
+          "Rabatt: der Referenzpreis minus der aktuelle Preis, und dieser Betrag als Prozentsatz des Referenzpreises.",
+          "Ein Produkt ist ein Angebot ab 5 € oder 5 % Rabatt. Banggood und HobbyKing rechnen ihre Preise aus Dollar um; dort bewegt sich der Europreis schon mit dem Wechselkurs um ein paar Prozent. Bei diesen beiden zählen wir deshalb nur Rabatte ab 8 %.",
+          "Solange das Angebot läuft, bleibt der Referenzpreis gleich. Steigt der Preis wieder, endet das Angebot, und die Preise davor zählen für ein nächstes Angebot nicht mehr mit.",
+        ],
+        after: [
+          "Beispiel: Hat ein Auto in den letzten Wochen 100 € gekostet und kostet jetzt 85 €, beträgt der Rabatt 15 €, also 15 %.",
+        ],
+      },
+      {
+        id: "laagste",
+        title: "Was bedeutet „niedrigster Preis“?",
+        text: [],
+        list: [
+          "„Niedrigster Preis in 30 Tagen“: Wir verfolgen das Produkt seit mindestens 30 Tagen, und der aktuelle Preis ist der niedrigste, den wir in den letzten 30 Tagen gesehen haben.",
+          "„Niedrigster Preis aller Zeiten“: Wir verfolgen das Produkt seit mindestens 60 Tagen, und der aktuelle Preis ist der niedrigste, den wir je in diesem Shop gesehen haben. „Aller Zeiten“ heißt also: seit wir das Produkt verfolgen.",
+        ],
+        after: [
+          "Beide Labels beziehen sich auf einen einzelnen Shop. Ob ein anderer Shop dasselbe Produkt günstiger hat, siehst du im Preisvergleich.",
+        ],
+      },
+    ],
     faqTitle: "Häufige Fragen",
     faq: [
       {

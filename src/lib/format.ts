@@ -26,7 +26,12 @@ export function formatters(lang: Locale) {
     day: "numeric",
     month: "short",
   });
+  const longDate = new Intl.DateTimeFormat(locale, {
+    dateStyle: "long",
+    timeZone: "Europe/Amsterdam",
+  });
   const regions = new Intl.DisplayNames(locale, { type: "region" });
+  const languages = new Intl.DisplayNames(locale, { type: "language" });
   return {
     euro: (value: number, opts?: { round?: boolean }) =>
       (opts?.round ? euroRound : euro).format(value),
@@ -41,10 +46,20 @@ export function formatters(lang: Locale) {
     dateTime: (iso: string | null | undefined) =>
       iso ? dateTime.format(new Date(iso)) : "—",
     shortDate: (date: Date | number) => shortDate.format(date),
+    /** "30 oktober 2026". */
+    longDate: (date: Date | number) => longDate.format(date),
     /** "DE" → "Duitsland" / "Germany" / "Deutschland". */
     country: (code: string) => {
       try {
         return regions.of(code) ?? code;
+      } catch {
+        return code;
+      }
+    },
+    /** "de" → "Duits" / "German" / "Deutsch". */
+    language: (code: string) => {
+      try {
+        return languages.of(code) ?? code;
       } catch {
         return code;
       }

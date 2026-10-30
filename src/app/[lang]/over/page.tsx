@@ -1,6 +1,7 @@
 import { Bot, HelpCircle } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { PageHeader } from "@/components/core/PageHeader";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import {
@@ -11,7 +12,8 @@ import {
 } from "@/components/ui/accordion";
 import { alternates } from "@/i18n/metadata";
 import { getI18n } from "@/i18n/server";
-import { rich } from "@/i18n/translate";
+import { rich, t } from "@/i18n/translate";
+import { getSiteStats } from "@/lib/deals";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { lang, dict } = await getI18n();
@@ -39,6 +41,38 @@ export default async function OverPage() {
       />
       <div className="flex flex-col gap-14 py-10">
         <HowItWorks />
+
+        <section className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4">
+          <Suspense fallback={null}>
+            <StatsLine />
+          </Suspense>
+          {a.sections.map((s) => (
+            <div
+              key={s.id}
+              id={s.id}
+              className="flex scroll-mt-28 flex-col gap-3"
+            >
+              <h2 className="text-2xl font-black">{s.title}</h2>
+              {s.text.map((p) => (
+                <p key={p} className="text-base">
+                  {p}
+                </p>
+              ))}
+              {s.list.length > 0 ? (
+                <ul className="list-disc space-y-2 pl-6 text-base">
+                  {s.list.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              ) : null}
+              {s.after.map((p) => (
+                <p key={p} className="text-base text-muted-foreground">
+                  {p}
+                </p>
+              ))}
+            </div>
+          ))}
+        </section>
 
         <section className="mx-auto w-full max-w-3xl px-4">
           <h2 className="mb-4 text-2xl font-black">{a.faqTitle}</h2>
@@ -94,5 +128,20 @@ export default async function OverPage() {
         </section>
       </div>
     </>
+  );
+}
+
+/** Live cijfers, zodat de uitleg hierboven bij de huidige stand hoort. */
+async function StatsLine() {
+  const { dict, fmt } = await getI18n();
+  const stats = await getSiteStats();
+  return (
+    <p className="rounded-2xl border bg-card p-5 text-lg font-semibold">
+      {t(dict.about.statsLine, {
+        products: fmt.number(stats.products),
+        shops: fmt.number(stats.shops),
+        deals: fmt.number(stats.deals),
+      })}
+    </p>
   );
 }

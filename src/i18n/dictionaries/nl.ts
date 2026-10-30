@@ -220,8 +220,7 @@ export const nl = {
       "Modelbouwwinkel in Pijnacker (sinds 1970) met RC-auto's, vliegtuigen, heli's en boten, plus onderdelen, brandstof, accu's en gereedschap.",
     monsterhopups:
       "Duitse RC-shop met vooral auto's en trucks van Traxxas, Arrma, Axial en Losi, plus veel onderdelen, tuning, elektronica, boten en vliegtuigen.",
-    ghw:
-      "Duitse modelbouwshop voor RC-graafmachines en hydrauliek, met materialen, schroeven, aandrijving, elektronica en gereedschap.",
+    ghw: "Duitse modelbouwshop voor RC-graafmachines en hydrauliek, met materialen, schroeven, aandrijving, elektronica en gereedschap.",
     rcfox:
       "Grote Duitse RC-shop met auto's, trucks, vliegtuigen, heli's en boten, en heel veel onderdelen per merk, elektronica en gereedschap.",
     ruddog:
@@ -238,10 +237,8 @@ export const nl = {
       "Duitse shop voor RC-auto-onderdelen en tuning, met veel kleine onderdelen, banden, karosserieën en gereedschap voor wedstrijdrijders.",
     jonathan:
       "Italiaanse RC-importeur en -winkel met vliegtuigen, heli's, auto's en boten van Horizon Hobby, Arrma en Phoenix Model, plus onderdelen en elektronica.",
-    tfl:
-      "Webshop uit Briesen (Brandenburg) voor RC-speedboten: propellers, aandrijvingen, flexassen, motoren, waterkoeling, roeren en uitlaten.",
-    dmt:
-      "Modelbouwshop uit Dobl-Zwaring (Stiermarken) met vliegtuigen, heli's, RC-auto's en drones, plus veel motoren, servo's, elektronica, accu's en materialen.",
+    tfl: "Webshop uit Briesen (Brandenburg) voor RC-speedboten: propellers, aandrijvingen, flexassen, motoren, waterkoeling, roeren en uitlaten.",
+    dmt: "Modelbouwshop uit Dobl-Zwaring (Stiermarken) met vliegtuigen, heli's, RC-auto's en drones, plus veel motoren, servo's, elektronica, accu's en materialen.",
     rceurope:
       "Nederlandse maker van lasergesneden bouwpakketten voor RC-vliegtuigen (scale, warbirds, vintage), met bouwtekeningen en toebehoren.",
     turbohobby:
@@ -250,8 +247,7 @@ export const nl = {
       "RC-winkel uit Landivisiau (Bretagne) met vooral auto's en onderdelen (Traxxas, Team Associated, Xray, Hobbytech), plus banden, elektronica, accu's en onderhoud.",
     derkum:
       "Modelbouwshop uit Keulen met vliegtuigen, RC-auto's, boten, zenders, elektronica en motoren, plus veel onderdelen en bouwmaterialen.",
-    metz:
-      "Shop uit Singhofen (Rijnland-Palts) met RC-auto's en een groot aanbod onderdelen en tuning, onder meer van Traxxas, Arrma en JS-Parts.",
+    metz: "Shop uit Singhofen (Rijnland-Palts) met RC-auto's en een groot aanbod onderdelen en tuning, onder meer van Traxxas, Arrma en JS-Parts.",
     rotorama:
       "FPV-specialist uit Praag met drones, frames, motoren, flightcontrollers, digitale videosystemen, brillen en accu's.",
     freakware:
@@ -417,6 +413,38 @@ export const nl = {
     metaDescription:
       "Alle actuele aanbiedingen van {name} ({domain}) met minstens €5 of 5% korting.",
     visit: "Naar {domain}",
+    factsTitle: "Over {name}",
+    summary:
+      "We volgen {count} producten van {name}. Daarvan zijn er nu {deals} in de aanbieding, gemiddeld {avg} goedkoper dan de hoogste prijs die we in de 30 dagen ervoor bij {name} zagen.",
+    summaryNoDeals:
+      "We volgen {count} producten van {name}. Op dit moment is geen enkel product minstens €5 of 5% goedkoper dan de prijs die we er eerder zagen.",
+    statProducts: "Producten gevolgd",
+    statDeals: "Nu in de aanbieding",
+    statAvg: "Gemiddelde korting",
+    statAvgHint: "Hoogste: {max}",
+    statDrops: "Prijsverlagingen per week",
+    statDropsHint: "{count} in de afgelopen {days} dagen",
+    statChecked: "Gecontroleerd in 24 uur",
+    statCheckedHint: "Laatst {ago}",
+    statStock: "Op voorraad",
+    statStockHint: "{percent} van de producten",
+    country: "Land",
+    countryUnknown: "Niet eenduidig",
+    shipping: "Verzendkosten naar Nederland",
+    shippingFreeFrom: "{cost}, gratis vanaf {free}",
+    shippingFree: "Gratis",
+    language: "Productnamen",
+    languageTranslated: "{language}, door ons automatisch vertaald",
+    languageDefault: "Nederlands of Engels",
+    trackedSince: "Gevolgd sinds",
+    affiliate: "Commissie",
+    affiliateText:
+      "Koop je via onze link, dan krijgen wij een kleine commissie. Je betaalt hetzelfde, en het verandert niets aan welke deals we tonen.",
+    affiliateNone: "Nee, we verdienen niets aan aankopen bij deze webshop.",
+    categoriesTitle: "Meeste producten in",
+    categoryCount: "{products} producten · {deals} deals",
+    method: "Alle cijfers komen uit onze eigen prijshistorie. {link}",
+    methodLink: "Zo berekenen we kortingen",
   },
   searchPage: {
     title: "Zoeken",
@@ -538,9 +566,90 @@ export const nl = {
   about: {
     title: "Hoe werkt het?",
     metaDescription:
-      "Zo vindt Modelbouwkortingen.nl de beste RC-aanbiedingen, en informatie voor webshops over onze crawler.",
+      "Zo verzamelt en controleert Modelbouwkortingen.nl RC-prijzen, zo berekenen we kortingen en de laagste prijs, en zo verdienen we geld.",
     description:
       "Modelbouwkortingen.nl verzamelt automatisch RC-aanbiedingen van Nederlandse en Europese modelbouw-webshops, zodat jij niet overal hoeft te zoeken.",
+    statsLine:
+      "Op dit moment volgen we {products} producten bij {shops} webshops. Daarvan zijn er {deals} in de aanbieding.",
+    sections: [
+      {
+        id: "wie",
+        title: "Wie zit erachter?",
+        text: [
+          "Modelbouwkortingen.nl is een onafhankelijke website. Geen enkele webshop is eigenaar of mede-eigenaar, en een webshop kan niet betalen voor een hogere korting of een betere plek tussen de gewone aanbiedingen.",
+          "We bouwen en onderhouden de crawler, de prijshistorie en de site zelf. Elke vraag, fout of tip via het contactformulier lezen we zelf en beantwoorden we zelf.",
+        ],
+        list: [],
+        after: [],
+      },
+      {
+        id: "verdienen",
+        title: "Hoe verdienen we geld?",
+        text: ["De site is gratis. We verdienen op drie manieren:"],
+        list: [
+          "Advertenties via Google AdSense.",
+          "Een kleine commissie bij een paar webshops als je via onze link iets koopt. Je betaalt hetzelfde. Op de pagina van elke webshop staat of dat bij die webshop zo is.",
+          "Betaalde plaatsingen: een webshop kan zichzelf of een product laten uitlichten. Die plaatsingen staan altijd apart en hebben altijd het label 'Gesponsord'.",
+        ],
+        after: [
+          "Geen van deze inkomsten verandert de prijzen of kortingen, of welke producten we als deal tonen. Dat bepaalt alleen de crawler, met de regels hieronder.",
+        ],
+      },
+      {
+        id: "verzamelen",
+        title: "Hoe we prijzen verzamelen",
+        text: [
+          "We volgen alleen webshops die in euro's verkopen. Voor elke webshop bouwen en testen we een eigen koppeling in onze crawler, zodat we de prijzen goed uitlezen.",
+        ],
+        list: [
+          "De crawler leest de openbare productpagina's en categorieoverzichten: naam, prijs, de eventuele 'van'-prijs, voorraad, afbeelding, artikelnummer en categorie.",
+          "Elke prijswijziging bewaren we in onze eigen prijshistorie. Daaruit komen de prijsgrafieken op de productpagina's en alle kortingen op deze site.",
+          "We delen elk product in onze eigen categorieën in, op basis van de categorie bij de webshop en de productnaam.",
+          "Productnamen van Duitse, Franse, Spaanse, Italiaanse en Portugese webshops vertalen we automatisch met onze eigen vertaalserver. De originele naam bewaren we ook.",
+        ],
+        after: [],
+      },
+      {
+        id: "controleren",
+        title: "Hoe we prijzen controleren",
+        text: [],
+        list: [
+          "Een korting van meer dan 90% is bijna altijd een fout bij het uitlezen. Die tonen we niet als deal.",
+          "Zien we een product 4 dagen niet meer bij de webshop, dan verdwijnt de deal. Geeft de productpagina een foutmelding (404), dan meteen.",
+          "Vindt de crawler bij een webshop ineens veel minder producten dan in de vorige rondes, dan krijgen we een melding en zoeken we uit wat er aan de hand is. Meestal is de webshop vernieuwd en passen we de koppeling aan.",
+          "Klopt er toch iets niet? Meld het via het contactformulier, dan passen we het aan.",
+        ],
+        after: ["De prijs op de website van de webshop is altijd leidend."],
+      },
+      {
+        id: "korting",
+        title: "Hoe we korting berekenen",
+        text: [
+          "We gebruiken nooit de 'van'-prijs die een webshop zelf toont. Dat is soms een adviesprijs die bij die webshop nooit gegolden heeft. We vergelijken alleen met prijzen die we zelf bij dezelfde webshop gezien hebben.",
+        ],
+        list: [
+          "Referentieprijs: de hoogste prijs die we in de afgelopen 30 dagen bij die webshop zagen.",
+          "Korting: de referentieprijs min de huidige prijs, en dat bedrag als percentage van de referentieprijs.",
+          "Een product is een deal vanaf €5 of 5% korting. Banggood en HobbyKing rekenen hun prijzen om vanuit dollars; daar beweegt de europrijs al een paar procent mee met de wisselkoers. Bij die twee tellen we daarom alleen kortingen vanaf 8%.",
+          "Zolang de deal loopt, blijft de referentieprijs gelijk. Stijgt de prijs weer, dan stopt de deal en tellen de prijzen van daarvoor niet meer mee voor een volgende deal.",
+        ],
+        after: [
+          "Voorbeeld: kostte een auto de afgelopen weken €100 en nu €85, dan is de korting €15, oftewel 15%.",
+        ],
+      },
+      {
+        id: "laagste",
+        title: "Wat betekent 'laagste prijs'?",
+        text: [],
+        list: [
+          "'Laagste prijs in 30 dagen': we volgen het product minstens 30 dagen, en de huidige prijs is de laagste die we in de afgelopen 30 dagen zagen.",
+          "'Laagste prijs ooit': we volgen het product minstens 60 dagen, en de huidige prijs is de laagste die we ooit bij die webshop zagen. 'Ooit' betekent dus: sinds wij het product volgen.",
+        ],
+        after: [
+          "Beide labels gaan over één webshop. Of een andere webshop hetzelfde product goedkoper heeft, zie je in de prijsvergelijker.",
+        ],
+      },
+    ],
     faqTitle: "Veelgestelde vragen",
     faq: [
       {

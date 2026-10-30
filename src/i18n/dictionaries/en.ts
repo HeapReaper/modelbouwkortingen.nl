@@ -217,8 +217,7 @@ export const en: Dictionary = {
       "Model shop in Pijnacker (since 1970) with RC cars, planes, helis and boats, plus parts, fuel, batteries and tools.",
     monsterhopups:
       "German RC shop focused on cars and trucks from Traxxas, Arrma, Axial and Losi, with lots of parts, tuning, electronics, boats and planes.",
-    ghw:
-      "German model shop for RC excavators and hydraulics, with materials, screws, drivetrain parts, electronics and tools.",
+    ghw: "German model shop for RC excavators and hydraulics, with materials, screws, drivetrain parts, electronics and tools.",
     rcfox:
       "Large German RC shop with cars, trucks, planes, helis and boats, plus a huge range of parts by brand, electronics and tools.",
     ruddog:
@@ -235,10 +234,8 @@ export const en: Dictionary = {
       "German shop for RC car parts and tuning, with lots of small parts, tyres, bodies and tools for racers.",
     jonathan:
       "Italian RC importer and shop with planes, helis, cars and boats from Horizon Hobby, Arrma and Phoenix Model, plus parts and electronics.",
-    tfl:
-      "Shop from Briesen (Brandenburg) for RC speedboats: propellers, drives, flex shafts, motors, water cooling, rudders and exhausts.",
-    dmt:
-      "Model shop from Dobl-Zwaring (Styria) with planes, helis, RC cars and drones, plus lots of motors, servos, electronics, batteries and materials.",
+    tfl: "Shop from Briesen (Brandenburg) for RC speedboats: propellers, drives, flex shafts, motors, water cooling, rudders and exhausts.",
+    dmt: "Model shop from Dobl-Zwaring (Styria) with planes, helis, RC cars and drones, plus lots of motors, servos, electronics, batteries and materials.",
     rceurope:
       "Dutch maker of laser-cut RC plane kits (scale, warbirds, vintage), with building plans and accessories.",
     turbohobby:
@@ -247,8 +244,7 @@ export const en: Dictionary = {
       "RC shop from Landivisiau (Brittany) focused on cars and parts (Traxxas, Team Associated, Xray, Hobbytech), plus tyres, electronics, batteries and maintenance.",
     derkum:
       "Model shop from Cologne with planes, RC cars, boats, radios, electronics and motors, plus lots of spare parts and building materials.",
-    metz:
-      "Shop from Singhofen (Rhineland-Palatinate) with RC cars and a large range of spare parts and tuning, including Traxxas, Arrma and JS-Parts.",
+    metz: "Shop from Singhofen (Rhineland-Palatinate) with RC cars and a large range of spare parts and tuning, including Traxxas, Arrma and JS-Parts.",
     rotorama:
       "FPV specialist from Prague with drones, frames, motors, flight controllers, digital video systems, goggles and batteries.",
     freakware:
@@ -343,7 +339,8 @@ export const en: Dictionary = {
     featured: "Top deal right now",
     saveSr: "Save {amount}",
     rcTitle: "RC models",
-    rcSubtitle: "Complete models only: cars, planes, helicopters, drones and boats",
+    rcSubtitle:
+      "Complete models only: cars, planes, helicopters, drones and boats",
     topTitle: "Biggest discounts",
     topSubtitle: "The highest discount percentages right now",
     newTitle: "Just in",
@@ -412,6 +409,38 @@ export const en: Dictionary = {
     metaDescription:
       "All current deals from {name} ({domain}) with at least €5 or 5% off.",
     visit: "Go to {domain}",
+    factsTitle: "About {name}",
+    summary:
+      "We track {count} products from {name}. {deals} of them are on sale right now, on average {avg} cheaper than the highest price we saw at {name} in the 30 days before.",
+    summaryNoDeals:
+      "We track {count} products from {name}. Right now no product is at least €5 or 5% cheaper than the price we saw there before.",
+    statProducts: "Products tracked",
+    statDeals: "On sale now",
+    statAvg: "Average discount",
+    statAvgHint: "Highest: {max}",
+    statDrops: "Price drops per week",
+    statDropsHint: "{count} in the last {days} days",
+    statChecked: "Checked in 24 hours",
+    statCheckedHint: "Last {ago}",
+    statStock: "In stock",
+    statStockHint: "{percent} of products",
+    country: "Country",
+    countryUnknown: "Not clear-cut",
+    shipping: "Shipping to the Netherlands",
+    shippingFreeFrom: "{cost}, free from {free}",
+    shippingFree: "Free",
+    language: "Product names",
+    languageTranslated: "{language}, translated automatically by us",
+    languageDefault: "Dutch or English",
+    trackedSince: "Tracked since",
+    affiliate: "Commission",
+    affiliateText:
+      "If you buy through our link, we get a small commission. You pay the same, and it doesn't change which deals we show.",
+    affiliateNone: "No, we earn nothing from purchases at this shop.",
+    categoriesTitle: "Most products in",
+    categoryCount: "{products} products · {deals} deals",
+    method: "All figures come from our own price history. {link}",
+    methodLink: "How we calculate discounts",
   },
   searchPage: {
     title: "Search",
@@ -533,9 +562,90 @@ export const en: Dictionary = {
   about: {
     title: "How does it work?",
     metaDescription:
-      "How Modelbouwkortingen.nl finds the best RC deals, plus information for shops about our crawler.",
+      "How Modelbouwkortingen.nl collects and checks RC prices, how we calculate discounts and the lowest price, and how we make money.",
     description:
       "Modelbouwkortingen.nl automatically collects RC deals from Dutch and other European model shops, so you don't have to search everywhere.",
+    statsLine:
+      "Right now we track {products} products at {shops} shops. {deals} of them are on sale.",
+    sections: [
+      {
+        id: "wie",
+        title: "Who is behind it?",
+        text: [
+          "Modelbouwkortingen.nl is an independent website. No shop owns or co-owns it, and a shop cannot pay for a higher discount or a better spot among the regular deals.",
+          "We build and maintain the crawler, the price history and the site ourselves. Every question, error report or tip sent through the contact form is read and answered by us personally.",
+        ],
+        list: [],
+        after: [],
+      },
+      {
+        id: "verdienen",
+        title: "How do we make money?",
+        text: ["The site is free. We earn money in three ways:"],
+        list: [
+          "Ads through Google AdSense.",
+          "A small commission from a few shops when you buy through our link. You pay the same. Each shop's page says whether that applies to that shop.",
+          "Paid placements: a shop can have itself or a product featured. These placements are always shown separately and always carry the label 'Sponsored'.",
+        ],
+        after: [
+          "None of this income changes the prices or discounts, or which products we show as deals. Only the crawler decides that, using the rules below.",
+        ],
+      },
+      {
+        id: "verzamelen",
+        title: "How we collect prices",
+        text: [
+          "We only track shops that sell in euros. For every shop we build and test a dedicated connection in our crawler, so we read its prices correctly.",
+        ],
+        list: [
+          "The crawler reads the public product pages and category listings: name, price, any 'was' price, stock, image, article number and category.",
+          "We store every price change in our own price history. The price charts on the product pages and every discount on this site come from it.",
+          "We sort every product into our own categories, based on the shop's category and the product name.",
+          "Product names from German, French, Spanish, Italian and Portuguese shops are translated automatically by our own translation server. We keep the original name as well.",
+        ],
+        after: [],
+      },
+      {
+        id: "controleren",
+        title: "How we check prices",
+        text: [],
+        list: [
+          "A discount of more than 90% is almost always a reading error. We don't show it as a deal.",
+          "If we haven't seen a product at the shop for 4 days, the deal disappears. If the product page returns an error (404), it disappears right away.",
+          "If the crawler suddenly finds far fewer products at a shop than in previous rounds, we get an alert and find out what's going on. Usually the shop has been redesigned and we update the connection.",
+          "Still something wrong? Report it through the contact form and we'll fix it.",
+        ],
+        after: ["The price on the shop's website always prevails."],
+      },
+      {
+        id: "korting",
+        title: "How we calculate discounts",
+        text: [
+          "We never use the 'was' price a shop shows itself. Sometimes that's a recommended retail price that never applied at that shop. We only compare with prices we have seen ourselves at the same shop.",
+        ],
+        list: [
+          "Reference price: the highest price we saw at that shop in the last 30 days.",
+          "Discount: the reference price minus the current price, and that amount as a percentage of the reference price.",
+          "A product is a deal from €5 or 5% off. Banggood and HobbyKing convert their prices from dollars, so the euro price there moves a few percent with the exchange rate. For those two we therefore only count discounts from 8%.",
+          "While the deal lasts, the reference price stays the same. When the price goes up again, the deal ends and the prices before that no longer count towards a next deal.",
+        ],
+        after: [
+          "Example: if a car cost €100 in recent weeks and now costs €85, the discount is €15, or 15%.",
+        ],
+      },
+      {
+        id: "laagste",
+        title: "What does 'lowest price' mean?",
+        text: [],
+        list: [
+          "'Lowest price in 30 days': we have tracked the product for at least 30 days, and the current price is the lowest we saw in the last 30 days.",
+          "'Lowest price ever': we have tracked the product for at least 60 days, and the current price is the lowest we have ever seen at that shop. So 'ever' means: since we started tracking the product.",
+        ],
+        after: [
+          "Both labels are about a single shop. Whether another shop has the same product for less, you can see in the price comparison.",
+        ],
+      },
+    ],
     faqTitle: "Frequently asked questions",
     faq: [
       {

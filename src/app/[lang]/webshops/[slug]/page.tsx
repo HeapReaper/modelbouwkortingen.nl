@@ -7,7 +7,9 @@ import { ShopLogo } from "@/components/core/ShopLogo";
 import { DealGridSkeleton } from "@/components/deals/DealGrid";
 import { DealsBrowser } from "@/components/deals/DealsBrowser";
 import { FeaturedDeals } from "@/components/promo/FeaturedDeals";
+import { ShopFacts } from "@/components/shops/ShopFacts";
 import { buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { alternates } from "@/i18n/metadata";
 import { getI18n } from "@/i18n/server";
 import { t } from "@/i18n/translate";
@@ -68,6 +70,9 @@ export default async function ShopPage({
         </a>
       </PageHeader>
       <div className="mx-auto max-w-7xl px-4 py-8">
+        <Suspense fallback={<Skeleton className="mb-10 h-96 rounded-2xl" />}>
+          <ShopFacts shop={shop} />
+        </Suspense>
         <Suspense fallback={null}>
           <FeaturedDeals shop={shop.slug} className="mb-10 px-0" />
         </Suspense>
