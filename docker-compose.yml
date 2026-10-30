@@ -15,6 +15,9 @@ services:
   db:
     image: postgres:17-alpine
     restart: unless-stopped
+    # Standaard is shared_buffers 128MB, te weinig voor de products-tabel (~1GB) en zijn indexen.
+    # Op een server met meer geheugen kan POSTGRES_SHARED_BUFFERS omhoog (bv. 1GB bij 8GB RAM).
+    command: ["postgres", "-c", "shared_buffers=${POSTGRES_SHARED_BUFFERS:-256MB}"]
     environment:
       POSTGRES_DB: modelbouwkortingen
       POSTGRES_USER: ${SERVICE_USER_POSTGRES}

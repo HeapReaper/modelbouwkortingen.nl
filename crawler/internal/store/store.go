@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"codeberg.org/HeapReaper/modelbouwkortingen.nl/crawler/internal/parse"
@@ -31,9 +32,11 @@ func Open(ctx context.Context, dsn string) (*Store, error) {
 	if err != nil {
 		return nil, err
 	}
-	if cfg.MaxConns < 8 {
-		cfg.MaxConns = 8
-	}
+	// Geen vaste ondergrens: pgx neemt standaard max(4, aantal cores). Meer verbindingen dan
+	// cores maakt Postgres niet sneller, alleen drukker. Hoger zetten kan met pool_max_conns in de DSN.
+	// Crawldata is opnieuw te halen: niet bij elke commit op de schijf wachten. Bij een crash
+	// gaan hooguit de laatste updates van een fractie van een seconde verloren.
+	cfg.ConnConfig.RuntimeParams["synchronous_commit"] = "off"
 	pool, err := pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {
 		return nil, err
@@ -296,7 +299,11 @@ func (s *Store) UpsertProduct(ctx context.Context, shopID int, p parse.Product, 
 			shopID, p.ExternalID, p.URL, p.SKU, p.Name, p.Brand, p.ImageURL, category, shopCategory,
 			p.Price, oldArg, refArg, discount, percent, res.IsDeal, p.InStock, fromProductPage).Scan(&id)
 	} else {
-		_, err = tx.Exec(ctx, `
+		// Alleen herschrijven als er iets veranderd is: een volledige update kost een nieuwe
+		// rijversie, de search_norm-trigger en vaak ook alle (trigram-)indexen. Ongewijzigd
+		// (meestal zo) werken we alleen bij wanneer we het product zagen.
+		var tag pgconn.CommandTag
+		tag, err = tx.Exec(ctx, `
 			UPDATE products SET
 				url = $2, sku = COALESCE(NULLIF($3,''), sku), name = $4, brand = COALESCE(NULLIF($5,''), brand),
 				image_url = COALESCE(NULLIF($6,''), image_url), category_slug = $7, shop_category = NULLIF($8,''),
@@ -306,9 +313,21 @@ func (s *Store) UpsertProduct(ctx context.Context, shopID int, p parse.Product, 
 				baseline_since = CASE WHEN $17 THEN now() ELSE baseline_since END,
 				last_seen_at = now(), updated_at = now(),
 				last_crawled_at = CASE WHEN $16 THEN now() ELSE last_crawled_at END
-			WHERE id = $1`,
+			WHERE id = $1 AND ($17 OR
+				(url, sku, name, brand, image_url, category_slug, shop_category, price, old_price,
+					reference_price, discount_amount, discount_percent, is_deal, in_stock)
+				IS DISTINCT FROM
+				($2, COALESCE(NULLIF($3,''), sku), $4, COALESCE(NULLIF($5,''), brand),
+					COALESCE(NULLIF($6,''), image_url), $7, NULLIF($8,''), $9, $10,
+					$11, $12, $13, $14, COALESCE($15, in_stock)))`,
 			id, p.URL, p.SKU, p.Name, p.Brand, p.ImageURL, category, shopCategory,
 			p.Price, oldArg, refArg, discount, percent, res.IsDeal, p.InStock, fromProductPage, resetBaseline)
+		if err == nil && tag.RowsAffected() == 0 {
+			_, err = tx.Exec(ctx, `
+				UPDATE products SET last_seen_at = now(),
+					last_crawled_at = CASE WHEN $2 THEN now() ELSE last_crawled_at END
+				WHERE id = $1`, id, fromProductPage)
+		}
 	}
 	if err != nil {
 		return res, err
