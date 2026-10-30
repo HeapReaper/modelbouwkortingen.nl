@@ -36,7 +36,7 @@ import {
   getRelatedDeals,
 } from "@/lib/deals";
 import { SITE_URL } from "@/lib/newsletter-mail";
-import { getShop, outLink, shippingCost } from "@/lib/shops";
+import { getShop, outLink, SHOP_LANGUAGES, shippingCost } from "@/lib/shops";
 import { localizeDeals } from "@/lib/translate";
 import { cn } from "@/lib/utils";
 
@@ -166,7 +166,10 @@ async function ProductDetail({
               {deal.name}
             </h1>
             {deal.originalName ? (
-              <p lang="de" className="-mt-3 text-sm text-muted-foreground">
+              <p
+                lang={SHOP_LANGUAGES.get(deal.shopSlug)}
+                className="-mt-3 text-sm text-muted-foreground"
+              >
                 {t(p.originalName, { name: deal.originalName })}
               </p>
             ) : null}

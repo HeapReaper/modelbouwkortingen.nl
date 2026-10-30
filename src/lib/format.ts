@@ -1,8 +1,8 @@
 import { formatDistanceToNowStrict } from "date-fns";
-import { de, enGB, nl } from "date-fns/locale";
+import { de, enGB, es, fr, nl } from "date-fns/locale";
 import { DEFAULT_LOCALE, INTL_LOCALES, type Locale } from "@/i18n/config";
 
-const DATE_FNS = { nl, en: enGB, de };
+const DATE_FNS = { nl, en: enGB, de, fr, es };
 
 /** Getallen, bedragen en datums in de notatie van een taal. */
 export function formatters(lang: Locale) {

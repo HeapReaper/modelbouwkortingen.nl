@@ -18,8 +18,9 @@ import {
 /**
  * 1. Basic Auth voor het admin panel en /api/stats.
  * 2. Taalroutering. Alle pagina's staan onder app/[lang]; Nederlands houdt de oorspronkelijke
- *    URL's zonder prefix (intern herschreven naar /nl/...), Engels en Duits staan onder /en en /de.
- *    Automatische detectie: een bezoek aan een URL zonder prefix gaat naar /en of /de als de
+ *    URL's zonder prefix (intern herschreven naar /nl/...), de andere talen staan onder /en, /de,
+ *    /fr en /es.
+ *    Automatische detectie: een bezoek aan een URL zonder prefix gaat naar een andere taal als de
  *    bezoeker die taal zelf koos (cookie) of, zonder keuze, als de browser die taal liever wil
  *    (Accept-Language). Zonder Accept-Language (zoals bij de meeste zoekmachines) blijft het
  *    Nederlands.

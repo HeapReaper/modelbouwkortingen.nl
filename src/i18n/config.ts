@@ -1,5 +1,5 @@
 /** Talen van de site. Nederlands staat zonder prefix op de oorspronkelijke URL's. */
-export const LOCALES = ["nl", "en", "de"] as const;
+export const LOCALES = ["nl", "en", "de", "fr", "es"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "nl";
 
@@ -10,6 +10,8 @@ export const LOCALE_NAMES: Record<Locale, string> = {
   nl: "Nederlands",
   en: "English",
   de: "Deutsch",
+  fr: "Français",
+  es: "Español",
 };
 
 /** Voor Intl (getallen, bedragen, datums). */
@@ -17,12 +19,16 @@ export const INTL_LOCALES: Record<Locale, string> = {
   nl: "nl-NL",
   en: "en-GB",
   de: "de-DE",
+  fr: "fr-FR",
+  es: "es-ES",
 };
 
 export const OG_LOCALES: Record<Locale, string> = {
   nl: "nl_NL",
   en: "en_GB",
   de: "de_DE",
+  fr: "fr_FR",
+  es: "es_ES",
 };
 
 export function hasLocale(value: unknown): value is Locale {
@@ -49,7 +55,7 @@ export function splitLocale(pathname: string): { lang: Locale; path: string } {
 
 /**
  * Kiest een taal uit de Accept-Language-header. Geen header (zoals bij de meeste bots) =
- * Nederlands; wel een header maar geen van onze talen (bv. Frans) = Engels.
+ * Nederlands; wel een header maar geen van onze talen (bv. Italiaans) = Engels.
  */
 export function negotiateLocale(header: string | null): Locale {
   if (!header?.trim()) return DEFAULT_LOCALE;

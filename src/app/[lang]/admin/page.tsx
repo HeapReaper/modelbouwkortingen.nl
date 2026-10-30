@@ -682,6 +682,8 @@ const LANG_LABELS: Record<string, string> = {
   nl: "Nederlands",
   en: "Engels",
   de: "Duits",
+  fr: "Frans",
+  es: "Spaans",
 };
 
 const DEVICE_LABELS: Record<string, string> = {

@@ -25,9 +25,9 @@ import {
 
 /**
  * Doeltalen met hun LibreTranslate-code. Een naam wordt niet naar zijn eigen taal vertaald:
- * Duitse bezoekers zien de originele naam van een Duitse webshop.
+ * Duitse bezoekers zien de originele naam van een Duitse webshop, Franse die van een Franse, enz.
  */
-const TARGETS = { nl: "nl", en: "en", de: "de" } as const;
+const TARGETS = { nl: "nl", en: "en", de: "de", fr: "fr", es: "es" } as const;
 type Target = keyof typeof TARGETS;
 
 /** Zoveel namen per verzoek aan LibreTranslate (en per keer opslaan). */
