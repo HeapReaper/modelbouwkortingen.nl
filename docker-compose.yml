@@ -48,6 +48,10 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
+    # Een crawlronde mag de website en Postgres niet verdringen: hooguit één core, en bij drukte
+    # gaan de andere containers voor (standaardgewicht 1024).
+    cpus: ${CRAWLER_CPUS:-1}
+    cpu_shares: 256
     # Stats-poort alleen intern; de website leest hem via http://crawler:8080/stats
     expose:
       - "8080"

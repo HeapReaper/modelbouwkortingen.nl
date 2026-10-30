@@ -195,12 +195,26 @@ function translate(
  * (`originalName` = de originele naam). Ontbrekende vertalingen worden direct opgehaald;
  * duurt dat langer dan `waitMs`, dan blijft deze keer de originele naam staan en wordt de
  * vertaling op de achtergrond bewaard voor de volgende keer. Zonder LIBRETRANSLATE_URL: alleen
- * bewaarde vertalingen.
+ * bewaarde vertalingen. Mislukt er iets (database of LibreTranslate), dan de originele namen:
+ * een vertaling mag een pagina nooit laten mislukken.
  */
 export async function localizeDeals<T extends Localizable>(
   items: T[],
   lang: Locale,
   opts: { waitMs?: number; background?: boolean } = {},
+): Promise<T[]> {
+  try {
+    return await localize(items, lang, opts);
+  } catch (err) {
+    logError(err);
+    return items;
+  }
+}
+
+async function localize<T extends Localizable>(
+  items: T[],
+  lang: Locale,
+  opts: { waitMs?: number; background?: boolean },
 ): Promise<T[]> {
   if (!isTarget(lang) || !isDbConfigured()) return items;
   const foreign = items.filter((i) => {
