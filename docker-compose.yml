@@ -132,7 +132,7 @@ services:
       timeout: 5s
       retries: 3
 
-  # Vertaalt productnamen van Duitse en Franse webshops (gratis, draait op de CPU). Bij de
+  # Vertaalt productnamen van Duitse, Italiaanse en Portugese webshops (gratis, draait op de CPU). Bij de
   # eerste start downloadt hij de taalmodellen naar het volume; tot die klaar zijn toont de site
   # de originele namen.
   libretranslate:
@@ -141,7 +141,7 @@ services:
     expose:
       - "5000"
     environment:
-      - LT_LOAD_ONLY=de,fr,es,it,pt,nl,en
+      - LT_LOAD_ONLY=de,it,pt,nl,en
       - LT_DISABLE_WEB_UI=true
       # Aantal workers (standaard 4), elk met de modellen in het geheugen. Eén is genoeg: de
       # planner vertaalt één batch tegelijk.

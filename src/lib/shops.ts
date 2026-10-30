@@ -79,7 +79,7 @@ import wartelleLogo from "@/assets/shops/wartelle.png";
 import wetronicLogo from "@/assets/shops/wetronic.png";
 import xtremrcLogo from "@/assets/shops/xtremrc.png";
 
-/** Talen van productnamen die we vertalen. */
+/** Talen van productnamen van anderstalige webshops. */
 export type SourceLanguage = "de" | "fr" | "es" | "it" | "pt";
 
 /** De omschrijving staat per taal in de woordenboeken (dict.shops[slug]). */
@@ -888,8 +888,20 @@ export const SHOP_LANGUAGES = new Map(
   ),
 );
 
+/**
+ * Talen van productnamen die we vertalen; ze moeten in LT_LOAD_ONLY staan (docker-compose.yml).
+ * Franse en Spaanse namen blijven onvertaald, om LibreTranslate minder te belasten.
+ */
+export const TRANSLATED_LANGUAGES: ReadonlySet<SourceLanguage> = new Set([
+  "de",
+  "it",
+  "pt",
+]);
+
 /** Webshops met productnamen die we vertalen. */
-export const TRANSLATED_SHOPS = [...SHOP_LANGUAGES.keys()];
+export const TRANSLATED_SHOPS = [...SHOP_LANGUAGES]
+  .filter(([, language]) => TRANSLATED_LANGUAGES.has(language))
+  .map(([slug]) => slug);
 
 /** Shops uit dit land tellen als "binnenland": geen douane, meestal snelle levering. */
 export const HOME_COUNTRIES = ["NL", "BE"];

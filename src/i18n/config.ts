@@ -1,5 +1,5 @@
 /** Talen van de site. Nederlands staat zonder prefix op de oorspronkelijke URL's. */
-export const LOCALES = ["nl", "en", "de", "fr", "es"] as const;
+export const LOCALES = ["nl", "en", "de"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "nl";
 
@@ -10,8 +10,6 @@ export const LOCALE_NAMES: Record<Locale, string> = {
   nl: "Nederlands",
   en: "English",
   de: "Deutsch",
-  fr: "Français",
-  es: "Español",
 };
 
 /** Voor Intl (getallen, bedragen, datums). */
@@ -19,17 +17,20 @@ export const INTL_LOCALES: Record<Locale, string> = {
   nl: "nl-NL",
   en: "en-GB",
   de: "de-DE",
-  fr: "fr-FR",
-  es: "es-ES",
 };
 
 export const OG_LOCALES: Record<Locale, string> = {
   nl: "nl_NL",
   en: "en_GB",
   de: "de_DE",
-  fr: "fr_FR",
-  es: "es_ES",
 };
+
+/**
+ * Talen die de site gehad heeft maar die uit staan (om LibreTranslate minder te belasten). Oude
+ * links daarheen gaan naar dezelfde pagina zonder taalprefix. De woordenboeken staan nog in
+ * src/i18n/dictionaries om ze later weer aan te zetten.
+ */
+export const RETIRED_LOCALES: readonly string[] = ["fr", "es"];
 
 export function hasLocale(value: unknown): value is Locale {
   return (
@@ -55,7 +56,7 @@ export function splitLocale(pathname: string): { lang: Locale; path: string } {
 
 /**
  * Kiest een taal uit de Accept-Language-header. Geen header (zoals bij de meeste bots) =
- * Nederlands; wel een header maar geen van onze talen (bv. Italiaans) = Engels.
+ * Nederlands; wel een header maar geen van onze talen (bv. Frans) = Engels.
  */
 export function negotiateLocale(header: string | null): Locale {
   if (!header?.trim()) return DEFAULT_LOCALE;

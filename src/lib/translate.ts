@@ -7,6 +7,7 @@ import { getPrisma, isDbConfigured, num } from "@/lib/db";
 import {
   SHOP_LANGUAGES,
   type SourceLanguage,
+  TRANSLATED_LANGUAGES,
   TRANSLATED_SHOPS,
 } from "@/lib/shops";
 
@@ -25,9 +26,9 @@ import {
 
 /**
  * Doeltalen met hun LibreTranslate-code. Een naam wordt niet naar zijn eigen taal vertaald:
- * Duitse bezoekers zien de originele naam van een Duitse webshop, Franse die van een Franse, enz.
+ * Duitse bezoekers zien de originele naam van een Duitse webshop.
  */
-const TARGETS = { nl: "nl", en: "en", de: "de", fr: "fr", es: "es" } as const;
+const TARGETS = { nl: "nl", en: "en", de: "de" } as const;
 type Target = keyof typeof TARGETS;
 
 /**
@@ -53,6 +54,12 @@ export function isTranslatorConfigured() {
 
 function isTarget(lang: Locale): lang is Target {
   return lang in TARGETS;
+}
+
+/** Taal van de productnamen van een webshop, als we die vertalen. */
+function sourceOf(shopSlug: string): SourceLanguage | undefined {
+  const source = SHOP_LANGUAGES.get(shopSlug);
+  return source && TRANSLATED_LANGUAGES.has(source) ? source : undefined;
 }
 
 /** Vertaalt alle teksten in één verzoek, of gooit bij een fout. */
@@ -197,7 +204,7 @@ export async function localizeDeals<T extends Localizable>(
 ): Promise<T[]> {
   if (!isTarget(lang) || !isDbConfigured()) return items;
   const foreign = items.filter((i) => {
-    const source = SHOP_LANGUAGES.get(i.shopSlug);
+    const source = sourceOf(i.shopSlug);
     return source !== undefined && source !== lang;
   });
   if (foreign.length === 0) return items;
@@ -221,7 +228,7 @@ export async function localizeDeals<T extends Localizable>(
       names.set(item.id, row.name);
       continue;
     }
-    const source = SHOP_LANGUAGES.get(item.shopSlug);
+    const source = sourceOf(item.shopSlug);
     if (!source) continue;
     const todo = missing.get(source) ?? new Map();
     todo.set(item.id, { id: item.id, name: item.name });
@@ -314,12 +321,12 @@ async function runPendingDeals(
   const prisma = getPrisma();
   let translated = 0;
   let failed = 0;
-  const sources = [...new Set(SHOP_LANGUAGES.values())];
+  const sources = [...TRANSLATED_LANGUAGES];
   for (const target of Object.keys(TARGETS) as Target[]) {
     for (const source of sources) {
       if (source === target) continue;
       const slugs = TRANSLATED_SHOPS.filter(
-        (slug) => SHOP_LANGUAGES.get(slug) === source,
+        (slug) => sourceOf(slug) === source,
       );
       const rows = await prisma.$queryRaw<{ id: bigint; name: string }[]>`
         SELECT p.id, p.name
