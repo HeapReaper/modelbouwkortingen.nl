@@ -2,7 +2,7 @@ import "server-only";
 
 import { connection } from "next/server";
 import { type CrawlAlertRow, getCrawlAlerts } from "@/lib/crawl-alerts";
-import { getPrisma, isDbConfigured, num } from "@/lib/db";
+import { getAdminPrisma, isDbConfigured, num } from "@/lib/db";
 
 export type ShopOverview = {
   slug: string;
@@ -110,7 +110,7 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     priceAlerts: { active: 0, unconfirmed: 0, sent30: 0 },
   };
   if (!isDbConfigured()) return empty;
-  const prisma = getPrisma();
+  const prisma = getAdminPrisma();
   const days = lastDays(14);
   const since = new Date(`${days[0]}T00:00:00Z`);
   const ago7 = new Date(Date.now() - 7 * DAY_MS);

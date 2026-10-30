@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import { getAdminOverview, getCrawlerLive } from "@/lib/admin";
 import { isAuthorized } from "@/lib/admin-auth";
+import { cached } from "@/lib/cache";
 
 /**
  * JSON met alle stats (database + live crawler). Beveiligd via Basic Auth (ADMIN_PASSWORD)
@@ -14,7 +15,8 @@ export async function GET(request: Request) {
     return Response.json({ error: "unauthorized" }, { status: 401 });
   }
   const [overview, crawler] = await Promise.all([
-    getAdminOverview(),
+    // Monitoring vraagt dit vaak op; de tellingen gaan over hele tabellen.
+    cached("api-stats-overview", 60_000, getAdminOverview),
     getCrawlerLive(),
   ]);
   return Response.json(
