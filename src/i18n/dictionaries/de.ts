@@ -581,8 +581,9 @@ export const de: Dictionary = {
         id: "wie",
         title: "Wer steckt dahinter?",
         text: [
+          "Ich bin Kelvin, {age} Jahre alt und ein echter IT-, Tech- und RC-Nerd. Vergleichsseiten gibt es für fast alles, aber für RC habe ich keine gefunden. Deshalb habe ich Modelbouwkortingen.nl gebaut und online gestellt.",
           "Modelbouwkortingen.nl ist eine unabhängige Website. Kein Shop ist Eigentümer oder Miteigentümer, und ein Shop kann nicht für einen höheren Rabatt oder einen besseren Platz zwischen den normalen Angeboten bezahlen.",
-          "Den Crawler, die Preishistorie und die Website bauen und pflegen wir selbst. Jede Frage, jeden Fehler und jeden Tipp über das Kontaktformular lesen und beantworten wir selbst.",
+          "Den Crawler, die Preishistorie und die Website baue und pflege ich selbst. Jede Frage, jeden Fehler und jeden Tipp über das Kontaktformular lese und beantworte ich selbst.",
         ],
         list: [],
         after: [],

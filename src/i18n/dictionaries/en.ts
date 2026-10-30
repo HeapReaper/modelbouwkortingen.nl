@@ -572,8 +572,9 @@ export const en: Dictionary = {
         id: "wie",
         title: "Who is behind it?",
         text: [
+          "I'm Kelvin, {age} years old and a proper IT, tech and RC nerd. There are comparison sites for just about everything, but I couldn't find one for RC. So I built Modelbouwkortingen.nl and put it online.",
           "Modelbouwkortingen.nl is an independent website. No shop owns or co-owns it, and a shop cannot pay for a higher discount or a better spot among the regular deals.",
-          "We build and maintain the crawler, the price history and the site ourselves. Every question, error report or tip sent through the contact form is read and answered by us personally.",
+          "I build and maintain the crawler, the price history and the site myself. I read and answer every question, error report or tip sent through the contact form myself.",
         ],
         list: [],
         after: [],

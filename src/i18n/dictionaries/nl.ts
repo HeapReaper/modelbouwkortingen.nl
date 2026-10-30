@@ -576,8 +576,9 @@ export const nl = {
         id: "wie",
         title: "Wie zit erachter?",
         text: [
+          "Ik ben Kelvin, {age} jaar oud en een echte IT-, tech- en RC-nerd. Voor van alles bestaan vergelijkingssites, maar voor RC vond ik er geen. Daarom heb ik Modelbouwkortingen.nl gebouwd en online gezet.",
           "Modelbouwkortingen.nl is een onafhankelijke website. Geen enkele webshop is eigenaar of mede-eigenaar, en een webshop kan niet betalen voor een hogere korting of een betere plek tussen de gewone aanbiedingen.",
-          "We bouwen en onderhouden de crawler, de prijshistorie en de site zelf. Elke vraag, fout of tip via het contactformulier lezen we zelf en beantwoorden we zelf.",
+          "Ik bouw en onderhoud de crawler, de prijshistorie en de site zelf. Elke vraag, fout of tip via het contactformulier lees en beantwoord ik zelf.",
         ],
         list: [],
         after: [],

@@ -1,6 +1,7 @@
 import { Bot, HelpCircle } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageHeader } from "@/components/core/PageHeader";
 import { HowItWorks } from "@/components/home/HowItWorks";
@@ -23,6 +24,9 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: alternates(lang, "/over"),
   };
 }
+
+/** Geboortedatum van Kelvin (beheerder), voor de leeftijd in "Wie zit erachter?". */
+const OWNER_BIRTHDATE = "2001-05-11";
 
 const code = (text: string) => (
   <code className="rounded bg-muted px-1.5 py-0.5 text-sm">{text}</code>
@@ -53,11 +57,17 @@ export default async function OverPage() {
               className="flex scroll-mt-28 flex-col gap-3"
             >
               <h2 className="text-2xl font-black">{s.title}</h2>
-              {s.text.map((p) => (
-                <p key={p} className="text-base">
-                  {p}
-                </p>
-              ))}
+              {s.text.map((p) =>
+                p.includes("{age}") ? (
+                  <Suspense key={p} fallback={null}>
+                    <WithAge text={p} />
+                  </Suspense>
+                ) : (
+                  <p key={p} className="text-base">
+                    {p}
+                  </p>
+                ),
+              )}
               {s.list.length > 0 ? (
                 <ul className="list-disc space-y-2 pl-6 text-base">
                   {s.list.map((item) => (
@@ -144,4 +154,18 @@ async function StatsLine() {
       })}
     </p>
   );
+}
+
+/** Alinea met {age}: de leeftijd van vandaag (Nederlandse tijd), dus elk jaar vanzelf goed. */
+async function WithAge({ text }: { text: string }) {
+  await connection();
+  const today = new Date().toLocaleDateString("sv-SE", {
+    timeZone: "Europe/Amsterdam",
+  });
+  const [year] = OWNER_BIRTHDATE.split("-").map(Number);
+  const age =
+    Number(today.slice(0, 4)) -
+    year -
+    (today.slice(5) < OWNER_BIRTHDATE.slice(5) ? 1 : 0);
+  return <p className="text-base">{t(text, { age })}</p>;
 }
