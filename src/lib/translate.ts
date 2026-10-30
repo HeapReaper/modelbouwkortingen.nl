@@ -30,8 +30,11 @@ import {
 const TARGETS = { nl: "nl", en: "en", de: "de", fr: "fr", es: "es" } as const;
 type Target = keyof typeof TARGETS;
 
-/** Zoveel namen per verzoek aan LibreTranslate (en per keer opslaan). */
-const BATCH = 50;
+/**
+ * Zoveel namen per verzoek aan LibreTranslate (en per keer opslaan). Klein genoeg om ook tussen
+ * twee niet-Engelse talen (via het Engels, dus dubbel werk) ruim binnen de timeout te blijven.
+ */
+const BATCH = 20;
 /** Zo lang wacht een pagina hooguit op een nieuwe vertaling; daarna de originele naam. */
 const PAGE_WAIT_MS = 2_000;
 /** Ruim: LibreTranslate vertaalt op de CPU, een volle batch kan even duren. */
@@ -274,12 +277,33 @@ export const BACKGROUND = {
   background: true,
 } as const;
 
+/** Loopt er al een ronde van translatePendingDeals in dit proces? */
+let running = false;
+
 /**
  * Vertaalt lopende deals van anderstalige webshops die nog geen (actuele) vertaling
  * hebben, nieuwste eerst. Wordt elke paar minuten aangeroepen door de planner in instrumentation.ts.
+ * Duurt een ronde langer (bv. bij een nieuwe taal), dan slaat de planner een beurt over in plaats
+ * van een tweede ronde tegelijk op LibreTranslate los te laten.
  */
 export async function translatePendingDeals(
   limit = 500,
+): Promise<
+  | { status: "not-configured" }
+  | { status: "busy" }
+  | { status: "ok"; translated: number; failed: number }
+> {
+  if (running) return { status: "busy" };
+  running = true;
+  try {
+    return await runPendingDeals(limit);
+  } finally {
+    running = false;
+  }
+}
+
+async function runPendingDeals(
+  limit: number,
 ): Promise<
   | { status: "not-configured" }
   | { status: "ok"; translated: number; failed: number }
