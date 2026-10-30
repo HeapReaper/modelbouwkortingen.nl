@@ -150,6 +150,9 @@ services:
       - ltmodels:/home/libretranslate/.local
     # Vertalen mag de hele CPU niet opeisen: Postgres en de website draaien op dezelfde machine.
     cpus: ${LIBRETRANSLATE_CPUS:-1}
+    # Lager gewicht dan de rest (standaard 1024): bij drukte gaan de website en Postgres voor, en
+    # LibreTranslate krijgt vooral de CPU die over is.
+    cpu_shares: 256
 
 volumes:
   pgdata:

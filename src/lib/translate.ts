@@ -294,7 +294,7 @@ let running = false;
  * van een tweede ronde tegelijk op LibreTranslate los te laten.
  */
 export async function translatePendingDeals(
-  limit = 500,
+  limit = 100,
 ): Promise<
   | { status: "not-configured" }
   | { status: "busy" }
