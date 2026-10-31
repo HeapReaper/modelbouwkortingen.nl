@@ -149,6 +149,10 @@ services:
       - "5000"
     environment:
       - LT_LOAD_ONLY=de,it,pt,nl,en
+      # Zonder dit downloadt hij alleen modellen als het volume (bijna) leeg is: een taal die
+      # later aan LT_LOAD_ONLY is toegevoegd bleef dan "not supported". Zo installeert hij bij
+      # elke start wat ontbreekt; bestaande modellen blijven staan.
+      - LT_UPDATE_MODELS=true
       - LT_DISABLE_WEB_UI=true
       # Aantal workers (standaard 4), elk met de modellen in het geheugen. Eén is genoeg: de
       # planner vertaalt één batch tegelijk.
