@@ -264,6 +264,9 @@ export function searchTerms(q?: string) {
   );
 }
 
+/** Zoveel deals per query in getTopDeals; meestal is de rij na het eerste blok al vol. */
+const TOP_DEALS_CHUNK = 100;
+
 /** Hoogste kortingen, eventueel alleen uit deze categorieën. */
 export async function getTopDeals(
   limit = 12,
@@ -276,35 +279,36 @@ export async function getTopDeals(
       .slice(0, limit);
   const key = `top:${limit}:${categories?.join(",") ?? ""}`;
   return cached(key, 60_000, async () => {
-    // Maximaal 4 per shop zodat één shop de rij niet domineert.
+    // Maximaal 4 per shop zodat één shop de rij niet domineert. Niet per shop een query: met
+    // ~80 shops tegelijk zat de hele pool vol en kregen bezoekers een timeout. In plaats
+    // daarvan de hoogste kortingen in blokken (via products_deals_idx) tot de rij vol is.
     const prisma = getPrisma();
-    const shops = await prisma.shop.findMany({
-      where: { enabled: true },
-      select: { id: true },
-    });
-    const perShop = await Promise.all(
-      shops.map((s) =>
-        prisma.product.findMany({
-          select: DEAL_SELECT,
-          where: {
-            ...ACTIVE_DEAL,
-            ...NOT_OUT_OF_STOCK,
-            shopId: s.id,
-            imageUrl: { not: null },
-            ...(categories ? { categorySlug: { in: categories } } : {}),
-          },
-          orderBy: { discountPercent: "desc" },
-          take: 4,
-        }),
-      ),
-    );
-    return withPriceInsights(
-      perShop
-        .flat()
-        .map(toDeal)
-        .sort((a, b) => b.discountPercent - a.discountPercent)
-        .slice(0, limit),
-    );
+    const picked: Deal[] = [];
+    const perShop = new Map<string, number>();
+    for (let skip = 0; picked.length < limit; skip += TOP_DEALS_CHUNK) {
+      const rows = await prisma.product.findMany({
+        select: DEAL_SELECT,
+        where: {
+          ...ACTIVE_DEAL,
+          ...NOT_OUT_OF_STOCK,
+          shop: { enabled: true },
+          imageUrl: { not: null },
+          ...(categories ? { categorySlug: { in: categories } } : {}),
+        },
+        orderBy: [{ discountPercent: "desc" }, { id: "asc" }],
+        take: TOP_DEALS_CHUNK,
+        skip,
+      });
+      for (const deal of rows.map(toDeal)) {
+        const count = perShop.get(deal.shopSlug) ?? 0;
+        if (count >= 4) continue;
+        perShop.set(deal.shopSlug, count + 1);
+        picked.push(deal);
+        if (picked.length >= limit) break;
+      }
+      if (rows.length < TOP_DEALS_CHUNK) break;
+    }
+    return withPriceInsights(picked);
   });
 }
 
