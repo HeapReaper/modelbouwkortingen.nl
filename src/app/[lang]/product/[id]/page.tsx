@@ -6,6 +6,7 @@ import {
   ExternalLink,
   Globe,
   Info,
+  Receipt,
   Tag,
   Truck,
   XCircle,
@@ -35,8 +36,15 @@ import {
   getPriceHistory,
   getRelatedDeals,
 } from "@/lib/deals";
+import { vatNote } from "@/lib/format";
 import { SITE_URL } from "@/lib/newsletter-mail";
-import { getShop, outLink, SHOP_LANGUAGES, shippingCost } from "@/lib/shops";
+import {
+  getShop,
+  outLink,
+  SHOP_LANGUAGES,
+  shippingCost,
+  shopVat,
+} from "@/lib/shops";
 import { localizeDeals } from "@/lib/translate";
 import { cn } from "@/lib/utils";
 
@@ -103,6 +111,7 @@ async function ProductDetail({
   const link = outLink(deal);
   const shop = getShop(deal.shopSlug);
   const shipping = shippingCost(deal.shopSlug, deal.price);
+  const vat = vatNote(shopVat(deal.shopSlug), dict.vat, fmt);
   // De "van"-prijs van de webshop zelf, naast onze eigen referentieprijs.
   const shopPercent =
     deal.isDeal && deal.oldPrice && deal.oldPrice > deal.price
@@ -280,6 +289,12 @@ async function ProductDetail({
                 <li className="flex items-center gap-2">
                   <Globe className="size-5 text-muted-foreground" />
                   {t(p.shopCountry, { country: fmt.country(shop.country) })}
+                </li>
+              ) : null}
+              {vat ? (
+                <li className="flex items-center gap-2">
+                  <Receipt className="size-5 shrink-0 text-muted-foreground" />
+                  {vat}
                 </li>
               ) : null}
               {shipping !== null ? (

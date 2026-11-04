@@ -1310,4 +1310,11 @@ export const es: Dictionary = {
     title: "Estamos haciendo mantenimiento",
     body: "Modelbouwkortingen.nl no está disponible temporalmente. Vuelve a intentarlo en un momento.",
   },
+  vat: {
+    label: "IVA",
+    nl: "IVA del 21% incluido para envíos a los Países Bajos",
+    home: "IVA del {rate}% incluido ({country}); en envíos a los Países Bajos la tienda puede aplicar el 21%",
+    included: "IVA incluido",
+    checkout: "Sin IVA; puede añadirse al pagar",
+  },
 };

@@ -27,6 +27,9 @@ func (*RCTeam) Description() string {
 	return "Grote Franse RC-winkel in Firminy met Traxxas, Tamiya, Kyosho, HPI, Team Associated en Xray, plus onderdelen en gereedschap."
 }
 
+// Cookie: zonder Nederlandse markt geeft Shopify prijzen met 20% Franse btw (zie vat.go).
+func (*RCTeam) Cookie() string { return shopifyNLCookie }
+
 func (*RCTeam) UserAgent() string { return shopifyUserAgent }
 
 func (*RCTeam) MinDelay() time.Duration { return 2 * time.Second }

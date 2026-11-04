@@ -26,6 +26,9 @@ func (*Hoellein) Description() string {
 	return "Duitse modelvliegspecialist met motoren, regelaars, servo's, propellers en bouwmaterialen."
 }
 
+// Cookie: zonder Nederlandse markt geeft Shopify prijzen met 19% Duitse btw (zie vat.go).
+func (*Hoellein) Cookie() string { return shopifyNLCookie }
+
 func (*Hoellein) UserAgent() string { return shopifyUserAgent }
 
 func (*Hoellein) MinDelay() time.Duration { return 2 * time.Second } // bij 1 s kwamen er 429/503's

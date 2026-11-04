@@ -2,8 +2,9 @@ import { Info } from "lucide-react";
 import Link from "next/link";
 import { getI18n } from "@/i18n/server";
 import { rich, t } from "@/i18n/translate";
+import { vatNote } from "@/lib/format";
 import { getShopStats } from "@/lib/shop-stats";
-import type { ShopInfo } from "@/lib/shops";
+import { type ShopInfo, shopVat } from "@/lib/shops";
 
 /**
  * Eigen cijfers en gegevens over een webshop (assortiment, kortingen, prijsverlagingen,
@@ -73,11 +74,14 @@ export async function ShopFacts({ shop }: { shop: ShopInfo }) {
         : fmt.euro(shop.shipping.cost)
     : null;
 
+  const vat = vatNote(shopVat(shop.slug), dict.vat, fmt);
+
   const details = [
     {
       label: s.country,
       value: shop.country ? fmt.country(shop.country) : s.countryUnknown,
     },
+    ...(vat ? [{ label: dict.vat.label, value: vat }] : []),
     ...(shipping ? [{ label: s.shipping, value: shipping }] : []),
     {
       label: s.language,

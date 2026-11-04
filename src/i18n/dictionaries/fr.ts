@@ -1323,4 +1323,11 @@ export const fr: Dictionary = {
     title: "Nous effectuons une maintenance",
     body: "Modelbouwkortingen.nl est temporairement indisponible. Veuillez réessayer dans un instant.",
   },
+  vat: {
+    label: "TVA",
+    nl: "TVA de 21% incluse pour une livraison aux Pays-Bas",
+    home: "TVA de {rate}% incluse ({country}) ; pour une livraison aux Pays-Bas, la boutique peut appliquer 21%",
+    included: "TVA incluse",
+    checkout: "Hors TVA ; la TVA peut s’ajouter lors du paiement",
+  },
 };

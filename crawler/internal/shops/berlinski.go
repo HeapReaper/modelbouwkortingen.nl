@@ -2,9 +2,6 @@ package shops
 
 import (
 	"context"
-	"math"
-	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -25,22 +22,6 @@ import (
 //     (de crawler krijgt vanaf een Duitse server 19%). Het land hangt aan de PHP-sessie, dus
 //     we rekenen de prijs om naar NL-btw op basis van de "inkl. 19% MwSt."-tekst.
 type Berlinski struct{}
-
-var berlinskiVATRe = regexp.MustCompile(`inkl\.\s*(\d+(?:[.,]\d+)?)\s*%\s*MwSt`)
-
-// berlinskiNL rekent een prijs inclusief de btw uit text om naar een prijs inclusief 21% NL-btw.
-// Zonder btw-tekst blijft de prijs zoals hij is.
-func berlinskiNL(price float64, text string) float64 {
-	m := berlinskiVATRe.FindStringSubmatch(text)
-	if m == nil {
-		return price
-	}
-	rate, err := strconv.ParseFloat(strings.Replace(m[1], ",", ".", 1), 64)
-	if err != nil || rate == 21 {
-		return price
-	}
-	return math.Round(price/(1+rate/100)*1.21*100) / 100
-}
 
 func (*Berlinski) Slug() string    { return "berlinski" }
 func (*Berlinski) Name() string    { return "Modellbau Berlinski" }
@@ -92,7 +73,7 @@ func (s *Berlinski) ParseListing(pageURL string, doc *goquery.Document) ([]parse
 			Name:         parse.Clean(link.Text()),
 			Brand:        parse.Clean(card.Find(".manufacturer span").First().Text()),
 			ImageURL:     imgSrc(card.Find(".image img").First()),
-			Price:        berlinskiNL(parse.Price(card.Find(".product-price").First().Text()), card.Find(".price-information").First().Text()),
+			Price:        nlPrice(parse.Price(card.Find(".product-price").First().Text()), card.Find(".price-information").First().Text()),
 			InStock:      berlinskiStock(card.Find(".stock-info").First()),
 			CategoryHint: hint,
 		}
@@ -139,7 +120,7 @@ func (s *Berlinski) ParseProduct(pageURL string, doc *goquery.Document) *parse.P
 		SKU:        parse.Clean(main.Find(`[itemprop="sku"]`).First().Text()),
 		Brand:      parse.Clean(brand),
 		ImageURL:   parse.AbsURL(s.BaseURL(), attr(main.Find(`[itemprop="image"]`).First(), "href")),
-		Price:      berlinskiNL(parse.Price(offer.Find(`[itemprop="price"]`).First().Text()), doc.Find(".price-additional-info").First().Text()),
+		Price:      nlPrice(parse.Price(offer.Find(`[itemprop="price"]`).First().Text()), doc.Find(".price-additional-info").First().Text()),
 		InStock:    parse.Availability(attr(offer.Find(`[itemprop="availability"]`).First(), "content")),
 	}
 	specific, all := berlinskiCrumbs(doc)

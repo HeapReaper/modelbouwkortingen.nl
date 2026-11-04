@@ -18,8 +18,8 @@ func TestBerlinskiNL(t *testing.T) {
 		{10.00, "", 10.00},
 	}
 	for _, c := range cases {
-		if got := berlinskiNL(c.price, c.text); got != c.want {
-			t.Errorf("berlinskiNL(%v, %q) = %v, want %v", c.price, c.text, got, c.want)
+		if got := nlPrice(c.price, c.text); got != c.want {
+			t.Errorf("nlPrice(%v, %q) = %v, want %v", c.price, c.text, got, c.want)
 		}
 	}
 }

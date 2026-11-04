@@ -22,6 +22,10 @@ func (*GHW) Description() string {
 	return "Duitse modelbouwshop voor RC-graafmachines en hydrauliek, met materialen, schroeven, aandrijving, elektronica en gereedschap."
 }
 
+// PriceFactor: bots krijgen de prijs zonder btw ("inkl. 0% USt."). Volgens de verzendinformatie
+// rekent GHW de btw van het afleverland (zie vat.go).
+func (*GHW) PriceFactor() float64 { return 1 + nlVAT/100 }
+
 var ghwSkipTopRe = regexp.MustCompile(`(?i)^(zum warenkorb|facebook|jtl-shop|passwort vergessen|jetzt registrieren)`)
 
 func (s *GHW) Discover(ctx context.Context, f *fetch.Fetcher) ([]string, []sitemap.URL, error) {

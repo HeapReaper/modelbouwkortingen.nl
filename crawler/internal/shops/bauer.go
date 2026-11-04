@@ -27,6 +27,10 @@ func (*Bauer) Description() string {
 	return "Duitse specialist in RC-schepen: bouwdozen, beslag, schroeven en asaandrijvingen, plus motoren, regelaars, verlichting en materialen."
 }
 
+// PriceFactor: de site toont 19%, maar volgens de verzendinformatie wordt bij levering in een
+// ander EU-land de Duitse btw vervangen door die van dat land (zie vat.go).
+func (*Bauer) PriceFactor() float64 { return germanToNL }
+
 var bauerSkipRe = regexp.MustCompile(`^(Footer|Kataloge|Figuren)/`)
 
 func (s *Bauer) Discover(ctx context.Context, f *fetch.Fetcher) ([]string, []sitemap.URL, error) {

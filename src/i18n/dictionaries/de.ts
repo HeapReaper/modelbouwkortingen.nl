@@ -1312,4 +1312,11 @@ export const de: Dictionary = {
     title: "Wir führen gerade Wartungsarbeiten durch",
     body: "Modelbouwkortingen.nl ist vorübergehend nicht erreichbar. Bitte versuche es gleich noch einmal.",
   },
+  vat: {
+    label: "MwSt.",
+    nl: "Inkl. 21% MwSt. bei Lieferung in die Niederlande",
+    home: "Inkl. {rate}% MwSt. ({country}); bei Lieferung in die Niederlande kann der Shop 21% berechnen",
+    included: "Inkl. MwSt.",
+    checkout: "Ohne MwSt.; an der Kasse kann MwSt. hinzukommen",
+  },
 };

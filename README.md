@@ -199,6 +199,14 @@ toont de site de originele namen. Reken op een paar GB RAM. Zet `LIBRETRANSLATE_
 docker-compose standaard `http://libretranslate:5000`); zonder worden alleen al bewaarde
 vertalingen getoond.
 
+### Btw
+
+Alle prijzen zijn prijzen bij levering in Nederland. Shops die de btw van het afleverland rekenen
+tonen de crawler soms iets anders dan een Nederlandse bezoeker: de crawler staat in Duitsland en
+JTL-Shop slaat de landherkenning over voor bots. `crawler/internal/shops/vat.go` beschrijft per
+oorzaak de oplossing. Shops die altijd hun eigen btw tonen laten we staan; op de productpagina en
+de webshoppagina staat dan welk tarief in de prijs zit (`shopVat()` in `src/lib/shops.ts`).
+
 ### Prijsalarm en volglijst
 
 Op elke productpagina kan een bezoeker een doelprijs instellen. Na bevestiging per mail volgt

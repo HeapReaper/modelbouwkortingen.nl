@@ -36,6 +36,9 @@ func (*Tamico) Description() string {
 	return "Duitse RC-car-specialist met veel Tamiya, Kyosho en Traxxas, plus trucks, tanks en een enorm onderdelenassortiment."
 }
 
+// PriceFactor: bots krijgen 19% Duitse btw, Nederlandse bezoekers 21% (zie vat.go).
+func (*Tamico) PriceFactor() float64 { return germanToNL }
+
 const tamicoPerPage = 50
 
 var tamicoSkipCategoryRe = regexp.MustCompile(`(?i)^(neu\b|neu-|vorbestellen)`)

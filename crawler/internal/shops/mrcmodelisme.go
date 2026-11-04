@@ -26,6 +26,9 @@ func (*MRCModelisme) Description() string {
 	return "Franse modelbouwwinkel met veel Traxxas- en Kavan-onderdelen, plus auto's, vliegtuigen, boten, accu's en elektronica."
 }
 
+// PriceFactor: de Store API geeft prijzen zonder btw, de site toont ze met 20% Franse btw.
+func (*MRCModelisme) PriceFactor() float64 { return 1.2 }
+
 func (*MRCModelisme) UserAgent() string { return "" }
 
 // MinDelay: geen Crawl-delay in robots.txt, maar elke pagina komt uit WordPress.

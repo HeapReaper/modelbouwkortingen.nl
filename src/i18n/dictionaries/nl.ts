@@ -1293,6 +1293,13 @@ export const nl = {
     title: "We zijn even bezig met onderhoud",
     body: "Modelbouwkortingen.nl is tijdelijk niet beschikbaar. Probeer het straks opnieuw.",
   },
+  vat: {
+    label: "Btw",
+    nl: "Incl. 21% btw bij levering in Nederland",
+    home: "Incl. {rate}% btw ({country}); bij levering in Nederland kan de webshop 21% rekenen",
+    included: "Incl. btw",
+    checkout: "Excl. btw; bij het afrekenen kan er btw bijkomen",
+  },
 };
 
 export type Dictionary = typeof nl;

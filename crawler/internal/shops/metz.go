@@ -16,6 +16,8 @@ import (
 //   - Productpagina's (/modellbau/<slug>, ~34.000) uit sitemap.xml, met schema.org-microdata;
 //     per ronde komt een deel aan de beurt (zie CRAWLER_MAX_PRODUCT_PAGES). De
 //     /katalog/artikelinfo/-URL's zijn varianten van dezelfde producten en slaan we over.
+//   - Prijzen zijn inclusief de btw van het land dat de shop uit het IP-adres haalt; net als bij
+//     Berlinski rekenen we ze om naar NL-btw (zie vat.go).
 type Metz struct{}
 
 func (*Metz) Slug() string    { return "metz" }
@@ -41,5 +43,9 @@ func (s *Metz) ParseListing(string, *goquery.Document) ([]parse.Product, string)
 
 func (s *Metz) ParseProduct(pageURL string, doc *goquery.Document) *parse.Product {
 	p := ldParseProduct(pageURL, doc, nil)
+	if p != nil {
+		vat := doc.Find(".price-additional-info").First().Text()
+		p.Price, p.OldPrice = nlPrice(p.Price, vat), nlPrice(p.OldPrice, vat)
+	}
 	return p
 }

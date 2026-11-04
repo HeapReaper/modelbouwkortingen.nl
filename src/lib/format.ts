@@ -1,6 +1,9 @@
 import { formatDistanceToNowStrict } from "date-fns";
 import { de, enGB, nl } from "date-fns/locale";
 import { DEFAULT_LOCALE, INTL_LOCALES, type Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries/nl";
+import { t } from "@/i18n/translate";
+import type { ShopVat } from "@/lib/shops";
 
 const DATE_FNS = { nl, en: enGB, de };
 
@@ -88,6 +91,20 @@ export function timeAgo(iso: string | null | undefined) {
 
 export function formatDateTime(iso: string | null | undefined) {
   return nlFormat.dateTime(iso);
+}
+
+/** De btw-regel bij een prijs, of null als we niet weten welke btw er in de prijzen zit. */
+export function vatNote(
+  vat: ShopVat | null,
+  v: Dictionary["vat"],
+  fmt: ReturnType<typeof formatters>,
+) {
+  if (!vat) return null;
+  if (vat.kind !== "home") return v[vat.kind];
+  return t(v.home, {
+    rate: fmt.number(vat.rate),
+    country: fmt.country(vat.country),
+  });
 }
 
 /** Bouwt een URL met query-parameters; lege waarden worden weggelaten. */

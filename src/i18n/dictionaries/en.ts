@@ -1290,4 +1290,11 @@ export const en: Dictionary = {
     title: "We're doing some maintenance",
     body: "Modelbouwkortingen.nl is temporarily unavailable. Please try again shortly.",
   },
+  vat: {
+    label: "VAT",
+    nl: "Incl. 21% VAT for delivery to the Netherlands",
+    home: "Incl. {rate}% VAT ({country}); for delivery to the Netherlands the shop may charge 21%",
+    included: "Incl. VAT",
+    checkout: "Excl. VAT; VAT may be added at checkout",
+  },
 };

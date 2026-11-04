@@ -434,6 +434,7 @@ func (r *Runner) save(ctx context.Context, sr *shopRun, p parse.Product, fromPro
 	if isUsed(p) {
 		return
 	}
+	shops.AdjustPrices(sr.shop, &p)
 	p.ImageURL = parse.AbsURL(sr.shop.BaseURL(), p.ImageURL)
 	category := categorize.Classify(p.Breadcrumbs, p.CategoryHint, p.URL, p.Name)
 	sr.products.Add(1)

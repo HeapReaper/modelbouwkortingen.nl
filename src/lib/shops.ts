@@ -915,6 +915,58 @@ export function shippingCost(slug: string, price: number): number | null {
     : shipping.cost;
 }
 
+/** Btw-tarief van het land van de webshop, in procenten. */
+const HOME_VAT: Record<string, number> = {
+  AT: 20,
+  BE: 21,
+  CY: 19,
+  CZ: 21,
+  DE: 19,
+  ES: 21,
+  FI: 25.5,
+  FR: 20,
+  IE: 23,
+  IT: 22,
+  NL: 21,
+  PT: 23,
+  SI: 22,
+};
+
+/**
+ * Van deze shops is de opgeslagen prijs die bij levering in Nederland: ze rekenen de btw van het
+ * afleverland en de crawler zet de prijs daarop om (crawler/internal/shops/vat.go).
+ */
+const NL_VAT_SHOPS = new Set([
+  "bauer",
+  "berlinski",
+  "ghw",
+  "hoellein",
+  "metz",
+  "rcteam",
+  "tamico",
+]);
+
+export type ShopVat =
+  | { kind: "nl" }
+  /** De webshop toont zijn eigen tarief; wat hij bij levering in Nederland rekent is onbekend. */
+  | { kind: "home"; rate: number; country: string }
+  | { kind: "included" }
+  | { kind: "checkout" };
+
+/** Welke btw er in de prijzen van een webshop zit, of null als we dat niet weten. */
+export function shopVat(slug: string): ShopVat | null {
+  // Banggood: "Bij het afrekenen kan omzetbelasting van toepassing zijn".
+  if (slug === "banggood") return { kind: "checkout" };
+  // HobbyKing: de crawler vraagt de prijzen voor Nederland op; de site noemt alleen "incl. tax".
+  if (slug === "hobbyking") return { kind: "included" };
+  if (NL_VAT_SHOPS.has(slug)) return { kind: "nl" };
+  const country = getShop(slug)?.country;
+  if (!country || !(country in HOME_VAT)) return null;
+  // Hepf staat als Oostenrijks te boek, maar toont 19%.
+  const rate = slug === "hepf" ? 19 : HOME_VAT[country];
+  return rate === 21 ? { kind: "nl" } : { kind: "home", rate, country };
+}
+
 /** Waar een klik naar de webshop vandaan komt (voor de statistieken in /admin). */
 export const CLICK_SOURCES = [
   "site",
