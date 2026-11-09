@@ -51,6 +51,16 @@ func TestClassify(t *testing.T) {
 		{nil, "", "", "Carro de combate Heng Long Tiger I 1/16", "tanks"},
 		{[]string{"Peças", "Carroçarias"}, "", "", "Killerbody Toyota Hilux", "onderdelen"},
 		{nil, "", "", "Iets compleet onbekends", "overig"},
+		// Onderdelen in de categorie van het voertuig: de naam wint.
+		{[]string{"Connecteurs"}, "fpv", "", "XT90H Male Connector", "elektronica"},
+		{nil, "RC Cars | Crawler | PitBull", "", "PBX A/T Hardcore 2.2 Scale Reifen Alien Kompound", "onderdelen"},
+		{nil, "RC Cars | Elektro | Spektrum", "", "SPEKTRUM Firma 30A Brushless Smart ESC / 4500Kv Motor", "elektronica"},
+		{nil, "Schiffsmodelle | robbe Ro-Marin", "", "Manschette (VE2)", "onderdelen"},
+		{[]string{"RC Auto's", "Crawlers"}, "", "", "Crawler 1/10 4WD met accu en lader", "rc-autos"},
+		{[]string{"RC Auto's"}, "", "", "Traxxas Slash 2WD RTR met LED-verlichting", "rc-autos"},
+		{nil, "RC Flugzeuge | Flugzeug Modelle", "", "Robbe ASW 15B KIT aus EPO ohne Elektronik Elektrosegelflugmodell", "vliegtuigen"},
+		{nil, "RC Flugzeuge | Flugzeug Modelle", "", "Robbe Slider Q 4-Klappen Segelflugmodell, Sperrholz/Balsa-Holzbausatz", "vliegtuigen"},
+		{nil, "Fahrzeuge Boote | Bootsantriebe Zubehoer", "", "PROBOAT Trimmklappen-Satz: Impuls 32", "onderdelen"},
 	}
 	for _, c := range cases {
 		if got := Classify(c.crumbs, c.hint, c.url, c.name); got != c.want {
