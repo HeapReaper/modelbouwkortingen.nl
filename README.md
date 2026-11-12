@@ -397,6 +397,7 @@ Zie `.env.example` voor alle variabelen. De belangrijkste:
 | `LIBRETRANSLATE_URL` / `LIBRETRANSLATE_API_KEY` | website | `http://libretranslate:5000` in docker-compose (zonder: geen nieuwe vertalingen) / — |
 | `ALERT_DISCORD_WEBHOOK` / `CRAWL_ALERT_RATIO` | website | — / `0.5` |
 | `CRAWLER_INTERVAL` | crawler | `6h` |
+| `CRAWLER_DISCOVERY_RETRY` | crawler | `15m` (na een mislukte discovery één nieuwe poging; `0` = uit) |
 | `CRAWLER_WORKERS_PER_SHOP` | crawler | `4` |
 | `CRAWLER_HOST_DELAY` | crawler | `500ms` |
 | `CRAWLER_MAX_PRODUCT_PAGES` | crawler | `4000` per shop per ronde |

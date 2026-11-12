@@ -213,7 +213,7 @@ func (r *Runner) runShop(ctx context.Context, shop shops.Shop) (err error) {
 	}()
 
 	sr.log.Info("crawl-ronde gestart")
-	listings, products, err := shop.Discover(ctx, r.fetcher)
+	listings, products, err := r.discover(ctx, sr)
 	if err != nil {
 		return fmt.Errorf("sitemap/discovery: %w", err)
 	}
@@ -239,6 +239,28 @@ func (r *Runner) runShop(ctx context.Context, shop shops.Shop) (err error) {
 	r.work(ctx, queue, func(ctx context.Context, u string) { r.crawlProduct(ctx, sr, u) })
 	r.setPhase(shop, "finishing", 0)
 	return ctx.Err()
+}
+
+// discover haalt de listings en productpagina's van de shop op. Mislukt dat, dan is de
+// shop meestal even onbereikbaar (502, onderhoudspagina, netwerk): na DiscoveryRetry
+// proberen we het nog één keer, zodat zo'n storing niet meteen een hele ronde kost.
+func (r *Runner) discover(ctx context.Context, sr *shopRun) ([]string, []sitemap.URL, error) {
+	listings, products, err := sr.shop.Discover(ctx, r.fetcher)
+	if err == nil || ctx.Err() != nil || r.cfg == nil || r.cfg.DiscoveryRetry <= 0 {
+		return listings, products, err
+	}
+	sr.log.Warn("discovery mislukt, nieuwe poging volgt", "err", err, "over", r.cfg.DiscoveryRetry)
+	select {
+	case <-ctx.Done():
+		return nil, nil, ctx.Err()
+	case <-time.After(r.cfg.DiscoveryRetry):
+	}
+	listings, products, err2 := sr.shop.Discover(ctx, r.fetcher)
+	if err2 != nil {
+		return nil, nil, fmt.Errorf("ook na nieuwe poging: %w", err2)
+	}
+	sr.log.Info("discovery gelukt bij de tweede poging")
+	return listings, products, nil
 }
 
 // productQueue bepaalt welke productpagina's deze ronde bezocht worden:

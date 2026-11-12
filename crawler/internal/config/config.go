@@ -27,6 +27,7 @@ type Config struct {
 	MaxBackoff     time.Duration
 
 	Interval        time.Duration // tijd tussen de starts van twee crawl-rondes van dezelfde shop
+	DiscoveryRetry  time.Duration // na een mislukte discovery zo lang wachten en het één keer opnieuw proberen (0 = niet)
 	RunOnce         bool
 	DryRun          bool // niet naar de database schrijven, alleen loggen
 	MaxProductPages int  // max productpagina's per shop per ronde (0 = onbeperkt)
@@ -55,6 +56,7 @@ func Load() (*Config, error) {
 		Backoff429:         envDuration("CRAWLER_BACKOFF_429", 5*time.Second),
 		MaxBackoff:         envDuration("CRAWLER_MAX_BACKOFF", 5*time.Minute),
 		Interval:           envDuration("CRAWLER_INTERVAL", 6*time.Hour),
+		DiscoveryRetry:     envDuration("CRAWLER_DISCOVERY_RETRY", 15*time.Minute),
 		RunOnce:            envBool("CRAWLER_RUN_ONCE", false),
 		DryRun:             envBool("CRAWLER_DRY_RUN", false),
 		MaxProductPages:    envInt("CRAWLER_MAX_PRODUCT_PAGES", 4000),

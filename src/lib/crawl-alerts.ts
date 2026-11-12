@@ -117,6 +117,41 @@ export async function checkCrawlRuns(): Promise<CrawlCheckResult> {
   return { checked: runs.length, alerts, notified: await notify() };
 }
 
+/** Zo begint de melding van een ronde die al bij het ophalen van de productlijst stukliep. */
+const DISCOVERY_PREFIX = "sitemap/discovery:";
+
+function alertText(a: {
+  runId: bigint | number;
+  seen: number;
+  baseline: number;
+  run: {
+    status: string;
+    message: string | null;
+    shop: { name: string; slug: string };
+  };
+}) {
+  const run = `Ronde #${num(a.runId)} (${a.run.status})`;
+  const message = a.run.message
+    ? `\n\nMelding: ${a.run.message.slice(0, 500)}`
+    : "";
+  // De crawler probeert het eerst nog een keer (CRAWLER_DISCOVERY_RETRY). Meestal
+  // is de shop onbereikbaar of blokkeert hij ons; aan de parser ligt het dan niet.
+  if (
+    a.run.status === "failed" &&
+    a.run.message?.startsWith(DISCOVERY_PREFIX)
+  ) {
+    return {
+      title: `Crawler: ${a.run.shop.name} kon de productlijst niet ophalen`,
+      description: `${run} liep vast bij het ophalen van de sitemap/productlijst (normaal ±${a.baseline} producten). Waarschijnlijk is de shop (tijdelijk) onbereikbaar of blokkeert hij de crawler. Controleer met \`go run ./cmd/shopcheck -shop ${a.run.shop.slug}\`.${message}`,
+    };
+  }
+  const drop = Math.round((1 - a.seen / a.baseline) * 100);
+  return {
+    title: `Crawler: ${a.run.shop.name} zag ${drop}% minder producten`,
+    description: `${run} zag ${a.seen} producten, normaal ±${a.baseline}. Controleer of de parser nog werkt (\`go run ./cmd/parsecheck\`).${message}`,
+  };
+}
+
 /** Stuurt de nog niet gemelde waarschuwingen naar ALERT_DISCORD_WEBHOOK. */
 async function notify(): Promise<number> {
   const webhook = process.env.ALERT_DISCORD_WEBHOOK;
@@ -124,19 +159,21 @@ async function notify(): Promise<number> {
   const prisma = getPrisma();
   const pending = await prisma.crawlAlert.findMany({
     where: { notifiedAt: null },
-    include: { run: { include: { shop: { select: { name: true } } } } },
+    include: {
+      run: { include: { shop: { select: { name: true, slug: true } } } },
+    },
     orderBy: { createdAt: "asc" },
     take: 10,
   });
   let notified = 0;
   for (const a of pending) {
-    const drop = Math.round((1 - a.seen / a.baseline) * 100);
+    const { title, description } = alertText(a);
     const result = await postWebhook(webhook, {
       embeds: [
         {
-          title: `Crawler: ${a.run.shop.name} zag ${drop}% minder producten`,
+          title,
           url: `${SITE_URL}/admin`,
-          description: `Ronde #${num(a.runId)} (${a.run.status}) zag ${a.seen} producten, normaal ±${a.baseline}. Controleer of de parser nog werkt (\`go run ./cmd/parsecheck\`).${a.run.message ? `\n\nMelding: ${a.run.message.slice(0, 500)}` : ""}`,
+          description,
           color: 0xf59e0b,
           timestamp: a.createdAt.toISOString(),
         },
