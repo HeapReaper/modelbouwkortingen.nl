@@ -33,7 +33,18 @@ var (
 const (
 	maxBodySize  = 64 << 20 // 64 MB: de sitemap van Berlinski is al ~45 MB
 	maxHostDelay = 15 * time.Second
+	robotsTTL    = 24 * time.Hour // RFC 9309: robots.txt hooguit 24 uur cachen
 )
+
+// Variabel voor de tests.
+var (
+	// Na een mislukte robots.txt-fetch blijft de host zo lang dicht; daarna proberen we het opnieuw.
+	robotsFailTTL = 10 * time.Minute
+	// Wachttijd tussen pogingen om robots.txt op te halen (keer het pogingnummer).
+	robotsRetryWait = 5 * time.Second
+)
+
+const robotsAttempts = 3
 
 type Options struct {
 	UserAgent  string
@@ -63,12 +74,13 @@ type host struct {
 	blockedUntil time.Time
 	okStreak     int // aantal succesvolle requests sinds de laatste 429
 
-	robotsOnce sync.Once
-	robots     *Robots
-	minDelay   time.Duration // Crawl-delay uit robots.txt of SetHostPolicy
-	userAgent  string        // afwijkende user-agent voor deze host ("" = standaard)
-	cookie     string        // vaste Cookie-header voor deze host ("" = geen)
-	tls12      bool          // maximaal TLS 1.2 (zie SetHostTLS12)
+	robotsMu      sync.Mutex // één robots.txt-fetch tegelijk per host
+	robots        *Robots
+	robotsExpires time.Time
+	minDelay      time.Duration // Crawl-delay uit robots.txt of SetHostPolicy
+	userAgent     string        // afwijkende user-agent voor deze host ("" = standaard)
+	cookie        string        // vaste Cookie-header voor deze host ("" = geen)
+	tls12         bool          // maximaal TLS 1.2 (zie SetHostTLS12)
 }
 
 type Response struct {
@@ -160,38 +172,72 @@ func (f *Fetcher) SetHostTLS12(hostName string) {
 	hs.tls12 = true
 }
 
-// Allowed controleert robots.txt voor de URL (robots.txt wordt één keer per host opgehaald).
+// Allowed controleert robots.txt voor de URL. robots.txt wordt per host opgehaald en
+// 24 uur bewaard. Lukt het ophalen niet (netwerkfout, 5xx), dan blijft de host maar
+// even dicht: zo blokkeert een storing tijdens het opstarten de shop niet tot de
+// volgende herstart.
 func (f *Fetcher) Allowed(ctx context.Context, rawURL string) bool {
 	u, err := url.Parse(rawURL)
 	if err != nil {
 		return false
 	}
-	hs := f.host(u.Host)
-	hs.robotsOnce.Do(func() {
-		robotsURL := u.Scheme + "://" + u.Host + "/robots.txt"
-		resp, err := f.do(ctx, hs, u.Host, robotsURL)
-		switch {
-		case err == nil && resp.StatusCode == http.StatusOK:
-			hs.robots = ParseRobots(string(resp.Body), "ModelbouwkortingenBot")
-			if d := hs.robots.CrawlDelay; d > 0 {
-				hs.mu.Lock()
-				hs.minDelay = max(hs.minDelay, d)
-				hs.mu.Unlock()
-				f.log.Info("crawl-delay uit robots.txt", "host", u.Host, "delay", hs.minDelay)
-			}
-		case err == nil && resp.StatusCode >= 400 && resp.StatusCode < 500:
-			hs.robots = &Robots{} // geen robots.txt = alles toegestaan
-		default:
-			// Onbereikbaar: wees voorzichtig en sta niets toe tot de volgende ronde.
-			f.log.Warn("robots.txt niet op te halen, host wordt overgeslagen", "host", u.Host, "err", err)
-			hs.robots = &Robots{rules: []robotsRule{{allow: false, pattern: "/"}}}
-		}
-	})
 	path := u.EscapedPath()
 	if u.RawQuery != "" {
 		path += "?" + u.RawQuery
 	}
-	return hs.robots.Allowed(path)
+	return f.robotsFor(ctx, u).Allowed(path)
+}
+
+var disallowAll = &Robots{rules: []robotsRule{{allow: false, pattern: "/"}}}
+
+func (f *Fetcher) robotsFor(ctx context.Context, u *url.URL) *Robots {
+	hs := f.host(u.Host)
+	hs.robotsMu.Lock()
+	defer hs.robotsMu.Unlock()
+	if hs.robots != nil && time.Now().Before(hs.robotsExpires) {
+		return hs.robots
+	}
+
+	robotsURL := u.Scheme + "://" + u.Host + "/robots.txt"
+	var resp *Response
+	var err error
+	for attempt := 1; ; attempt++ {
+		resp, err = f.do(ctx, hs, u.Host, robotsURL)
+		if ctx.Err() != nil {
+			return disallowAll // afgebroken: niets onthouden
+		}
+		transient := err != nil || resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode >= 500
+		if !transient || attempt == robotsAttempts {
+			break
+		}
+		if !sleep(ctx, time.Duration(attempt)*robotsRetryWait) {
+			return disallowAll
+		}
+	}
+
+	switch {
+	case err == nil && resp.StatusCode == http.StatusOK:
+		hs.robots = ParseRobots(string(resp.Body), "ModelbouwkortingenBot")
+		hs.robotsExpires = time.Now().Add(robotsTTL)
+		if d := hs.robots.CrawlDelay; d > 0 {
+			hs.mu.Lock()
+			hs.minDelay = max(hs.minDelay, d)
+			hs.mu.Unlock()
+			f.log.Info("crawl-delay uit robots.txt", "host", u.Host, "delay", d)
+		}
+	case err == nil && resp.StatusCode >= 400 && resp.StatusCode < 500 && resp.StatusCode != http.StatusTooManyRequests:
+		hs.robots = &Robots{} // geen robots.txt = alles toegestaan
+		hs.robotsExpires = time.Now().Add(robotsTTL)
+	default:
+		if err == nil {
+			err = fmt.Errorf("HTTP %d", resp.StatusCode)
+		}
+		// Onbereikbaar: wees voorzichtig en sta even niets toe.
+		f.log.Warn("robots.txt niet op te halen, host wordt even overgeslagen", "host", u.Host, "err", err, "opnieuw over", robotsFailTTL)
+		hs.robots = disallowAll
+		hs.robotsExpires = time.Now().Add(robotsFailTTL)
+	}
+	return hs.robots
 }
 
 // Get haalt een URL op met robots.txt-controle, rate limiting en retries.
