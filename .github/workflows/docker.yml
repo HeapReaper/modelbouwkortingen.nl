@@ -1,0 +1,48 @@
+# Bouwt de Docker images (website, migrate en crawler) op de self-hosted runner op de
+# Coolify-server. De images blijven lokaal in Docker staan (tag :latest en :<commit>);
+# er wordt niets naar een registry gepusht.
+name: Docker images
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Een nieuwere push naar dezelfde branch annuleert een build die nog loopt.
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: [self-hosted, coolify]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: web
+            context: .
+            target: runner
+          - name: migrate
+            context: .
+            target: migrate
+          - name: crawler
+            context: ./crawler
+            target: ""
+    env:
+      DOCKER_BUILDKIT: "1" # de Dockerfiles gebruiken cache-mounts
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build ${{ matrix.name }}
+        run: |
+          image="modelbouwkortingen-${{ matrix.name }}"
+          args=(--pull -t "$image:${GITHUB_SHA::12}")
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            args+=(-t "$image:latest")
+          fi
+          if [ -n "${{ matrix.target }}" ]; then
+            args+=(--target "${{ matrix.target }}")
+          fi
+          docker build "${args[@]}" "${{ matrix.context }}"
